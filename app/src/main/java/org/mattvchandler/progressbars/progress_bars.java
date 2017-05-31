@@ -15,7 +15,6 @@ import java.util.List;
 
 public class progress_bars extends AppCompatActivity
 {
-    private TextView text;
     private ListView list;
     private List<String> listValues;
 
@@ -25,13 +24,23 @@ public class progress_bars extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_progress_bars);
 
-        text = (TextView)findViewById(R.id.mainText);
         listValues = new ArrayList<String>();
         listValues.add("ASDF");
         listValues.add("ABCD");
-        listValues.add("ACDC");
+        listValues.add("AC⚡DC");
+        listValues.add("Queen");
+        listValues.add("Weird Al");
+        listValues.add("Led Zepplin");
+        listValues.add("Rolling Stones");
+        listValues.add("Foreigner");
+        listValues.add("Eagles");
+        listValues.add("Sixpence none the richer");
+        listValues.add("Bon Jovi");
+        listValues.add("David Bowie");
+        listValues.add("Talking Heads");
+        listValues.add("Toto");
 
-        ArrayAdapter<String> myAdapter = new ArrayAdapter<String>(this, R.layout.progress_bar_row,R.id.listText, listValues);
+        ArrayAdapter<String> myAdapter = new ArrayAdapter<String>(this, R.layout.progress_bar_row,R.id.title, listValues);
 
         list = (ListView)findViewById(R.id.mainList);
         list.setAdapter(myAdapter);
@@ -44,7 +53,6 @@ public class progress_bars extends AppCompatActivity
                     public void onItemClick(AdapterView<?> parent, View view, int position, long id)
                     {
                         String selected = (String)list.getItemAtPosition(position);
-                        text.setText("Selected: " + selected + " at pos: " + position);
                         Snackbar.make(findViewById(R.id.mainList), "you pressed " + selected + "!", Snackbar.LENGTH_LONG)
                                 .setAction("Oops!",
                                         new View.OnClickListener()

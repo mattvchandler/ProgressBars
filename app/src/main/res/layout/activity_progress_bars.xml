@@ -11,19 +11,13 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/mainText"
-            android:text="test list"/>
-
         <ListView
             android:id="@+id/mainList"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/mainText"
-            android:divider="@android:color/holo_blue_bright"
-            android:dividerHeight="3dp"/>
+            android:divider="@android:color/darker_gray"
+            android:dividerHeight="1dp"/>
 
         <TextView
             android:layout_width="wrap_content"
