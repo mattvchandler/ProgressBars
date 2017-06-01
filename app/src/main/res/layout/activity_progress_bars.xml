@@ -7,25 +7,29 @@
     <android.support.design.widget.CoordinatorLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context="org.mattvchandler.progressbars.progress_bars">
+        tools:context="org.mattvchandler.progressbars.Progress_bars">
 
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <ListView
+            <android.support.v7.widget.RecyclerView
                 android:id="@+id/mainList"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
                 android:divider="@android:color/darker_gray"
-                android:dividerHeight="1dp"/>
+                android:dividerHeight="1dp"
+                android:scrollbars="vertical"
+                android:fadeScrollbars="true"/>
 
+            <!-- may want this again later, but recyclerview doesn't have setEmptyView
             <TextView
+                android:id="@+id/empty"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/empty"
                 android:text="There is no data, dummy."
                 android:textStyle="bold"/>
+            -->
 
         </RelativeLayout>
     </android.support.design.widget.CoordinatorLayout>
