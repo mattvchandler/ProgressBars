@@ -1,31 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.CoordinatorLayout
+<layout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context="org.mattvchandler.progressbars.progress_bars">
-
-    <RelativeLayout
+    >
+    <android.support.design.widget.CoordinatorLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        tools:context="org.mattvchandler.progressbars.progress_bars">
 
-        <ListView
-            android:id="@+id/mainList"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/mainText"
-            android:divider="@android:color/darker_gray"
-            android:dividerHeight="1dp"/>
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/mainText"
-            android:id="@+id/empty"
-            android:text="There is no data, dummy."
-            android:textStyle="bold"/>
+            <ListView
+                android:id="@+id/mainList"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:divider="@android:color/darker_gray"
+                android:dividerHeight="1dp"/>
 
-    </RelativeLayout>
-</android.support.design.widget.CoordinatorLayout>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/empty"
+                android:text="There is no data, dummy."
+                android:textStyle="bold"/>
+
+        </RelativeLayout>
+    </android.support.design.widget.CoordinatorLayout>
+</layout>

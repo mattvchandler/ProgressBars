@@ -1,5 +1,6 @@
 package org.mattvchandler.progressbars;
 
+import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
@@ -10,19 +11,21 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.mattvchandler.progressbars.databinding.ActivityProgressBarsBinding;
+
 import java.util.ArrayList;
 import java.util.List;
 
 public class progress_bars extends AppCompatActivity
 {
-    private ListView list;
     private List<String> listValues;
+    private ActivityProgressBarsBinding binding;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_progress_bars);
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_progress_bars);
 
         listValues = new ArrayList<String>();
         listValues.add("ASDF");
@@ -42,18 +45,17 @@ public class progress_bars extends AppCompatActivity
 
         ArrayAdapter<String> myAdapter = new ArrayAdapter<String>(this, R.layout.progress_bar_row,R.id.title, listValues);
 
-        list = (ListView)findViewById(R.id.mainList);
-        list.setAdapter(myAdapter);
-        list.setEmptyView(findViewById(R.id.empty));
+        binding.mainList.setAdapter(myAdapter);
+        binding.mainList.setEmptyView(binding.empty);
 
-        list.setOnItemClickListener(
+        binding.mainList.setOnItemClickListener(
                 new AdapterView.OnItemClickListener()
                 {
                     @Override
                     public void onItemClick(AdapterView<?> parent, View view, int position, long id)
                     {
-                        String selected = (String)list.getItemAtPosition(position);
-                        Snackbar.make(findViewById(R.id.mainList), "you pressed " + selected + "!", Snackbar.LENGTH_LONG)
+                        String selected = (String)binding.mainList.getItemAtPosition(position);
+                        Snackbar.make(binding.mainList, "you pressed " + selected + "!", Snackbar.LENGTH_LONG)
                                 .setAction("Oops!",
                                         new View.OnClickListener()
                                         {
