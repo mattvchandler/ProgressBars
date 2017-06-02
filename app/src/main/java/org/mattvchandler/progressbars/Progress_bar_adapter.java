@@ -1,6 +1,5 @@
 package org.mattvchandler.progressbars;
 
-import android.content.Context;
 import android.database.Cursor;
 import android.databinding.DataBindingUtil;
 import android.support.v7.widget.RecyclerView;
@@ -25,16 +24,24 @@ public class Progress_bar_adapter extends RecyclerView.Adapter<Progress_bar_adap
 
         public void bind_cursor(Cursor cursor)
         {
-            row_binding.title.setText(cursor.getString(cursor.getColumnIndexOrThrow(
-                    Progress_bar_contract.Progress_bar_table.TITLE_COL)));
-            row_binding.timeText.setText(cursor.getString(cursor.getColumnIndexOrThrow(
-                    Progress_bar_contract.Progress_bar_table.COUNTDOWN_TEXT_COL)));
             // TODO: all of the other fields
             // TODO: timeText, percentage, and progressBar will need to be set by a timer
+            Progress_bar_data data = new Progress_bar_data(
+                    cursor.getString(cursor.getColumnIndexOrThrow(Progress_bar_contract.Progress_bar_table.TITLE_COL)),
+                    "2017-01-23",
+                    "10:11:12",
+                    "2017-01-23",
+                    "10:11:12",
+                    "42.00%",
+                    42,
+                    cursor.getString(cursor.getColumnIndexOrThrow(Progress_bar_contract.Progress_bar_table.COUNTDOWN_TEXT_COL)));
+            row_binding.setData(data);
         }
     }
 
     private Cursor cursor;
+
+    public Progress_bar_data progress_bar_data;
 
     public Progress_bar_adapter(Cursor cur)
     {
@@ -45,8 +52,7 @@ public class Progress_bar_adapter extends RecyclerView.Adapter<Progress_bar_adap
     public Progress_bar_row_view_holder onCreateViewHolder(ViewGroup parent, int viewType)
     {
         View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.progress_bar_row, parent, false);
-        Progress_bar_row_view_holder holder = new Progress_bar_row_view_holder(v);
-        return holder;
+        return new Progress_bar_row_view_holder(v);
     }
 
     @Override

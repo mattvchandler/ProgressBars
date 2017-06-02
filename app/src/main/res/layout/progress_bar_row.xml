@@ -5,6 +5,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     >
 
+    <data>
+        <import type="org.mattvchandler.progressbars.Progress_bar_data"/>
+        <variable name="data" type="Progress_bar_data"/>
+    </data>
+
     <android.support.constraint.ConstraintLayout
          android:layout_width="match_parent"
          android:layout_height="wrap_content"
@@ -12,7 +17,7 @@
 
         <TextView
             android:id="@+id/title"
-            android:text="Progress Indicator"
+            android:text="@{data.title}"
             android:textSize="16sp"
             android:textStyle="bold"
             android:textAlignment="center"
@@ -26,7 +31,7 @@
 
         <TextView
             android:id="@+id/percentage"
-            android:text="42%"
+            android:text="@{data.percentage}"
             android:textAlignment="center"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -42,7 +47,7 @@
             style="@style/Widget.AppCompat.ProgressBar.Horizontal"
             android:indeterminate="false"
             android:max="100"
-            android:progress="42"
+            android:progress="@{data.progress}"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             app:layout_constraintTop_toBottomOf="@+id/percentage"
@@ -54,7 +59,7 @@
 
         <TextView
             android:id="@+id/start_time_label"
-            android:text="Start Time:"
+            android:text="@string/start_time"
             android:textAlignment="textEnd"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -65,7 +70,7 @@
             />
         <TextView
             android:id="@+id/start_time_date"
-            android:text="2017-01-01"
+            android:text="@{data.start_date}"
             android:textAlignment="textEnd"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -79,7 +84,7 @@
             />
         <TextView
             android:id="@+id/start_time_time"
-            android:text="12:01:42"
+            android:text="@{data.start_time}"
             android:textAlignment="textEnd"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -91,7 +96,7 @@
 
         <TextView
             android:id="@+id/end_time_label"
-            android:text="End Time:"
+            android:text="@string/end_time"
             android:textAlignment="textStart"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -103,7 +108,7 @@
             />
         <TextView
             android:id="@+id/end_time_date"
-            android:text="2017-01-01"
+            android:text="@{data.end_date}"
             android:textAlignment="textStart"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -116,7 +121,7 @@
             />
         <TextView
             android:id="@+id/end_time_time"
-            android:text="12:01:42"
+            android:text="@{data.end_time}"
             android:textAlignment="textStart"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -128,7 +133,7 @@
 
         <TextView
             android:id="@+id/time_text"
-            android:text="Time remaining: "
+            android:text="@{data.time_text}"
             android:textAlignment="center"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
