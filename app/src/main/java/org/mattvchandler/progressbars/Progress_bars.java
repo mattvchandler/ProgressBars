@@ -1,5 +1,8 @@
 package org.mattvchandler.progressbars;
 
+import android.content.ContentValues;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
@@ -32,25 +35,40 @@ public class Progress_bars extends AppCompatActivity
         super.onCreate(savedInstanceState);
         binding = DataBindingUtil.setContentView(this, R.layout.activity_progress_bars);
 
-        listValues = new ArrayList<Progress_bar_data>();
-        listValues.add(new Progress_bar_data("ASDF", "3 days and 42 seconds"));
-        listValues.add(new Progress_bar_data("ABCD", "3 days, 2 minutes, and 42 seconds"));
-        listValues.add(new Progress_bar_data("AC⚡DC", "3 days, 2 minutes, and 42 seconds"));
-        listValues.add(new Progress_bar_data("Queen", "3 days, 2 minutes, and 42 seconds"));
-        listValues.add(new Progress_bar_data("Weird Al", "3 days, 2 minutes, and 42 seconds"));
-        listValues.add(new Progress_bar_data("Led Zepplin", "3 days, 2 minutes, and 42 seconds"));
-        listValues.add(new Progress_bar_data("Rolling Stones", "3 days, 2 minutes, and 42 seconds"));
-        listValues.add(new Progress_bar_data("Foreigner", "3 days, 2 minutes, and 42 seconds"));
-        listValues.add(new Progress_bar_data("Eagles", "3 days, 2 minutes, and 42 seconds"));
-        listValues.add(new Progress_bar_data("Sixpence none the richer", "3 days, 2 minutes, and 42 seconds"));
-        listValues.add(new Progress_bar_data("Bon Jovi", "3 days, 2 minutes, and 42 seconds"));
-        listValues.add(new Progress_bar_data("David Bowie", "3 days, 2 minutes, and 42 seconds"));
-        listValues.add(new Progress_bar_data("Talking Heads", "3 days, 2 minutes, and 42 seconds"));
-        listValues.add(new Progress_bar_data("Toto", "3 days, 2 minutes, and 42 seconds"));
 
-        layout_man = new LinearLayoutManager(this);
-        binding.mainList.setLayoutManager(layout_man);
-        adapter = new Progress_bar_adapter(listValues);
+        SQLiteDatabase db = new Progress_bar_DB(this).getWritableDatabase();
+
+        db.execSQL("DELETE FROM " + Progress_bar_contract.Progress_bar_table.TABLE_NAME);
+
+        ContentValues values = new ContentValues();
+        values.put(Progress_bar_contract.Progress_bar_table.ORDER_COL, 1);
+        values.put(Progress_bar_contract.Progress_bar_table.TITLE_COL, "ASDF");
+        values.put(Progress_bar_contract.Progress_bar_table.COUNTDOWN_TEXT_COL, "Time remaining: 3 days, 2 eons, and 42 seconds");
+        db.insert(Progress_bar_contract.Progress_bar_table.TABLE_NAME, null, values);
+
+        values.clear();
+        values.put(Progress_bar_contract.Progress_bar_table.ORDER_COL, 2);
+        values.put(Progress_bar_contract.Progress_bar_table.TITLE_COL, "AC⚡DC");
+        values.put(Progress_bar_contract.Progress_bar_table.COUNTDOWN_TEXT_COL, "Time remaining: 3 days, 2 millibars, and 42 seconds");
+        db.insert(Progress_bar_contract.Progress_bar_table.TABLE_NAME, null, values);
+
+        values.clear();
+        values.put(Progress_bar_contract.Progress_bar_table.ORDER_COL, 2);
+        values.put(Progress_bar_contract.Progress_bar_table.TITLE_COL, "ABCD");
+        values.put(Progress_bar_contract.Progress_bar_table.COUNTDOWN_TEXT_COL, "Time remaining: 3 days, 2 triganic pu, and 42 seconds");
+        db.insert(Progress_bar_contract.Progress_bar_table.TABLE_NAME, null, values);
+
+        values.clear();
+        values.put(Progress_bar_contract.Progress_bar_table.ORDER_COL, 4);
+        values.put(Progress_bar_contract.Progress_bar_table.TITLE_COL, "Queen");
+        values.put(Progress_bar_contract.Progress_bar_table.COUNTDOWN_TEXT_COL, "Time remaining: 3 days, 0 oxford commas and 42 seconds");
+        db.insert(Progress_bar_contract.Progress_bar_table.TABLE_NAME, null, values);
+
+        Cursor cursor = db.rawQuery("SELECT * FROM " + Progress_bar_contract.Progress_bar_table.TABLE_NAME +
+                                     " ORDER BY " + Progress_bar_contract.Progress_bar_table.ORDER_COL, null);
+
+        binding.mainList.setLayoutManager(new LinearLayoutManager(this));
+        adapter = new Progress_bar_adapter(cursor);
 
         binding.mainList.setAdapter(adapter);
         binding.mainList.addItemDecoration(new DividerItemDecoration(binding.mainList.getContext(), DividerItemDecoration.VERTICAL));

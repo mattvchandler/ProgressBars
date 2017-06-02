@@ -5,14 +5,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     >
 
-
-    <data>
-        <import type="org.mattvchandler.progressbars.Progress_bar_data"/>
-        <variable
-            name="progress_bar_data"
-            type="Progress_bar_data"/>
-    </data>
-
     <android.support.constraint.ConstraintLayout
          android:layout_width="match_parent"
          android:layout_height="wrap_content"
@@ -20,7 +12,7 @@
 
         <TextView
             android:id="@+id/title"
-            android:text="@{progress_bar_data.title}"
+            android:text="Progress Indicator"
             android:textSize="16sp"
             android:textStyle="bold"
             android:textAlignment="center"
@@ -136,7 +128,7 @@
 
         <TextView
             android:id="@+id/time_text"
-            android:text="@{progress_bar_data.countdown_text}"
+            android:text="Time remaining: "
             android:textAlignment="center"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
