@@ -55,38 +55,84 @@
             android:layout_height="wrap_content"
             app:layout_constraintTop_toBottomOf="@+id/percentage"
             app:layout_constraintBottom_toTopOf="@+id/time_text"
-            app:layout_constraintLeft_toRightOf="@+id/start_time"
-            app:layout_constraintRight_toLeftOf="@+id/end_time"
+            app:layout_constraintLeft_toRightOf="@+id/start_time_date"
+            app:layout_constraintRight_toLeftOf="@+id/end_time_date"
             app:layout_constraintHorizontal_weight="10"
             />
 
         <TextView
-            android:id="@+id/start_time"
-            android:text="Start Time:\n2017-01-01\n12:12:12"
+            android:id="@+id/start_time_label"
+            android:text="Start Time:"
             android:textAlignment="textEnd"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:layout_constraintTop_toBottomOf="@+id/title"
-            app:layout_constraintBottom_toTopOf="@+id/time_text"
+            app:layout_constraintBottom_toTopOf="@+id/start_time_date"
+            app:layout_constraintRight_toRightOf="@+id/start_time_date"
+            android:layout_marginTop="@dimen/margin_size"
+            />
+        <TextView
+            android:id="@+id/start_time_date"
+            android:text="2017-01-01"
+            android:textAlignment="textEnd"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@+id/start_time_label"
+            app:layout_constraintBottom_toTopOf="@+id/start_time_time"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toLeftOf="@+id/progress_bar"
             app:layout_constraintHorizontal_weight="0"
-            android:layout_margin="@dimen/margin_size"
+            android:layout_marginLeft="@dimen/margin_size"
+            android:layout_marginRight="@dimen/margin_size"
+            />
+        <TextView
+            android:id="@+id/start_time_time"
+            android:text="12:01:42"
+            android:textAlignment="textEnd"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@+id/start_time_date"
+            app:layout_constraintBottom_toTopOf="@+id/time_text"
+            app:layout_constraintRight_toRightOf="@+id/start_time_date"
+            android:layout_marginBottom="@dimen/margin_size"
             />
 
         <TextView
-            android:id="@+id/end_time"
-            android:text="End Time:\n2017-01-01\n12:12:12"
+            android:id="@+id/end_time_label"
+            android:text="End Time:"
             android:textAlignment="textStart"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:layout_constraintTop_toBottomOf="@+id/title"
-            app:layout_constraintBottom_toTopOf="@+id/time_text"
+            app:layout_constraintBottom_toTopOf="@+id/end_time_date"
+            app:layout_constraintLeft_toLeftOf="@+id/end_time_date"
+            app:layout_constraintHorizontal_weight="0"
+            android:layout_marginTop="@dimen/margin_size"
+            />
+        <TextView
+            android:id="@+id/end_time_date"
+            android:text="2017-01-01"
+            android:textAlignment="textStart"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@+id/end_time_label"
+            app:layout_constraintBottom_toTopOf="@+id/end_time_time"
             app:layout_constraintLeft_toRightOf="@+id/progress_bar"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintHorizontal_weight="0"
-            android:layout_margin="@dimen/margin_size"
-        />
+            android:layout_marginLeft="@dimen/margin_size"
+            android:layout_marginRight="@dimen/margin_size"
+            />
+        <TextView
+            android:id="@+id/end_time_time"
+            android:text="12:01:42"
+            android:textAlignment="textStart"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@+id/end_time_date"
+            app:layout_constraintBottom_toTopOf="@+id/time_text"
+            app:layout_constraintLeft_toLeftOf="@+id/end_time_date"
+            android:layout_marginBottom="@dimen/margin_size"
+            />
 
         <TextView
             android:id="@+id/time_text"
