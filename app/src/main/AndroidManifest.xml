@@ -5,6 +5,7 @@
     <application
         android:allowBackup="true"
         android:icon="@mipmap/progress_bar_launcher_icon"
+        android:roundIcon="@mipmap/progress_bar_launcher_round"
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
