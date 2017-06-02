@@ -1,6 +1,8 @@
 package org.mattvchandler.progressbars;
 
+import android.databinding.ObservableBoolean;
 import android.databinding.ObservableField;
+import android.databinding.ObservableInt;
 import android.os.Handler;
 
 import java.text.SimpleDateFormat;
@@ -10,7 +12,7 @@ import java.util.Locale;
 // struct bound to progress_bar_row layout
 public final class Progress_bar_data
 {
-    public final ObservableField<String>  title      = new ObservableField<>();
+    public final ObservableField<String>  title         = new ObservableField<>();
 
     public final ObservableField<String>  start_date    = new ObservableField<>();
     public final ObservableField<String>  start_time    = new ObservableField<>();
@@ -18,13 +20,13 @@ public final class Progress_bar_data
     public final ObservableField<String>  end_time      = new ObservableField<>();
 
     public final ObservableField<String>  percentage    = new ObservableField<>();
-    public final ObservableField<Integer> progress      = new ObservableField<>();
+    public final ObservableInt            progress      = new ObservableInt();
 
     public final ObservableField<String>  time_text     = new ObservableField<>();
 
-    public final ObservableField<Boolean> show_start    = new ObservableField<>();
-    public final ObservableField<Boolean> show_end      = new ObservableField<>();
-    public final ObservableField<Boolean> show_progress = new ObservableField<>();
+    public final ObservableBoolean        show_start    = new ObservableBoolean();
+    public final ObservableBoolean        show_end      = new ObservableBoolean();
+    public final ObservableBoolean        show_progress = new ObservableBoolean();
 
 
     private Date start_time_date = new Date();
