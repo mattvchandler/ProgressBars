@@ -36,13 +36,12 @@ public final class Progress_bar_contract
 
         public static final String TERMINATE_COL      = "terminate";
 
-        // TODO: Most of these should be NOT NULL
         public static final String CREATE_TABLE =
                 "CREATE TABLE IF NOT EXISTS " + TABLE_NAME + " (" +
                 _ID                + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 ORDER_COL          + " INTEGER NOT NULL, " +
-                START_TIME_COL     + " INTEGER, " +
-                END_TIME_COL       + " INTEGER, " +
+                START_TIME_COL     + " INTEGER NOT_NULL, " +
+                END_TIME_COL       + " INTEGER NOT_NULL, " +
 
                 TITLE_COL          + " TEXT NOT NULL, " +
                 PRE_TEXT_COL       + " TEXT, " +
@@ -50,21 +49,21 @@ public final class Progress_bar_contract
                 COMPLETE_TEXT_COL  + " TEXT, " +
                 POST_TEXT_COL      + " TEXT, " +
 
-                PRECISION_COL      + " INTEGER, " +
+                PRECISION_COL      + " INTEGER NOT_NULL, " +
 
-                SHOW_START_COL     + " INTEGER, " +
-                SHOW_END_COL       + " INTEGER, " +
-                SHOW_PROGRESS_COL  + " INTEGER, " +
+                SHOW_START_COL     + " INTEGER NOT_NULL, " +
+                SHOW_END_COL       + " INTEGER NOT_NULL, " +
+                SHOW_PROGRESS_COL  + " INTEGER NOT_NULL, " +
 
-                SHOW_YEARS_COL     + " INTEGER, " +
-                SHOW_MONTHS_COL    + " INTEGER, " +
-                SHOW_WEEKS_COL     + " INTEGER, " +
-                SHOW_DAYS_COL      + " INTEGER, " +
-                SHOW_HOURS_COL     + " INTEGER, " +
-                SHOW_MINUTES_COL   + " INTEGER, " +
-                SHOW_SECONDS_COL   + " INTEGER, " +
+                SHOW_YEARS_COL     + " INTEGER NOT_NULL, " +
+                SHOW_MONTHS_COL    + " INTEGER NOT_NULL, " +
+                SHOW_WEEKS_COL     + " INTEGER NOT_NULL, " +
+                SHOW_DAYS_COL      + " INTEGER NOT_NULL, " +
+                SHOW_HOURS_COL     + " INTEGER NOT_NULL, " +
+                SHOW_MINUTES_COL   + " INTEGER NOT_NULL, " +
+                SHOW_SECONDS_COL   + " INTEGER NOT_NULL, " +
 
-                TERMINATE_COL      + " INTEGER)";
+                TERMINATE_COL      + " INTEGER NOT_NULL)";
     }
 
 }
