@@ -5,26 +5,15 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.ListView;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import org.mattvchandler.progressbars.databinding.ActivityProgressBarsBinding;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class Progress_bars extends AppCompatActivity
 {
-    private List<Progress_bar_data> listValues;
     private ActivityProgressBarsBinding binding;
     private RecyclerView.LayoutManager layout_man;
     private RecyclerView.Adapter adapter;
@@ -47,8 +36,8 @@ public class Progress_bars extends AppCompatActivity
         values.put(Progress_bar_contract.Progress_bar_table.TITLE_COL, "ASDF");
         values.put(Progress_bar_contract.Progress_bar_table.COUNTDOWN_TEXT_COL, "Time remaining: 3 days, 2 eons, and 42 seconds");
         values.put(Progress_bar_contract.Progress_bar_table.PRECISION_COL, 2);
-        values.put(Progress_bar_contract.Progress_bar_table.SHOW_START_COL, 1);
-        values.put(Progress_bar_contract.Progress_bar_table.SHOW_END_COL, 1);
+        values.put(Progress_bar_contract.Progress_bar_table.SHOW_START_COL, 0);
+        values.put(Progress_bar_contract.Progress_bar_table.SHOW_END_COL, 0);
         values.put(Progress_bar_contract.Progress_bar_table.SHOW_PROGRESS_COL, 1);
         values.put(Progress_bar_contract.Progress_bar_table.SHOW_YEARS_COL, 1);
         values.put(Progress_bar_contract.Progress_bar_table.SHOW_MONTHS_COL, 1);
@@ -69,7 +58,7 @@ public class Progress_bars extends AppCompatActivity
         values.put(Progress_bar_contract.Progress_bar_table.PRECISION_COL, 2);
         values.put(Progress_bar_contract.Progress_bar_table.SHOW_START_COL, 1);
         values.put(Progress_bar_contract.Progress_bar_table.SHOW_END_COL, 1);
-        values.put(Progress_bar_contract.Progress_bar_table.SHOW_PROGRESS_COL, 1);
+        values.put(Progress_bar_contract.Progress_bar_table.SHOW_PROGRESS_COL, 0);
         values.put(Progress_bar_contract.Progress_bar_table.SHOW_YEARS_COL, 1);
         values.put(Progress_bar_contract.Progress_bar_table.SHOW_MONTHS_COL, 1);
         values.put(Progress_bar_contract.Progress_bar_table.SHOW_WEEKS_COL, 1);
@@ -88,7 +77,7 @@ public class Progress_bars extends AppCompatActivity
         values.put(Progress_bar_contract.Progress_bar_table.COUNTDOWN_TEXT_COL, "Time remaining: 3 days, 2 triganic pu, and 42 seconds");
         values.put(Progress_bar_contract.Progress_bar_table.PRECISION_COL, 2);
         values.put(Progress_bar_contract.Progress_bar_table.SHOW_START_COL, 1);
-        values.put(Progress_bar_contract.Progress_bar_table.SHOW_END_COL, 1);
+        values.put(Progress_bar_contract.Progress_bar_table.SHOW_END_COL, 0);
         values.put(Progress_bar_contract.Progress_bar_table.SHOW_PROGRESS_COL, 1);
         values.put(Progress_bar_contract.Progress_bar_table.SHOW_YEARS_COL, 1);
         values.put(Progress_bar_contract.Progress_bar_table.SHOW_MONTHS_COL, 1);
@@ -106,6 +95,26 @@ public class Progress_bars extends AppCompatActivity
         values.put(Progress_bar_contract.Progress_bar_table.END_TIME_COL, 1496429958);
         values.put(Progress_bar_contract.Progress_bar_table.TITLE_COL, "Queen");
         values.put(Progress_bar_contract.Progress_bar_table.COUNTDOWN_TEXT_COL, "Time remaining: 3 days, 0 oxford commas and 42 seconds");
+        values.put(Progress_bar_contract.Progress_bar_table.PRECISION_COL, 2);
+        values.put(Progress_bar_contract.Progress_bar_table.SHOW_START_COL, 0);
+        values.put(Progress_bar_contract.Progress_bar_table.SHOW_END_COL, 1);
+        values.put(Progress_bar_contract.Progress_bar_table.SHOW_PROGRESS_COL, 1);
+        values.put(Progress_bar_contract.Progress_bar_table.SHOW_YEARS_COL, 1);
+        values.put(Progress_bar_contract.Progress_bar_table.SHOW_MONTHS_COL, 1);
+        values.put(Progress_bar_contract.Progress_bar_table.SHOW_WEEKS_COL, 1);
+        values.put(Progress_bar_contract.Progress_bar_table.SHOW_DAYS_COL, 1);
+        values.put(Progress_bar_contract.Progress_bar_table.SHOW_HOURS_COL, 1);
+        values.put(Progress_bar_contract.Progress_bar_table.SHOW_MINUTES_COL, 1);
+        values.put(Progress_bar_contract.Progress_bar_table.SHOW_SECONDS_COL, 1);
+        values.put(Progress_bar_contract.Progress_bar_table.TERMINATE_COL, 1);
+        db.insert(Progress_bar_contract.Progress_bar_table.TABLE_NAME, null, values);
+
+        values.clear();
+        values.put(Progress_bar_contract.Progress_bar_table.ORDER_COL, 5);
+        values.put(Progress_bar_contract.Progress_bar_table.START_TIME_COL, 1496429958);
+        values.put(Progress_bar_contract.Progress_bar_table.END_TIME_COL, 1496429958);
+        values.put(Progress_bar_contract.Progress_bar_table.TITLE_COL, "Led Zepplin");
+        values.put(Progress_bar_contract.Progress_bar_table.COUNTDOWN_TEXT_COL, "Time remaining: 3 days, 19 💩's, and 42 seconds");
         values.put(Progress_bar_contract.Progress_bar_table.PRECISION_COL, 2);
         values.put(Progress_bar_contract.Progress_bar_table.SHOW_START_COL, 1);
         values.put(Progress_bar_contract.Progress_bar_table.SHOW_END_COL, 1);

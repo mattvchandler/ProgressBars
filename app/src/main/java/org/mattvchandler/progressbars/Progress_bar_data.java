@@ -12,15 +12,20 @@ public final class Progress_bar_data
 {
     public final ObservableField<String>  title      = new ObservableField<>();
 
-    public final ObservableField<String>  start_date = new ObservableField<>();
-    public final ObservableField<String>  start_time = new ObservableField<>();
-    public final ObservableField<String>  end_date   = new ObservableField<>();
-    public final ObservableField<String>  end_time   = new ObservableField<>();
+    public final ObservableField<String>  start_date    = new ObservableField<>();
+    public final ObservableField<String>  start_time    = new ObservableField<>();
+    public final ObservableField<String>  end_date      = new ObservableField<>();
+    public final ObservableField<String>  end_time      = new ObservableField<>();
 
-    public final ObservableField<String>  percentage = new ObservableField<>();
-    public final ObservableField<Integer> progress  = new ObservableField<>();
+    public final ObservableField<String>  percentage    = new ObservableField<>();
+    public final ObservableField<Integer> progress      = new ObservableField<>();
 
-    public final ObservableField<String>  time_text  = new ObservableField<>();
+    public final ObservableField<String>  time_text     = new ObservableField<>();
+
+    public final ObservableField<Boolean> show_start    = new ObservableField<>();
+    public final ObservableField<Boolean> show_end      = new ObservableField<>();
+    public final ObservableField<Boolean> show_progress = new ObservableField<>();
+
 
     private Date start_time_date = new Date();
     private Date end_time_date   = new Date();
@@ -31,10 +36,6 @@ public final class Progress_bar_data
     private String post_text        = new String();
 
     private Integer precision       = new Integer(2);
-
-    private Boolean show_start      = new Boolean(true);
-    private Boolean show_end        = new Boolean(true);
-    private Boolean show_progress   = new Boolean(true);
 
     private Boolean show_years      = new Boolean(true);
     private Boolean show_months     = new Boolean(true);
@@ -96,9 +97,9 @@ public final class Progress_bar_data
 
         precision = precision_in;
 
-        show_start = show_start_in;
-        show_end = show_end_in;
-        show_progress = show_progress_in;
+        show_start.set(show_start_in);
+        show_end.set(show_end_in);
+        show_progress.set(show_progress_in);
 
         show_years = show_years_in;
         show_months = show_months_in;
