@@ -25,9 +25,12 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toTopOf="@+id/percentage"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintVertical_chainStyle="packed"
             android:layout_margin="@dimen/margin_size"
+            app:layout_goneMarginBottom="0dp"
             />
 
         <TextView
@@ -41,7 +44,6 @@
             app:layout_constraintBottom_toTopOf="@+id/progress_bar"
             app:layout_constraintLeft_toLeftOf="@+id/progress_bar"
             app:layout_constraintRight_toRightOf="@+id/progress_bar"
-            app:layout_constraintVertical_chainStyle="packed"
             />
 
         <ProgressBar
@@ -143,10 +145,11 @@
             android:textAlignment="center"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_margin="@dimen/margin_size"
+            app:layout_constraintTop_toBottomOf="@+id/progress_bar"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
+            android:layout_margin="@dimen/margin_size"
         />
     </android.support.constraint.ConstraintLayout>
 </layout>
