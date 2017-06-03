@@ -2,17 +2,19 @@ package org.mattvchandler.progressbars;
 
 import android.database.Cursor;
 import android.databinding.DataBindingUtil;
+import android.support.design.widget.Snackbar;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import org.mattvchandler.progressbars.databinding.ProgressBarRowBinding;
 
 public class Progress_bar_adapter extends RecyclerView.Adapter<Progress_bar_adapter.Progress_bar_row_view_holder>
 {
-
     public static class Progress_bar_row_view_holder extends RecyclerView.ViewHolder
+                                                     implements View.OnClickListener
     {
         ProgressBarRowBinding row_binding;
 
@@ -46,6 +48,12 @@ public class Progress_bar_adapter extends RecyclerView.Adapter<Progress_bar_adap
                     cursor.getInt(cursor.getColumnIndexOrThrow(Progress_bar_contract.Progress_bar_table.TERMINATE_COL))  > 0
             );
             row_binding.setData(data);
+
+        }
+        @Override
+        public void onClick(View v)
+        {
+            Snackbar.make(v, "Editing " + row_binding.title.getText() + "  not yet implemented", Snackbar.LENGTH_SHORT).show();
         }
     }
 
@@ -62,7 +70,9 @@ public class Progress_bar_adapter extends RecyclerView.Adapter<Progress_bar_adap
     public Progress_bar_row_view_holder onCreateViewHolder(ViewGroup parent, int viewType)
     {
         View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.progress_bar_row, parent, false);
-        return new Progress_bar_row_view_holder(v);
+        Progress_bar_row_view_holder holder = new Progress_bar_row_view_holder(v);
+        v.setOnClickListener(holder);
+        return holder;
     }
 
     @Override

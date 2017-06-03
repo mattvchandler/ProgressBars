@@ -229,32 +229,8 @@ public class Progress_bars extends AppCompatActivity
 
         binding.mainList.setAdapter(adapter);
         binding.mainList.addItemDecoration(new DividerItemDecoration(binding.mainList.getContext(), DividerItemDecoration.VERTICAL));
+        // TODO: empty view?
         // binding.mainList.setEmptyView(binding.empty);
-
-        /*
-        binding.mainList.setOnItemClickListener(
-                new AdapterView.OnItemClickListener()
-                {
-                    @Override
-                    public void onItemClick(AdapterView<?> parent, View view, int position, long id)
-                    {
-                        String selected = (String)binding.mainList.getItemAtPosition(position);
-                        Snackbar.make(binding.mainList, "you pressed " + selected + "!", Snackbar.LENGTH_LONG)
-                                .setAction("Oops!",
-                                        new View.OnClickListener()
-                                        {
-                                            @Override
-                                            public void onClick(View v)
-                                            {
-                                                Toast.makeText(getApplicationContext(), "Too bad. You're stuck with it now", Toast.LENGTH_SHORT).show();
-                                            }
-                                        })
-                                .show();
-                    }
-                }
-        );
-        */
-
     }
 
     @Override
