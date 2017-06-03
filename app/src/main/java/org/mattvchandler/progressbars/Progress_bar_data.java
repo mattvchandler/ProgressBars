@@ -118,6 +118,7 @@ public final class Progress_bar_data
             {
                 time_text.set(complete_text);
                 // TODO: exiting before setting the handler to run again. will this cause problems?
+                // TODO: notfication?
                 return;
             }
 
