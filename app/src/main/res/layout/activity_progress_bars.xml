@@ -9,18 +9,31 @@
         android:layout_height="match_parent"
         tools:context="org.mattvchandler.progressbars.Progress_bars">
 
-        <RelativeLayout
+        <LinearLayout
+            android:orientation="vertical"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            >
+
+            <android.support.v7.widget.Toolbar
+                android:id="@+id/progress_bar_toolbar"
+                android:background="?attr/colorPrimary"
+                android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
+                app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+                android:elevation="4dp"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+            />
 
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/mainList"
+                android:divider="?attr/colorAccent"
+                android:dividerHeight="2dp"
+                android:scrollbars="vertical"
+                android:fadeScrollbars="true"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:divider="@android:color/darker_gray"
-                android:dividerHeight="1dp"
-                android:scrollbars="vertical"
-                android:fadeScrollbars="true"/>
+            />
 
             <!-- may want this again later, but recyclerview doesn't have setEmptyView
             <TextView
@@ -31,6 +44,6 @@
                 android:textStyle="bold"/>
             -->
 
-        </RelativeLayout>
+        </LinearLayout>
     </android.support.design.widget.CoordinatorLayout>
 </layout>

@@ -6,11 +6,17 @@ import android.database.sqlite.SQLiteDatabase;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.widget.Toast;
 
 import org.mattvchandler.progressbars.databinding.ActivityProgressBarsBinding;
+
+import static android.support.v7.app.AppCompatDelegate.MODE_NIGHT_AUTO;
 
 public class Progress_bars extends AppCompatActivity
 {
@@ -22,8 +28,10 @@ public class Progress_bars extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        binding = DataBindingUtil.setContentView(this, R.layout.activity_progress_bars);
 
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_progress_bars);
+        setSupportActionBar(binding.progressBarToolbar);
+        AppCompatDelegate.setDefaultNightMode(MODE_NIGHT_AUTO);
 
         SQLiteDatabase db = new Progress_bar_DB(this).getWritableDatabase();
 
@@ -246,5 +254,26 @@ public class Progress_bars extends AppCompatActivity
                 }
         );
         */
+
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu)
+    {
+        getMenuInflater().inflate(R.menu.progress_bar_action_bar, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item)
+    {
+        switch(item.getItemId())
+        {
+        case R.id.add_butt:
+            // TODO: implement
+            Toast.makeText(getApplicationContext(), "You tried to add something, but that isn't implemented yet", Toast.LENGTH_SHORT).show();
+            break;
+        }
+        return false;
     }
 }
