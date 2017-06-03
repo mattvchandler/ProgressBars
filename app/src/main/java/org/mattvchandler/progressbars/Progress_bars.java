@@ -10,6 +10,7 @@ import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
@@ -230,6 +231,9 @@ public class Progress_bars extends AppCompatActivity
 
         binding.mainList.setAdapter(adapter);
         binding.mainList.addItemDecoration(new DividerItemDecoration(binding.mainList.getContext(), DividerItemDecoration.VERTICAL));
+
+        ItemTouchHelper touch_helper = new ItemTouchHelper(new Progress_bar_row_touch_helper_callback(adapter));
+        touch_helper.attachToRecyclerView(binding.mainList);
         // TODO: empty view?
         // binding.mainList.setEmptyView(binding.empty);
     }
