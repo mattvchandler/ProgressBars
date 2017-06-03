@@ -12,8 +12,9 @@
     </data>
 
     <android.support.constraint.ConstraintLayout
-         android:layout_width="match_parent"
-         android:layout_height="wrap_content"
+        android:id="@+id/progress_row"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         >
 
         <TextView

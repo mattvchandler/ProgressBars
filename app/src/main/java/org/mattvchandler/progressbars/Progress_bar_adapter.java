@@ -4,9 +4,12 @@ import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.databinding.DataBindingUtil;
+import android.graphics.Color;
 import android.support.design.widget.Snackbar;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,7 +18,7 @@ import org.mattvchandler.progressbars.databinding.ProgressBarRowBinding;
 
 public class Progress_bar_adapter extends RecyclerView.Adapter<Progress_bar_adapter.Progress_bar_row_view_holder>
 {
-    public static class Progress_bar_row_view_holder extends RecyclerView.ViewHolder
+    public class Progress_bar_row_view_holder extends RecyclerView.ViewHolder
                                                      implements View.OnClickListener
     {
         ProgressBarRowBinding row_binding;
@@ -55,6 +58,18 @@ public class Progress_bar_adapter extends RecyclerView.Adapter<Progress_bar_adap
         public void onClick(View v)
         {
             Snackbar.make(v, "Editing " + row_binding.title.getText() + "  not yet implemented", Snackbar.LENGTH_SHORT).show();
+        }
+
+        public void on_selected()
+        {
+            TypedValue tv = new TypedValue();
+            parent.getContext().getTheme().resolveAttribute(R.attr.colorPrimary, tv, true);
+            row_binding.progressRow.setBackgroundColor(tv.data);
+        }
+
+        public void on_cleared()
+        {
+            row_binding.progressRow.setBackgroundColor(0);
         }
     }
 
@@ -113,7 +128,7 @@ public class Progress_bar_adapter extends RecyclerView.Adapter<Progress_bar_adap
 
         cursor = db.rawQuery(Progress_bar_contract.Progress_bar_table.SELECT_ALL_ROWS, null);
 
-        notifyDataSetChanged();
+        notifyItemMoved(to_pos, from_pos);
     }
 
     public void on_item_dismiss(int pos)
@@ -129,5 +144,10 @@ public class Progress_bar_adapter extends RecyclerView.Adapter<Progress_bar_adap
 
         cursor = db.rawQuery(Progress_bar_contract.Progress_bar_table.SELECT_ALL_ROWS, null);
         notifyItemRemoved(pos);
+    }
+
+    public void add_new_item()
+    {
+
     }
 }
