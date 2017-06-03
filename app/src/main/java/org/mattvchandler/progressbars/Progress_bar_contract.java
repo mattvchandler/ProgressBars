@@ -36,6 +36,9 @@ public final class Progress_bar_contract
 
         public static final String TERMINATE_COL      = "terminate";
 
+        public static final String SELECT_ALL_ROWS =
+                "SELECT * FROM " + TABLE_NAME + " ORDER BY " + ORDER_COL;
+
         public static final String CREATE_TABLE =
                 "CREATE TABLE IF NOT EXISTS " + TABLE_NAME + " (" +
                 _ID                + " INTEGER PRIMARY KEY AUTOINCREMENT, " +

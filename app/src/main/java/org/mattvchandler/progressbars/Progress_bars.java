@@ -17,12 +17,13 @@ import android.widget.Toast;
 import org.mattvchandler.progressbars.databinding.ActivityProgressBarsBinding;
 
 import static android.support.v7.app.AppCompatDelegate.MODE_NIGHT_AUTO;
+import static java.lang.Math.random;
 
 public class Progress_bars extends AppCompatActivity
 {
     private ActivityProgressBarsBinding binding;
     private RecyclerView.LayoutManager layout_man;
-    private RecyclerView.Adapter adapter;
+    private Progress_bar_adapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -221,8 +222,8 @@ public class Progress_bars extends AppCompatActivity
         values.put(Progress_bar_contract.Progress_bar_table.TERMINATE_COL, 1);
         db.insert(Progress_bar_contract.Progress_bar_table.TABLE_NAME, null, values);
 
-        Cursor cursor = db.rawQuery("SELECT * FROM " + Progress_bar_contract.Progress_bar_table.TABLE_NAME +
-                                     " ORDER BY " + Progress_bar_contract.Progress_bar_table.ORDER_COL, null);
+        // TODO: switch to readable DB here
+        Cursor cursor = db.rawQuery(Progress_bar_contract.Progress_bar_table.SELECT_ALL_ROWS, null);
 
         binding.mainList.setLayoutManager(new LinearLayoutManager(this));
         adapter = new Progress_bar_adapter(cursor);
@@ -247,7 +248,16 @@ public class Progress_bars extends AppCompatActivity
         {
         case R.id.add_butt:
             // TODO: implement
-            Toast.makeText(getApplicationContext(), "You tried to add something, but that isn't implemented yet", Toast.LENGTH_SHORT).show();
+            if(random() >= 0.5)
+            {
+                Toast.makeText(getApplicationContext(), "You tried to add something, but that isn't implemented yet. swapping instead...", Toast.LENGTH_SHORT).show();
+                adapter.on_item_move(0, 1);
+            }
+            else
+            {
+                Toast.makeText(getApplicationContext(), "You tried to add something, but that isn't implemented yet. deleting instead...", Toast.LENGTH_SHORT).show();
+                adapter.on_item_dismiss(0);
+            }
             break;
         }
         return false;
