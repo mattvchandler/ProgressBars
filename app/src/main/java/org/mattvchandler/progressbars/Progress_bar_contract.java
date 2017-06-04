@@ -12,7 +12,9 @@ public final class Progress_bar_contract
 
         public static final String ORDER_COL          = "order_ind";
         public static final String START_TIME_COL     = "start_time";
+        public static final String START_TZ_COL       = "start_tz";
         public static final String END_TIME_COL       = "end_time";
+        public static final String END_TZ_COL         = "end_tz";
 
         public static final String TITLE_COL          = "title";
         public static final String PRE_TEXT_COL       = "pre_text";
@@ -35,6 +37,7 @@ public final class Progress_bar_contract
         public static final String SHOW_SECONDS_COL   = "show_seconds";
 
         public static final String TERMINATE_COL      = "terminate";
+        public static final String NOTIFY_COL         = "notify";
 
         public static final String SELECT_ALL_ROWS =
                 "SELECT * FROM " + TABLE_NAME + " ORDER BY " + ORDER_COL;
@@ -44,7 +47,9 @@ public final class Progress_bar_contract
                 _ID                + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 ORDER_COL          + " INTEGER NOT NULL, " +
                 START_TIME_COL     + " INTEGER NOT_NULL, " +
+                START_TZ_COL       + " TEXT NOT NULL, " +
                 END_TIME_COL       + " INTEGER NOT_NULL, " +
+                END_TZ_COL         + " TEXT NOT NULL, " +
 
                 TITLE_COL          + " TEXT NOT NULL, " +
                 PRE_TEXT_COL       + " TEXT, " +
@@ -66,7 +71,8 @@ public final class Progress_bar_contract
                 SHOW_MINUTES_COL   + " INTEGER NOT_NULL, " +
                 SHOW_SECONDS_COL   + " INTEGER NOT_NULL, " +
 
-                TERMINATE_COL      + " INTEGER NOT_NULL)";
+                TERMINATE_COL      + " INTEGER NOT_NULL," +
+                NOTIFY_COL         + " INTEGER NOT NULL)";
     }
 
 }

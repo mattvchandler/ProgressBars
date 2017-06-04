@@ -144,6 +144,7 @@ public class Progress_bar_adapter extends RecyclerView.Adapter<Progress_bar_adap
 
         cursor = db.rawQuery(Progress_bar_contract.Progress_bar_table.SELECT_ALL_ROWS, null);
         notifyItemRemoved(pos);
+        // TODO: snackbar w/ undo
     }
 
     public void add_new_item()

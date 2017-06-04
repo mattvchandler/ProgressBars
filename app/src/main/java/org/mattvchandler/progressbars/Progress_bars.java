@@ -43,6 +43,8 @@ public class Progress_bars extends AppCompatActivity
         values.put(Progress_bar_contract.Progress_bar_table.ORDER_COL, 1);
         values.put(Progress_bar_contract.Progress_bar_table.START_TIME_COL, 1496429958);
         values.put(Progress_bar_contract.Progress_bar_table.END_TIME_COL, 1496429958);
+        values.put(Progress_bar_contract.Progress_bar_table.START_TZ_COL, "AKDT");
+        values.put(Progress_bar_contract.Progress_bar_table.END_TZ_COL, "AKDT");
         values.put(Progress_bar_contract.Progress_bar_table.TITLE_COL, "ASDF");
         values.put(Progress_bar_contract.Progress_bar_table.PRE_TEXT_COL, "Time until start: ");
         values.put(Progress_bar_contract.Progress_bar_table.COUNTDOWN_TEXT_COL, "Time remaining: ");
@@ -60,12 +62,15 @@ public class Progress_bars extends AppCompatActivity
         values.put(Progress_bar_contract.Progress_bar_table.SHOW_MINUTES_COL, 1);
         values.put(Progress_bar_contract.Progress_bar_table.SHOW_SECONDS_COL, 1);
         values.put(Progress_bar_contract.Progress_bar_table.TERMINATE_COL, 0);
+        values.put(Progress_bar_contract.Progress_bar_table.NOTIFY_COL, 0);
         db.insert(Progress_bar_contract.Progress_bar_table.TABLE_NAME, null, values);
 
         values.clear();
         values.put(Progress_bar_contract.Progress_bar_table.ORDER_COL, 2);
         values.put(Progress_bar_contract.Progress_bar_table.START_TIME_COL, 1451937600);
         values.put(Progress_bar_contract.Progress_bar_table.END_TIME_COL, 1483560000);
+        values.put(Progress_bar_contract.Progress_bar_table.START_TZ_COL, "AKDT");
+        values.put(Progress_bar_contract.Progress_bar_table.END_TZ_COL, "AKDT");
         values.put(Progress_bar_contract.Progress_bar_table.TITLE_COL, "AC⚡DC");
         values.put(Progress_bar_contract.Progress_bar_table.PRE_TEXT_COL, "Time until start: ");
         values.put(Progress_bar_contract.Progress_bar_table.COUNTDOWN_TEXT_COL, "Time remaining: ");
@@ -83,12 +88,15 @@ public class Progress_bars extends AppCompatActivity
         values.put(Progress_bar_contract.Progress_bar_table.SHOW_MINUTES_COL, 1);
         values.put(Progress_bar_contract.Progress_bar_table.SHOW_SECONDS_COL, 1);
         values.put(Progress_bar_contract.Progress_bar_table.TERMINATE_COL, 0);
+        values.put(Progress_bar_contract.Progress_bar_table.NOTIFY_COL, 0);
         db.insert(Progress_bar_contract.Progress_bar_table.TABLE_NAME, null, values);
 
         values.clear();
         values.put(Progress_bar_contract.Progress_bar_table.ORDER_COL, 3);
         values.put(Progress_bar_contract.Progress_bar_table.START_TIME_COL, 1388865600);
         values.put(Progress_bar_contract.Progress_bar_table.END_TIME_COL, 1388865600);
+        values.put(Progress_bar_contract.Progress_bar_table.START_TZ_COL, "AKDT");
+        values.put(Progress_bar_contract.Progress_bar_table.END_TZ_COL, "AKDT");
         values.put(Progress_bar_contract.Progress_bar_table.TITLE_COL, "ABCD");
         values.put(Progress_bar_contract.Progress_bar_table.PRE_TEXT_COL, "Time until start: ");
         values.put(Progress_bar_contract.Progress_bar_table.COUNTDOWN_TEXT_COL, "Time remaining: ");
@@ -106,12 +114,15 @@ public class Progress_bars extends AppCompatActivity
         values.put(Progress_bar_contract.Progress_bar_table.SHOW_MINUTES_COL, 1);
         values.put(Progress_bar_contract.Progress_bar_table.SHOW_SECONDS_COL, 1);
         values.put(Progress_bar_contract.Progress_bar_table.TERMINATE_COL, 0);
+        values.put(Progress_bar_contract.Progress_bar_table.NOTIFY_COL, 0);
         db.insert(Progress_bar_contract.Progress_bar_table.TABLE_NAME, null, values);
 
         values.clear();
         values.put(Progress_bar_contract.Progress_bar_table.ORDER_COL, 4);
         values.put(Progress_bar_contract.Progress_bar_table.START_TIME_COL, 1483261200);
         values.put(Progress_bar_contract.Progress_bar_table.END_TIME_COL, 1514797200);
+        values.put(Progress_bar_contract.Progress_bar_table.START_TZ_COL, "AKDT");
+        values.put(Progress_bar_contract.Progress_bar_table.END_TZ_COL, "AKDT");
         values.put(Progress_bar_contract.Progress_bar_table.TITLE_COL, "Queen");
         values.put(Progress_bar_contract.Progress_bar_table.PRE_TEXT_COL, "Time until start: ");
         values.put(Progress_bar_contract.Progress_bar_table.COUNTDOWN_TEXT_COL, "Time remaining: ");
@@ -129,12 +140,15 @@ public class Progress_bars extends AppCompatActivity
         values.put(Progress_bar_contract.Progress_bar_table.SHOW_MINUTES_COL, 1);
         values.put(Progress_bar_contract.Progress_bar_table.SHOW_SECONDS_COL, 1);
         values.put(Progress_bar_contract.Progress_bar_table.TERMINATE_COL, 0);
+        values.put(Progress_bar_contract.Progress_bar_table.NOTIFY_COL, 0);
         db.insert(Progress_bar_contract.Progress_bar_table.TABLE_NAME, null, values);
 
         values.clear();
         values.put(Progress_bar_contract.Progress_bar_table.ORDER_COL, 5);
         values.put(Progress_bar_contract.Progress_bar_table.START_TIME_COL, 551476200);
         values.put(Progress_bar_contract.Progress_bar_table.END_TIME_COL, 551476200);
+        values.put(Progress_bar_contract.Progress_bar_table.START_TZ_COL, "AKDT");
+        values.put(Progress_bar_contract.Progress_bar_table.END_TZ_COL, "AKDT");
         values.put(Progress_bar_contract.Progress_bar_table.TITLE_COL, "Led Zepplin");
         values.put(Progress_bar_contract.Progress_bar_table.PRE_TEXT_COL, "Time until start: ");
         values.put(Progress_bar_contract.Progress_bar_table.COUNTDOWN_TEXT_COL, "Time remaining: ");
@@ -152,12 +166,15 @@ public class Progress_bars extends AppCompatActivity
         values.put(Progress_bar_contract.Progress_bar_table.SHOW_MINUTES_COL, 1);
         values.put(Progress_bar_contract.Progress_bar_table.SHOW_SECONDS_COL, 1);
         values.put(Progress_bar_contract.Progress_bar_table.TERMINATE_COL, 0);
+        values.put(Progress_bar_contract.Progress_bar_table.NOTIFY_COL, 0);
         db.insert(Progress_bar_contract.Progress_bar_table.TABLE_NAME, null, values);
 
         values.clear();
         values.put(Progress_bar_contract.Progress_bar_table.ORDER_COL, 6);
         values.put(Progress_bar_contract.Progress_bar_table.START_TIME_COL, 1496429958);
         values.put(Progress_bar_contract.Progress_bar_table.END_TIME_COL, 1496429958);
+        values.put(Progress_bar_contract.Progress_bar_table.START_TZ_COL, "AKDT");
+        values.put(Progress_bar_contract.Progress_bar_table.END_TZ_COL, "AKDT");
         values.put(Progress_bar_contract.Progress_bar_table.TITLE_COL, "Guns N' Roses");
         values.put(Progress_bar_contract.Progress_bar_table.PRE_TEXT_COL, "Time until start: ");
         values.put(Progress_bar_contract.Progress_bar_table.COUNTDOWN_TEXT_COL, "Time remaining: ");
@@ -175,12 +192,15 @@ public class Progress_bars extends AppCompatActivity
         values.put(Progress_bar_contract.Progress_bar_table.SHOW_MINUTES_COL, 1);
         values.put(Progress_bar_contract.Progress_bar_table.SHOW_SECONDS_COL, 1);
         values.put(Progress_bar_contract.Progress_bar_table.TERMINATE_COL, 0);
+        values.put(Progress_bar_contract.Progress_bar_table.NOTIFY_COL, 0);
         db.insert(Progress_bar_contract.Progress_bar_table.TABLE_NAME, null, values);
 
         values.clear();
         values.put(Progress_bar_contract.Progress_bar_table.ORDER_COL, 7);
         values.put(Progress_bar_contract.Progress_bar_table.START_TIME_COL, 1496429958);
         values.put(Progress_bar_contract.Progress_bar_table.END_TIME_COL, 1496429958);
+        values.put(Progress_bar_contract.Progress_bar_table.START_TZ_COL, "AKDT");
+        values.put(Progress_bar_contract.Progress_bar_table.END_TZ_COL, "AKDT");
         values.put(Progress_bar_contract.Progress_bar_table.TITLE_COL, "Rolling Stones");
         values.put(Progress_bar_contract.Progress_bar_table.PRE_TEXT_COL, "Time until start: ");
         values.put(Progress_bar_contract.Progress_bar_table.COUNTDOWN_TEXT_COL, "Time remaining: ");
@@ -198,12 +218,15 @@ public class Progress_bars extends AppCompatActivity
         values.put(Progress_bar_contract.Progress_bar_table.SHOW_MINUTES_COL, 1);
         values.put(Progress_bar_contract.Progress_bar_table.SHOW_SECONDS_COL, 1);
         values.put(Progress_bar_contract.Progress_bar_table.TERMINATE_COL, 0);
+        values.put(Progress_bar_contract.Progress_bar_table.NOTIFY_COL, 0);
         db.insert(Progress_bar_contract.Progress_bar_table.TABLE_NAME, null, values);
 
         values.clear();
         values.put(Progress_bar_contract.Progress_bar_table.ORDER_COL, 8);
         values.put(Progress_bar_contract.Progress_bar_table.START_TIME_COL, 1496429958);
         values.put(Progress_bar_contract.Progress_bar_table.END_TIME_COL, 1496429958);
+        values.put(Progress_bar_contract.Progress_bar_table.START_TZ_COL, "AKDT");
+        values.put(Progress_bar_contract.Progress_bar_table.END_TZ_COL, "AKDT");
         values.put(Progress_bar_contract.Progress_bar_table.TITLE_COL, "Eagles");
         values.put(Progress_bar_contract.Progress_bar_table.PRE_TEXT_COL, "Time until start: ");
         values.put(Progress_bar_contract.Progress_bar_table.COUNTDOWN_TEXT_COL, "Time remaining: ");
@@ -221,6 +244,7 @@ public class Progress_bars extends AppCompatActivity
         values.put(Progress_bar_contract.Progress_bar_table.SHOW_MINUTES_COL, 1);
         values.put(Progress_bar_contract.Progress_bar_table.SHOW_SECONDS_COL, 1);
         values.put(Progress_bar_contract.Progress_bar_table.TERMINATE_COL, 1);
+        values.put(Progress_bar_contract.Progress_bar_table.NOTIFY_COL, 0);
         db.insert(Progress_bar_contract.Progress_bar_table.TABLE_NAME, null, values);
 
         // TODO: switch to readable DB here

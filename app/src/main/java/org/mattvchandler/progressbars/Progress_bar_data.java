@@ -15,6 +15,7 @@ import static java.lang.Math.abs;
 import static java.lang.Math.max;
 import static java.lang.Math.min;
 
+// TODO: make this extend a base struct w/ DB fields
 // struct bound to progress_bar_row layout
 public final class Progress_bar_data
 {
