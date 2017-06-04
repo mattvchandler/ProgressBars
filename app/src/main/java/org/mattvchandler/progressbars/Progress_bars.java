@@ -1,6 +1,7 @@
 package org.mattvchandler.progressbars;
 
 import android.content.ContentValues;
+import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.databinding.DataBindingUtil;
@@ -23,7 +24,6 @@ import static java.lang.Math.random;
 public class Progress_bars extends AppCompatActivity
 {
     private ActivityProgressBarsBinding binding;
-    private RecyclerView.LayoutManager layout_man;
     private Progress_bar_adapter adapter;
 
     @Override
@@ -251,17 +251,7 @@ public class Progress_bars extends AppCompatActivity
         switch(item.getItemId())
         {
         case R.id.add_butt:
-            // TODO: implement
-            if(random() >= 0.5)
-            {
-                Toast.makeText(getApplicationContext(), "You tried to add something, but that isn't implemented yet. swapping instead...", Toast.LENGTH_SHORT).show();
-                adapter.on_item_move(0, 1);
-            }
-            else
-            {
-                Toast.makeText(getApplicationContext(), "You tried to add something, but that isn't implemented yet. deleting instead...", Toast.LENGTH_SHORT).show();
-                adapter.on_item_dismiss(0);
-            }
+            startActivity(new Intent(this, Settings.class));
             break;
         }
         return false;
