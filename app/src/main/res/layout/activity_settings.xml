@@ -134,6 +134,13 @@
                         />
                 </android.support.constraint.ConstraintLayout>
 
+                <Button
+                    android:text="@string/start_now_butt"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    />
+
                 <View style="@style/Divider"/>
 
                 <android.support.constraint.ConstraintLayout
@@ -209,6 +216,22 @@
                         android:layout_marginEnd="@dimen/margin_size"
                         />
                 </android.support.constraint.ConstraintLayout>
+
+                <Button
+                    android:text="@string/end_now_butt"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    />
+
+                <View style="@style/Divider"/>
+
+                <Button
+                    android:text="@string/swap_butt"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    />
 
                 <View style="@style/Divider"/>
 
