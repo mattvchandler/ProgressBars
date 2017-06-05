@@ -63,13 +63,15 @@ public class Progress_bar_adapter extends RecyclerView.Adapter<Progress_bar_adap
         public void on_selected()
         {
             TypedValue tv = new TypedValue();
-            parent.getContext().getTheme().resolveAttribute(R.attr.colorPrimary, tv, true);
+            parent.getContext().getTheme().resolveAttribute(android.R.attr.colorPrimary, tv, true);
             row_binding.progressRow.setBackgroundColor(tv.data);
         }
 
         public void on_cleared()
         {
-            row_binding.progressRow.setBackgroundColor(0);
+            TypedValue tv = new TypedValue();
+            parent.getContext().getTheme().resolveAttribute(android.R.attr.colorBackground, tv, true);
+            row_binding.progressRow.setBackgroundColor(tv.data);
         }
     }
 

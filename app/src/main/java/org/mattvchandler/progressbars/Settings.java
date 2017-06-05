@@ -99,4 +99,18 @@ public class Settings extends AppCompatActivity
         new Datepicker_frag().show(getSupportFragmentManager(), "end_date_picker");
     }
 
+    public void on_start_now_butt(View view)
+    {
+
+    }
+
+    public void on_end_now_butt(View view)
+    {
+
+    }
+
+    public void swap_start_end_butt(View view)
+    {
+
+    }
 }
