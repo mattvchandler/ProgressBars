@@ -84,6 +84,7 @@
 
                     <ImageButton
                         android:id="@+id/start_time_butt"
+                        android:onClick="on_start_clock_butt"
                         android:contentDescription="@string/start_clock_butt"
                         app:srcCompat="@android:drawable/ic_menu_recent_history"
                         style="?android:attr/borderlessButtonStyle"
@@ -121,6 +122,7 @@
 
                     <ImageButton
                         android:id="@+id/start_date_butt"
+                        android:onClick="on_start_cal_butt"
                         android:contentDescription="@string/start_cal_butt"
                         app:srcCompat="@android:drawable/ic_menu_month"
                         style="?android:attr/borderlessButtonStyle"
@@ -167,6 +169,7 @@
 
                     <ImageButton
                         android:id="@+id/end_time_butt"
+                        android:onClick="on_end_clock_butt"
                         android:contentDescription="@string/end_clock_butt"
                         app:srcCompat="@android:drawable/ic_menu_recent_history"
                         style="?android:attr/borderlessButtonStyle"
@@ -204,6 +207,7 @@
 
                     <ImageButton
                         android:id="@+id/end_date_butt"
+                        android:onClick="on_end_cal_butt"
                         android:contentDescription="@string/end_cal_butt"
                         app:srcCompat="@android:drawable/ic_menu_month"
                         style="?android:attr/borderlessButtonStyle"
