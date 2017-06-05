@@ -4,16 +4,18 @@ import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.TimePickerDialog;
 import android.databinding.DataBindingUtil;
-import android.support.annotation.StringDef;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.DatePicker;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
 import org.mattvchandler.progressbars.databinding.ActivitySettingsBinding;
+
+import java.util.TimeZone;
 
 public class Settings extends AppCompatActivity
 {
@@ -27,6 +29,24 @@ public class Settings extends AppCompatActivity
         binding = DataBindingUtil.setContentView(this, R.layout.activity_settings);
         setSupportActionBar(binding.progressBarToolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        // fill timezone spinners
+        ArrayAdapter<String> tz_adapter = new ArrayAdapter<String>(this, R.layout.right_aligned_spinner, TimeZone.getAvailableIDs());
+        tz_adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+        binding.startTz.setAdapter(tz_adapter);
+        binding.endTz.setAdapter(tz_adapter);
+
+        for(int i = 0; i < tz_adapter.getCount(); ++i)
+        {
+            if(tz_adapter.getItem(i).equals(TimeZone.getDefault().getID()))
+            {
+                binding.startTz.setSelection(i);
+                binding.endTz.setSelection(i);
+                break;
+            }
+        }
+
     }
 
     public static class Timepicker_frag extends DialogFragment implements TimePickerDialog.OnTimeSetListener

@@ -60,19 +60,18 @@
                     android:layout_margin="@dimen/margin_size"
                     />
 
-                <android.support.constraint.ConstraintLayout
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:orientation="horizontal"
                     >
                     <android.support.design.widget.TextInputLayout
-                        android:id="@+id/start_date_butt_lyt"
+                        android:id="@+id/start_date_txt"
                         android:hint="@string/start_date_txt"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        app:layout_constraintLeft_toLeftOf="parent"
-                        app:layout_constraintRight_toLeftOf="@+id/start_date_butt"
-                        android:layout_marginStart="@dimen/margin_size"
-                        android:layout_marginEnd="@dimen/margin_size"
+                        android:layout_weight="10"
+                        android:layout_margin="@dimen/margin_size"
                         >
                         <android.support.design.widget.TextInputEditText
                             android:id="@+id/start_date_sel"
@@ -90,27 +89,24 @@
                         style="?android:attr/borderlessButtonStyle"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        app:layout_constraintRight_toRightOf="parent"
-                        app:layout_constraintLeft_toRightOf="@+id/start_date_butt_lyt"
                         android:layout_marginTop="@dimen/margin_size"
                         android:layout_marginBottom="@dimen/margin_size"
                         android:layout_marginEnd="@dimen/margin_size"
                         />
-                </android.support.constraint.ConstraintLayout>
+                </LinearLayout>
 
-                <android.support.constraint.ConstraintLayout
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:orientation="horizontal"
                     >
                     <android.support.design.widget.TextInputLayout
-                        android:id="@+id/start_time_butt_lyt"
+                        android:id="@+id/start_time_txt"
                         android:hint="@string/start_time_txt"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        app:layout_constraintLeft_toLeftOf="parent"
-                        app:layout_constraintRight_toLeftOf="@+id/start_time_butt"
-                        android:layout_marginStart="@dimen/margin_size"
-                        android:layout_marginEnd="@dimen/margin_size"
+                        android:layout_weight="10"
+                        android:layout_margin="@dimen/margin_size"
                         >
                         <android.support.design.widget.TextInputEditText
                             android:id="@+id/start_time_sel"
@@ -128,13 +124,35 @@
                         style="?android:attr/borderlessButtonStyle"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        app:layout_constraintRight_toRightOf="parent"
-                        app:layout_constraintLeft_toRightOf="@+id/start_time_butt_lyt"
                         android:layout_marginTop="@dimen/margin_size"
                         android:layout_marginBottom="@dimen/margin_size"
                         android:layout_marginEnd="@dimen/margin_size"
                         />
-                </android.support.constraint.ConstraintLayout>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_gravity="center_vertical"
+                    android:layout_margin="@dimen/margin_size"
+                    >
+                    <TextView
+                        android:text="@string/start_tz_prompt"
+                        android:textAppearance="?android:textAppearanceListItem"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="@dimen/margin_size"
+                    />
+                    <Spinner
+                        android:id="@+id/start_tz"
+                        android:prompt="@string/start_tz_prompt"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="10"
+                        android:spinnerMode="dialog"
+                        />
+                </LinearLayout>
 
                 <Button
                     android:text="@string/start_now_butt"
@@ -145,19 +163,18 @@
 
                 <View style="@style/Divider"/>
 
-                <android.support.constraint.ConstraintLayout
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:orientation="horizontal"
                 >
                     <android.support.design.widget.TextInputLayout
-                        android:id="@+id/end_date_butt_lyt"
+                        android:id="@+id/end_date_txt"
                         android:hint="@string/end_date_txt"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        app:layout_constraintLeft_toLeftOf="parent"
-                        app:layout_constraintRight_toLeftOf="@+id/end_date_butt"
-                        android:layout_marginStart="@dimen/margin_size"
-                        android:layout_marginEnd="@dimen/margin_size"
+                        android:layout_weight="10"
+                        android:layout_margin="@dimen/margin_size"
                     >
                         <android.support.design.widget.TextInputEditText
                             android:id="@+id/end_date_sel"
@@ -175,27 +192,24 @@
                         style="?android:attr/borderlessButtonStyle"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        app:layout_constraintRight_toRightOf="parent"
-                        app:layout_constraintLeft_toRightOf="@+id/end_date_butt_lyt"
                         android:layout_marginTop="@dimen/margin_size"
                         android:layout_marginBottom="@dimen/margin_size"
                         android:layout_marginEnd="@dimen/margin_size"
                         />
-                </android.support.constraint.ConstraintLayout>
+                </LinearLayout>
 
-                <android.support.constraint.ConstraintLayout
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:orientation="horizontal"
                     >
                     <android.support.design.widget.TextInputLayout
-                        android:id="@+id/end_time_butt_lyt"
+                        android:id="@+id/end_time_txt"
                         android:hint="@string/end_time_txt"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        app:layout_constraintLeft_toLeftOf="parent"
-                        app:layout_constraintRight_toLeftOf="@+id/end_time_butt"
-                        android:layout_marginStart="@dimen/margin_size"
-                        android:layout_marginEnd="@dimen/margin_size"
+                        android:layout_weight="10"
+                        android:layout_margin="@dimen/margin_size"
                         >
                         <android.support.design.widget.TextInputEditText
                             android:id="@+id/end_time_sel"
@@ -213,13 +227,35 @@
                         style="?android:attr/borderlessButtonStyle"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        app:layout_constraintRight_toRightOf="parent"
-                        app:layout_constraintLeft_toRightOf="@+id/end_time_butt_lyt"
                         android:layout_marginTop="@dimen/margin_size"
                         android:layout_marginBottom="@dimen/margin_size"
                         android:layout_marginEnd="@dimen/margin_size"
                         />
-                </android.support.constraint.ConstraintLayout>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_gravity="center_vertical"
+                    android:layout_margin="@dimen/margin_size"
+                    >
+                    <TextView
+                        android:text="@string/end_tz_prompt"
+                        android:textAppearance="?android:textAppearanceListItem"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="@dimen/margin_size"
+                        />
+                    <Spinner
+                        android:id="@+id/end_tz"
+                        android:prompt="@string/start_tz_prompt"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="10"
+                        android:spinnerMode="dialog"
+                        />
+                </LinearLayout>
 
                 <Button
                     android:text="@string/end_now_butt"
