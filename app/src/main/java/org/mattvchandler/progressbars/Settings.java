@@ -43,6 +43,7 @@ public class Settings extends AppCompatActivity
             Toast.makeText(getActivity(), "Time chosen was: " + String.valueOf(hour) + ":" + String.valueOf(minute), Toast.LENGTH_SHORT).show();
         }
     }
+
     public static class Datepicker_frag extends DialogFragment implements DatePickerDialog.OnDateSetListener
     {
         @Override

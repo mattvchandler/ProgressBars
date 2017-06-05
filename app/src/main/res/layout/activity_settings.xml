@@ -65,44 +65,6 @@
                     android:layout_height="wrap_content"
                     >
                     <android.support.design.widget.TextInputLayout
-                        android:id="@+id/start_time_butt_lyt"
-                        android:hint="@string/start_time_txt"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        app:layout_constraintLeft_toLeftOf="parent"
-                        app:layout_constraintRight_toLeftOf="@+id/start_time_butt"
-                        android:layout_marginStart="@dimen/margin_size"
-                        android:layout_marginEnd="@dimen/margin_size"
-                        >
-                        <android.support.design.widget.TextInputEditText
-                            android:id="@+id/start_time_sel"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:inputType="time"
-                            />
-                    </android.support.design.widget.TextInputLayout>
-
-                    <ImageButton
-                        android:id="@+id/start_time_butt"
-                        android:onClick="on_start_clock_butt"
-                        android:contentDescription="@string/start_clock_butt"
-                        app:srcCompat="@android:drawable/ic_menu_recent_history"
-                        style="?android:attr/borderlessButtonStyle"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        app:layout_constraintRight_toRightOf="parent"
-                        app:layout_constraintLeft_toRightOf="@+id/start_time_butt_lyt"
-                        android:layout_marginTop="@dimen/margin_size"
-                        android:layout_marginBottom="@dimen/margin_size"
-                        android:layout_marginEnd="@dimen/margin_size"
-                        />
-                </android.support.constraint.ConstraintLayout>
-
-                <android.support.constraint.ConstraintLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    >
-                    <android.support.design.widget.TextInputLayout
                         android:id="@+id/start_date_butt_lyt"
                         android:hint="@string/start_date_txt"
                         android:layout_width="0dp"
@@ -136,6 +98,44 @@
                         />
                 </android.support.constraint.ConstraintLayout>
 
+                <android.support.constraint.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    >
+                    <android.support.design.widget.TextInputLayout
+                        android:id="@+id/start_time_butt_lyt"
+                        android:hint="@string/start_time_txt"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintRight_toLeftOf="@+id/start_time_butt"
+                        android:layout_marginStart="@dimen/margin_size"
+                        android:layout_marginEnd="@dimen/margin_size"
+                        >
+                        <android.support.design.widget.TextInputEditText
+                            android:id="@+id/start_time_sel"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:inputType="time"
+                            />
+                    </android.support.design.widget.TextInputLayout>
+
+                    <ImageButton
+                        android:id="@+id/start_time_butt"
+                        android:onClick="on_start_clock_butt"
+                        android:contentDescription="@string/start_clock_butt"
+                        app:srcCompat="@android:drawable/ic_menu_recent_history"
+                        style="?android:attr/borderlessButtonStyle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:layout_constraintRight_toRightOf="parent"
+                        app:layout_constraintLeft_toRightOf="@+id/start_time_butt_lyt"
+                        android:layout_marginTop="@dimen/margin_size"
+                        android:layout_marginBottom="@dimen/margin_size"
+                        android:layout_marginEnd="@dimen/margin_size"
+                        />
+                </android.support.constraint.ConstraintLayout>
+
                 <Button
                     android:text="@string/start_now_butt"
                     android:layout_width="wrap_content"
@@ -144,44 +144,6 @@
                     />
 
                 <View style="@style/Divider"/>
-
-                <android.support.constraint.ConstraintLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    >
-                    <android.support.design.widget.TextInputLayout
-                        android:id="@+id/end_time_butt_lyt"
-                        android:hint="@string/end_time_txt"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        app:layout_constraintLeft_toLeftOf="parent"
-                        app:layout_constraintRight_toLeftOf="@+id/end_time_butt"
-                        android:layout_marginStart="@dimen/margin_size"
-                        android:layout_marginEnd="@dimen/margin_size"
-                        >
-                        <android.support.design.widget.TextInputEditText
-                            android:id="@+id/end_time_sel"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:inputType="time"
-                            />
-                    </android.support.design.widget.TextInputLayout>
-
-                    <ImageButton
-                        android:id="@+id/end_time_butt"
-                        android:onClick="on_end_clock_butt"
-                        android:contentDescription="@string/end_clock_butt"
-                        app:srcCompat="@android:drawable/ic_menu_recent_history"
-                        style="?android:attr/borderlessButtonStyle"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        app:layout_constraintRight_toRightOf="parent"
-                        app:layout_constraintLeft_toRightOf="@+id/end_time_butt_lyt"
-                        android:layout_marginTop="@dimen/margin_size"
-                        android:layout_marginBottom="@dimen/margin_size"
-                        android:layout_marginEnd="@dimen/margin_size"
-                        />
-                </android.support.constraint.ConstraintLayout>
 
                 <android.support.constraint.ConstraintLayout
                     android:layout_width="match_parent"
@@ -221,6 +183,44 @@
                         />
                 </android.support.constraint.ConstraintLayout>
 
+                <android.support.constraint.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    >
+                    <android.support.design.widget.TextInputLayout
+                        android:id="@+id/end_time_butt_lyt"
+                        android:hint="@string/end_time_txt"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintRight_toLeftOf="@+id/end_time_butt"
+                        android:layout_marginStart="@dimen/margin_size"
+                        android:layout_marginEnd="@dimen/margin_size"
+                        >
+                        <android.support.design.widget.TextInputEditText
+                            android:id="@+id/end_time_sel"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:inputType="time"
+                            />
+                    </android.support.design.widget.TextInputLayout>
+
+                    <ImageButton
+                        android:id="@+id/end_time_butt"
+                        android:onClick="on_end_clock_butt"
+                        android:contentDescription="@string/end_clock_butt"
+                        app:srcCompat="@android:drawable/ic_menu_recent_history"
+                        style="?android:attr/borderlessButtonStyle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:layout_constraintRight_toRightOf="parent"
+                        app:layout_constraintLeft_toRightOf="@+id/end_time_butt_lyt"
+                        android:layout_marginTop="@dimen/margin_size"
+                        android:layout_marginBottom="@dimen/margin_size"
+                        android:layout_marginEnd="@dimen/margin_size"
+                        />
+                </android.support.constraint.ConstraintLayout>
+
                 <Button
                     android:text="@string/end_now_butt"
                     android:layout_width="wrap_content"
@@ -229,7 +229,7 @@
                     />
 
                 <View style="@style/Divider"/>
-
+                
                 <Button
                     android:text="@string/swap_butt"
                     android:layout_width="wrap_content"
