@@ -19,6 +19,7 @@
         <activity android:name=".Settings"
             android:label="@string/settings_title"
             android:parentActivityName=".Progress_bars"
+            android:windowSoftInputMode="stateHidden"
             >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"

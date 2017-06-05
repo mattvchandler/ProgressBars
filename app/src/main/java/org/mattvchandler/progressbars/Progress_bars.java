@@ -278,6 +278,7 @@ public class Progress_bars extends AppCompatActivity
             startActivity(new Intent(this, Settings.class));
             break;
         }
+        // TODO: about screen
         return false;
     }
 }
