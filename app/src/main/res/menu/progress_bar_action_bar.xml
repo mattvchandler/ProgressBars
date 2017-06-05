@@ -6,4 +6,8 @@
         android:icon="@android:drawable/ic_menu_add"
         android:title="@string/add_butt_title"
         app:showAsAction="always"/>
+    <item
+        android:id="@+id/about"
+        android:title="@string/about"
+        app:showAsAction="never"/>
 </menu>
