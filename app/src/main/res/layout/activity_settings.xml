@@ -341,6 +341,33 @@
 
                     <View style="@style/Divider"/>
 
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:layout_gravity="center_vertical"
+                        android:layout_margin="@dimen/margin_size"
+                        android:onClick="on_precision_butt"
+                        >
+                        <TextView
+                            android:text="@string/precision"
+                            android:textAppearance="?android:textAppearanceListItem"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="@dimen/margin_size"
+                            />
+                        <TextView
+                            android:id="@+id/precision"
+                            android:text="@{String.valueOf(data.precision)}"
+                            android:textAppearance="?android:textAppearanceListItemSecondary"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginEnd="@dimen/margin_size"
+                            />
+                    </LinearLayout>
+
+                    <View style="@style/Divider"/>
+
                     <TextView
                         android:text="@string/show_elements_header"
                         android:textAppearance="?android:textAppearanceListItemSecondary"

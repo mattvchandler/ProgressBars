@@ -3,7 +3,6 @@ package org.mattvchandler.progressbars;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.TimePickerDialog;
-import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -21,10 +20,9 @@ import android.widget.Toast;
 
 import org.mattvchandler.progressbars.databinding.ActivitySettingsBinding;
 
-import java.util.Calendar;
 import java.util.TimeZone;
 
-public class Settings extends AppCompatActivity
+public class Settings extends AppCompatActivity implements Precision_dialog_frag.NoticeDialogListener
 {
     public static final String EXRTA_EDIT_ROW_ID = "org.mattvchandler.progressbars.EDIT_ROW_ID";
     public static final String RESULT_ROW_ID = "org.mattvchandler.progressbars.RESULT_ROW_ID";
@@ -180,4 +178,21 @@ public class Settings extends AppCompatActivity
     {
         new Datepicker_frag().show(getSupportFragmentManager(), "end_date_picker");
     }
+
+    public void on_precision_butt(View view)
+    {
+        Precision_dialog_frag d = new Precision_dialog_frag();
+        Bundle args = new Bundle();
+        args.putInt(Precision_dialog_frag.PRECISION_ARG, data.precision);
+        d.setArguments(args);
+        d.show(getSupportFragmentManager(), "precision");
+    }
+
+    @Override
+    public void on_precision_dialog_positive(Precision_dialog_frag dialog)
+    {
+        data.precision = dialog.getValue();
+        binding.precision.setText(String.valueOf(data.precision));
+    }
+
 }

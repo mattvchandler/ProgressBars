@@ -72,13 +72,13 @@ public final class Progress_bar_view_data extends Progress_bar_data
             if(show_progress)
             {
                 // convert and round percentage to the specified precision
-                String dec_format = "#";
+                String dec_format = "0";
 
                 if(precision > 0)
                     dec_format += ".";
 
                 for(int i = 0; i < precision; ++i)
-                    dec_format += "#";
+                    dec_format += "0";
 
                 dec_format += "%";
 
