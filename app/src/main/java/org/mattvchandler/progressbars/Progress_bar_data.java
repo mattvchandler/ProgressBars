@@ -41,7 +41,7 @@ public class Progress_bar_data implements Serializable
     public boolean show_seconds;
 
     public boolean terminate;
-    public  boolean notify;
+    public boolean notify;
 
     Progress_bar_data(
             long rowid_in,

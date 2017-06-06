@@ -53,7 +53,7 @@
                         android:layout_marginEnd="@dimen/margin_size"
                     >
                         <android.support.design.widget.TextInputEditText
-                            android:id="@+id/edit_title"
+                            android:id="@+id/title"
                             android:text="@{data.title}"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
@@ -283,7 +283,7 @@
                         android:layout_marginEnd="@dimen/margin_size"
                         >
                         <android.support.design.widget.TextInputEditText
-                            android:id="@+id/edit_pre_start"
+                            android:id="@+id/pre_text"
                             android:text="@{data.pre_text}"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
@@ -299,7 +299,7 @@
                         android:layout_marginEnd="@dimen/margin_size"
                         >
                         <android.support.design.widget.TextInputEditText
-                            android:id="@+id/edit_countdown"
+                            android:id="@+id/countdown_text"
                             android:text="@{data.countdown_text}"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
@@ -315,7 +315,7 @@
                         android:layout_marginEnd="@dimen/margin_size"
                         >
                         <android.support.design.widget.TextInputEditText
-                            android:id="@+id/edit_complete"
+                            android:id="@+id/complete_text"
                             android:text="@{data.complete_text}"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
@@ -331,7 +331,7 @@
                         android:layout_marginEnd="@dimen/margin_size"
                         >
                         <android.support.design.widget.TextInputEditText
-                            android:id="@+id/edit_post"
+                            android:id="@+id/post_text"
                             android:text="@{data.post_text}"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
@@ -479,7 +479,7 @@
                     />
 
                     <Switch
-                        android:id="@+id/how_secondss"
+                        android:id="@+id/show_seconds"
                         android:checked="@{data.show_seconds}"
                         android:text="@string/show_second_sw"
                         android:textAppearance="?android:textAppearanceListItem"

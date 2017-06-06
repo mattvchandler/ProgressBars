@@ -115,10 +115,34 @@ public class Settings extends AppCompatActivity implements Precision_dialog_frag
             case R.id.save_butt:
                 Intent intent = new Intent();
 
+                // get data from widgets (some have been set through callbacks already)
+                data.title = binding.title.getText().toString();
+                data.pre_text = binding.preText.getText().toString();
+                data.countdown_text = binding.countdownText.getText().toString();
+                data.complete_text = binding.completeText.getText().toString();
+                data.post_text = binding.postText.getText().toString();
+
+                data.show_progress = binding.showProgress.isChecked();
+                data.show_start = binding.showStart.isChecked();
+                data.show_end = binding.showEnd.isChecked();
+                data.show_years = binding.showYears.isChecked();
+                data.show_months = binding.showMonths.isChecked();
+                data.show_weeks = binding.showWeeks.isChecked();
+                data.show_days = binding.showDays.isChecked();
+                data.show_hours = binding.showHours.isChecked();
+                data.show_minutes = binding.showMinutes.isChecked();
+                data.show_seconds = binding.showSeconds.isChecked();
+                data.terminate = binding.terminate.isChecked();
+                data.notify = binding.notify.isChecked();
+
                 if(data.rowid < 0)
                 {
                     data.insert(this);
                     intent.putExtra(RESULT_NEW_ROW, true);
+                }
+                else
+                {
+                    
                 }
 
                 intent.putExtra(RESULT_ROW_ID, data.rowid);
