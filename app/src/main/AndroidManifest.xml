@@ -9,7 +9,9 @@
         android:roundIcon="@mipmap/progress_bar_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.AppCompat.Light.NoActionBar">
-        <activity android:name=".Progress_bars">
+        <activity android:name=".Progress_bars"
+                  android:launchMode="singleTop"
+            >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
 
