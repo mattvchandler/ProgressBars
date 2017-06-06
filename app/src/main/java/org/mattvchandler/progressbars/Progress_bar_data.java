@@ -1,6 +1,9 @@
 package org.mattvchandler.progressbars;
 
+import android.content.ContentValues;
+import android.content.Context;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 
 import java.util.Calendar;
 
@@ -127,6 +130,8 @@ public class Progress_bar_data
         end_time_cal.add(Calendar.HOUR, 1);
 
         // TODO replace hard-coded strings
+        rowid = -1;
+        order = -1;
         start_time = start_time_cal.getTimeInMillis() / 1000L;
         end_time = end_time_cal.getTimeInMillis() / 1000L;
         start_tz = start_time_cal.getTimeZone().getID();
@@ -149,6 +154,57 @@ public class Progress_bar_data
         show_seconds = true;
         terminate = true;
         notify = true;
+    }
+
+    public Progress_bar_data(String title_in)
+    {
+        this();
+        title = title_in;
+    }
+
+    public void insert(Context context)
+    {
+        // TODO: throw
+        // if(rowid >= 0)
+        //     throw;
+
+        SQLiteDatabase db = new Progress_bar_DB(context).getWritableDatabase();
+
+        if(order < 0)
+        {
+            Cursor cursor = db.rawQuery("SELECT MAX(" + Progress_bar_contract.Progress_bar_table.ORDER_COL + ") + 1 AS new_order FROM " + Progress_bar_contract.Progress_bar_table.TABLE_NAME, null);
+            cursor.moveToFirst();
+            order = cursor.getLong(0);
+            cursor.close();
+        }
+
+        ContentValues values = new ContentValues();
+
+        values.put(Progress_bar_contract.Progress_bar_table.ORDER_COL, order);
+        values.put(Progress_bar_contract.Progress_bar_table.START_TIME_COL, start_time);
+        values.put(Progress_bar_contract.Progress_bar_table.END_TIME_COL, end_time);
+        values.put(Progress_bar_contract.Progress_bar_table.START_TZ_COL, start_tz);
+        values.put(Progress_bar_contract.Progress_bar_table.END_TZ_COL, end_tz);
+        values.put(Progress_bar_contract.Progress_bar_table.TITLE_COL, title);
+        values.put(Progress_bar_contract.Progress_bar_table.PRE_TEXT_COL, pre_text);
+        values.put(Progress_bar_contract.Progress_bar_table.COUNTDOWN_TEXT_COL, countdown_text);
+        values.put(Progress_bar_contract.Progress_bar_table.COMPLETE_TEXT_COL, complete_text);
+        values.put(Progress_bar_contract.Progress_bar_table.POST_TEXT_COL, post_text);
+        values.put(Progress_bar_contract.Progress_bar_table.PRECISION_COL, precision);
+        values.put(Progress_bar_contract.Progress_bar_table.SHOW_START_COL, show_start);
+        values.put(Progress_bar_contract.Progress_bar_table.SHOW_END_COL, show_end);
+        values.put(Progress_bar_contract.Progress_bar_table.SHOW_PROGRESS_COL, show_progress);
+        values.put(Progress_bar_contract.Progress_bar_table.SHOW_YEARS_COL, show_years);
+        values.put(Progress_bar_contract.Progress_bar_table.SHOW_MONTHS_COL, show_months);
+        values.put(Progress_bar_contract.Progress_bar_table.SHOW_WEEKS_COL, show_weeks);
+        values.put(Progress_bar_contract.Progress_bar_table.SHOW_DAYS_COL, show_days);
+        values.put(Progress_bar_contract.Progress_bar_table.SHOW_HOURS_COL, show_hours);
+        values.put(Progress_bar_contract.Progress_bar_table.SHOW_MINUTES_COL, show_minutes);
+        values.put(Progress_bar_contract.Progress_bar_table.SHOW_SECONDS_COL, show_seconds);
+        values.put(Progress_bar_contract.Progress_bar_table.TERMINATE_COL, terminate);
+        values.put(Progress_bar_contract.Progress_bar_table.NOTIFY_COL, notify);
+
+        db.insert(Progress_bar_contract.Progress_bar_table.TABLE_NAME, null, values);
     }
 }
 
