@@ -91,6 +91,8 @@ public class Settings extends AppCompatActivity
         {
             data = (Progress_bar_data)savedInstanceState.getSerializable(STATE_DATA);
         }
+
+        binding.setData(data);
     }
 
     @Override
