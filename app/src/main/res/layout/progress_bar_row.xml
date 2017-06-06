@@ -2,13 +2,12 @@
 <layout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     >
 
     <data>
         <import type="android.view.View"/>
-        <import type="org.mattvchandler.progressbars.Progress_bar_data"/>
-        <variable name="data" type="Progress_bar_data"/>
+        <import type="org.mattvchandler.progressbars.Progress_bar_view_data"/>
+        <variable name="data" type="Progress_bar_view_data"/>
     </data>
 
     <android.support.constraint.ConstraintLayout
@@ -20,7 +19,7 @@
 
         <TextView
             android:id="@+id/title"
-            android:text="@{data.title}"
+            android:text="@{data.title_disp}"
             android:textSize="16sp"
             android:textStyle="bold"
             android:textAlignment="center"
@@ -37,9 +36,9 @@
 
         <TextView
             android:id="@+id/percentage"
-            android:text="@{data.percentage}"
+            android:text="@{data.percentage_disp}"
             android:textAlignment="center"
-            android:visibility="@{data.show_progress ? View.VISIBLE: View.GONE}"
+            android:visibility="@{data.show_progress_disp ? View.VISIBLE: View.GONE}"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             app:layout_constraintTop_toBottomOf="@+id/title"
@@ -53,23 +52,23 @@
             style="@style/Widget.AppCompat.ProgressBar.Horizontal"
             android:indeterminate="false"
             android:max="100"
-            android:progress="@{data.progress}"
-            android:visibility="@{data.show_progress ? View.VISIBLE: View.GONE}"
+            android:progress="@{data.progress_disp}"
+            android:visibility="@{data.show_progress_disp ? View.VISIBLE: View.GONE}"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             app:layout_constraintTop_toBottomOf="@+id/percentage"
             app:layout_constraintBottom_toTopOf="@+id/time_text"
             app:layout_constraintLeft_toRightOf="@+id/start_time_date"
             app:layout_constraintRight_toLeftOf="@+id/end_time_date"
-            android:layout_marginLeft="@dimen/margin_size"
-            android:layout_marginRight="@dimen/margin_size"
+            android:layout_marginStart="@dimen/margin_size"
+            android:layout_marginEnd="@dimen/margin_size"
             />
 
         <TextView
             android:id="@+id/start_time_label"
             android:text="@string/start_time"
             android:textAlignment="textEnd"
-            android:visibility="@{data.show_start ? View.VISIBLE: View.GONE}"
+            android:visibility="@{data.show_start_disp ? View.VISIBLE: View.GONE}"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:layout_constraintTop_toBottomOf="@+id/title"
@@ -79,22 +78,22 @@
             />
         <TextView
             android:id="@+id/start_time_date"
-            android:text="@{data.start_date}"
+            android:text="@{data.start_date_disp}"
             android:textAlignment="textEnd"
-            android:visibility="@{data.show_start ? View.VISIBLE: View.GONE}"
+            android:visibility="@{data.show_start_disp ? View.VISIBLE: View.GONE}"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:layout_constraintTop_toBottomOf="@+id/start_time_label"
             app:layout_constraintBottom_toTopOf="@+id/start_time_time"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintHorizontal_weight="0"
-            android:layout_marginLeft="@dimen/margin_size"
+            android:layout_marginStart="@dimen/margin_size"
             />
         <TextView
             android:id="@+id/start_time_time"
-            android:text="@{data.start_time}"
+            android:text="@{data.start_time_disp}"
             android:textAlignment="textEnd"
-            android:visibility="@{data.show_start ? View.VISIBLE: View.GONE}"
+            android:visibility="@{data.show_start_disp ? View.VISIBLE: View.GONE}"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:layout_constraintTop_toBottomOf="@+id/start_time_date"
@@ -107,7 +106,7 @@
             android:id="@+id/end_time_label"
             android:text="@string/end_time"
             android:textAlignment="textStart"
-            android:visibility="@{data.show_end ? View.VISIBLE: View.GONE}"
+            android:visibility="@{data.show_end_disp ? View.VISIBLE: View.GONE}"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:layout_constraintTop_toBottomOf="@+id/title"
@@ -118,21 +117,21 @@
             />
         <TextView
             android:id="@+id/end_time_date"
-            android:text="@{data.end_date}"
+            android:text="@{data.end_date_disp}"
             android:textAlignment="textStart"
-            android:visibility="@{data.show_end ? View.VISIBLE: View.GONE}"
+            android:visibility="@{data.show_end_disp ? View.VISIBLE: View.GONE}"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:layout_constraintTop_toBottomOf="@+id/end_time_label"
             app:layout_constraintBottom_toTopOf="@+id/end_time_time"
             app:layout_constraintRight_toRightOf="parent"
-            android:layout_marginRight="@dimen/margin_size"
+            android:layout_marginEnd="@dimen/margin_size"
             />
         <TextView
             android:id="@+id/end_time_time"
-            android:text="@{data.end_time}"
+            android:text="@{data.end_time_disp}"
             android:textAlignment="textStart"
-            android:visibility="@{data.show_end ? View.VISIBLE: View.GONE}"
+            android:visibility="@{data.show_end_disp ? View.VISIBLE: View.GONE}"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:layout_constraintTop_toBottomOf="@+id/end_time_date"
@@ -143,7 +142,7 @@
 
         <TextView
             android:id="@+id/time_text"
-            android:text="@{data.time_text}"
+            android:text="@{data.time_text_disp}"
             android:textAlignment="center"
             android:layout_width="0dp"
             android:layout_height="wrap_content"

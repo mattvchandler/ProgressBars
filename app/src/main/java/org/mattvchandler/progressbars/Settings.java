@@ -3,10 +3,16 @@ package org.mattvchandler.progressbars;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.TimePickerDialog;
+import android.content.ContentValues;
+import android.content.Intent;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.databinding.DataBindingUtil;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.DatePicker;
@@ -15,11 +21,17 @@ import android.widget.Toast;
 
 import org.mattvchandler.progressbars.databinding.ActivitySettingsBinding;
 
+import java.util.Calendar;
 import java.util.TimeZone;
 
 public class Settings extends AppCompatActivity
 {
+    public static final String EXRTA_EDIT_ROW_ID = "org.mattvchandler.progressbars.EDIT_ROW_ID";
+    public static final String RESULT_ROW_ID = "org.mattvchandler.progressbars.RESULT_ROW_ID";
+
     private ActivitySettingsBinding binding;
+
+    private Progress_bar_data data;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -46,7 +58,54 @@ public class Settings extends AppCompatActivity
                 break;
             }
         }
+    }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu)
+    {
+        getMenuInflater().inflate(R.menu.settings_action_bar, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item)
+    {
+        switch(item.getItemId())
+        {
+            case R.id.save_butt:
+                Intent intent = new Intent();
+                intent.putExtra(RESULT_ROW_ID, data.rowid);
+                setResult(RESULT_OK, intent);
+                finish();
+                return true;
+        }
+        return false;
+    }
+
+    @Override
+    protected void onStart()
+    {
+        super.onStart();
+        String rowid_in = getIntent().getStringExtra(EXRTA_EDIT_ROW_ID);
+
+        // no rowid passed? make a new one
+        if(rowid_in == null)
+        {
+            SQLiteDatabase db = new Progress_bar_DB(this).getWritableDatabase();
+
+            data = new Progress_bar_data();
+
+            Cursor cursor = db.rawQuery("SELECT MAX(" + Progress_bar_contract.Progress_bar_table.ORDER_COL + ") + 1 AS new_order FROM " + Progress_bar_contract.Progress_bar_table.TABLE_NAME, null);
+            cursor.moveToFirst();
+            data.order = cursor.getLong(0);
+            cursor.close();
+        }
+        else
+        {
+
+        }
+
+        Toast.makeText(this, "Editing row: " + data.rowid, Toast.LENGTH_SHORT).show();
     }
 
     public static class Timepicker_frag extends DialogFragment implements TimePickerDialog.OnTimeSetListener
@@ -111,6 +170,5 @@ public class Settings extends AppCompatActivity
 
     public void swap_start_end_butt(View view)
     {
-
     }
 }

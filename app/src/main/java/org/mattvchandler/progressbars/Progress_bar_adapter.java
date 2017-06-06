@@ -1,14 +1,11 @@
 package org.mattvchandler.progressbars;
 
 import android.content.ContentValues;
+import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.databinding.DataBindingUtil;
-import android.graphics.Color;
-import android.support.design.widget.Snackbar;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.helper.ItemTouchHelper;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,6 +19,7 @@ public class Progress_bar_adapter extends RecyclerView.Adapter<Progress_bar_adap
                                                      implements View.OnClickListener
     {
         ProgressBarRowBinding row_binding;
+        Progress_bar_view_data data;
 
         public Progress_bar_row_view_holder(View v)
         {
@@ -31,33 +29,15 @@ public class Progress_bar_adapter extends RecyclerView.Adapter<Progress_bar_adap
 
         public void bind_cursor(Cursor cursor)
         {
-            Progress_bar_data data = new Progress_bar_data(
-                    cursor.getLong(cursor.getColumnIndexOrThrow(Progress_bar_contract.Progress_bar_table.START_TIME_COL)),
-                    cursor.getLong(cursor.getColumnIndexOrThrow(Progress_bar_contract.Progress_bar_table.END_TIME_COL)),
-                    cursor.getString(cursor.getColumnIndexOrThrow(Progress_bar_contract.Progress_bar_table.TITLE_COL)),
-                    cursor.getString(cursor.getColumnIndexOrThrow(Progress_bar_contract.Progress_bar_table.PRE_TEXT_COL)),
-                    cursor.getString(cursor.getColumnIndexOrThrow(Progress_bar_contract.Progress_bar_table.COUNTDOWN_TEXT_COL)),
-                    cursor.getString(cursor.getColumnIndexOrThrow(Progress_bar_contract.Progress_bar_table.COMPLETE_TEXT_COL)),
-                    cursor.getString(cursor.getColumnIndexOrThrow(Progress_bar_contract.Progress_bar_table.POST_TEXT_COL)),
-                    cursor.getInt(cursor.getColumnIndexOrThrow(Progress_bar_contract.Progress_bar_table.PRECISION_COL)),
-                    cursor.getInt(cursor.getColumnIndexOrThrow(Progress_bar_contract.Progress_bar_table.SHOW_START_COL))    > 0,
-                    cursor.getInt(cursor.getColumnIndexOrThrow(Progress_bar_contract.Progress_bar_table.SHOW_END_COL))      > 0,
-                    cursor.getInt(cursor.getColumnIndexOrThrow(Progress_bar_contract.Progress_bar_table.SHOW_PROGRESS_COL)) > 0,
-                    cursor.getInt(cursor.getColumnIndexOrThrow(Progress_bar_contract.Progress_bar_table.SHOW_YEARS_COL))    > 0,
-                    cursor.getInt(cursor.getColumnIndexOrThrow(Progress_bar_contract.Progress_bar_table.SHOW_MONTHS_COL))   > 0,
-                    cursor.getInt(cursor.getColumnIndexOrThrow(Progress_bar_contract.Progress_bar_table.SHOW_WEEKS_COL))    > 0,
-                    cursor.getInt(cursor.getColumnIndexOrThrow(Progress_bar_contract.Progress_bar_table.SHOW_DAYS_COL))     > 0,
-                    cursor.getInt(cursor.getColumnIndexOrThrow(Progress_bar_contract.Progress_bar_table.SHOW_HOURS_COL))    > 0,
-                    cursor.getInt(cursor.getColumnIndexOrThrow(Progress_bar_contract.Progress_bar_table.SHOW_MINUTES_COL))  > 0,
-                    cursor.getInt(cursor.getColumnIndexOrThrow(Progress_bar_contract.Progress_bar_table.SHOW_SECONDS_COL))  > 0,
-                    cursor.getInt(cursor.getColumnIndexOrThrow(Progress_bar_contract.Progress_bar_table.TERMINATE_COL))  > 0
-            );
+            data = new Progress_bar_view_data(cursor);
             row_binding.setData(data);
         }
         @Override
         public void onClick(View v)
         {
-            Snackbar.make(v, "Editing " + row_binding.title.getText() + "  not yet implemented", Snackbar.LENGTH_SHORT).show();
+            Intent intent = new Intent(parent.getContext(), Settings.class);
+            intent.putExtra(Settings.EXRTA_EDIT_ROW_ID, data.rowid);
+            ((Progress_bars)parent.getContext()).startActivityForResult(intent, Progress_bars.UPDATE_REQUEST);
         }
 
         public void on_selected()
@@ -147,10 +127,5 @@ public class Progress_bar_adapter extends RecyclerView.Adapter<Progress_bar_adap
         cursor = db.rawQuery(Progress_bar_contract.Progress_bar_table.SELECT_ALL_ROWS, null);
         notifyItemRemoved(pos);
         // TODO: snackbar w/ undo
-    }
-
-    public void add_new_item()
-    {
-
     }
 }

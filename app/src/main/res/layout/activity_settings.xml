@@ -151,7 +151,7 @@
                         <Spinner
                             android:id="@+id/start_tz"
                             android:prompt="@string/start_tz_prompt"
-                            android:layout_width="match_parent"
+                            android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="10"
                             android:spinnerMode="dialog"
@@ -256,7 +256,7 @@
                         <Spinner
                             android:id="@+id/end_tz"
                             android:prompt="@string/start_tz_prompt"
-                            android:layout_width="match_parent"
+                            android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="10"
                             android:spinnerMode="dialog"

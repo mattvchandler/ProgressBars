@@ -25,6 +25,9 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".Progress_bars"
             />
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+            </intent-filter>
         </activity>
     </application>
 
