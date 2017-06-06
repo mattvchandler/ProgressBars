@@ -30,6 +30,8 @@ public class Settings extends AppCompatActivity
     public static final String RESULT_ROW_ID = "org.mattvchandler.progressbars.RESULT_ROW_ID";
     public static final String RESULT_NEW_ROW = "org.mattvchandler.progressbars.RESULT_NEW_ROW";
 
+    public static final String STATE_DATA = "data";
+
     private ActivitySettingsBinding binding;
 
     private Progress_bar_data data;
@@ -59,6 +61,43 @@ public class Settings extends AppCompatActivity
                 break;
             }
         }
+
+        // only run this on 1st creation
+        if(savedInstanceState == null)
+        {
+            String rowid_in = getIntent().getStringExtra(EXRTA_EDIT_ROW_ID);
+
+            // no rowid passed? make a new one
+            if(rowid_in == null)
+            {
+                SQLiteDatabase db = new Progress_bar_DB(this).getWritableDatabase();
+
+                data = new Progress_bar_data();
+
+                Cursor cursor = db.rawQuery("SELECT MAX(" + Progress_bar_contract.Progress_bar_table.ORDER_COL + ") + 1 AS new_order FROM " + Progress_bar_contract.Progress_bar_table.TABLE_NAME, null);
+                cursor.moveToFirst();
+                data.order = cursor.getLong(0);
+                cursor.close();
+                db.close();
+            }
+            else
+            {
+                // get data from row
+            }
+
+            Toast.makeText(this, "Editing row: " + data.rowid, Toast.LENGTH_SHORT).show();
+        }
+        else
+        {
+            data = (Progress_bar_data)savedInstanceState.getSerializable(STATE_DATA);
+        }
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle out)
+    {
+        super.onSaveInstanceState(out);
+        out.putSerializable(STATE_DATA, data);
     }
 
     @Override
@@ -88,32 +127,6 @@ public class Settings extends AppCompatActivity
                 return true;
         }
         return false;
-    }
-
-    @Override
-    protected void onStart()
-    {
-        super.onStart();
-        String rowid_in = getIntent().getStringExtra(EXRTA_EDIT_ROW_ID);
-
-        // no rowid passed? make a new one
-        if(rowid_in == null)
-        {
-            SQLiteDatabase db = new Progress_bar_DB(this).getWritableDatabase();
-
-            data = new Progress_bar_data();
-
-            Cursor cursor = db.rawQuery("SELECT MAX(" + Progress_bar_contract.Progress_bar_table.ORDER_COL + ") + 1 AS new_order FROM " + Progress_bar_contract.Progress_bar_table.TABLE_NAME, null);
-            cursor.moveToFirst();
-            data.order = cursor.getLong(0);
-            cursor.close();
-        }
-        else
-        {
-
-        }
-
-        Toast.makeText(this, "Editing row: " + data.rowid, Toast.LENGTH_SHORT).show();
     }
 
     public static class Timepicker_frag extends DialogFragment implements TimePickerDialog.OnTimeSetListener

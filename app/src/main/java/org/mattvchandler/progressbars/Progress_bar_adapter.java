@@ -1,6 +1,7 @@
 package org.mattvchandler.progressbars;
 
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -36,43 +37,47 @@ public class Progress_bar_adapter extends RecyclerView.Adapter<Progress_bar_adap
         @Override
         public void onClick(View v)
         {
-            Intent intent = new Intent(parent.getContext(), Settings.class);
+            Intent intent = new Intent(v.getContext(), Settings.class);
             intent.putExtra(Settings.EXRTA_EDIT_ROW_ID, data.rowid);
-            ((Progress_bars)parent.getContext()).startActivityForResult(intent, Progress_bars.UPDATE_REQUEST);
+            context.startActivityForResult(intent, Progress_bars.UPDATE_REQUEST);
         }
 
         public void on_selected()
         {
             TypedValue tv = new TypedValue();
-            parent.getContext().getTheme().resolveAttribute(android.R.attr.colorPrimary, tv, true);
+            context.getTheme().resolveAttribute(android.R.attr.colorPrimary, tv, true);
             row_binding.progressRow.setBackgroundColor(tv.data);
         }
 
         public void on_cleared()
         {
             TypedValue tv = new TypedValue();
-            parent.getContext().getTheme().resolveAttribute(android.R.attr.colorBackground, tv, true);
+            context.getTheme().resolveAttribute(android.R.attr.colorBackground, tv, true);
             row_binding.progressRow.setBackgroundColor(tv.data);
         }
     }
 
     private Cursor cursor;
-    private ViewGroup parent;
+    private Progress_bars context;
 
-    public Progress_bar_adapter(Cursor cur)
+    public Progress_bar_adapter(Cursor cur, Progress_bars con)
     {
         cursor = cur;
+        context = con;
     }
 
     public void resetCursor(Cursor cur)
     {
+        if(cursor != null)
+            cursor.close();
+
         if(cur != null)
         {
             cursor = cur;
         }
         else
         {
-            SQLiteDatabase db = new Progress_bar_DB(parent.getContext()).getWritableDatabase();
+            SQLiteDatabase db = new Progress_bar_DB(context).getWritableDatabase();
             cursor = db.rawQuery(Progress_bar_contract.Progress_bar_table.SELECT_ALL_ROWS, null);
         }
     }
@@ -80,8 +85,7 @@ public class Progress_bar_adapter extends RecyclerView.Adapter<Progress_bar_adap
     @Override
     public Progress_bar_row_view_holder onCreateViewHolder(ViewGroup parent_in, int viewType)
     {
-        parent = parent_in;
-        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.progress_bar_row, parent, false);
+        View v = LayoutInflater.from(parent_in.getContext()).inflate(R.layout.progress_bar_row, parent_in, false);
         Progress_bar_row_view_holder holder = new Progress_bar_row_view_holder(v);
         v.setOnClickListener(holder);
         return holder;
@@ -110,7 +114,7 @@ public class Progress_bar_adapter extends RecyclerView.Adapter<Progress_bar_adap
         String to_rowid = cursor.getString(cursor.getColumnIndexOrThrow(Progress_bar_contract.Progress_bar_table._ID));
         String to_order = cursor.getString(cursor.getColumnIndexOrThrow(Progress_bar_contract.Progress_bar_table.ORDER_COL));
 
-        SQLiteDatabase db = new Progress_bar_DB(parent.getContext()).getWritableDatabase();
+        SQLiteDatabase db = new Progress_bar_DB(context).getWritableDatabase();
         ContentValues values = new ContentValues();
 
         values.put(Progress_bar_contract.Progress_bar_table.ORDER_COL, to_order);
@@ -122,6 +126,8 @@ public class Progress_bar_adapter extends RecyclerView.Adapter<Progress_bar_adap
         db.update(Progress_bar_contract.Progress_bar_table.TABLE_NAME, values,
                 Progress_bar_contract.Progress_bar_table._ID + " = ?", new String[] {to_rowid});
 
+        db.close();
+
         resetCursor(null);
 
         notifyItemMoved(to_pos, from_pos);
@@ -132,11 +138,13 @@ public class Progress_bar_adapter extends RecyclerView.Adapter<Progress_bar_adap
         cursor.moveToPosition(pos);
         String rowid = cursor.getString(cursor.getColumnIndexOrThrow(Progress_bar_contract.Progress_bar_table._ID));
 
-        SQLiteDatabase db = new Progress_bar_DB(parent.getContext()).getWritableDatabase();
+        SQLiteDatabase db = new Progress_bar_DB(context).getWritableDatabase();
 
         db.delete(Progress_bar_contract.Progress_bar_table.TABLE_NAME,
                   Progress_bar_contract.Progress_bar_table._ID + " = ?",
                   new String[] {rowid});
+
+        db.close();
 
         resetCursor(null);
 

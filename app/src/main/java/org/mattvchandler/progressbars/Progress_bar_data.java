@@ -4,10 +4,12 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.renderscript.RSInvalidStateException;
 
+import java.io.Serializable;
 import java.util.Calendar;
 
-public class Progress_bar_data
+public class Progress_bar_data implements Serializable
 {
     public long rowid;
 
@@ -164,9 +166,8 @@ public class Progress_bar_data
 
     public void insert(Context context)
     {
-        // TODO: throw
-        // if(rowid >= 0)
-        //     throw;
+        if(rowid >= 0)
+            throw new IllegalStateException("Tried to insert when rowid already set");
 
         SQLiteDatabase db = new Progress_bar_DB(context).getWritableDatabase();
 
@@ -205,6 +206,8 @@ public class Progress_bar_data
         values.put(Progress_bar_contract.Progress_bar_table.NOTIFY_COL, notify);
 
         db.insert(Progress_bar_contract.Progress_bar_table.TABLE_NAME, null, values);
+
+        db.close();
     }
 }
 
