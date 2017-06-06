@@ -158,15 +158,6 @@
                             />
                     </LinearLayout>
 
-                    <Button
-                        android:text="@string/start_now_butt"
-                        android:onClick="on_start_now_butt"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:layout_margin="@dimen/margin_size"
-                        />
-
                     <View style="@style/Divider"/>
 
                     <LinearLayout
@@ -262,26 +253,6 @@
                             android:spinnerMode="dialog"
                             />
                     </LinearLayout>
-
-                    <Button
-                        android:text="@string/end_now_butt"
-                        android:onClick="on_end_now_butt"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:layout_margin="@dimen/margin_size"
-                        />
-
-                    <View style="@style/Divider"/>
-
-                    <Button
-                        android:text="@string/swap_butt"
-                        android:onClick="swap_start_end_butt"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:layout_margin="@dimen/margin_size"
-                        />
 
                     <View style="@style/Divider"/>
 

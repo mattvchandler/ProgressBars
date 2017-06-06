@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.databinding.DataBindingUtil;
+import android.support.v4.widget.SimpleCursorAdapter;
 import android.support.v7.widget.RecyclerView;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
@@ -63,6 +64,19 @@ public class Progress_bar_adapter extends RecyclerView.Adapter<Progress_bar_adap
         cursor = cur;
     }
 
+    public void resetCursor(Cursor cur)
+    {
+        if(cur != null)
+        {
+            cursor = cur;
+        }
+        else
+        {
+            SQLiteDatabase db = new Progress_bar_DB(parent.getContext()).getWritableDatabase();
+            cursor = db.rawQuery(Progress_bar_contract.Progress_bar_table.SELECT_ALL_ROWS, null);
+        }
+    }
+
     @Override
     public Progress_bar_row_view_holder onCreateViewHolder(ViewGroup parent_in, int viewType)
     {
@@ -108,7 +122,7 @@ public class Progress_bar_adapter extends RecyclerView.Adapter<Progress_bar_adap
         db.update(Progress_bar_contract.Progress_bar_table.TABLE_NAME, values,
                 Progress_bar_contract.Progress_bar_table._ID + " = ?", new String[] {to_rowid});
 
-        cursor = db.rawQuery(Progress_bar_contract.Progress_bar_table.SELECT_ALL_ROWS, null);
+        resetCursor(null);
 
         notifyItemMoved(to_pos, from_pos);
     }
@@ -124,7 +138,8 @@ public class Progress_bar_adapter extends RecyclerView.Adapter<Progress_bar_adap
                   Progress_bar_contract.Progress_bar_table._ID + " = ?",
                   new String[] {rowid});
 
-        cursor = db.rawQuery(Progress_bar_contract.Progress_bar_table.SELECT_ALL_ROWS, null);
+        resetCursor(null);
+
         notifyItemRemoved(pos);
         // TODO: snackbar w/ undo
     }

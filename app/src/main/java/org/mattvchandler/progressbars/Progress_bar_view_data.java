@@ -380,7 +380,7 @@ public final class Progress_bar_view_data extends Progress_bar_data
         show_progress_disp.set(show_progress);
 
         SimpleDateFormat date_df = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
-        SimpleDateFormat time_df = new SimpleDateFormat("HH:mm:SS", Locale.US);
+        SimpleDateFormat time_df = new SimpleDateFormat("HH:mm:ss", Locale.US);
 
         start_date_disp.set(date_df.format(start_time_date));
         start_time_disp.set(time_df.format(start_time_date));

@@ -28,6 +28,7 @@ public class Settings extends AppCompatActivity
 {
     public static final String EXRTA_EDIT_ROW_ID = "org.mattvchandler.progressbars.EDIT_ROW_ID";
     public static final String RESULT_ROW_ID = "org.mattvchandler.progressbars.RESULT_ROW_ID";
+    public static final String RESULT_NEW_ROW = "org.mattvchandler.progressbars.RESULT_NEW_ROW";
 
     private ActivitySettingsBinding binding;
 
@@ -74,6 +75,13 @@ public class Settings extends AppCompatActivity
         {
             case R.id.save_butt:
                 Intent intent = new Intent();
+
+                if(data.rowid < 0)
+                {
+                    data.insert(this);
+                    intent.putExtra(RESULT_NEW_ROW, true);
+                }
+
                 intent.putExtra(RESULT_ROW_ID, data.rowid);
                 setResult(RESULT_OK, intent);
                 finish();
@@ -156,19 +164,5 @@ public class Settings extends AppCompatActivity
     public void on_end_cal_butt(View view)
     {
         new Datepicker_frag().show(getSupportFragmentManager(), "end_date_picker");
-    }
-
-    public void on_start_now_butt(View view)
-    {
-
-    }
-
-    public void on_end_now_butt(View view)
-    {
-
-    }
-
-    public void swap_start_end_butt(View view)
-    {
     }
 }

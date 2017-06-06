@@ -18,10 +18,6 @@
 
     <string name="time_date_header">Times and dates</string>
 
-    <string name="start_now_butt">Set start date/time to now</string>
-    <string name="end_now_butt">Set end date/time to now</string>
-    <string name="swap_butt">Swap start and end"</string>
-
     <string name="start_time_txt">Start time</string>
     <string name="start_date_txt">Start date</string>
     <string name="end_time_txt">End time</string>

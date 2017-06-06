@@ -85,14 +85,6 @@ public class Progress_bars extends AppCompatActivity
         data.start_time = 1496429958;
         data.end_time = 1496429958;
         data.insert(this);
-    }
-
-    @Override
-    protected void onStart()
-    {
-        super.onStart();
-
-        // TODO: switch to readable DB here
 
         Cursor cursor = new Progress_bar_DB(this).getReadableDatabase().rawQuery(Progress_bar_contract.Progress_bar_table.SELECT_ALL_ROWS, null);
 
@@ -130,7 +122,20 @@ public class Progress_bars extends AppCompatActivity
     @Override
     protected void onActivityResult(int request_code, int result_code, Intent data)
     {
-       Toast.makeText(this, "Received result. req: " + String.valueOf(request_code) + " res: " + String.valueOf(result_code), Toast.LENGTH_SHORT).show();
-        adapter.notifyDataSetChanged();
+        if(request_code == UPDATE_REQUEST && result_code == RESULT_OK)
+        {
+            long rowid = data.getLongExtra(Settings.RESULT_ROW_ID, -1);
+            boolean new_row = data.getBooleanExtra(Settings.RESULT_NEW_ROW, false);
+
+            adapter.resetCursor(null);
+
+            if(new_row)
+                adapter.notifyItemInserted(adapter.getItemCount());
+            else
+            {
+                // TODO: find position
+            }
+
+        }
     }
 }
