@@ -51,27 +51,27 @@ public final class Progress_bar_contract
                 END_TIME_COL       + " INTEGER NOT_NULL, " +
                 END_TZ_COL         + " TEXT NOT NULL, " +
 
-                TITLE_COL          + " TEXT NOT NULL" +
-                PRE_TEXT_COL       + " TEXT" +
-                COUNTDOWN_TEXT_COL + " TEXT" +
-                COMPLETE_TEXT_COL  + " TEXT" +
-                POST_TEXT_COL      + " TEXT" +
+                TITLE_COL          + " TEXT NOT NULL, " +
+                PRE_TEXT_COL       + " TEXT, " +
+                COUNTDOWN_TEXT_COL + " TEXT, " +
+                COMPLETE_TEXT_COL  + " TEXT, " +
+                POST_TEXT_COL      + " TEXT, " +
 
-                PRECISION_COL      + " INTEGER NOT_NULL" +
+                PRECISION_COL      + " INTEGER NOT_NULL, " +
 
-                SHOW_START_COL     + " INTEGER NOT_NULL" +
-                SHOW_END_COL       + " INTEGER NOT_NULL" +
-                SHOW_PROGRESS_COL  + " INTEGER NOT_NULL" +
+                SHOW_START_COL     + " INTEGER NOT_NULL, " +
+                SHOW_END_COL       + " INTEGER NOT_NULL, " +
+                SHOW_PROGRESS_COL  + " INTEGER NOT_NULL, " +
 
-                SHOW_YEARS_COL     + " INTEGER NOT_NULL" +
-                SHOW_MONTHS_COL    + " INTEGER NOT_NULL" +
-                SHOW_WEEKS_COL     + " INTEGER NOT_NULL" +
-                SHOW_DAYS_COL      + " INTEGER NOT_NULL" +
-                SHOW_HOURS_COL     + " INTEGER NOT_NULL" +
-                SHOW_MINUTES_COL   + " INTEGER NOT_NULL" +
-                SHOW_SECONDS_COL   + " INTEGER NOT_NULL" +
+                SHOW_YEARS_COL     + " INTEGER NOT_NULL, " +
+                SHOW_MONTHS_COL    + " INTEGER NOT_NULL, " +
+                SHOW_WEEKS_COL     + " INTEGER NOT_NULL, " +
+                SHOW_DAYS_COL      + " INTEGER NOT_NULL, " +
+                SHOW_HOURS_COL     + " INTEGER NOT_NULL, " +
+                SHOW_MINUTES_COL   + " INTEGER NOT_NULL, " +
+                SHOW_SECONDS_COL   + " INTEGER NOT_NULL, " +
 
-                TERMINATE_COL      + " INTEGER NOT_NULL" +
-                NOTIFY_COL         + " INTEGER NOT NULL";
+                TERMINATE_COL      + " INTEGER NOT_NULL, " +
+                NOTIFY_COL         + " INTEGER NOT NULL)";
     }
 }
