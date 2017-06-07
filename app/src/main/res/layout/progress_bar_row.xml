@@ -144,6 +144,7 @@
             android:id="@+id/time_text"
             android:text="@{data.time_text_disp}"
             android:textAlignment="center"
+            android:visibility="@{data.show_time_text_disp ? View.VISIBLE: View.GONE}"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             app:layout_constraintTop_toBottomOf="@+id/progress_bar"

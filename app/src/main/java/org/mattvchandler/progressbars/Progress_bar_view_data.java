@@ -35,6 +35,7 @@ public final class Progress_bar_view_data extends Progress_bar_data
     public final ObservableBoolean        show_start_disp     = new ObservableBoolean();
     public final ObservableBoolean        show_end_disp       = new ObservableBoolean();
     public final ObservableBoolean        show_progress_disp  = new ObservableBoolean();
+    public final ObservableBoolean        show_time_text_disp = new ObservableBoolean();
 
     private Date start_time_date = new Date();
     private Date end_time_date = new Date();
@@ -105,6 +106,9 @@ public final class Progress_bar_view_data extends Progress_bar_data
                 // TODO: notfication?
                 return;
             }
+
+            if(!show_time_text_disp.get())
+                return;
 
             long remaining = end_time_s - now_s;
             long to_start = start_time_s - now_s;
@@ -386,6 +390,8 @@ public final class Progress_bar_view_data extends Progress_bar_data
         start_time_disp.set(time_df.format(start_time_date));
         end_date_disp.set(date_df.format(end_time_date));
         end_time_disp.set(time_df.format(end_time_date));
+
+        show_time_text_disp.set((show_years || show_months || show_weeks || show_days || show_hours || show_minutes || show_seconds));
 
         progress_disp.set(0);
 

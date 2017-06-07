@@ -26,7 +26,7 @@ public class Progress_bar_data implements Serializable
     public String complete_text;
     public String post_text;
 
-    public Integer precision;
+    public int precision;
 
     public boolean show_progress;
     public boolean show_start;
