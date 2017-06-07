@@ -125,24 +125,23 @@ public class Progress_bar_data implements Serializable
         );
     }
 
-    Progress_bar_data()
+    Progress_bar_data(Context context)
     {
         Calendar start_time_cal = Calendar.getInstance();
         Calendar end_time_cal = (Calendar) start_time_cal.clone();
         end_time_cal.add(Calendar.HOUR, 1);
 
-        // TODO replace hard-coded strings
         rowid = -1;
         order = -1;
         start_time = start_time_cal.getTimeInMillis() / 1000L;
         end_time = end_time_cal.getTimeInMillis() / 1000L;
         start_tz = start_time_cal.getTimeZone().getID();
         end_tz = end_time_cal.getTimeZone().getID();
-        title = "New timer";
-        pre_text = "Time until start: ";
-        countdown_text = "Time remaining: ";
-        complete_text = "Completed";
-        post_text = "Time since completion: ";
+        title = context.getResources().getString(R.string.default_title);
+        pre_text = context.getResources().getString(R.string.default_pre_text);
+        countdown_text = context.getResources().getString(R.string.default_countdown_text);
+        complete_text = context.getResources().getString(R.string.default_complete_text);
+        post_text = context.getResources().getString(R.string.default_post_text);
         precision = 2;
         show_progress = true;
         show_start = true;
@@ -158,9 +157,9 @@ public class Progress_bar_data implements Serializable
         notify = true;
     }
 
-    public Progress_bar_data(String title_in)
+    public Progress_bar_data(Context context, String title_in)
     {
-        this();
+        this(context);
         title = title_in;
     }
 

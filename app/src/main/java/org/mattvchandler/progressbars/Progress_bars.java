@@ -47,49 +47,49 @@ public class Progress_bars extends AppCompatActivity
 
             Progress_bar_data data;
 
-            data = new Progress_bar_data("ASDF");
+            data = new Progress_bar_data(this, "ASDF");
             data.start_time = 1496429958;
             data.end_time = 1496429958;
             data.terminate = false;
             data.insert(this);
 
-            data = new Progress_bar_data("AC⚡DC");
+            data = new Progress_bar_data(this, "AC⚡DC");
             data.start_time = 1451937600;
             data.end_time = 1483560000;
             data.terminate = false;
             data.insert(this);
 
-            data = new Progress_bar_data("💩");
+            data = new Progress_bar_data(this, "💩");
             data.start_time = 1388865600;
             data.end_time = 1388865600;
             data.terminate = false;
             data.insert(this);
 
-            data = new Progress_bar_data("Queen");
+            data = new Progress_bar_data(this, "Queen");
             data.start_time = 1483261200;
             data.end_time = 1514797200;
             data.terminate = false;
             data.insert(this);
 
-            data = new Progress_bar_data("Led Zepplin");
+            data = new Progress_bar_data(this, "Led Zepplin");
             data.start_time = 551476200;
             data.end_time = 551476200;
             data.terminate = false;
             data.insert(this);
 
-            data = new Progress_bar_data("Guns N' Roses");
+            data = new Progress_bar_data(this, "Guns N' Roses");
             data.start_time = 1496429958;
             data.end_time = 1496429958;
             data.terminate = false;
             data.insert(this);
 
-            data = new Progress_bar_data("Rolling Stones");
+            data = new Progress_bar_data(this, "Rolling Stones");
             data.start_time = 1496429958;
             data.end_time = 1496429958;
             data.terminate = false;
             data.insert(this);
 
-            data = new Progress_bar_data("Eagles");
+            data = new Progress_bar_data(this, "Eagles");
             data.start_time = 1496429958;
             data.end_time = 1496429958;
             data.terminate = false;

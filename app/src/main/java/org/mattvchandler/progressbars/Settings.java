@@ -149,7 +149,7 @@ public class Settings extends AppCompatActivity implements Precision_dialog_frag
             {
                 SQLiteDatabase db = new Progress_bar_DB(this).getWritableDatabase();
 
-                data = new Progress_bar_data();
+                data = new Progress_bar_data(this);
 
                 Cursor cursor = db.rawQuery("SELECT MAX(" + Progress_bar_contract.Progress_bar_table.ORDER_COL + ") + 1 AS new_order FROM " + Progress_bar_contract.Progress_bar_table.TABLE_NAME, null);
                 cursor.moveToFirst();

@@ -54,4 +54,10 @@
     <string name="terminate_sw">Stop timer when completed</string>
     <string name="notify_sw">Send notification on completion</string>
 
+    <string name="default_title">New timer</string>
+    <string name="default_pre_text">Time until start:\u0020</string>
+    <string name="default_countdown_text">Time remaining:\u0020</string>
+    <string name="default_complete_text">Completed</string>
+    <string name="default_post_text">Time since completion:\u0020</string>
+
 </resources>
