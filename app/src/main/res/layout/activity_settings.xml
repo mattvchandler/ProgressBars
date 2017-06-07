@@ -10,8 +10,6 @@
         <variable name="data" type="Progress_bar_data"/>
     </data>
 
-    <!-- TODO: need precision! -->
-
     <android.support.design.widget.CoordinatorLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"

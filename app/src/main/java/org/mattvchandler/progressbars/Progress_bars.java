@@ -135,6 +135,7 @@ public class Progress_bars extends AppCompatActivity
     {
         if(request_code == UPDATE_REQUEST && result_code == RESULT_OK)
         {
+            // TODO: snackbar w/ undo
             long rowid = data.getLongExtra(Settings.RESULT_ROW_ID, -1);
             boolean new_row = data.getBooleanExtra(Settings.RESULT_NEW_ROW, false);
 

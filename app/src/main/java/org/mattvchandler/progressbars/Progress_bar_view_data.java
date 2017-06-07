@@ -16,7 +16,6 @@ import static java.lang.Math.abs;
 import static java.lang.Math.max;
 import static java.lang.Math.min;
 
-// TODO: make this extend a base struct w/ DB fields
 // struct bound to progress_bar_row layout
 public final class Progress_bar_view_data extends Progress_bar_data
 {
@@ -102,7 +101,6 @@ public final class Progress_bar_view_data extends Progress_bar_data
             if(terminate && now_s > end_time_s)
             {
                 time_text_disp.set(complete_text);
-                // TODO: exiting before setting the handler to run again. will this cause problems?
                 // TODO: notfication?
                 return;
             }
