@@ -38,67 +38,12 @@ public class Progress_bars extends AppCompatActivity
         setSupportActionBar(binding.progressBarToolbar);
         binding.mainList.addItemDecoration(new DividerItemDecoration(binding.mainList.getContext(), DividerItemDecoration.VERTICAL));
 
-        // only run on 1st creation
-        if(savedInstanceState == null)
-        {
-            SQLiteDatabase db = new Progress_bar_DB(this).getWritableDatabase();
-
-            db.execSQL("DELETE FROM " + Progress_bar_contract.Progress_bar_table.TABLE_NAME);
-
-            Progress_bar_data data;
-
-            data = new Progress_bar_data(this, "ASDF");
-            data.start_time = 1496429958;
-            data.end_time = 1496429958;
-            data.terminate = false;
-            data.insert(this);
-
-            data = new Progress_bar_data(this, "AC⚡DC");
-            data.start_time = 1451937600;
-            data.end_time = 1483560000;
-            data.terminate = false;
-            data.insert(this);
-
-            data = new Progress_bar_data(this, "💩");
-            data.start_time = 1388865600;
-            data.end_time = 1388865600;
-            data.terminate = false;
-            data.insert(this);
-
-            data = new Progress_bar_data(this, "Queen");
-            data.start_time = 1483261200;
-            data.end_time = 1514797200;
-            data.terminate = false;
-            data.insert(this);
-
-            data = new Progress_bar_data(this, "Led Zepplin");
-            data.start_time = 551476200;
-            data.end_time = 551476200;
-            data.terminate = false;
-            data.insert(this);
-
-            data = new Progress_bar_data(this, "Guns N' Roses");
-            data.start_time = 1496429958;
-            data.end_time = 1496429958;
-            data.terminate = false;
-            data.insert(this);
-
-            data = new Progress_bar_data(this, "Rolling Stones");
-            data.start_time = 1496429958;
-            data.end_time = 1496429958;
-            data.terminate = false;
-            data.insert(this);
-
-            data = new Progress_bar_data(this, "Eagles");
-            data.start_time = 1496429958;
-            data.end_time = 1496429958;
-            data.terminate = false;
-            data.insert(this);
-
-            db.close();
-        }
-
         Cursor cursor = new Progress_bar_DB(this).getReadableDatabase().rawQuery(Progress_bar_contract.Progress_bar_table.SELECT_ALL_ROWS, null);
+        if(cursor.getCount() == 0)
+        {
+            new Progress_bar_data(this).insert(this);
+            cursor = new Progress_bar_DB(this).getReadableDatabase().rawQuery(Progress_bar_contract.Progress_bar_table.SELECT_ALL_ROWS, null);
+        }
         adapter = new Progress_bar_adapter(cursor, this);
 
         binding.mainList.setLayoutManager(new LinearLayoutManager(this));
@@ -106,8 +51,6 @@ public class Progress_bars extends AppCompatActivity
 
         ItemTouchHelper touch_helper = new ItemTouchHelper(new Progress_bar_row_touch_helper_callback(adapter));
         touch_helper.attachToRecyclerView(binding.mainList);
-        // TODO: empty view?
-        // binding.mainList.setEmptyView(binding.empty);
     }
 
     @Override
