@@ -3,6 +3,7 @@ package org.mattvchandler.progressbars;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.databinding.DataBindingUtil;
@@ -14,6 +15,8 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import org.mattvchandler.progressbars.databinding.ProgressBarRowBinding;
+
+import java.util.NoSuchElementException;
 
 public class Progress_bar_adapter extends RecyclerView.Adapter<Progress_bar_adapter.Progress_bar_row_view_holder>
 {
@@ -102,6 +105,20 @@ public class Progress_bar_adapter extends RecyclerView.Adapter<Progress_bar_adap
     public int getItemCount()
     {
         return cursor.getCount();
+    }
+
+    public int find_by_rowid(long rowid)
+    {
+        for(int i = 0; i < getItemCount(); ++i)
+        {
+            cursor.moveToPosition(i);
+            if(cursor.getLong(cursor.getColumnIndexOrThrow(Progress_bar_contract.Progress_bar_table._ID)) == rowid)
+            {
+                return i;
+            }
+        }
+
+        throw new NoSuchElementException("rowid" + String.valueOf(rowid) + "not found in cursor");
     }
 
     public void on_item_move(int from_pos, int to_pos)

@@ -110,9 +110,9 @@ public class Progress_bar_data implements Serializable
             cursor.getString(cursor.getColumnIndexOrThrow(Progress_bar_contract.Progress_bar_table.COMPLETE_TEXT_COL)),
             cursor.getString(cursor.getColumnIndexOrThrow(Progress_bar_contract.Progress_bar_table.POST_TEXT_COL)),
             cursor.getInt(cursor.getColumnIndexOrThrow(Progress_bar_contract.Progress_bar_table.PRECISION_COL)),
+            cursor.getInt(cursor.getColumnIndexOrThrow(Progress_bar_contract.Progress_bar_table.SHOW_PROGRESS_COL)) > 0,
             cursor.getInt(cursor.getColumnIndexOrThrow(Progress_bar_contract.Progress_bar_table.SHOW_START_COL))    > 0,
             cursor.getInt(cursor.getColumnIndexOrThrow(Progress_bar_contract.Progress_bar_table.SHOW_END_COL))      > 0,
-            cursor.getInt(cursor.getColumnIndexOrThrow(Progress_bar_contract.Progress_bar_table.SHOW_PROGRESS_COL)) > 0,
             cursor.getInt(cursor.getColumnIndexOrThrow(Progress_bar_contract.Progress_bar_table.SHOW_YEARS_COL))    > 0,
             cursor.getInt(cursor.getColumnIndexOrThrow(Progress_bar_contract.Progress_bar_table.SHOW_MONTHS_COL))   > 0,
             cursor.getInt(cursor.getColumnIndexOrThrow(Progress_bar_contract.Progress_bar_table.SHOW_WEEKS_COL))    > 0,
@@ -164,6 +164,41 @@ public class Progress_bar_data implements Serializable
         title = title_in;
     }
 
+    public Progress_bar_data(Context context, long rowid_in)
+    {
+        SQLiteDatabase db = new Progress_bar_DB(context).getReadableDatabase();
+        Cursor cursor = db.rawQuery("SELECT * FROM " + Progress_bar_contract.Progress_bar_table.TABLE_NAME + " WHERE " + Progress_bar_contract.Progress_bar_table._ID + " = ?", new String[]{ String.valueOf(rowid_in)});
+        cursor.moveToFirst();
+
+        rowid          = cursor.getLong(cursor.getColumnIndexOrThrow(Progress_bar_contract.Progress_bar_table._ID));
+        order          = cursor.getLong(cursor.getColumnIndexOrThrow(Progress_bar_contract.Progress_bar_table.ORDER_COL));
+        start_time     = cursor.getLong(cursor.getColumnIndexOrThrow(Progress_bar_contract.Progress_bar_table.START_TIME_COL));
+        end_time       = cursor.getLong(cursor.getColumnIndexOrThrow(Progress_bar_contract.Progress_bar_table.END_TIME_COL));
+        start_tz       = cursor.getString(cursor.getColumnIndexOrThrow(Progress_bar_contract.Progress_bar_table.START_TZ_COL));
+        end_tz         = cursor.getString(cursor.getColumnIndexOrThrow(Progress_bar_contract.Progress_bar_table.END_TZ_COL));
+        title          = cursor.getString(cursor.getColumnIndexOrThrow(Progress_bar_contract.Progress_bar_table.TITLE_COL));
+        pre_text       = cursor.getString(cursor.getColumnIndexOrThrow(Progress_bar_contract.Progress_bar_table.PRE_TEXT_COL));
+        countdown_text = cursor.getString(cursor.getColumnIndexOrThrow(Progress_bar_contract.Progress_bar_table.COUNTDOWN_TEXT_COL));
+        complete_text  = cursor.getString(cursor.getColumnIndexOrThrow(Progress_bar_contract.Progress_bar_table.COMPLETE_TEXT_COL));
+        post_text      = cursor.getString(cursor.getColumnIndexOrThrow(Progress_bar_contract.Progress_bar_table.POST_TEXT_COL));
+        precision      = cursor.getInt(cursor.getColumnIndexOrThrow(Progress_bar_contract.Progress_bar_table.PRECISION_COL));
+        show_progress  = cursor.getInt(cursor.getColumnIndexOrThrow(Progress_bar_contract.Progress_bar_table.SHOW_PROGRESS_COL))    > 0;
+        show_start     = cursor.getInt(cursor.getColumnIndexOrThrow(Progress_bar_contract.Progress_bar_table.SHOW_START_COL))      > 0;
+        show_end       = cursor.getInt(cursor.getColumnIndexOrThrow(Progress_bar_contract.Progress_bar_table.SHOW_END_COL)) > 0;
+        show_years     = cursor.getInt(cursor.getColumnIndexOrThrow(Progress_bar_contract.Progress_bar_table.SHOW_YEARS_COL))    > 0;
+        show_months    = cursor.getInt(cursor.getColumnIndexOrThrow(Progress_bar_contract.Progress_bar_table.SHOW_MONTHS_COL))   > 0;
+        show_weeks     = cursor.getInt(cursor.getColumnIndexOrThrow(Progress_bar_contract.Progress_bar_table.SHOW_WEEKS_COL))    > 0;
+        show_days      = cursor.getInt(cursor.getColumnIndexOrThrow(Progress_bar_contract.Progress_bar_table.SHOW_DAYS_COL))     > 0;
+        show_hours     = cursor.getInt(cursor.getColumnIndexOrThrow(Progress_bar_contract.Progress_bar_table.SHOW_HOURS_COL))    > 0;
+        show_minutes   = cursor.getInt(cursor.getColumnIndexOrThrow(Progress_bar_contract.Progress_bar_table.SHOW_MINUTES_COL))  > 0;
+        show_seconds   = cursor.getInt(cursor.getColumnIndexOrThrow(Progress_bar_contract.Progress_bar_table.SHOW_SECONDS_COL))  > 0;
+        terminate      = cursor.getInt(cursor.getColumnIndexOrThrow(Progress_bar_contract.Progress_bar_table.TERMINATE_COL))     > 0;
+        notify         = cursor.getInt(cursor.getColumnIndexOrThrow(Progress_bar_contract.Progress_bar_table.NOTIFY_COL))        > 0;
+
+        cursor.close();
+        db.close();
+    }
+
     public void insert(Context context)
     {
         if(rowid >= 0)
@@ -173,7 +208,7 @@ public class Progress_bar_data implements Serializable
 
         if(order < 0)
         {
-            Cursor cursor = db.rawQuery("SELECT MAX(" + Progress_bar_contract.Progress_bar_table.ORDER_COL + ") + 1 AS new_order FROM " + Progress_bar_contract.Progress_bar_table.TABLE_NAME, null);
+            Cursor cursor = db.rawQuery("SELECT MAX(" + Progress_bar_contract.Progress_bar_table.ORDER_COL + ") + 1 FROM " + Progress_bar_contract.Progress_bar_table.TABLE_NAME, null);
             cursor.moveToFirst();
             order = cursor.getLong(0);
             cursor.close();
@@ -206,6 +241,45 @@ public class Progress_bar_data implements Serializable
         values.put(Progress_bar_contract.Progress_bar_table.NOTIFY_COL, notify);
 
         db.insert(Progress_bar_contract.Progress_bar_table.TABLE_NAME, null, values);
+
+        db.close();
+    }
+
+    public void update(Context context)
+    {
+        if(rowid < 0)
+            throw new IllegalStateException("Tried to update when rowid isn't set");
+
+        SQLiteDatabase db = new Progress_bar_DB(context).getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+
+        values.put(Progress_bar_contract.Progress_bar_table._ID, rowid);
+        values.put(Progress_bar_contract.Progress_bar_table.ORDER_COL, order);
+        values.put(Progress_bar_contract.Progress_bar_table.START_TIME_COL, start_time);
+        values.put(Progress_bar_contract.Progress_bar_table.END_TIME_COL, end_time);
+        values.put(Progress_bar_contract.Progress_bar_table.START_TZ_COL, start_tz);
+        values.put(Progress_bar_contract.Progress_bar_table.END_TZ_COL, end_tz);
+        values.put(Progress_bar_contract.Progress_bar_table.TITLE_COL, title);
+        values.put(Progress_bar_contract.Progress_bar_table.PRE_TEXT_COL, pre_text);
+        values.put(Progress_bar_contract.Progress_bar_table.COUNTDOWN_TEXT_COL, countdown_text);
+        values.put(Progress_bar_contract.Progress_bar_table.COMPLETE_TEXT_COL, complete_text);
+        values.put(Progress_bar_contract.Progress_bar_table.POST_TEXT_COL, post_text);
+        values.put(Progress_bar_contract.Progress_bar_table.PRECISION_COL, precision);
+        values.put(Progress_bar_contract.Progress_bar_table.SHOW_START_COL, show_start);
+        values.put(Progress_bar_contract.Progress_bar_table.SHOW_END_COL, show_end);
+        values.put(Progress_bar_contract.Progress_bar_table.SHOW_PROGRESS_COL, show_progress);
+        values.put(Progress_bar_contract.Progress_bar_table.SHOW_YEARS_COL, show_years);
+        values.put(Progress_bar_contract.Progress_bar_table.SHOW_MONTHS_COL, show_months);
+        values.put(Progress_bar_contract.Progress_bar_table.SHOW_WEEKS_COL, show_weeks);
+        values.put(Progress_bar_contract.Progress_bar_table.SHOW_DAYS_COL, show_days);
+        values.put(Progress_bar_contract.Progress_bar_table.SHOW_HOURS_COL, show_hours);
+        values.put(Progress_bar_contract.Progress_bar_table.SHOW_MINUTES_COL, show_minutes);
+        values.put(Progress_bar_contract.Progress_bar_table.SHOW_SECONDS_COL, show_seconds);
+        values.put(Progress_bar_contract.Progress_bar_table.TERMINATE_COL, terminate);
+        values.put(Progress_bar_contract.Progress_bar_table.NOTIFY_COL, notify);
+
+        db.update(Progress_bar_contract.Progress_bar_table.TABLE_NAME, values, Progress_bar_contract.Progress_bar_table._ID + " = ?", new String[]{String.valueOf(rowid)});
 
         db.close();
     }

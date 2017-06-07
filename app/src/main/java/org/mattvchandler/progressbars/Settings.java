@@ -63,10 +63,10 @@ public class Settings extends AppCompatActivity implements Precision_dialog_frag
         // only run this on 1st creation
         if(savedInstanceState == null)
         {
-            String rowid_in = getIntent().getStringExtra(EXRTA_EDIT_ROW_ID);
+            long rowid = getIntent().getLongExtra(EXRTA_EDIT_ROW_ID, -1);
 
             // no rowid passed? make a new one
-            if(rowid_in == null)
+            if(rowid < 0)
             {
                 SQLiteDatabase db = new Progress_bar_DB(this).getWritableDatabase();
 
@@ -81,9 +81,8 @@ public class Settings extends AppCompatActivity implements Precision_dialog_frag
             else
             {
                 // get data from row
+                data = new Progress_bar_data(this, rowid);
             }
-
-            Toast.makeText(this, "Editing row: " + data.rowid, Toast.LENGTH_SHORT).show();
         }
         else
         {
@@ -142,7 +141,8 @@ public class Settings extends AppCompatActivity implements Precision_dialog_frag
                 }
                 else
                 {
-                    
+                    data.update(this);
+                    intent.putExtra(RESULT_NEW_ROW, false);
                 }
 
                 intent.putExtra(RESULT_ROW_ID, data.rowid);

@@ -144,7 +144,7 @@ public class Progress_bars extends AppCompatActivity
                 adapter.notifyItemInserted(adapter.getItemCount());
             else
             {
-                // TODO: find position
+                adapter.notifyItemChanged(adapter.find_by_rowid(rowid));
             }
 
         }

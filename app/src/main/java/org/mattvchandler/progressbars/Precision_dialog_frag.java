@@ -4,9 +4,12 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AlertDialog;
+import android.text.Html;
+import android.text.Spanned;
 import android.widget.NumberPicker;
 
 public class Precision_dialog_frag extends DialogFragment
@@ -77,7 +80,6 @@ public class Precision_dialog_frag extends DialogFragment
                     }
                 })
                 .setNegativeButton(android.R.string.cancel, null);
-
         return builder.create();
     }
 }
