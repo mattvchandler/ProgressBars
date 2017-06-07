@@ -10,16 +10,23 @@ import android.databinding.DataBindingUtil;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.DatePicker;
+import android.widget.EditText;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
 import org.mattvchandler.progressbars.databinding.ActivitySettingsBinding;
 
+import java.text.ParsePosition;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 import java.util.TimeZone;
 
 public class Settings extends AppCompatActivity implements Precision_dialog_frag.NoticeDialogListener
@@ -49,6 +56,76 @@ public class Settings extends AppCompatActivity implements Precision_dialog_frag
 
         binding.startTz.setAdapter(tz_adapter);
         binding.endTz.setAdapter(tz_adapter);
+
+        View.OnFocusChangeListener time_listener = new View.OnFocusChangeListener()
+        {
+            private String old_time;
+            @Override
+            public void onFocusChange(View v, boolean hasFocus)
+            {
+                if(hasFocus)
+                {
+                    old_time = ((EditText)v).getText().toString();
+                }
+                else
+                {
+                    String new_time = ((EditText)v).getText().toString();
+                    SimpleDateFormat df = new SimpleDateFormat(Settings.this.getResources().getString(R.string.time_format), Locale.US);
+
+                    Date time = df.parse(new_time, new ParsePosition(0));
+                    if(time == null)
+                    {
+                        Toast.makeText(Settings.this, "Invalid time: " + new_time + ". Correct format is: " +
+                                                      Settings.this.getResources().getString(R.string.time_format),
+                                Toast.LENGTH_LONG).show();
+                        ((EditText) v).setText(old_time);
+                    }
+                    else
+                    {
+                        new_time = df.format(time);
+                        ((EditText) v).setText(new_time);
+                    }
+                }
+            }
+        };
+
+        View.OnFocusChangeListener date_listener = new View.OnFocusChangeListener()
+        {
+            private String old_date;
+            @Override
+            public void onFocusChange(View v, boolean hasFocus)
+            {
+                if(hasFocus)
+                {
+                    old_date = ((EditText)v).getText().toString();
+                }
+                else
+                {
+                    String new_date = ((EditText)v).getText().toString();
+                    SimpleDateFormat df = new SimpleDateFormat(Settings.this.getResources().getString(R.string.date_format), Locale.US);
+
+                    Date date = df.parse(new_date, new ParsePosition(0));
+                    if(date == null)
+                    {
+                        Toast.makeText(Settings.this, "Invalid date: " + new_date + ". Correct format is: " +
+                                                      Settings.this.getResources().getString(R.string.date_format),
+                                Toast.LENGTH_LONG).show();
+                        ((EditText) v).setText(old_date);
+                    }
+                    else
+                    {
+                        new_date = df.format(date);
+                        ((EditText) v).setText(new_date);
+                    }
+                }
+            }
+        };
+
+        binding.startTimeSel.setOnFocusChangeListener(time_listener);
+        binding.endTimeSel.setOnFocusChangeListener(time_listener);
+
+        binding.startDateSel.setOnFocusChangeListener(date_listener);
+        binding.endDateSel.setOnFocusChangeListener(date_listener);
 
         for(int i = 0; i < tz_adapter.getCount(); ++i)
         {

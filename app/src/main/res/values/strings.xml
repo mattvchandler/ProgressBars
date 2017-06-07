@@ -3,6 +3,9 @@
     <string name="settings_title">Edit timer</string>
     <string name="about">About</string>
 
+    <string name="date_format">yyyy-MM-dd</string>
+    <string name="time_format">HH:mm:ss</string>
+
     <string name="start_time">Start time:</string>
     <string name="end_time">End Time:</string>
 
