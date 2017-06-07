@@ -10,8 +10,6 @@ import android.databinding.DataBindingUtil;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -25,11 +23,14 @@ import org.mattvchandler.progressbars.databinding.ActivitySettingsBinding;
 
 import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 import java.util.TimeZone;
 
-public class Settings extends AppCompatActivity implements Precision_dialog_frag.NoticeDialogListener
+public class Settings extends AppCompatActivity implements Precision_dialog_frag.NoticeDialogListener,
+                                                           DatePickerDialog.OnDateSetListener,
+                                                           TimePickerDialog.OnTimeSetListener
 {
     public static final String EXRTA_EDIT_ROW_ID = "org.mattvchandler.progressbars.EDIT_ROW_ID";
     public static final String RESULT_ROW_ID = "org.mattvchandler.progressbars.RESULT_ROW_ID";
@@ -38,8 +39,9 @@ public class Settings extends AppCompatActivity implements Precision_dialog_frag
     public static final String STATE_DATA = "data";
 
     private ActivitySettingsBinding binding;
-
     private Progress_bar_data data;
+
+    private EditText date_time_dialog_target;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -57,49 +59,12 @@ public class Settings extends AppCompatActivity implements Precision_dialog_frag
         binding.startTz.setAdapter(tz_adapter);
         binding.endTz.setAdapter(tz_adapter);
 
-        View.OnFocusChangeListener time_listener = new View.OnFocusChangeListener()
-        {
-            private String old_time;
-            @Override
-            public void onFocusChange(View v, boolean hasFocus)
-            {
-                if(hasFocus)
-                {
-                    old_time = ((EditText)v).getText().toString();
-                }
-                else
-                {
-                    String new_time = ((EditText)v).getText().toString();
-                    SimpleDateFormat df = new SimpleDateFormat(Settings.this.getResources().getString(R.string.time_format), Locale.US);
-
-                    Date time = df.parse(new_time, new ParsePosition(0));
-                    if(time == null)
-                    {
-                        Toast.makeText(Settings.this, "Invalid time: " + new_time + ". Correct format is: " +
-                                                      Settings.this.getResources().getString(R.string.time_format),
-                                Toast.LENGTH_LONG).show();
-                        ((EditText) v).setText(old_time);
-                    }
-                    else
-                    {
-                        new_time = df.format(time);
-                        ((EditText) v).setText(new_time);
-                    }
-                }
-            }
-        };
-
         View.OnFocusChangeListener date_listener = new View.OnFocusChangeListener()
         {
-            private String old_date;
             @Override
             public void onFocusChange(View v, boolean hasFocus)
             {
-                if(hasFocus)
-                {
-                    old_date = ((EditText)v).getText().toString();
-                }
-                else
+                if(!hasFocus)
                 {
                     String new_date = ((EditText)v).getText().toString();
                     SimpleDateFormat df = new SimpleDateFormat(Settings.this.getResources().getString(R.string.date_format), Locale.US);
@@ -110,7 +75,17 @@ public class Settings extends AppCompatActivity implements Precision_dialog_frag
                         Toast.makeText(Settings.this, "Invalid date: " + new_date + ". Correct format is: " +
                                                       Settings.this.getResources().getString(R.string.date_format),
                                 Toast.LENGTH_LONG).show();
-                        ((EditText) v).setText(old_date);
+
+                        if(v.getId() == R.id.start_date_sel)
+                        {
+                            df.setTimeZone(TimeZone.getTimeZone(data.start_tz));
+                            ((EditText) v).setText(df.format(new Date(data.start_time * 1000)));
+                        }
+                        else if(v.getId() == R.id.end_date_sel)
+                        {
+                            df.setTimeZone(TimeZone.getTimeZone(data.end_tz));
+                            ((EditText) v).setText(df.format(new Date(data.end_time * 1000)));
+                        }
                     }
                     else
                     {
@@ -121,21 +96,48 @@ public class Settings extends AppCompatActivity implements Precision_dialog_frag
             }
         };
 
+        View.OnFocusChangeListener time_listener = new View.OnFocusChangeListener()
+        {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus)
+            {
+                if(!hasFocus)
+                {
+                    String new_time = ((EditText)v).getText().toString();
+                    SimpleDateFormat df = new SimpleDateFormat(Settings.this.getResources().getString(R.string.time_format), Locale.US);
+
+                    Date time = df.parse(new_time, new ParsePosition(0));
+                    if(time == null)
+                    {
+                        Toast.makeText(Settings.this, "Invalid time: " + new_time + ". Correct format is: " +
+                                                      Settings.this.getResources().getString(R.string.time_format),
+                                Toast.LENGTH_LONG).show();
+
+                        if(v.getId() == R.id.start_time_sel)
+                        {
+                            df.setTimeZone(TimeZone.getTimeZone(data.start_tz));
+                            ((EditText) v).setText(df.format(new Date(data.start_time * 1000)));
+                        }
+                        else if(v.getId() == R.id.end_time_sel)
+                        {
+                            df.setTimeZone(TimeZone.getTimeZone(data.end_tz));
+                            ((EditText) v).setText(df.format(new Date(data.end_time * 1000)));
+                        }
+                    }
+                    else
+                    {
+                        new_time = df.format(time);
+                        ((EditText) v).setText(new_time);
+                    }
+                }
+            }
+        };
+
         binding.startTimeSel.setOnFocusChangeListener(time_listener);
         binding.endTimeSel.setOnFocusChangeListener(time_listener);
 
         binding.startDateSel.setOnFocusChangeListener(date_listener);
         binding.endDateSel.setOnFocusChangeListener(date_listener);
-
-        for(int i = 0; i < tz_adapter.getCount(); ++i)
-        {
-            if(tz_adapter.getItem(i).equals(TimeZone.getDefault().getID()))
-            {
-                binding.startTz.setSelection(i);
-                binding.endTz.setSelection(i);
-                break;
-            }
-        }
 
         // only run this on 1st creation
         if(savedInstanceState == null)
@@ -167,11 +169,45 @@ public class Settings extends AppCompatActivity implements Precision_dialog_frag
         }
 
         binding.setData(data);
+
+        int found = 0;
+        for(int i = 0; i < tz_adapter.getCount(); ++i)
+        {
+            if(tz_adapter.getItem(i).equals(data.start_tz))
+            {
+                binding.startTz.setSelection(i);
+                ++found;
+            }
+            if(tz_adapter.getItem(i).equals(data.end_tz))
+            {
+                binding.endTz.setSelection(i);
+                ++found;
+            }
+            if(found == 2)
+                break;
+        }
+
+
+        SimpleDateFormat df_date = new SimpleDateFormat(getResources().getString(R.string.date_format), Locale.US);
+        SimpleDateFormat df_time = new SimpleDateFormat(getResources().getString(R.string.time_format), Locale.US);
+
+        Date start_date = new Date(data.start_time * 1000);
+        df_date.setTimeZone(TimeZone.getTimeZone(data.start_tz));
+        df_time.setTimeZone(TimeZone.getTimeZone(data.start_tz));
+        binding.startDateSel.setText(df_date.format(start_date));
+        binding.startTimeSel.setText(df_time.format(start_date));
+
+        Date end_date = new Date(data.end_time * 1000);
+        df_date.setTimeZone(TimeZone.getTimeZone(data.end_tz));
+        df_time.setTimeZone(TimeZone.getTimeZone(data.end_tz));
+        binding.endDateSel.setText(df_date.format(end_date));
+        binding.endTimeSel.setText(df_time.format(end_date));
     }
 
     @Override
     protected void onSaveInstanceState(Bundle out)
     {
+        store_widgets_to_data();
         super.onSaveInstanceState(out);
         out.putSerializable(STATE_DATA, data);
     }
@@ -189,28 +225,11 @@ public class Settings extends AppCompatActivity implements Precision_dialog_frag
         switch(item.getItemId())
         {
             case R.id.save_butt:
+
+                if(!store_widgets_to_data())
+                    return true;
+
                 Intent intent = new Intent();
-
-                // get data from widgets (some have been set through callbacks already)
-                data.title = binding.title.getText().toString();
-                data.pre_text = binding.preText.getText().toString();
-                data.countdown_text = binding.countdownText.getText().toString();
-                data.complete_text = binding.completeText.getText().toString();
-                data.post_text = binding.postText.getText().toString();
-
-                data.show_progress = binding.showProgress.isChecked();
-                data.show_start = binding.showStart.isChecked();
-                data.show_end = binding.showEnd.isChecked();
-                data.show_years = binding.showYears.isChecked();
-                data.show_months = binding.showMonths.isChecked();
-                data.show_weeks = binding.showWeeks.isChecked();
-                data.show_days = binding.showDays.isChecked();
-                data.show_hours = binding.showHours.isChecked();
-                data.show_minutes = binding.showMinutes.isChecked();
-                data.show_seconds = binding.showSeconds.isChecked();
-                data.terminate = binding.terminate.isChecked();
-                data.notify = binding.notify.isChecked();
-
                 if(data.rowid < 0)
                 {
                     data.insert(this);
@@ -230,56 +249,236 @@ public class Settings extends AppCompatActivity implements Precision_dialog_frag
         return false;
     }
 
-    public static class Timepicker_frag extends DialogFragment implements TimePickerDialog.OnTimeSetListener
+    public boolean store_widgets_to_data()
     {
+        boolean errors = false;
+        // get data from widgets precision has been stored through its callback already
+        data.start_tz = binding.startTz.getSelectedItem().toString();
+        data.end_tz = binding.endTz.getSelectedItem().toString();
+
+        // validate dates and times
+        SimpleDateFormat datetime_df = new SimpleDateFormat(getResources().getString(R.string.date_format) + " " +
+                                                            getResources().getString(R.string.time_format), Locale.US);
+        SimpleDateFormat date_df = new SimpleDateFormat(getResources().getString(R.string.date_format), Locale.US);
+        SimpleDateFormat time_df = new SimpleDateFormat(getResources().getString(R.string.time_format), Locale.US);
+
+        datetime_df.setTimeZone(TimeZone.getTimeZone(data.start_tz));
+        date_df.setTimeZone(TimeZone.getTimeZone(data.start_tz));
+        time_df.setTimeZone(TimeZone.getTimeZone(data.start_tz));
+
+        Date start_date = date_df.parse(binding.startDateSel.getText().toString(), new ParsePosition((0)));
+        Date start_time = time_df.parse(binding.startTimeSel.getText().toString(), new ParsePosition((0)));
+
+        if(start_date == null)
+        {
+            Toast.makeText(this, "Invalid date: " + binding.startDateSel.getText().toString()  +
+                                 ". Correct format is: " + getResources().getString(R.string.date_format),
+                    Toast.LENGTH_LONG).show();
+
+            errors = true;
+        }
+        if(start_time == null)
+        {
+            Toast.makeText(this, "Invalid time: " + binding.startTimeSel.getText().toString()  +
+                                 ". Correct format is: " + getResources().getString(R.string.time_format),
+                    Toast.LENGTH_LONG).show();
+
+            errors = true;
+        }
+
+        if(start_date != null && start_time!= null)
+        {
+            data.start_time = datetime_df.parse(binding.startDateSel.getText().toString() + " " +
+                                                binding.startTimeSel.getText().toString(),
+                    new ParsePosition((0))).getTime() / 1000;
+        }
+
+        datetime_df.setTimeZone(TimeZone.getTimeZone(data.end_tz));
+        date_df.setTimeZone(TimeZone.getTimeZone(data.end_tz));
+        time_df.setTimeZone(TimeZone.getTimeZone(data.end_tz));
+
+        Date end_date = date_df.parse(binding.endDateSel.getText().toString(), new ParsePosition((0)));
+        Date end_time = time_df.parse(binding.endTimeSel.getText().toString(), new ParsePosition((0)));
+
+        if(end_date == null)
+        {
+            Toast.makeText(this, "Invalid date: " + binding.endDateSel.getText().toString()  +
+                                 ". Correct format is: " + getResources().getString(R.string.date_format),
+                    Toast.LENGTH_LONG).show();
+
+            errors = true;
+        }
+        if(end_time == null)
+        {
+            Toast.makeText(this, "Invalid time: " + binding.endTimeSel.getText().toString()  +
+                                 ". Correct format is: " + getResources().getString(R.string.time_format),
+                    Toast.LENGTH_LONG).show();
+
+            errors = true;
+        }
+
+        if(end_date != null && end_time != null)
+        {
+            data.end_time = datetime_df.parse(binding.endDateSel.getText().toString() + " " +
+                                              binding.endTimeSel.getText().toString(),
+                    new ParsePosition((0))).getTime() / 1000;
+        }
+
+        if(data.end_time < data.start_time)
+        {
+            Toast.makeText(this, "Error: End date/time is before start date/time", Toast.LENGTH_LONG).show();
+            errors = true;
+        }
+
+        data.title = binding.title.getText().toString();
+        data.pre_text = binding.preText.getText().toString();
+        data.countdown_text = binding.countdownText.getText().toString();
+        data.complete_text = binding.completeText.getText().toString();
+        data.post_text = binding.postText.getText().toString();
+
+        data.show_progress = binding.showProgress.isChecked();
+        data.show_start = binding.showStart.isChecked();
+        data.show_end = binding.showEnd.isChecked();
+        data.show_years = binding.showYears.isChecked();
+        data.show_months = binding.showMonths.isChecked();
+        data.show_weeks = binding.showWeeks.isChecked();
+        data.show_days = binding.showDays.isChecked();
+        data.show_hours = binding.showHours.isChecked();
+        data.show_minutes = binding.showMinutes.isChecked();
+        data.show_seconds = binding.showSeconds.isChecked();
+        data.terminate = binding.terminate.isChecked();
+        data.notify = binding.notify.isChecked();
+
+        return !errors;
+    }
+
+    public static class Datepicker_frag extends DialogFragment
+    {
+        public static final String STORE_DATE = "STORE_DATE";
+        public static final String DATE = "DATE";
+
         @Override
         public Dialog onCreateDialog(Bundle saved_instance_state)
         {
-            return new TimePickerDialog(getActivity(), this, 0, 0, false);
-        }
+            String date = getArguments().getString(DATE);
+            int year, month, day;
+            try
+            {
+                String[] date_components = date.split("-");
+                year = Integer.parseInt(date_components[0]);
+                month = Integer.parseInt(date_components[1]) - 1;
+                day = Integer.parseInt(date_components[2]);
+            }
+            catch(NumberFormatException | ArrayIndexOutOfBoundsException e)
+            {
+                Toast.makeText(getActivity(), "Invalid date: " + date + ". Correct format is: " +
+                              getActivity().getResources().getString(R.string.date_format),
+                        Toast.LENGTH_LONG).show();
 
-        @Override
-        public void onTimeSet(TimePicker view, int hour, int minute)
-        {
-            Toast.makeText(getActivity(), "Time chosen was: " + String.valueOf(hour) + ":" + String.valueOf(minute), Toast.LENGTH_SHORT).show();
+                // set to stored date
+                Calendar cal = Calendar.getInstance();
+                cal.setTimeInMillis(getArguments().getLong(STORE_DATE, 0) * 1000);
+                year = cal.get(Calendar.YEAR);
+                month = cal.get(Calendar.MONTH);
+                day = cal.get(Calendar.DAY_OF_MONTH);
+            }
+
+            return new DatePickerDialog(getActivity(), (Settings) getActivity(), year, month, day);
         }
     }
 
-    public static class Datepicker_frag extends DialogFragment implements DatePickerDialog.OnDateSetListener
+    @Override
+    public void onDateSet(DatePicker view, int year, int month, int day)
     {
+        String date = String.format(Locale.US, "%04d-%02d-%02d", year, month + 1, day);
+        date_time_dialog_target.setText(date);
+    }
+
+    public static class Timepicker_frag extends DialogFragment
+    {
+        public static final String STORE_TIME = "STORE_TIME";
+        public static final String TIME = "TIME";
+
         @Override
         public Dialog onCreateDialog(Bundle saved_instance_state)
         {
-            return new DatePickerDialog(getActivity(), this, 2101, 0, 1);
-        }
+            String time = getArguments().getString(TIME);
+            int hour, minute, second;
+            try
+            {
+                String[] date_components = time.split(":");
+                hour = Integer.parseInt(date_components[0]);
+                minute = Integer.parseInt(date_components[1]);
+                second = Integer.parseInt(date_components[2]);
+            }
+            catch(NumberFormatException | ArrayIndexOutOfBoundsException e)
+            {
+                Toast.makeText(getActivity(), "Invalid time: " + time + ". Correct format is: " +
+                                              getActivity().getResources().getString(R.string.time_format),
+                        Toast.LENGTH_LONG).show();
 
-        @Override
-        public void onDateSet(DatePicker view, int year, int month, int day)
-        {
-            Toast.makeText(getActivity(), "Date chosen was: " + String.valueOf(year) + "-" + String.valueOf(month) + "-" + String.valueOf(day), Toast.LENGTH_SHORT).show();
+                // set to stored time
+                Calendar cal = Calendar.getInstance();
+                cal.setTimeInMillis(getArguments().getLong(STORE_TIME, 0) * 1000);
+                hour = cal.get(Calendar.HOUR_OF_DAY);
+                minute = cal.get(Calendar.MINUTE);
+                second = cal.get(Calendar.SECOND);
+            }
+
+            return new TimePickerDialog(getActivity(), (Settings) getActivity(), hour, minute, true);
         }
     }
 
-    public void on_start_clock_butt(View view)
+    @Override
+    public void onTimeSet(TimePicker view, int hour, int minute)
     {
-        new Timepicker_frag().show(getSupportFragmentManager(), "start_time_picker");
+        String time = String.format(Locale.US, "%02d:%02d:00", hour, minute);
+        date_time_dialog_target.setText(time);
     }
 
     public void on_start_cal_butt(View view)
     {
-        new Datepicker_frag().show(getSupportFragmentManager(), "start_date_picker");
+        date_time_dialog_target = binding.startDateSel;
+        Datepicker_frag frag = new Datepicker_frag();
+        Bundle args = new Bundle();
+        args.putString(Datepicker_frag.DATE, binding.startDateSel.getText().toString());
+        args.putLong(Datepicker_frag.STORE_DATE, data.start_time);
+        frag.setArguments(args);
+        frag.show(getSupportFragmentManager(), "start_date_picker");
     }
 
-    public void on_end_clock_butt(View view)
+    public void on_start_clock_butt(View view)
     {
-        new Timepicker_frag().show(getSupportFragmentManager(), "end_time_picker");
+        date_time_dialog_target = binding.startTimeSel;
+        Timepicker_frag frag = new Timepicker_frag();
+        Bundle args = new Bundle();
+        args.putString(Timepicker_frag.TIME, binding.startTimeSel.getText().toString());
+        args.putLong(Timepicker_frag.STORE_TIME, data.start_time);
+        frag.setArguments(args);
+        frag.show(getSupportFragmentManager(), "start_time_picker");
     }
 
     public void on_end_cal_butt(View view)
     {
-        new Datepicker_frag().show(getSupportFragmentManager(), "end_date_picker");
+        date_time_dialog_target = binding.endDateSel;
+        Datepicker_frag frag = new Datepicker_frag();
+        Bundle args = new Bundle();
+        args.putString(Datepicker_frag.DATE, binding.endDateSel.getText().toString());
+        args.putLong(Datepicker_frag.STORE_DATE, data.end_time);
+        frag.setArguments(args);
+        frag.show(getSupportFragmentManager(), "end_date_picker");
     }
 
+    public void on_end_clock_butt(View view)
+    {
+        date_time_dialog_target = binding.endTimeSel;
+        Timepicker_frag frag = new Timepicker_frag();
+        Bundle args = new Bundle();
+        args.putString(Timepicker_frag.TIME, binding.endTimeSel.getText().toString());
+        args.putLong(Timepicker_frag.STORE_TIME, data.end_time);
+        frag.setArguments(args);
+        frag.show(getSupportFragmentManager(), "end_time_picker");
+    }
     public void on_precision_butt(View view)
     {
         Precision_dialog_frag d = new Precision_dialog_frag();
@@ -295,5 +494,4 @@ public class Settings extends AppCompatActivity implements Precision_dialog_frag
         data.precision = dialog.getValue();
         binding.precision.setText(String.valueOf(data.precision));
     }
-
 }
