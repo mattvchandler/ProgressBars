@@ -131,30 +131,30 @@ public class Progress_bar_data implements Serializable
         Calendar end_time_cal = (Calendar) start_time_cal.clone();
         end_time_cal.add(Calendar.HOUR, 1);
 
-        rowid = -1;
-        order = -1;
-        start_time = start_time_cal.getTimeInMillis() / 1000L;
-        end_time = end_time_cal.getTimeInMillis() / 1000L;
-        start_tz = start_time_cal.getTimeZone().getID();
-        end_tz = end_time_cal.getTimeZone().getID();
-        title = context.getResources().getString(R.string.default_title);
-        pre_text = context.getResources().getString(R.string.default_pre_text);
+        rowid          = -1;
+        order          = -1;
+        start_time     = start_time_cal.getTimeInMillis() / 1000L;
+        end_time       = end_time_cal.getTimeInMillis() / 1000L;
+        start_tz       = start_time_cal.getTimeZone().getID();
+        end_tz         = end_time_cal.getTimeZone().getID();
+        title          = context.getResources().getString(R.string.default_title);
+        pre_text       = context.getResources().getString(R.string.default_pre_text);
         countdown_text = context.getResources().getString(R.string.default_countdown_text);
-        complete_text = context.getResources().getString(R.string.default_complete_text);
-        post_text = context.getResources().getString(R.string.default_post_text);
-        precision = 2;
-        show_progress = true;
-        show_start = true;
-        show_end = true;
-        show_years = true;
-        show_months = true;
-        show_weeks = true;
-        show_days = true;
-        show_hours = true;
-        show_minutes = true;
-        show_seconds = true;
-        terminate = true;
-        notify = true;
+        complete_text  = context.getResources().getString(R.string.default_complete_text);
+        post_text      = context.getResources().getString(R.string.default_post_text);
+        precision      = 2;
+        show_progress  = true;
+        show_start     = true;
+        show_end       = true;
+        show_years     = true;
+        show_months    = true;
+        show_weeks     = true;
+        show_days      = true;
+        show_hours     = true;
+        show_minutes   = true;
+        show_seconds   = true;
+        terminate      = true;
+        notify         = true;
     }
 
     public Progress_bar_data(Context context, String title_in)
@@ -198,6 +198,34 @@ public class Progress_bar_data implements Serializable
         db.close();
     }
 
+    public Progress_bar_data(Progress_bar_data b)
+    {
+        rowid          = b.rowid;
+        order          = b.order;
+        start_time     = b.start_time;
+        end_time       = b.end_time;
+        start_tz       = b.start_tz;
+        end_tz         = b.end_tz;
+        title          = b.title;
+        pre_text       = b.pre_text;
+        countdown_text = b.countdown_text;
+        complete_text  = b.complete_text;
+        post_text      = b.post_text;
+        precision      = b.precision;
+        show_progress  = b.show_progress;
+        show_start     = b.show_start;
+        show_end       = b.show_end;
+        show_years     = b.show_years;
+        show_months    = b.show_months;
+        show_weeks     = b.show_weeks;
+        show_days      = b.show_days;
+        show_hours     = b.show_hours;
+        show_minutes   = b.show_minutes;
+        show_seconds   = b.show_seconds;
+        terminate      = b.terminate;
+        notify         = b.notify;
+    }
+
     public void insert(Context context)
     {
         if(rowid >= 0)
@@ -239,7 +267,7 @@ public class Progress_bar_data implements Serializable
         values.put(Progress_bar_contract.Progress_bar_table.TERMINATE_COL, terminate);
         values.put(Progress_bar_contract.Progress_bar_table.NOTIFY_COL, notify);
 
-        db.insert(Progress_bar_contract.Progress_bar_table.TABLE_NAME, null, values);
+        rowid = db.insert(Progress_bar_contract.Progress_bar_table.TABLE_NAME, null, values);
 
         db.close();
     }
@@ -281,6 +309,21 @@ public class Progress_bar_data implements Serializable
         db.update(Progress_bar_contract.Progress_bar_table.TABLE_NAME, values, Progress_bar_contract.Progress_bar_table._ID + " = ?", new String[]{String.valueOf(rowid)});
 
         db.close();
+    }
+
+    public void delete(Context context)
+    {
+        if(rowid < 0)
+            throw new IllegalStateException("Tried to delete when rowid isn't set");
+
+        SQLiteDatabase db = new Progress_bar_DB(context).getWritableDatabase();
+
+        db.delete(Progress_bar_contract.Progress_bar_table.TABLE_NAME,
+                Progress_bar_contract.Progress_bar_table._ID + " = ?",
+                new String[] {String.valueOf(rowid)});
+        db.close();
+
+        rowid = -1;
     }
 }
 

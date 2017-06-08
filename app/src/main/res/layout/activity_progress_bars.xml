@@ -35,16 +35,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
             />
-
-            <!-- may want this again later, but recyclerview doesn't have setEmptyView
-            <TextView
-                android:id="@+id/empty"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="There is no data, dummy."
-                android:textStyle="bold"/>
-            -->
-
         </LinearLayout>
     </android.support.design.widget.CoordinatorLayout>
 </layout>

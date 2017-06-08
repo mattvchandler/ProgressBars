@@ -33,16 +33,19 @@ public class Settings extends AppCompatActivity implements Precision_dialog_frag
                                                            TimePickerDialog.OnTimeSetListener
 {
     public static final String EXRTA_EDIT_ROW_ID = "org.mattvchandler.progressbars.EDIT_ROW_ID";
-    public static final String RESULT_ROW_ID = "org.mattvchandler.progressbars.RESULT_ROW_ID";
-    public static final String RESULT_NEW_ROW = "org.mattvchandler.progressbars.RESULT_NEW_ROW";
+    public static final String RESULT_NEW_DATA = "org.mattvchandler.progressbars.RESULT_ROW_ID";
+    public static final String RESULT_OLD_DATA = "org.mattvchandler.progressbars.RESULT_OLD_DATA";
 
     public static final String STATE_DATA = "data";
+    public static final String STATE_SAVE_DATA = "data";
 
     private ActivitySettingsBinding binding;
     private Progress_bar_data data;
+    private Progress_bar_data save_data;
 
     private EditText date_time_dialog_target;
 
+    // TODO: remove hardcoded strings
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -162,10 +165,12 @@ public class Settings extends AppCompatActivity implements Precision_dialog_frag
                 // get data from row
                 data = new Progress_bar_data(this, rowid);
             }
+            save_data = new Progress_bar_data(data);
         }
         else
         {
             data = (Progress_bar_data)savedInstanceState.getSerializable(STATE_DATA);
+            save_data = (Progress_bar_data)savedInstanceState.getSerializable(STATE_SAVE_DATA);
         }
 
         binding.setData(data);
@@ -210,6 +215,7 @@ public class Settings extends AppCompatActivity implements Precision_dialog_frag
         store_widgets_to_data();
         super.onSaveInstanceState(out);
         out.putSerializable(STATE_DATA, data);
+        out.putSerializable(STATE_SAVE_DATA, save_data);
     }
 
     @Override
@@ -233,15 +239,15 @@ public class Settings extends AppCompatActivity implements Precision_dialog_frag
                 if(data.rowid < 0)
                 {
                     data.insert(this);
-                    intent.putExtra(RESULT_NEW_ROW, true);
                 }
                 else
                 {
                     data.update(this);
-                    intent.putExtra(RESULT_NEW_ROW, false);
+                    intent.putExtra(RESULT_OLD_DATA, save_data);
                 }
 
-                intent.putExtra(RESULT_ROW_ID, data.rowid);
+                intent.putExtra(RESULT_NEW_DATA, data);
+
                 setResult(RESULT_OK, intent);
                 finish();
                 return true;

@@ -7,6 +7,7 @@ import android.content.res.Resources;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.databinding.DataBindingUtil;
+import android.support.design.widget.Snackbar;
 import android.support.v4.widget.SimpleCursorAdapter;
 import android.support.v7.widget.RecyclerView;
 import android.util.TypedValue;
@@ -118,7 +119,7 @@ public class Progress_bar_adapter extends RecyclerView.Adapter<Progress_bar_adap
             }
         }
 
-        throw new NoSuchElementException("rowid" + String.valueOf(rowid) + "not found in cursor");
+        throw new NoSuchElementException("rowid: " + String.valueOf(rowid) + " not found in cursor");
     }
 
     public void on_item_move(int from_pos, int to_pos)
@@ -150,22 +151,28 @@ public class Progress_bar_adapter extends RecyclerView.Adapter<Progress_bar_adap
         notifyItemMoved(to_pos, from_pos);
     }
 
-    public void on_item_dismiss(int pos)
+    public void on_item_dismiss(final int pos)
     {
         cursor.moveToPosition(pos);
-        String rowid = cursor.getString(cursor.getColumnIndexOrThrow(Progress_bar_contract.Progress_bar_table._ID));
+        final Progress_bar_data save_data = new Progress_bar_data(cursor);
 
-        SQLiteDatabase db = new Progress_bar_DB(context).getWritableDatabase();
-
-        db.delete(Progress_bar_contract.Progress_bar_table.TABLE_NAME,
-                  Progress_bar_contract.Progress_bar_table._ID + " = ?",
-                  new String[] {rowid});
-
-        db.close();
+        save_data.delete(context);
 
         resetCursor(null);
 
         notifyItemRemoved(pos);
-        // TODO: snackbar w/ undo
+
+        // TODO: remove hardcoded strings
+        Snackbar.make(context.findViewById(R.id.mainList), save_data.title + " deleted", Snackbar.LENGTH_LONG)
+                .setAction("Undo", new View.OnClickListener()
+                {
+                    @Override
+                    public void onClick(View v)
+                    {
+                        save_data.insert(context);
+                        resetCursor(null);
+                        Progress_bar_adapter.this.notifyItemInserted(pos);
+                    }
+                }).show();
     }
 }

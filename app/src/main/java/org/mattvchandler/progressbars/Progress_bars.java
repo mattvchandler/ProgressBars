@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.widget.DividerItemDecoration;
@@ -14,6 +15,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Toast;
 
 import org.mattvchandler.progressbars.databinding.ActivityProgressBarsBinding;
@@ -78,19 +80,46 @@ public class Progress_bars extends AppCompatActivity
     {
         if(request_code == UPDATE_REQUEST && result_code == RESULT_OK)
         {
-            // TODO: snackbar w/ undo
-            long rowid = data.getLongExtra(Settings.RESULT_ROW_ID, -1);
-            boolean new_row = data.getBooleanExtra(Settings.RESULT_NEW_ROW, false);
+            final Progress_bar_data new_data = (Progress_bar_data)data.getSerializableExtra(Settings.RESULT_NEW_DATA);
+            final Progress_bar_data old_data = (Progress_bar_data)data.getSerializableExtra(Settings.RESULT_OLD_DATA);
 
             adapter.resetCursor(null);
 
-            if(new_row)
+            if(old_data == null)
+            {
                 adapter.notifyItemInserted(adapter.getItemCount());
+
+                Snackbar.make(binding.mainList, "Added new timer: " +  new_data.title, Snackbar.LENGTH_LONG)
+                        .setAction("Undo", new View.OnClickListener()
+                        {
+                            @Override
+                            public void onClick(View v)
+                            {
+                                int pos = adapter.find_by_rowid(new_data.rowid);
+                                new_data.delete(Progress_bars.this);
+
+                                adapter.resetCursor(null);
+                                adapter.notifyItemRemoved(pos);
+                            }
+                        }).show();
+            }
             else
             {
-                adapter.notifyItemChanged(adapter.find_by_rowid(rowid));
-            }
+                adapter.notifyItemChanged(adapter.find_by_rowid(new_data.rowid));
 
+                Snackbar.make(binding.mainList, "Saved timer: " +  new_data.title, Snackbar.LENGTH_LONG)
+                        .setAction("Undo", new View.OnClickListener()
+                        {
+                            @Override
+                            public void onClick(View v)
+                            {
+                                old_data.update(Progress_bars.this);
+
+                                adapter.resetCursor(null);
+                                adapter.notifyItemChanged(adapter.find_by_rowid(old_data.rowid));
+                            }
+                        }).show();
+            }
         }
     }
 }
