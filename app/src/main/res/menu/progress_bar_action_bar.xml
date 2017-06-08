@@ -12,4 +12,8 @@
         android:id="@+id/about"
         android:title="@string/about"
         app:showAsAction="never"/>
+    <item
+        android:id="@+id/theme"
+        android:title="@string/set_dark"
+        app:showAsAction="never"/>
 </menu>

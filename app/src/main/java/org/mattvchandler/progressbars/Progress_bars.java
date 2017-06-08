@@ -1,6 +1,7 @@
 package org.mattvchandler.progressbars;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
@@ -19,6 +20,7 @@ public class Progress_bars extends AppCompatActivity
 {
     private ActivityProgressBarsBinding binding;
     private Progress_bar_adapter adapter;
+    private Menu menu;
 
     public static final int UPDATE_REQUEST = 1;
 
@@ -26,6 +28,11 @@ public class Progress_bars extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
+
+        int theme = getSharedPreferences(getResources().getString(R.string.shared_prefs), MODE_PRIVATE)
+                .getInt(getResources().getString(R.string.theme_pref), R.style.Theme_progress_bars);
+        setTheme(theme);
+
         binding = DataBindingUtil.setContentView(this, R.layout.activity_progress_bars);
         setSupportActionBar(binding.progressBarToolbar);
         binding.mainList.addItemDecoration(new DividerItemDecoration(binding.mainList.getContext(), DividerItemDecoration.VERTICAL));
@@ -47,9 +54,20 @@ public class Progress_bars extends AppCompatActivity
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu)
+    public boolean onCreateOptionsMenu(Menu menu_in)
     {
+        super.onCreateOptionsMenu(menu_in);
+        menu = menu_in;
         getMenuInflater().inflate(R.menu.progress_bar_action_bar, menu);
+        if(getSharedPreferences(getResources().getString(R.string.shared_prefs), MODE_PRIVATE).
+                getInt(getResources().getString(R.string.theme_pref), R.style.Theme_progress_bars) == R.style.Theme_progress_bars_dark)
+        {
+            menu.findItem(R.id.theme).setTitle(getResources().getString(R.string.set_light));
+        }
+        else
+        {
+            menu.findItem(R.id.theme).setTitle(getResources().getString(R.string.set_dark));
+        }
         return true;
     }
 
@@ -61,6 +79,19 @@ public class Progress_bars extends AppCompatActivity
         case R.id.add_butt:
             startActivityForResult(new Intent(this, Settings.class), UPDATE_REQUEST);
             return true;
+        case R.id.theme:
+            SharedPreferences prefs = getSharedPreferences(getResources().getString(R.string.shared_prefs), MODE_PRIVATE);
+            if(prefs.getInt(getResources().getString(R.string.theme_pref), R.style.Theme_progress_bars) == R.style.Theme_progress_bars)
+            {
+                prefs.edit().putInt(getResources().getString(R.string.theme_pref), R.style.Theme_progress_bars_dark).apply();
+                menu.findItem(R.id.theme).setTitle(getResources().getString(R.string.set_light));
+            }
+            else
+            {
+                prefs.edit().putInt(getResources().getString(R.string.theme_pref), R.style.Theme_progress_bars).apply();
+                menu.findItem(R.id.theme).setTitle(getResources().getString(R.string.set_dark));
+            }
+            recreate();
         }
         // TODO: about screen
         return false;

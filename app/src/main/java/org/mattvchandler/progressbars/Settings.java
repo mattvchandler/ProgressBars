@@ -49,6 +49,10 @@ public class Settings extends AppCompatActivity implements Precision_dialog_frag
     {
         super.onCreate(savedInstanceState);
 
+        int theme = getSharedPreferences(getResources().getString(R.string.shared_prefs), MODE_PRIVATE)
+                .getInt(getResources().getString(R.string.theme_pref), R.style.Theme_progress_bars);
+        setTheme(theme);
+
         binding = DataBindingUtil.setContentView(this, R.layout.activity_settings);
         setSupportActionBar(binding.progressBarToolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);

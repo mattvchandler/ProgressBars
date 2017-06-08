@@ -2,6 +2,8 @@
     <string name="app_name">Progress Bars</string>
     <string name="settings_title">Edit timer</string>
     <string name="about">About</string>
+    <string name="set_dark">Set dark theme</string>
+    <string name="set_light">Set light theme</string>
 
     <string name="date_format">yyyy-MM-dd</string>
     <string name="time_format">HH:mm:ss</string>
@@ -71,4 +73,6 @@
     <string name="default_complete_text">Completed</string>
     <string name="default_post_text">"Time since completion: "</string>
 
+    <string name="shared_prefs">org.mattvchandler.progressbars_preferences</string>
+    <string name="theme_pref">theme</string>
 </resources>
