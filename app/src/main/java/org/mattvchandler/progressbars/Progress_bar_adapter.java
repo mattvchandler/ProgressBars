@@ -161,7 +161,7 @@ public class Progress_bar_adapter extends RecyclerView.Adapter<Progress_bar_adap
 
         notifyItemRemoved(pos);
 
-        Snackbar.make(context.findViewById(R.id.mainList), save_data.title + context.getResources().getString(R.string.deleted), Snackbar.LENGTH_LONG)
+        Snackbar.make(context.findViewById(R.id.mainList), context.getResources().getString(R.string.deleted, save_data.title), Snackbar.LENGTH_LONG)
                 .setAction(context.getResources().getString(R.string.undo), new View.OnClickListener()
                 {
                     @Override

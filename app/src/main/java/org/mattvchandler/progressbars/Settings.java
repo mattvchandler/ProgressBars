@@ -77,10 +77,8 @@ public class Settings extends AppCompatActivity implements Precision_dialog_frag
                     Date date = df.parse(new_date, new ParsePosition(0));
                     if(date == null)
                     {
-                        Toast.makeText(Settings.this, getResources().getString(R.string.invalid_date) +
-                                  new_date +
-                                  Settings.this.getResources().getString(R.string.correct_format) +
-                                  Settings.this.getResources().getString(R.string.date_format),
+                        Toast.makeText(Settings.this, getResources().getString(R.string.invalid_date,
+                                  new_date, Settings.this.getResources().getString(R.string.date_format)),
                                 Toast.LENGTH_LONG).show();
 
                         if(v.getId() == R.id.start_date_sel)
@@ -116,10 +114,9 @@ public class Settings extends AppCompatActivity implements Precision_dialog_frag
                     Date time = df.parse(new_time, new ParsePosition(0));
                     if(time == null)
                     {
-                        Toast.makeText(Settings.this, getResources().getString(R.string.invalid_time) +
-                                                      new_time +
-                                                      Settings.this.getResources().getString(R.string.correct_format) +
-                                                      Settings.this.getResources().getString(R.string.time_format),
+                        Toast.makeText(Settings.this, getResources().getString(R.string.invalid_time,
+                                                      new_time,
+                                                      Settings.this.getResources().getString(R.string.time_format)),
                                 Toast.LENGTH_LONG).show();
 
                         if(v.getId() == R.id.start_time_sel)
@@ -274,20 +271,18 @@ public class Settings extends AppCompatActivity implements Precision_dialog_frag
 
         if(start_date == null)
         {
-            Toast.makeText(Settings.this, getResources().getString(R.string.invalid_date) +
-                                          binding.startDateSel.getText().toString()  +
-                                          Settings.this.getResources().getString(R.string.correct_format) +
-                                          Settings.this.getResources().getString(R.string.date_format),
+            Toast.makeText(Settings.this, getResources().getString(R.string.invalid_date,
+                                          binding.startDateSel.getText(),
+                                          Settings.this.getResources().getString(R.string.date_format)),
                     Toast.LENGTH_LONG).show();
 
             errors = true;
         }
         if(start_time == null)
         {
-            Toast.makeText(Settings.this, getResources().getString(R.string.invalid_time) +
-                                          binding.startTimeSel.getText().toString()  +
-                                          Settings.this.getResources().getString(R.string.correct_format) +
-                                          Settings.this.getResources().getString(R.string.time_format),
+            Toast.makeText(Settings.this, getResources().getString(R.string.invalid_time,
+                                          binding.startTimeSel.getText(),
+                                          Settings.this.getResources().getString(R.string.time_format)),
                     Toast.LENGTH_LONG).show();
 
             errors = true;
@@ -309,20 +304,18 @@ public class Settings extends AppCompatActivity implements Precision_dialog_frag
 
         if(end_date == null)
         {
-            Toast.makeText(Settings.this, getResources().getString(R.string.invalid_date) +
-                                          binding.endDateSel.getText().toString()  +
-                                          Settings.this.getResources().getString(R.string.correct_format) +
-                                          Settings.this.getResources().getString(R.string.date_format),
+            Toast.makeText(Settings.this, getResources().getString(R.string.invalid_date,
+                                          binding.endDateSel.getText(),
+                                          Settings.this.getResources().getString(R.string.date_format)),
                     Toast.LENGTH_LONG).show();
 
             errors = true;
         }
         if(end_time == null)
         {
-            Toast.makeText(Settings.this, getResources().getString(R.string.invalid_time) +
-                                          binding.endTimeSel.getText().toString()  +
-                                          Settings.this.getResources().getString(R.string.correct_format) +
-                                          Settings.this.getResources().getString(R.string.time_format),
+            Toast.makeText(Settings.this, getResources().getString(R.string.invalid_time,
+                                          binding.endTimeSel.getText(),
+                                          Settings.this.getResources().getString(R.string.time_format)),
                     Toast.LENGTH_LONG).show();
 
             errors = true;
@@ -383,10 +376,9 @@ public class Settings extends AppCompatActivity implements Precision_dialog_frag
             }
             catch(NumberFormatException | ArrayIndexOutOfBoundsException e)
             {
-                Toast.makeText(getActivity(), getResources().getString(R.string.invalid_date) +
-                                              date +
-                                              getResources().getString(R.string.correct_format) +
-                                              getResources().getString(R.string.date_format),
+                Toast.makeText(getActivity(), getResources().getString(R.string.invalid_date,
+                                              date,
+                                              getResources().getString(R.string.date_format)),
                         Toast.LENGTH_LONG).show();
 
                 // set to stored date
@@ -404,7 +396,7 @@ public class Settings extends AppCompatActivity implements Precision_dialog_frag
     @Override
     public void onDateSet(DatePicker view, int year, int month, int day)
     {
-        String date = String.format(Locale.US, getResources().getString(R.string.date_format_sprintf), year, month + 1, day);
+        String date = getResources().getString(R.string.date_format_sprintf, year, month + 1, day);
         date_time_dialog_target.setText(date);
     }
 
@@ -427,10 +419,9 @@ public class Settings extends AppCompatActivity implements Precision_dialog_frag
             }
             catch(NumberFormatException | ArrayIndexOutOfBoundsException e)
             {
-                Toast.makeText(getActivity(), getResources().getString(R.string.invalid_time) +
-                                              time +
-                                              getResources().getString(R.string.correct_format) +
-                                              getResources().getString(R.string.time_format),
+                Toast.makeText(getActivity(), getResources().getString(R.string.invalid_time,
+                                              time,
+                                              getResources().getString(R.string.time_format)),
                         Toast.LENGTH_LONG).show();
 
                 // set to stored time
@@ -447,7 +438,7 @@ public class Settings extends AppCompatActivity implements Precision_dialog_frag
     @Override
     public void onTimeSet(TimePicker view, int hour, int minute)
     {
-        String time = String.format(Locale.US, getResources().getString(R.string.time_format_sprintf), hour, minute);
+        String time = getResources().getString(R.string.time_format_sprintf, hour, minute);
         date_time_dialog_target.setText(time);
     }
 

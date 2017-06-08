@@ -111,7 +111,7 @@ public class Progress_bars extends AppCompatActivity
             {
                 adapter.notifyItemInserted(adapter.getItemCount());
 
-                Snackbar.make(binding.mainList, getResources().getString(R.string.added_new) +  new_data.title, Snackbar.LENGTH_LONG)
+                Snackbar.make(binding.mainList, getResources().getString(R.string.added_new,  new_data.title), Snackbar.LENGTH_LONG)
                         .setAction(getResources().getString(R.string.undo), new View.OnClickListener()
                         {
                             @Override
@@ -129,7 +129,7 @@ public class Progress_bars extends AppCompatActivity
             {
                 adapter.notifyItemChanged(adapter.find_by_rowid(new_data.rowid));
 
-                Snackbar.make(binding.mainList, getResources().getString(R.string.saved) +  new_data.title, Snackbar.LENGTH_LONG)
+                Snackbar.make(binding.mainList, getResources().getString(R.string.saved, new_data.title), Snackbar.LENGTH_LONG)
                         .setAction(getResources().getString(R.string.undo), new View.OnClickListener()
                         {
                             @Override
