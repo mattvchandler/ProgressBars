@@ -162,9 +162,8 @@ public class Progress_bar_adapter extends RecyclerView.Adapter<Progress_bar_adap
 
         notifyItemRemoved(pos);
 
-        // TODO: remove hardcoded strings
-        Snackbar.make(context.findViewById(R.id.mainList), save_data.title + " deleted", Snackbar.LENGTH_LONG)
-                .setAction("Undo", new View.OnClickListener()
+        Snackbar.make(context.findViewById(R.id.mainList), save_data.title + context.getResources().getString(R.string.deleted), Snackbar.LENGTH_LONG)
+                .setAction(context.getResources().getString(R.string.undo), new View.OnClickListener()
                 {
                     @Override
                     public void onClick(View v)

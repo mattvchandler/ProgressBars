@@ -5,12 +5,23 @@
 
     <string name="date_format">yyyy-MM-dd</string>
     <string name="time_format">HH:mm:ss</string>
+    <string formatted="false" name="date_format_sprintf">%04d-%02d-%02d</string>
+    <string formatted="false" name="time_format_sprintf">%02d:%02d:00</string>
+
+    <string name="invalid_date">"Invalid date: "</string>
+    <string name="invalid_time">"Invalid time: "</string>
+    <string name="correct_format">". Correct format is: "</string>
+    <string name="end_before_start_err">Error: End date/time is before start date/time</string>
 
     <string name="start_time">Start time:</string>
     <string name="end_time">End Time:</string>
 
     <string name="add_butt_title">Add new timer</string>
     <string name="save_butt_title">Save timer</string>
+    <string name="added_new">"Added new timer: "</string>
+    <string name="deleted">" deleted"</string>
+    <string name="saved">"Saved timer: "</string>
+    <string name="undo">Undo</string>
 
     <string name="text_header">Text to display</string>
     <string name="timer_title">Timer title</string>
@@ -55,9 +66,9 @@
     <string name="notify_sw">Send notification on completion</string>
 
     <string name="default_title">New timer</string>
-    <string name="default_pre_text">Time until start:\u0020</string>
-    <string name="default_countdown_text">Time remaining:\u0020</string>
+    <string name="default_pre_text">"Time until start: "</string>
+    <string name="default_countdown_text">"Time remaining: "</string>
     <string name="default_complete_text">Completed</string>
-    <string name="default_post_text">Time since completion:\u0020</string>
+    <string name="default_post_text">"Time since completion: "</string>
 
 </resources>

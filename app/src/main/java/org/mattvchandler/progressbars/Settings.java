@@ -45,7 +45,6 @@ public class Settings extends AppCompatActivity implements Precision_dialog_frag
 
     private EditText date_time_dialog_target;
 
-    // TODO: remove hardcoded strings
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -75,8 +74,10 @@ public class Settings extends AppCompatActivity implements Precision_dialog_frag
                     Date date = df.parse(new_date, new ParsePosition(0));
                     if(date == null)
                     {
-                        Toast.makeText(Settings.this, "Invalid date: " + new_date + ". Correct format is: " +
-                                                      Settings.this.getResources().getString(R.string.date_format),
+                        Toast.makeText(Settings.this, getResources().getString(R.string.invalid_date) +
+                                  new_date +
+                                  Settings.this.getResources().getString(R.string.correct_format) +
+                                  Settings.this.getResources().getString(R.string.date_format),
                                 Toast.LENGTH_LONG).show();
 
                         if(v.getId() == R.id.start_date_sel)
@@ -112,7 +113,9 @@ public class Settings extends AppCompatActivity implements Precision_dialog_frag
                     Date time = df.parse(new_time, new ParsePosition(0));
                     if(time == null)
                     {
-                        Toast.makeText(Settings.this, "Invalid time: " + new_time + ". Correct format is: " +
+                        Toast.makeText(Settings.this, getResources().getString(R.string.invalid_time) +
+                                                      new_time +
+                                                      Settings.this.getResources().getString(R.string.correct_format) +
                                                       Settings.this.getResources().getString(R.string.time_format),
                                 Toast.LENGTH_LONG).show();
 
@@ -150,15 +153,7 @@ public class Settings extends AppCompatActivity implements Precision_dialog_frag
             // no rowid passed? make a new one
             if(rowid < 0)
             {
-                SQLiteDatabase db = new Progress_bar_DB(this).getWritableDatabase();
-
                 data = new Progress_bar_data(this);
-
-                Cursor cursor = db.rawQuery("SELECT MAX(" + Progress_bar_contract.Progress_bar_table.ORDER_COL + ") + 1 AS new_order FROM " + Progress_bar_contract.Progress_bar_table.TABLE_NAME, null);
-                cursor.moveToFirst();
-                data.order = cursor.getLong(0);
-                cursor.close();
-                db.close();
             }
             else
             {
@@ -191,7 +186,6 @@ public class Settings extends AppCompatActivity implements Precision_dialog_frag
             if(found == 2)
                 break;
         }
-
 
         SimpleDateFormat df_date = new SimpleDateFormat(getResources().getString(R.string.date_format), Locale.US);
         SimpleDateFormat df_time = new SimpleDateFormat(getResources().getString(R.string.time_format), Locale.US);
@@ -277,16 +271,20 @@ public class Settings extends AppCompatActivity implements Precision_dialog_frag
 
         if(start_date == null)
         {
-            Toast.makeText(this, "Invalid date: " + binding.startDateSel.getText().toString()  +
-                                 ". Correct format is: " + getResources().getString(R.string.date_format),
+            Toast.makeText(Settings.this, getResources().getString(R.string.invalid_date) +
+                                          binding.startDateSel.getText().toString()  +
+                                          Settings.this.getResources().getString(R.string.correct_format) +
+                                          Settings.this.getResources().getString(R.string.date_format),
                     Toast.LENGTH_LONG).show();
 
             errors = true;
         }
         if(start_time == null)
         {
-            Toast.makeText(this, "Invalid time: " + binding.startTimeSel.getText().toString()  +
-                                 ". Correct format is: " + getResources().getString(R.string.time_format),
+            Toast.makeText(Settings.this, getResources().getString(R.string.invalid_time) +
+                                          binding.startTimeSel.getText().toString()  +
+                                          Settings.this.getResources().getString(R.string.correct_format) +
+                                          Settings.this.getResources().getString(R.string.time_format),
                     Toast.LENGTH_LONG).show();
 
             errors = true;
@@ -308,16 +306,20 @@ public class Settings extends AppCompatActivity implements Precision_dialog_frag
 
         if(end_date == null)
         {
-            Toast.makeText(this, "Invalid date: " + binding.endDateSel.getText().toString()  +
-                                 ". Correct format is: " + getResources().getString(R.string.date_format),
+            Toast.makeText(Settings.this, getResources().getString(R.string.invalid_date) +
+                                          binding.endDateSel.getText().toString()  +
+                                          Settings.this.getResources().getString(R.string.correct_format) +
+                                          Settings.this.getResources().getString(R.string.date_format),
                     Toast.LENGTH_LONG).show();
 
             errors = true;
         }
         if(end_time == null)
         {
-            Toast.makeText(this, "Invalid time: " + binding.endTimeSel.getText().toString()  +
-                                 ". Correct format is: " + getResources().getString(R.string.time_format),
+            Toast.makeText(Settings.this, getResources().getString(R.string.invalid_time) +
+                                          binding.endTimeSel.getText().toString()  +
+                                          Settings.this.getResources().getString(R.string.correct_format) +
+                                          Settings.this.getResources().getString(R.string.time_format),
                     Toast.LENGTH_LONG).show();
 
             errors = true;
@@ -332,7 +334,7 @@ public class Settings extends AppCompatActivity implements Precision_dialog_frag
 
         if(data.end_time < data.start_time)
         {
-            Toast.makeText(this, "Error: End date/time is before start date/time", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, getResources().getString(R.string.end_before_start_err), Toast.LENGTH_LONG).show();
             errors = true;
         }
 
@@ -377,8 +379,10 @@ public class Settings extends AppCompatActivity implements Precision_dialog_frag
             }
             catch(NumberFormatException | ArrayIndexOutOfBoundsException e)
             {
-                Toast.makeText(getActivity(), "Invalid date: " + date + ". Correct format is: " +
-                              getActivity().getResources().getString(R.string.date_format),
+                Toast.makeText(getActivity(), getResources().getString(R.string.invalid_date) +
+                                              date +
+                                              getResources().getString(R.string.correct_format) +
+                                              getResources().getString(R.string.date_format),
                         Toast.LENGTH_LONG).show();
 
                 // set to stored date
@@ -396,7 +400,7 @@ public class Settings extends AppCompatActivity implements Precision_dialog_frag
     @Override
     public void onDateSet(DatePicker view, int year, int month, int day)
     {
-        String date = String.format(Locale.US, "%04d-%02d-%02d", year, month + 1, day);
+        String date = String.format(Locale.US, getResources().getString(R.string.date_format_sprintf), year, month + 1, day);
         date_time_dialog_target.setText(date);
     }
 
@@ -419,8 +423,10 @@ public class Settings extends AppCompatActivity implements Precision_dialog_frag
             }
             catch(NumberFormatException | ArrayIndexOutOfBoundsException e)
             {
-                Toast.makeText(getActivity(), "Invalid time: " + time + ". Correct format is: " +
-                                              getActivity().getResources().getString(R.string.time_format),
+                Toast.makeText(getActivity(), getResources().getString(R.string.invalid_time) +
+                                              time +
+                                              getResources().getString(R.string.correct_format) +
+                                              getResources().getString(R.string.time_format),
                         Toast.LENGTH_LONG).show();
 
                 // set to stored time
@@ -438,7 +444,7 @@ public class Settings extends AppCompatActivity implements Precision_dialog_frag
     @Override
     public void onTimeSet(TimePicker view, int hour, int minute)
     {
-        String time = String.format(Locale.US, "%02d:%02d:00", hour, minute);
+        String time = String.format(Locale.US, getResources().getString(R.string.time_format_sprintf), hour, minute);
         date_time_dialog_target.setText(time);
     }
 
