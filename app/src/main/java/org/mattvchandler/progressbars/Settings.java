@@ -4,9 +4,8 @@ import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.TimePickerDialog;
 import android.content.Intent;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.databinding.DataBindingUtil;
+import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -32,12 +31,12 @@ public class Settings extends AppCompatActivity implements Precision_dialog_frag
                                                            DatePickerDialog.OnDateSetListener,
                                                            TimePickerDialog.OnTimeSetListener
 {
-    public static final String EXRTA_EDIT_ROW_ID = "org.mattvchandler.progressbars.EDIT_ROW_ID";
+    public static final String EXTRA_EDIT_ROW_ID = "org.mattvchandler.progressbars.EDIT_ROW_ID";
     public static final String RESULT_NEW_DATA = "org.mattvchandler.progressbars.RESULT_ROW_ID";
     public static final String RESULT_OLD_DATA = "org.mattvchandler.progressbars.RESULT_OLD_DATA";
 
-    public static final String STATE_DATA = "data";
-    public static final String STATE_SAVE_DATA = "data";
+    private static final String STATE_DATA = "data";
+    private static final String STATE_SAVE_DATA = "data";
 
     private ActivitySettingsBinding binding;
     private Progress_bar_data data;
@@ -55,7 +54,7 @@ public class Settings extends AppCompatActivity implements Precision_dialog_frag
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         // fill timezone spinners
-        ArrayAdapter<String> tz_adapter = new ArrayAdapter<String>(this, R.layout.right_aligned_spinner, TimeZone.getAvailableIDs());
+        ArrayAdapter<String> tz_adapter = new ArrayAdapter<>(this, R.layout.right_aligned_spinner, TimeZone.getAvailableIDs());
         tz_adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
         binding.startTz.setAdapter(tz_adapter);
@@ -148,7 +147,7 @@ public class Settings extends AppCompatActivity implements Precision_dialog_frag
         // only run this on 1st creation
         if(savedInstanceState == null)
         {
-            long rowid = getIntent().getLongExtra(EXRTA_EDIT_ROW_ID, -1);
+            long rowid = getIntent().getLongExtra(EXTRA_EDIT_ROW_ID, -1);
 
             // no rowid passed? make a new one
             if(rowid < 0)
@@ -249,7 +248,7 @@ public class Settings extends AppCompatActivity implements Precision_dialog_frag
         return false;
     }
 
-    public boolean store_widgets_to_data()
+    private boolean store_widgets_to_data()
     {
         boolean errors = false;
         // get data from widgets precision has been stored through its callback already
@@ -365,6 +364,7 @@ public class Settings extends AppCompatActivity implements Precision_dialog_frag
         public static final String STORE_DATE = "STORE_DATE";
         public static final String DATE = "DATE";
 
+        @NonNull
         @Override
         public Dialog onCreateDialog(Bundle saved_instance_state)
         {
@@ -409,17 +409,17 @@ public class Settings extends AppCompatActivity implements Precision_dialog_frag
         public static final String STORE_TIME = "STORE_TIME";
         public static final String TIME = "TIME";
 
+        @NonNull
         @Override
         public Dialog onCreateDialog(Bundle saved_instance_state)
         {
             String time = getArguments().getString(TIME);
-            int hour, minute, second;
+            int hour, minute;
             try
             {
                 String[] date_components = time.split(":");
                 hour = Integer.parseInt(date_components[0]);
                 minute = Integer.parseInt(date_components[1]);
-                second = Integer.parseInt(date_components[2]);
             }
             catch(NumberFormatException | ArrayIndexOutOfBoundsException e)
             {
@@ -434,7 +434,6 @@ public class Settings extends AppCompatActivity implements Precision_dialog_frag
                 cal.setTimeInMillis(getArguments().getLong(STORE_TIME, 0) * 1000);
                 hour = cal.get(Calendar.HOUR_OF_DAY);
                 minute = cal.get(Calendar.MINUTE);
-                second = cal.get(Calendar.SECOND);
             }
 
             return new TimePickerDialog(getActivity(), (Settings) getActivity(), hour, minute, true);

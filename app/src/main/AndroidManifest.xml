@@ -8,7 +8,8 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/progress_bar_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.AppCompat.Light.NoActionBar">
+        android:theme="@style/Theme.progress_bars"
+        android:fullBackupContent="@xml/backup_descriptor">
         <activity android:name=".Progress_bars"
                   android:launchMode="singleTop"
             >

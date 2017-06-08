@@ -5,9 +5,9 @@ import android.support.v7.widget.helper.ItemTouchHelper;
 
 import org.mattvchandler.progressbars.Progress_bar_adapter;
 
-public class Progress_bar_row_touch_helper_callback extends ItemTouchHelper.Callback
+class Progress_bar_row_touch_helper_callback extends ItemTouchHelper.Callback
 {
-    private Progress_bar_adapter adapter;
+    private final Progress_bar_adapter adapter;
 
     Progress_bar_row_touch_helper_callback(Progress_bar_adapter adapter_in)
     {

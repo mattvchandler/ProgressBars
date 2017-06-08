@@ -2,9 +2,9 @@ package org.mattvchandler.progressbars;
 
 import android.provider.BaseColumns;
 
-public final class Progress_bar_contract
+final class Progress_bar_contract
 {
-    private Progress_bar_contract(){};
+    private Progress_bar_contract(){}
 
     public static class Progress_bar_table implements BaseColumns
     {

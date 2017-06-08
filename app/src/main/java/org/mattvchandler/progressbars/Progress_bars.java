@@ -1,29 +1,19 @@
 package org.mattvchandler.progressbars;
 
-import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Toast;
 
 import org.mattvchandler.progressbars.databinding.ActivityProgressBarsBinding;
-
-import java.util.Calendar;
-
-import static android.support.v7.app.AppCompatDelegate.MODE_NIGHT_AUTO;
-import static java.lang.Math.random;
 
 public class Progress_bars extends AppCompatActivity
 {
@@ -44,6 +34,7 @@ public class Progress_bars extends AppCompatActivity
         if(cursor.getCount() == 0)
         {
             new Progress_bar_data(this).insert(this);
+            cursor.close();
             cursor = new Progress_bar_DB(this).getReadableDatabase().rawQuery(Progress_bar_contract.Progress_bar_table.SELECT_ALL_ROWS, null);
         }
         adapter = new Progress_bar_adapter(cursor, this);

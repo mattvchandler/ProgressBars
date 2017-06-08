@@ -4,7 +4,6 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.renderscript.RSInvalidStateException;
 
 import java.io.Serializable;
 import java.util.Calendar;

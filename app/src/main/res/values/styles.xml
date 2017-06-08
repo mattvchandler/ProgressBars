@@ -1,5 +1,4 @@
 <resources>
-
     <style name="Divider">
         <item name="android:background">?android:attr/listDivider</item>
         <item name="android:layout_width">match_parent</item>
@@ -7,5 +6,9 @@
         <item name="android:layout_marginBottom">@dimen/margin_size</item>
         <item name="android:layout_marginTop">@dimen/margin_size</item>
     </style>
-
+    <style name="Theme.progress_bars" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+    </style>
 </resources>

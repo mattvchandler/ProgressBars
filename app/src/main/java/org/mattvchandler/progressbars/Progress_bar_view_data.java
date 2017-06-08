@@ -36,8 +36,8 @@ public final class Progress_bar_view_data extends Progress_bar_data
     public final ObservableBoolean        show_progress_disp  = new ObservableBoolean();
     public final ObservableBoolean        show_time_text_disp = new ObservableBoolean();
 
-    private Date start_time_date = new Date();
-    private Date end_time_date = new Date();
+    private final Date start_time_date = new Date();
+    private final Date end_time_date = new Date();
 
     private static boolean is_leap_year(int year)
     {
@@ -51,11 +51,11 @@ public final class Progress_bar_view_data extends Progress_bar_data
         return true;
     }
 
-    private static int days_in_mon[] = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
+    private static final int[] days_in_mon = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
 
     private class Update implements Runnable
     {
-        private Handler handler = new Handler();
+        private final Handler handler = new Handler();
         private final int delay = 1000; // 1000ms
 
         // run every second. updates percentage and time remaining text
@@ -101,7 +101,7 @@ public final class Progress_bar_view_data extends Progress_bar_data
             if(terminate && now_s > end_time_s)
             {
                 time_text_disp.set(complete_text);
-                // TODO: notfication?
+                // TODO: notification?
                 return;
             }
 
@@ -366,8 +366,6 @@ public final class Progress_bar_view_data extends Progress_bar_data
         }
     }
 
-    private Update updater = new Update();
-
     Progress_bar_view_data(Cursor cursor)
     {
         super(cursor);
@@ -393,6 +391,7 @@ public final class Progress_bar_view_data extends Progress_bar_data
 
         progress_disp.set(0);
 
+        Update updater = new Update();
         updater.run();
     }
 

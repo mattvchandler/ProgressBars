@@ -1,15 +1,12 @@
 package org.mattvchandler.progressbars;
 
-import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AlertDialog;
-import android.text.Html;
-import android.text.Spanned;
 import android.widget.NumberPicker;
 
 public class Precision_dialog_frag extends DialogFragment
@@ -20,10 +17,10 @@ public class Precision_dialog_frag extends DialogFragment
 
     public interface NoticeDialogListener
     {
-        public void on_precision_dialog_positive(Precision_dialog_frag dialog);
+        void on_precision_dialog_positive(Precision_dialog_frag dialog);
     }
 
-    NoticeDialogListener listener;
+    private NoticeDialogListener listener;
 
     @Override
     public void onAttach(Context context)
@@ -47,6 +44,7 @@ public class Precision_dialog_frag extends DialogFragment
         return value;
     }
 
+    @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState)
     {

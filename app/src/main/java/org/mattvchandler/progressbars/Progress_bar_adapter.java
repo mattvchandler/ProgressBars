@@ -1,14 +1,11 @@
 package org.mattvchandler.progressbars;
 
 import android.content.ContentValues;
-import android.content.Context;
 import android.content.Intent;
-import android.content.res.Resources;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.databinding.DataBindingUtil;
 import android.support.design.widget.Snackbar;
-import android.support.v4.widget.SimpleCursorAdapter;
 import android.support.v7.widget.RecyclerView;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
@@ -24,7 +21,7 @@ public class Progress_bar_adapter extends RecyclerView.Adapter<Progress_bar_adap
     public class Progress_bar_row_view_holder extends RecyclerView.ViewHolder
                                                      implements View.OnClickListener
     {
-        ProgressBarRowBinding row_binding;
+        final ProgressBarRowBinding row_binding;
         Progress_bar_view_data data;
 
         public Progress_bar_row_view_holder(View v)
@@ -42,14 +39,14 @@ public class Progress_bar_adapter extends RecyclerView.Adapter<Progress_bar_adap
         public void onClick(View v)
         {
             Intent intent = new Intent(v.getContext(), Settings.class);
-            intent.putExtra(Settings.EXRTA_EDIT_ROW_ID, data.rowid);
+            intent.putExtra(Settings.EXTRA_EDIT_ROW_ID, data.rowid);
             context.startActivityForResult(intent, Progress_bars.UPDATE_REQUEST);
         }
 
         public void on_selected()
         {
             TypedValue tv = new TypedValue();
-            context.getTheme().resolveAttribute(android.R.attr.colorPrimary, tv, true);
+            context.getTheme().resolveAttribute(android.R.attr.colorLongPressedHighlight, tv, true);
             row_binding.progressRow.setBackgroundColor(tv.data);
         }
 
@@ -62,7 +59,7 @@ public class Progress_bar_adapter extends RecyclerView.Adapter<Progress_bar_adap
     }
 
     private Cursor cursor;
-    private Progress_bars context;
+    private final Progress_bars context;
 
     public Progress_bar_adapter(Cursor cur, Progress_bars con)
     {

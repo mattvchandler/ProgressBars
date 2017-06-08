@@ -13,7 +13,8 @@
             android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="?android:colorPrimaryDark"
+            android:background="?android:windowBackground"
+            android:elevation="-4dp"
             >
 
             <android.support.v7.widget.Toolbar
