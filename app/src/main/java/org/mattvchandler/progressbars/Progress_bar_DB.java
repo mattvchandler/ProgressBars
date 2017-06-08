@@ -17,13 +17,13 @@ public class Progress_bar_DB extends SQLiteOpenHelper
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase)
     {
-        sqLiteDatabase.execSQL(Progress_bar_contract.Progress_bar_table.CREATE_TABLE);
+        sqLiteDatabase.execSQL(Progress_bar_table.CREATE_TABLE);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase sqLiteDatabase, int old_version, int new_version)
     {
-        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + Progress_bar_contract.Progress_bar_table.TABLE_NAME);
+        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + Progress_bar_table.TABLE_NAME);
         onCreate(sqLiteDatabase);
     }
 }

@@ -1,5 +1,7 @@
 package org.mattvchandler.progressbars;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
@@ -13,8 +15,11 @@ import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toast;
 
 import org.mattvchandler.progressbars.databinding.ActivityProgressBarsBinding;
+
+import java.util.Calendar;
 
 public class Progress_bars extends AppCompatActivity
 {
@@ -37,12 +42,12 @@ public class Progress_bars extends AppCompatActivity
         setSupportActionBar(binding.progressBarToolbar);
         binding.mainList.addItemDecoration(new DividerItemDecoration(binding.mainList.getContext(), DividerItemDecoration.VERTICAL));
 
-        Cursor cursor = new Progress_bar_DB(this).getReadableDatabase().rawQuery(Progress_bar_contract.Progress_bar_table.SELECT_ALL_ROWS, null);
+        Cursor cursor = new Progress_bar_DB(this).getReadableDatabase().rawQuery(Progress_bar_table.SELECT_ALL_ROWS, null);
         if(cursor.getCount() == 0)
         {
             new Progress_bar_data(this).insert(this);
             cursor.close();
-            cursor = new Progress_bar_DB(this).getReadableDatabase().rawQuery(Progress_bar_contract.Progress_bar_table.SELECT_ALL_ROWS, null);
+            cursor = new Progress_bar_DB(this).getReadableDatabase().rawQuery(Progress_bar_table.SELECT_ALL_ROWS, null);
         }
         adapter = new Progress_bar_adapter(cursor, this);
 
@@ -92,8 +97,10 @@ public class Progress_bars extends AppCompatActivity
                 menu.findItem(R.id.theme).setTitle(getResources().getString(R.string.set_dark));
             }
             recreate();
+            return true;
+        case R.id.about:
+            return  true;
         }
-        // TODO: about screen
         return false;
     }
 

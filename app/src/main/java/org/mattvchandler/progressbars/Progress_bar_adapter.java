@@ -81,7 +81,7 @@ public class Progress_bar_adapter extends RecyclerView.Adapter<Progress_bar_adap
         else
         {
             SQLiteDatabase db = new Progress_bar_DB(context).getWritableDatabase();
-            cursor = db.rawQuery(Progress_bar_contract.Progress_bar_table.SELECT_ALL_ROWS, null);
+            cursor = db.rawQuery(Progress_bar_table.SELECT_ALL_ROWS, null);
         }
     }
 
@@ -112,7 +112,7 @@ public class Progress_bar_adapter extends RecyclerView.Adapter<Progress_bar_adap
         for(int i = 0; i < getItemCount(); ++i)
         {
             cursor.moveToPosition(i);
-            if(cursor.getLong(cursor.getColumnIndexOrThrow(Progress_bar_contract.Progress_bar_table._ID)) == rowid)
+            if(cursor.getLong(cursor.getColumnIndexOrThrow(Progress_bar_table._ID)) == rowid)
             {
                 return i;
             }
@@ -124,24 +124,24 @@ public class Progress_bar_adapter extends RecyclerView.Adapter<Progress_bar_adap
     public void on_item_move(int from_pos, int to_pos)
     {
         cursor.moveToPosition(from_pos);
-        String from_rowid = cursor.getString(cursor.getColumnIndexOrThrow(Progress_bar_contract.Progress_bar_table._ID));
-        String from_order = cursor.getString(cursor.getColumnIndexOrThrow(Progress_bar_contract.Progress_bar_table.ORDER_COL));
+        String from_rowid = cursor.getString(cursor.getColumnIndexOrThrow(Progress_bar_table._ID));
+        String from_order = cursor.getString(cursor.getColumnIndexOrThrow(Progress_bar_table.ORDER_COL));
 
         cursor.moveToPosition(to_pos);
-        String to_rowid = cursor.getString(cursor.getColumnIndexOrThrow(Progress_bar_contract.Progress_bar_table._ID));
-        String to_order = cursor.getString(cursor.getColumnIndexOrThrow(Progress_bar_contract.Progress_bar_table.ORDER_COL));
+        String to_rowid = cursor.getString(cursor.getColumnIndexOrThrow(Progress_bar_table._ID));
+        String to_order = cursor.getString(cursor.getColumnIndexOrThrow(Progress_bar_table.ORDER_COL));
 
         SQLiteDatabase db = new Progress_bar_DB(context).getWritableDatabase();
         ContentValues values = new ContentValues();
 
-        values.put(Progress_bar_contract.Progress_bar_table.ORDER_COL, to_order);
-        db.update(Progress_bar_contract.Progress_bar_table.TABLE_NAME, values,
-                Progress_bar_contract.Progress_bar_table._ID + " = ?", new String[] {from_rowid});
+        values.put(Progress_bar_table.ORDER_COL, to_order);
+        db.update(Progress_bar_table.TABLE_NAME, values,
+                Progress_bar_table._ID + " = ?", new String[] {from_rowid});
 
         values.clear();
-        values.put(Progress_bar_contract.Progress_bar_table.ORDER_COL, from_order);
-        db.update(Progress_bar_contract.Progress_bar_table.TABLE_NAME, values,
-                Progress_bar_contract.Progress_bar_table._ID + " = ?", new String[] {to_rowid});
+        values.put(Progress_bar_table.ORDER_COL, from_order);
+        db.update(Progress_bar_table.TABLE_NAME, values,
+                Progress_bar_table._ID + " = ?", new String[] {to_rowid});
 
         db.close();
 
