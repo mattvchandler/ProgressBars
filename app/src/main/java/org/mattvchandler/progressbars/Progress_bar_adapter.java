@@ -16,6 +16,8 @@ import org.mattvchandler.progressbars.databinding.ProgressBarRowBinding;
 
 import java.util.NoSuchElementException;
 
+import static java.lang.Math.min;
+
 public class Progress_bar_adapter extends RecyclerView.Adapter<Progress_bar_adapter.Progress_bar_row_view_holder>
 {
     public class Progress_bar_row_view_holder extends RecyclerView.ViewHolder
@@ -46,8 +48,8 @@ public class Progress_bar_adapter extends RecyclerView.Adapter<Progress_bar_adap
         public void on_selected()
         {
             TypedValue tv = new TypedValue();
-            context.getTheme().resolveAttribute(android.R.attr.colorLongPressedHighlight, tv, true);
-            row_binding.progressRow.setBackgroundColor(tv.data);
+            context.getTheme().resolveAttribute(android.R.attr.colorBackground, tv, true);
+            row_binding.progressRow.setBackgroundColor(min(tv.data - 0x40202020, 0));
         }
 
         public void on_cleared()
