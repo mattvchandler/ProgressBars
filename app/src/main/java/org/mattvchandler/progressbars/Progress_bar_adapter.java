@@ -134,7 +134,7 @@ public class Progress_bar_adapter extends RecyclerView.Adapter<Progress_bar_adap
 
         ContentValues values = new ContentValues();
 
-        values.put(Progress_bar_table.ORDER_COL, to_order);
+        values.put(Progress_bar_table.ORDER_COL, -1);
         db.update(Progress_bar_table.TABLE_NAME, values,
                 Progress_bar_table._ID + " = ?", new String[] {from_rowid});
 
@@ -142,6 +142,11 @@ public class Progress_bar_adapter extends RecyclerView.Adapter<Progress_bar_adap
         values.put(Progress_bar_table.ORDER_COL, from_order);
         db.update(Progress_bar_table.TABLE_NAME, values,
                 Progress_bar_table._ID + " = ?", new String[] {to_rowid});
+
+        values.clear();
+        values.put(Progress_bar_table.ORDER_COL, to_order);
+        db.update(Progress_bar_table.TABLE_NAME, values,
+                Progress_bar_table._ID + " = ?", new String[] {from_rowid});
 
         resetCursor(null);
 

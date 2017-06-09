@@ -47,6 +47,11 @@ public class Progress_bars extends AppCompatActivity
             {
                 new Progress_bar_data(this).insert(this);
             }
+            else
+            {
+                // clean up existing data
+                Progress_bar_table.cleanup_order(this);
+            }
             cursor.close();
             db.close();
 

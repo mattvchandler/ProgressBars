@@ -1,5 +1,9 @@
 package org.mattvchandler.progressbars;
 
+import android.content.ContentValues;
+import android.content.Context;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.provider.BaseColumns;
 
 final class Progress_bar_table implements BaseColumns
@@ -43,7 +47,7 @@ final class Progress_bar_table implements BaseColumns
     public static final String CREATE_TABLE =
             "CREATE TABLE IF NOT EXISTS " + TABLE_NAME + " (" +
             _ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
-            ORDER_COL + " INTEGER NOT NULL, " +
+            ORDER_COL + " INTEGER UNIQUE NOT NULL, " +
             START_TIME_COL + " INTEGER NOT_NULL, " +
             START_TZ_COL + " TEXT NOT NULL, " +
             END_TIME_COL + " INTEGER NOT_NULL, " +
@@ -73,4 +77,24 @@ final class Progress_bar_table implements BaseColumns
             TERMINATE_COL + " INTEGER NOT_NULL, " +
             NOTIFY_START_COL + " INTEGER NOT NULL, " +
             NOTIFY_END_COL + " INTEGER NOT NULL)";
+
+    // redo order column to remove gaps, etc.
+    public static void cleanup_order(Context context)
+    {
+        SQLiteDatabase db = new Progress_bar_DB(context).getWritableDatabase();
+        Cursor cursor = db.rawQuery(SELECT_ALL_ROWS, null);
+
+        ContentValues values = new ContentValues();
+
+        for(int i = 0; i < cursor.getCount(); ++i)
+        {
+            values.clear();
+            values.put(ORDER_COL, i);
+            cursor.moveToPosition(i);
+            db.update(TABLE_NAME, values, _ID + " = ?", new String[] {cursor.getString(cursor.getColumnIndexOrThrow(_ID))});
+        }
+
+        cursor.close();
+        db.close();
+    }
 }
