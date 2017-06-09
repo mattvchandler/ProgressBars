@@ -14,6 +14,7 @@ final class Progress_bar_table implements BaseColumns
 
     public static final String TITLE_COL = "title";
     public static final String PRE_TEXT_COL = "pre_text";
+    public static final String START_TEXT_COL = "start_text";
     public static final String COUNTDOWN_TEXT_COL = "countdown_text";
     public static final String COMPLETE_TEXT_COL = "complete_text";
     public static final String POST_TEXT_COL = "post_text";
@@ -33,7 +34,8 @@ final class Progress_bar_table implements BaseColumns
     public static final String SHOW_SECONDS_COL = "show_seconds";
 
     public static final String TERMINATE_COL = "terminate";
-    public static final String NOTIFY_COL = "notify";
+    public static final String NOTIFY_START_COL = "notify_start";
+    public static final String NOTIFY_END_COL = "notify_end";
 
     public static final String SELECT_ALL_ROWS =
             "SELECT * FROM " + TABLE_NAME + " ORDER BY " + ORDER_COL;
@@ -49,6 +51,7 @@ final class Progress_bar_table implements BaseColumns
 
             TITLE_COL + " TEXT NOT NULL, " +
             PRE_TEXT_COL + " TEXT, " +
+            START_TEXT_COL + " TEXT, " +
             COUNTDOWN_TEXT_COL + " TEXT, " +
             COMPLETE_TEXT_COL + " TEXT, " +
             POST_TEXT_COL + " TEXT, " +
@@ -68,5 +71,6 @@ final class Progress_bar_table implements BaseColumns
             SHOW_SECONDS_COL + " INTEGER NOT_NULL, " +
 
             TERMINATE_COL + " INTEGER NOT_NULL, " +
-            NOTIFY_COL + " INTEGER NOT NULL)";
+            NOTIFY_START_COL + " INTEGER NOT NULL, " +
+            NOTIFY_END_COL + " INTEGER NOT NULL)";
 }

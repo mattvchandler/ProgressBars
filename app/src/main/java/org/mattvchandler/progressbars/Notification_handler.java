@@ -14,7 +14,8 @@ import android.support.v7.app.NotificationCompat;
 
 public class Notification_handler extends BroadcastReceiver
 {
-    public static final String BASE_ACTION_NAME = "org.mattvchandler.progressbars.COMPLETED_ROWID_";
+    public static final String BASE_STARTED_ACTION_NAME = "org.mattvchandler.progressbars.STARTED_ROWID_";
+    public static final String BASE_COMPLETED_ACTION_NAME = "org.mattvchandler.progressbars.COMPLETED_ROWID_";
     public static final String EXTRA_ROWID = "EXTRA_ROWID";
     @Override
     public void onReceive(Context context, Intent intent)
@@ -26,18 +27,31 @@ public class Notification_handler extends BroadcastReceiver
         {
             reset_all_alarms(context);
         }
-        else if(intent.getAction().substring(0, BASE_ACTION_NAME.length()).equals(BASE_ACTION_NAME))
+        // one of the alarms went off - send a notification
+        else if(intent.getAction().substring(0, BASE_STARTED_ACTION_NAME.length()).equals(BASE_STARTED_ACTION_NAME) ||
+                intent.getAction().substring(0, BASE_COMPLETED_ACTION_NAME.length()).equals(BASE_COMPLETED_ACTION_NAME))
         {
-            // one of the alarms went off - send a notification
             long rowid = intent.getLongExtra(EXTRA_ROWID, -1);
             if(rowid < 0)
                 return;
             Progress_bar_data data = new Progress_bar_data(context, rowid);
 
+            String title, content;
+            if(intent.getAction().substring(0, BASE_STARTED_ACTION_NAME.length()).equals(BASE_STARTED_ACTION_NAME))
+            {
+                title = context.getResources().getString(R.string.notification_start_title, data.title);
+                content = data.start_text;
+            }
+            else // if(intent.getAction().substring(0, BASE_COMPLETED_ACTION_NAME.length()).equals(BASE_COMPLETED_ACTION_NAME))
+            {
+                title = context.getResources().getString(R.string.notification_end_title, data.title);
+                content = data.complete_text;
+            }
+
             NotificationCompat.Builder not_builder = (NotificationCompat.Builder) new NotificationCompat.Builder(context)
                     .setSmallIcon(R.drawable.progress_bar_notification)
-                    .setContentTitle(context.getResources().getString(R.string.notification_title, data.title))
-                    .setContentText(data.complete_text)
+                    .setContentTitle(title)
+                    .setContentText(content)
                     .setPriority(NotificationCompat.PRIORITY_HIGH)
                     .setDefaults(NotificationCompat.DEFAULT_ALL);
 
@@ -47,15 +61,16 @@ public class Notification_handler extends BroadcastReceiver
             stack.addNextIntent(i);
             PendingIntent pi = stack.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
             not_builder.setContentIntent(pi);
+
             NotificationManager nm = (NotificationManager)context.getSystemService(Context.NOTIFICATION_SERVICE);
             nm.notify((int)data.rowid, not_builder.build());
         }
     }
 
-    private static PendingIntent get_intent(Context context, Progress_bar_data data)
+    private static PendingIntent get_intent(Context context, Progress_bar_data data, String base_action)
     {
         Intent intent = new Intent(context, Notification_handler.class);
-        intent.setAction(BASE_ACTION_NAME + String.valueOf(data.rowid));
+        intent.setAction(base_action + String.valueOf(data.rowid));
 
         Bundle extras = new Bundle();
         extras.putLong(EXTRA_ROWID, data.rowid);
@@ -77,16 +92,18 @@ public class Notification_handler extends BroadcastReceiver
             cursor.moveToPosition(i);
             Progress_bar_data data = new Progress_bar_data(cursor);
 
-            PendingIntent pi = get_intent(context, data);
+            PendingIntent start_pi = get_intent(context, data, BASE_STARTED_ACTION_NAME);
+            PendingIntent complete_pi = get_intent(context, data, BASE_COMPLETED_ACTION_NAME);
 
-            if(data.notify && now < data.end_time)
-            {
-                am.setExact(AlarmManager.RTC_WAKEUP, data.end_time * 1000, pi);
-            }
+            if(data.notify_start && now < data.start_time)
+                am.setExact(AlarmManager.RTC_WAKEUP, data.start_time * 1000, start_pi);
             else
-            {
-                am.cancel(pi);
-            }
+                am.cancel(start_pi);
+
+            if(data.notify_end && now < data.end_time)
+                am.setExact(AlarmManager.RTC_WAKEUP, data.end_time * 1000, complete_pi);
+            else
+                am.cancel(complete_pi);
         }
         cursor.close();
         db.close();
@@ -97,23 +114,25 @@ public class Notification_handler extends BroadcastReceiver
         AlarmManager am = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         long now = System.currentTimeMillis() / 1000;
 
-        PendingIntent pi = get_intent(context, data);
+        PendingIntent start_pi = get_intent(context, data, BASE_STARTED_ACTION_NAME);
+        PendingIntent complete_pi = get_intent(context, data, BASE_COMPLETED_ACTION_NAME);
 
-        if(data.notify && now < data.end_time)
-        {
-            am.setExact(AlarmManager.RTC_WAKEUP, data.end_time * 1000, pi);
-        }
+        if(data.notify_start && now < data.start_time)
+            am.setExact(AlarmManager.RTC_WAKEUP, data.start_time * 1000, start_pi);
         else
-        {
-            am.cancel(pi);
-        }
+            am.cancel(start_pi);
+
+        if(data.notify_end && now < data.end_time)
+            am.setExact(AlarmManager.RTC_WAKEUP, data.end_time * 1000, complete_pi);
+        else
+            am.cancel(complete_pi);
     }
 
     public static void cancel_notification(Context context, Progress_bar_data data)
     {
         AlarmManager am = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-        PendingIntent pi = get_intent(context, data);
 
-        am.cancel(pi);
+        am.cancel(get_intent(context, data, BASE_STARTED_ACTION_NAME));
+        am.cancel(get_intent(context, data, BASE_COMPLETED_ACTION_NAME));
     }
 }

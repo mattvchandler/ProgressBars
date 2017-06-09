@@ -21,6 +21,7 @@ public class Progress_bar_data implements Serializable
 
     public String title;
     public String pre_text;
+    public String start_text;
     public String countdown_text;
     public String complete_text;
     public String post_text;
@@ -40,7 +41,8 @@ public class Progress_bar_data implements Serializable
     public boolean show_seconds;
 
     public boolean terminate;
-    public boolean notify;
+    public boolean notify_start;
+    public boolean notify_end;
 
     Progress_bar_data(
             long rowid_in,
@@ -51,6 +53,7 @@ public class Progress_bar_data implements Serializable
             String end_tz_in,
             String title_in,
             String pre_text_in,
+            String start_text_in,
             String countdown_text_in,
             String complete_text_in,
             String post_text_in,
@@ -66,7 +69,8 @@ public class Progress_bar_data implements Serializable
             boolean show_minutes_in,
             boolean show_seconds_in,
             boolean terminate_in,
-            boolean notify_in)
+            boolean notify_start_in,
+            boolean notify_end_in)
     {
         rowid = rowid_in;
         order = order_in;
@@ -76,6 +80,7 @@ public class Progress_bar_data implements Serializable
         end_tz = end_tz_in;
         title = title_in;
         pre_text = pre_text_in;
+        start_text = start_text_in;
         countdown_text = countdown_text_in;
         complete_text = complete_text_in;
         post_text = post_text_in;
@@ -91,7 +96,8 @@ public class Progress_bar_data implements Serializable
         show_minutes = show_minutes_in;
         show_seconds = show_seconds_in;
         terminate = terminate_in;
-        notify = notify_in;
+        notify_start = notify_start_in;
+        notify_end = notify_end_in;
     }
 
     Progress_bar_data(Cursor cursor)
@@ -105,6 +111,7 @@ public class Progress_bar_data implements Serializable
             cursor.getString(cursor.getColumnIndexOrThrow(Progress_bar_table.END_TZ_COL)),
             cursor.getString(cursor.getColumnIndexOrThrow(Progress_bar_table.TITLE_COL)),
             cursor.getString(cursor.getColumnIndexOrThrow(Progress_bar_table.PRE_TEXT_COL)),
+            cursor.getString(cursor.getColumnIndexOrThrow(Progress_bar_table.START_TEXT_COL)),
             cursor.getString(cursor.getColumnIndexOrThrow(Progress_bar_table.COUNTDOWN_TEXT_COL)),
             cursor.getString(cursor.getColumnIndexOrThrow(Progress_bar_table.COMPLETE_TEXT_COL)),
             cursor.getString(cursor.getColumnIndexOrThrow(Progress_bar_table.POST_TEXT_COL)),
@@ -120,7 +127,8 @@ public class Progress_bar_data implements Serializable
             cursor.getInt(cursor.getColumnIndexOrThrow(Progress_bar_table.SHOW_MINUTES_COL))  > 0,
             cursor.getInt(cursor.getColumnIndexOrThrow(Progress_bar_table.SHOW_SECONDS_COL))  > 0,
             cursor.getInt(cursor.getColumnIndexOrThrow(Progress_bar_table.TERMINATE_COL))     > 0,
-            cursor.getInt(cursor.getColumnIndexOrThrow(Progress_bar_table.NOTIFY_COL))        > 0
+            cursor.getInt(cursor.getColumnIndexOrThrow(Progress_bar_table.NOTIFY_START_COL))  > 0,
+            cursor.getInt(cursor.getColumnIndexOrThrow(Progress_bar_table.NOTIFY_END_COL))    > 0
         );
     }
 
@@ -138,6 +146,7 @@ public class Progress_bar_data implements Serializable
         end_tz         = end_time_cal.getTimeZone().getID();
         title          = context.getResources().getString(R.string.default_title);
         pre_text       = context.getResources().getString(R.string.default_pre_text);
+        start_text     = context.getResources().getString(R.string.default_start_text);
         countdown_text = context.getResources().getString(R.string.default_countdown_text);
         complete_text  = context.getResources().getString(R.string.default_complete_text);
         post_text      = context.getResources().getString(R.string.default_post_text);
@@ -153,7 +162,8 @@ public class Progress_bar_data implements Serializable
         show_minutes   = true;
         show_seconds   = true;
         terminate      = true;
-        notify         = true;
+        notify_start   = true;
+        notify_end     = true;
     }
 
     public Progress_bar_data(Context context, String title_in)
@@ -176,13 +186,14 @@ public class Progress_bar_data implements Serializable
         end_tz         = cursor.getString(cursor.getColumnIndexOrThrow(Progress_bar_table.END_TZ_COL));
         title          = cursor.getString(cursor.getColumnIndexOrThrow(Progress_bar_table.TITLE_COL));
         pre_text       = cursor.getString(cursor.getColumnIndexOrThrow(Progress_bar_table.PRE_TEXT_COL));
+        start_text     = cursor.getString(cursor.getColumnIndexOrThrow(Progress_bar_table.START_TEXT_COL));
         countdown_text = cursor.getString(cursor.getColumnIndexOrThrow(Progress_bar_table.COUNTDOWN_TEXT_COL));
         complete_text  = cursor.getString(cursor.getColumnIndexOrThrow(Progress_bar_table.COMPLETE_TEXT_COL));
         post_text      = cursor.getString(cursor.getColumnIndexOrThrow(Progress_bar_table.POST_TEXT_COL));
         precision      = cursor.getInt(cursor.getColumnIndexOrThrow(Progress_bar_table.PRECISION_COL));
-        show_progress  = cursor.getInt(cursor.getColumnIndexOrThrow(Progress_bar_table.SHOW_PROGRESS_COL))    > 0;
-        show_start     = cursor.getInt(cursor.getColumnIndexOrThrow(Progress_bar_table.SHOW_START_COL))      > 0;
-        show_end       = cursor.getInt(cursor.getColumnIndexOrThrow(Progress_bar_table.SHOW_END_COL)) > 0;
+        show_progress  = cursor.getInt(cursor.getColumnIndexOrThrow(Progress_bar_table.SHOW_PROGRESS_COL)) > 0;
+        show_start     = cursor.getInt(cursor.getColumnIndexOrThrow(Progress_bar_table.SHOW_START_COL))    > 0;
+        show_end       = cursor.getInt(cursor.getColumnIndexOrThrow(Progress_bar_table.SHOW_END_COL))      > 0;
         show_years     = cursor.getInt(cursor.getColumnIndexOrThrow(Progress_bar_table.SHOW_YEARS_COL))    > 0;
         show_months    = cursor.getInt(cursor.getColumnIndexOrThrow(Progress_bar_table.SHOW_MONTHS_COL))   > 0;
         show_weeks     = cursor.getInt(cursor.getColumnIndexOrThrow(Progress_bar_table.SHOW_WEEKS_COL))    > 0;
@@ -191,7 +202,8 @@ public class Progress_bar_data implements Serializable
         show_minutes   = cursor.getInt(cursor.getColumnIndexOrThrow(Progress_bar_table.SHOW_MINUTES_COL))  > 0;
         show_seconds   = cursor.getInt(cursor.getColumnIndexOrThrow(Progress_bar_table.SHOW_SECONDS_COL))  > 0;
         terminate      = cursor.getInt(cursor.getColumnIndexOrThrow(Progress_bar_table.TERMINATE_COL))     > 0;
-        notify         = cursor.getInt(cursor.getColumnIndexOrThrow(Progress_bar_table.NOTIFY_COL))        > 0;
+        notify_start   = cursor.getInt(cursor.getColumnIndexOrThrow(Progress_bar_table.NOTIFY_START_COL))  > 0;
+        notify_end     = cursor.getInt(cursor.getColumnIndexOrThrow(Progress_bar_table.NOTIFY_END_COL))    > 0;
 
         cursor.close();
         db.close();
@@ -207,6 +219,7 @@ public class Progress_bar_data implements Serializable
         end_tz         = b.end_tz;
         title          = b.title;
         pre_text       = b.pre_text;
+        start_text     = b.start_text;
         countdown_text = b.countdown_text;
         complete_text  = b.complete_text;
         post_text      = b.post_text;
@@ -222,7 +235,8 @@ public class Progress_bar_data implements Serializable
         show_minutes   = b.show_minutes;
         show_seconds   = b.show_seconds;
         terminate      = b.terminate;
-        notify         = b.notify;
+        notify_start   = b.notify_start;
+        notify_end     = b.notify_end;
     }
 
     public void insert(Context context)
@@ -249,6 +263,7 @@ public class Progress_bar_data implements Serializable
         values.put(Progress_bar_table.END_TZ_COL, end_tz);
         values.put(Progress_bar_table.TITLE_COL, title);
         values.put(Progress_bar_table.PRE_TEXT_COL, pre_text);
+        values.put(Progress_bar_table.START_TEXT_COL, start_text);
         values.put(Progress_bar_table.COUNTDOWN_TEXT_COL, countdown_text);
         values.put(Progress_bar_table.COMPLETE_TEXT_COL, complete_text);
         values.put(Progress_bar_table.POST_TEXT_COL, post_text);
@@ -264,7 +279,8 @@ public class Progress_bar_data implements Serializable
         values.put(Progress_bar_table.SHOW_MINUTES_COL, show_minutes);
         values.put(Progress_bar_table.SHOW_SECONDS_COL, show_seconds);
         values.put(Progress_bar_table.TERMINATE_COL, terminate);
-        values.put(Progress_bar_table.NOTIFY_COL, notify);
+        values.put(Progress_bar_table.NOTIFY_START_COL, notify_start);
+        values.put(Progress_bar_table.NOTIFY_END_COL, notify_end);
 
         rowid = db.insert(Progress_bar_table.TABLE_NAME, null, values);
 
@@ -288,6 +304,7 @@ public class Progress_bar_data implements Serializable
         values.put(Progress_bar_table.END_TZ_COL, end_tz);
         values.put(Progress_bar_table.TITLE_COL, title);
         values.put(Progress_bar_table.PRE_TEXT_COL, pre_text);
+        values.put(Progress_bar_table.START_TEXT_COL, start_text);
         values.put(Progress_bar_table.COUNTDOWN_TEXT_COL, countdown_text);
         values.put(Progress_bar_table.COMPLETE_TEXT_COL, complete_text);
         values.put(Progress_bar_table.POST_TEXT_COL, post_text);
@@ -303,7 +320,8 @@ public class Progress_bar_data implements Serializable
         values.put(Progress_bar_table.SHOW_MINUTES_COL, show_minutes);
         values.put(Progress_bar_table.SHOW_SECONDS_COL, show_seconds);
         values.put(Progress_bar_table.TERMINATE_COL, terminate);
-        values.put(Progress_bar_table.NOTIFY_COL, notify);
+        values.put(Progress_bar_table.NOTIFY_START_COL, notify_start);
+        values.put(Progress_bar_table.NOTIFY_END_COL, notify_end);
 
         db.update(Progress_bar_table.TABLE_NAME, values, Progress_bar_table._ID + " = ?", new String[]{String.valueOf(rowid)});
 

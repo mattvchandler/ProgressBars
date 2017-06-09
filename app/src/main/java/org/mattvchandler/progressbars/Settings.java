@@ -336,6 +336,7 @@ public class Settings extends AppCompatActivity implements Precision_dialog_frag
 
         data.title = binding.title.getText().toString();
         data.pre_text = binding.preText.getText().toString();
+        data.start_text = binding.startText.getText().toString();
         data.countdown_text = binding.countdownText.getText().toString();
         data.complete_text = binding.completeText.getText().toString();
         data.post_text = binding.postText.getText().toString();
@@ -351,7 +352,8 @@ public class Settings extends AppCompatActivity implements Precision_dialog_frag
         data.show_minutes = binding.showMinutes.isChecked();
         data.show_seconds = binding.showSeconds.isChecked();
         data.terminate = binding.terminate.isChecked();
-        data.notify = binding.notify.isChecked();
+        data.notify_start = binding.notifyStart.isChecked();
+        data.notify_end = binding.notifyEnd.isChecked();
 
         return !errors;
     }

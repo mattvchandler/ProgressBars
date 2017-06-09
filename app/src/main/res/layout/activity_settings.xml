@@ -290,6 +290,22 @@
                     </android.support.design.widget.TextInputLayout>
 
                     <android.support.design.widget.TextInputLayout
+                        android:hint="@string/start_text"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/margin_size"
+                        android:layout_marginEnd="@dimen/margin_size"
+                        >
+                        <android.support.design.widget.TextInputEditText
+                            android:id="@+id/start_text"
+                            android:text="@{data.start_text}"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:inputType="textCapSentences"
+                            />
+                    </android.support.design.widget.TextInputLayout>
+
+                    <android.support.design.widget.TextInputLayout
                         android:hint="@string/countdown_text"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -489,7 +505,7 @@
                     <View style="@style/Divider"/>
 
                     <TextView
-                        android:text="@string/completion_opts_header"
+                        android:text="@string/timer_opts_header"
                         android:textAppearance="?android:textAppearanceListItemSmall"
                         android:textStyle="bold"
                         android:textColor="?colorAccent"
@@ -509,9 +525,18 @@
                     />
 
                     <Switch
-                        android:id="@+id/notify"
-                        android:checked="@{data.notify}"
-                        android:text="@string/notify_sw"
+                        android:id="@+id/notify_start"
+                        android:checked="@{data.notify_start}"
+                        android:text="@string/notify_start_sw"
+                        android:textAppearance="?android:textAppearanceListItem"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="@dimen/margin_size"
+                        />
+                    <Switch
+                        android:id="@+id/notify_end"
+                        android:checked="@{data.notify_end}"
+                        android:text="@string/notify_end_sw"
                         android:textAppearance="?android:textAppearanceListItem"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"

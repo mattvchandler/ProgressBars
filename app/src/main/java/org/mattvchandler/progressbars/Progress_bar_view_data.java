@@ -98,269 +98,277 @@ public final class Progress_bar_view_data extends Progress_bar_data
                     progress_disp.set(100);
                 }
             }
-            if(terminate && now_s > end_time_s)
+
+            if(now_s == start_time_s)
+            {
+                time_text_disp.set(start_text);
+            }
+            else if(terminate && now_s > end_time_s || now_s == end_time_s)
             {
                 time_text_disp.set(complete_text);
-                // TODO: notification?
-                return;
+
+                if(terminate && now_s > end_time_s)
+                    return;
             }
 
-            if(!show_time_text_disp.get())
-                return;
-
-            long remaining = end_time_s - now_s;
-            long to_start = start_time_s - now_s;
-
-            Calendar cal_start = Calendar.getInstance();
-            Calendar cal_end = Calendar.getInstance(); cal_end.setTime(end_time_date);
-
-            // get and format remaining time
-            String remaining_str;
-            if(to_start >= 0)
+            if(show_time_text_disp.get() || now_s != start_time_s || now_s != end_time_s)
             {
-                remaining = to_start;
-                remaining_str = pre_text;
-                cal_end.setTime(start_time_date);
-            }
-            else if(remaining >= 0)
-            {
-                remaining_str = countdown_text;
-            }
-            else
-            {
-                remaining_str = post_text;
-                cal_end = (Calendar)cal_start.clone();
-                cal_start.setTime(end_time_date);
-            }
+                long remaining = end_time_s - now_s;
+                long to_start = start_time_s - now_s;
 
-            long seconds = 0L, minutes = 0L, hours = 0L, days = 0L, weeks = 0L, months = 0L, years = 0L;
+                Calendar cal_start = Calendar.getInstance();
+                Calendar cal_end = Calendar.getInstance();
+                cal_end.setTime(end_time_date);
 
-            // if not needing calendar time difference, we can do calculation from the difference in seconds (much easier)
-            if(!show_years && !show_months)
-            {
-                weeks = abs(remaining) / (7L * 24L * 60L * 60L);
-                days = abs(remaining) / (24L * 60L * 60L);
-                hours = abs(remaining) / (60L * 60L);
-                minutes = abs(remaining) / (60L);
-                seconds = abs(remaining);
-
-                if(show_weeks)
+                // get and format remaining time
+                String remaining_str;
+                if(to_start >= 0)
                 {
-                    days %= 7L;
-                    hours %= (7L * 24L);
-                    minutes %= (7L * 24L * 60L);
-                    seconds %= (7L * 24L * 60L * 60L);
+                    remaining = to_start;
+                    remaining_str = pre_text;
+                    cal_end.setTime(start_time_date);
+                }
+                else if(remaining >= 0)
+                {
+                    remaining_str = countdown_text;
+                }
+                else
+                {
+                    remaining_str = post_text;
+                    cal_end = (Calendar) cal_start.clone();
+                    cal_start.setTime(end_time_date);
                 }
 
-                if(show_days)
-                {
-                    hours %= 24L;
-                    minutes %= (24L * 60L);
-                    seconds %= (24L * 60L * 60L);
-                }
+                long seconds = 0L, minutes = 0L, hours = 0L, days = 0L, weeks = 0L, months = 0L, years = 0L;
 
-                if(show_hours)
+                // if not needing calendar time difference, we can do calculation from the difference in seconds (much easier)
+                if(!show_years && !show_months)
                 {
-                    minutes %= 60L;
-                    seconds %= (60L * 60L);
-                }
+                    weeks = abs(remaining) / (7L * 24L * 60L * 60L);
+                    days = abs(remaining) / (24L * 60L * 60L);
+                    hours = abs(remaining) / (60L * 60L);
+                    minutes = abs(remaining) / (60L);
+                    seconds = abs(remaining);
 
-                if(show_minutes)
-                {
-                    seconds %= 60L;
-                }
-            }
-            else
-            {
-                seconds += cal_end.get(Calendar.SECOND) - cal_start.get(Calendar.SECOND);
-                if(seconds < 0L)
-                {
-                    minutes -= 1L;
-                    seconds += 60L;
-                }
-
-                minutes += cal_end.get(Calendar.MINUTE) - cal_start.get(Calendar.MINUTE);
-                if(minutes < 0L)
-                {
-                    hours -= 1L;
-                    minutes += 60L;
-                }
-
-                hours += cal_end.get(Calendar.HOUR_OF_DAY) - cal_start.get(Calendar.HOUR_OF_DAY);
-                if(hours < 0L)
-                {
-                    days -= 1L;
-                    hours += 24L;
-                }
-
-                days += cal_end.get(Calendar.DAY_OF_MONTH) - cal_start.get(Calendar.DAY_OF_MONTH);
-                if(days < 0L)
-                {
-                    months -= 1;
-                    int cal_end_month = cal_end.get(Calendar.MONTH);
-                    if(cal_end_month == Calendar.FEBRUARY &&
-                       is_leap_year(cal_end.get(Calendar.YEAR)))
+                    if(show_weeks)
                     {
-                        days += 29L;
-                    } else
-                    {
-                        if(cal_end_month == Calendar.JANUARY)
-                            days += days_in_mon[Calendar.DECEMBER];
-                        else
-                            days += days_in_mon[cal_end_month - 1];
+                        days %= 7L;
+                        hours %= (7L * 24L);
+                        minutes %= (7L * 24L * 60L);
+                        seconds %= (7L * 24L * 60L * 60L);
                     }
 
-                    weeks = days / 7L;
-                    days %= 7L;
-                }
-
-                months += cal_end.get(Calendar.MONTH) - cal_start.get(Calendar.MONTH);
-                if(months < 0L)
-                {
-                    years -= 1L;
-                    months += 12L;
-                }
-
-                years += cal_end.get(Calendar.YEAR) - cal_start.get(Calendar.YEAR);
-                if(!show_years)
-                {
-                    months += years * 12L;
-                }
-                if(!show_months)
-                {
-                    long tmp_days = days + 7L * weeks;
-
-                    int curr_mon = cal_start.get(Calendar.MONTH);
-                    int curr_year = cal_start.get(Calendar.YEAR);
-
-                    // for each month in the remaining range, add correct # of days
-                    for(long m = 0; m < months % 12; ++m)
+                    if(show_days)
                     {
-                        if(curr_mon == Calendar.FEBRUARY && is_leap_year(curr_year))
-                            tmp_days += 29L;
-                        else
-                            tmp_days += days_in_mon[curr_mon];
+                        hours %= 24L;
+                        minutes %= (24L * 60L);
+                        seconds %= (24L * 60L * 60L);
+                    }
 
-                        if(++curr_mon == 12)
+                    if(show_hours)
+                    {
+                        minutes %= 60L;
+                        seconds %= (60L * 60L);
+                    }
+
+                    if(show_minutes)
+                    {
+                        seconds %= 60L;
+                    }
+                }
+                else
+                {
+                    seconds += cal_end.get(Calendar.SECOND) - cal_start.get(Calendar.SECOND);
+                    if(seconds < 0L)
+                    {
+                        minutes -= 1L;
+                        seconds += 60L;
+                    }
+
+                    minutes += cal_end.get(Calendar.MINUTE) - cal_start.get(Calendar.MINUTE);
+                    if(minutes < 0L)
+                    {
+                        hours -= 1L;
+                        minutes += 60L;
+                    }
+
+                    hours += cal_end.get(Calendar.HOUR_OF_DAY) - cal_start.get(Calendar.HOUR_OF_DAY);
+                    if(hours < 0L)
+                    {
+                        days -= 1L;
+                        hours += 24L;
+                    }
+
+                    days += cal_end.get(Calendar.DAY_OF_MONTH) - cal_start.get(Calendar.DAY_OF_MONTH);
+                    if(days < 0L)
+                    {
+                        months -= 1;
+                        int cal_end_month = cal_end.get(Calendar.MONTH);
+                        if(cal_end_month == Calendar.FEBRUARY &&
+                                is_leap_year(cal_end.get(Calendar.YEAR)))
                         {
-                            curr_mon = 0;
-                            curr_year = cal_end.get(Calendar.YEAR);
+                            days += 29L;
                         }
+                        else
+                        {
+                            if(cal_end_month == Calendar.JANUARY)
+                                days += days_in_mon[Calendar.DECEMBER];
+                            else
+                                days += days_in_mon[cal_end_month - 1];
+                        }
+
+                        weeks = days / 7L;
+                        days %= 7L;
                     }
 
-                    weeks = tmp_days / 7L;
-                    days = tmp_days % 7L;
+                    months += cal_end.get(Calendar.MONTH) - cal_start.get(Calendar.MONTH);
+                    if(months < 0L)
+                    {
+                        years -= 1L;
+                        months += 12L;
+                    }
+
+                    years += cal_end.get(Calendar.YEAR) - cal_start.get(Calendar.YEAR);
+                    if(!show_years)
+                    {
+                        months += years * 12L;
+                    }
+                    if(!show_months)
+                    {
+                        long tmp_days = days + 7L * weeks;
+
+                        int curr_mon = cal_start.get(Calendar.MONTH);
+                        int curr_year = cal_start.get(Calendar.YEAR);
+
+                        // for each month in the remaining range, add correct # of days
+                        for(long m = 0; m < months % 12; ++m)
+                        {
+                            if(curr_mon == Calendar.FEBRUARY && is_leap_year(curr_year))
+                                tmp_days += 29L;
+                            else
+                                tmp_days += days_in_mon[curr_mon];
+
+                            if(++curr_mon == 12)
+                            {
+                                curr_mon = 0;
+                                curr_year = cal_end.get(Calendar.YEAR);
+                            }
+                        }
+
+                        weeks = tmp_days / 7L;
+                        days = tmp_days % 7L;
+                    }
+                    if(!show_weeks)
+                    {
+                        days += weeks * 7L;
+                    }
+                    if(!show_days)
+                    {
+                        hours += days * 24L;
+                    }
+                    if(!show_hours)
+                    {
+                        minutes += hours * 60L;
+                    }
+                    if(!show_minutes)
+                    {
+                        seconds += minutes * 60L;
+                    }
                 }
-                if(!show_weeks)
+
+                boolean seconds_shown = show_seconds;
+                boolean minutes_shown = show_minutes && (minutes > 0 || !seconds_shown);
+                boolean hours_shown = show_hours && (hours > 0 || (!minutes_shown && !seconds_shown));
+                boolean days_shown = show_days && (days > 0 || (!hours_shown && !minutes_shown && !seconds_shown));
+                boolean weeks_shown = show_weeks && (weeks > 0 || (!days_shown && !hours_shown && !minutes_shown && !seconds_shown));
+                boolean months_shown = show_months && (months > 0 || (!weeks_shown && !days_shown && !hours_shown && !minutes_shown && !seconds_shown));
+                boolean years_shown = show_years && (years > 0 || (!months_shown && !weeks_shown && !days_shown && !hours_shown && !minutes_shown && !seconds_shown));
+
+                if(years_shown)
                 {
-                    days += weeks * 7L;
+                    remaining_str += String.valueOf(years) + " year" + (years == 1 ? "" : "s");
+
+                    int trailing = (months_shown ? 1 : 0) +
+                            (weeks_shown ? 1 : 0) +
+                            (days_shown ? 1 : 0) +
+                            (hours_shown ? 1 : 0) +
+                            (minutes_shown ? 1 : 0) +
+                            (seconds_shown ? 1 : 0);
+                    if(trailing > 1)
+                        remaining_str += ", ";
+                    else if(trailing == 1)
+                        remaining_str += ", and ";
                 }
-                if(!show_days)
+
+                if(months_shown)
                 {
-                    hours += days * 24L;
+                    remaining_str += months + " month" + (months == 1 ? "" : "s");
+
+                    int trailing = (weeks_shown ? 1 : 0) +
+                            (days_shown ? 1 : 0) +
+                            (hours_shown ? 1 : 0) +
+                            (minutes_shown ? 1 : 0) +
+                            (seconds_shown ? 1 : 0);
+                    if(trailing > 1)
+                        remaining_str += ", ";
+                    else if(trailing == 1)
+                        remaining_str += ", and ";
                 }
-                if(!show_hours)
+
+                if(weeks_shown)
                 {
-                    minutes += hours * 60L;
+                    remaining_str += weeks + " week" + (weeks == 1 ? "" : "s");
+
+                    int trailing = (days_shown ? 1 : 0) +
+                            (hours_shown ? 1 : 0) +
+                            (minutes_shown ? 1 : 0) +
+                            (seconds_shown ? 1 : 0);
+                    if(trailing > 1)
+                        remaining_str += ", ";
+                    else if(trailing == 1)
+                        remaining_str += ", and ";
                 }
-                if(!show_minutes)
+
+                if(days_shown)
                 {
-                    seconds += minutes * 60L;
+                    remaining_str += days + " day" + (days == 1 ? "" : "s");
+
+                    int trailing = (hours_shown ? 1 : 0) +
+                            (minutes_shown ? 1 : 0) +
+                            (seconds_shown ? 1 : 0);
+                    if(trailing > 1)
+                        remaining_str += ", ";
+                    else if(trailing == 1)
+                        remaining_str += ", and ";
                 }
-            }
 
-            boolean seconds_shown = show_seconds;
-            boolean minutes_shown = show_minutes && (minutes > 0 || !seconds_shown);
-            boolean hours_shown = show_hours && (hours > 0 || (!minutes_shown && !seconds_shown));
-            boolean days_shown = show_days && (days > 0 || (!hours_shown && !minutes_shown && !seconds_shown));
-            boolean weeks_shown = show_weeks && (weeks > 0 || (!days_shown && !hours_shown && !minutes_shown && !seconds_shown));
-            boolean months_shown = show_months && (months > 0 || (!weeks_shown && !days_shown && !hours_shown && !minutes_shown && !seconds_shown));
-            boolean years_shown = show_years && (years > 0 || (!months_shown && !weeks_shown && !days_shown && !hours_shown && !minutes_shown && !seconds_shown));
+                if(hours_shown)
+                {
+                    remaining_str += hours + " hour" + (hours == 1 ? "" : "s");
 
-            if(years_shown)
-            {
-                remaining_str += String.valueOf(years) + " year" + (years == 1 ? "" : "s");
+                    int trailing = (minutes_shown ? 1 : 0) +
+                            (seconds_shown ? 1 : 0);
+                    if(trailing > 1)
+                        remaining_str += ", ";
+                    else if(trailing == 1)
+                        remaining_str += ", and ";
+                }
 
-                int trailing = (months_shown ? 1 : 0) +
-                               (weeks_shown ? 1 : 0) +
-                               (days_shown ? 1 : 0) +
-                               (hours_shown ? 1 : 0) +
-                               (minutes_shown ? 1 : 0) +
-                               (seconds_shown ? 1 : 0);
-                if(trailing > 1)
-                    remaining_str += ", ";
-                else if(trailing == 1)
-                    remaining_str += ", and ";
-            }
+                if(minutes_shown)
+                {
+                    remaining_str += minutes + " minute" + (minutes == 1 ? "" : "s");
 
-            if(months_shown)
-            {
-                remaining_str += months + " month" + (months == 1 ? "" : "s");
-
-                int trailing = (weeks_shown ? 1 : 0) +
-                               (days_shown ? 1 : 0) +
-                               (hours_shown ? 1 : 0) +
-                               (minutes_shown ? 1 : 0) +
-                               (seconds_shown ? 1 : 0);
-                if(trailing > 1)
-                    remaining_str += ", ";
-                else if(trailing == 1)
-                    remaining_str += ", and ";
-            }
-
-            if(weeks_shown)
-            {
-                remaining_str += weeks + " week" + (weeks == 1 ? "" : "s");
-
-                int trailing = (days_shown ? 1 : 0) +
-                               (hours_shown ? 1 : 0) +
-                               (minutes_shown ? 1 : 0) +
-                               (seconds_shown ? 1 : 0);
-                if(trailing > 1)
-                    remaining_str += ", ";
-                else if(trailing == 1)
-                    remaining_str += ", and ";
-            }
-
-            if(days_shown)
-            {
-                remaining_str += days + " day" + (days == 1 ? "" : "s");
-
-                int trailing = (hours_shown ? 1 : 0) +
-                               (minutes_shown ? 1 : 0) +
-                               (seconds_shown ? 1 : 0);
-                if(trailing > 1)
-                    remaining_str += ", ";
-                else if(trailing == 1)
-                    remaining_str += ", and ";
-            }
-
-            if(hours_shown)
-            {
-                remaining_str += hours + " hour" + (hours == 1 ? "" : "s");
-
-                int trailing = (minutes_shown ? 1 : 0) +
-                               (seconds_shown ? 1 : 0);
-                if(trailing > 1)
-                    remaining_str += ", ";
-                else if(trailing == 1)
-                    remaining_str += ", and ";
-            }
-
-            if(minutes_shown)
-            {
-                remaining_str += minutes + " minute" + (minutes == 1 ? "" : "s");
+                    if(seconds_shown)
+                        remaining_str += ", and ";
+                }
 
                 if(seconds_shown)
-                    remaining_str += ", and ";
-            }
+                {
+                    remaining_str += seconds + " second" + (seconds == 1 ? "" : "s");
+                }
 
-            if(seconds_shown)
-            {
-                remaining_str += seconds + " second" + (seconds == 1 ? "" : "s");
+                time_text_disp.set(remaining_str);
             }
-
-            time_text_disp.set(remaining_str);
 
             handler.postDelayed(this, delay);
         }
