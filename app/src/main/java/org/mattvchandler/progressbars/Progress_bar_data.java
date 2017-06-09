@@ -128,7 +128,7 @@ public class Progress_bar_data implements Serializable
     {
         Calendar start_time_cal = Calendar.getInstance();
         Calendar end_time_cal = (Calendar) start_time_cal.clone();
-        end_time_cal.add(Calendar.HOUR, 1);
+        end_time_cal.add(Calendar.MINUTE, 1);
 
         rowid          = -1;
         order          = -1;
@@ -269,6 +269,7 @@ public class Progress_bar_data implements Serializable
         rowid = db.insert(Progress_bar_table.TABLE_NAME, null, values);
 
         db.close();
+        Notification_handler.reset_notification(context, this);
     }
 
     public void update(Context context)
@@ -280,7 +281,6 @@ public class Progress_bar_data implements Serializable
 
         ContentValues values = new ContentValues();
 
-        values.put(Progress_bar_table._ID, rowid);
         values.put(Progress_bar_table.ORDER_COL, order);
         values.put(Progress_bar_table.START_TIME_COL, start_time);
         values.put(Progress_bar_table.END_TIME_COL, end_time);
@@ -308,12 +308,16 @@ public class Progress_bar_data implements Serializable
         db.update(Progress_bar_table.TABLE_NAME, values, Progress_bar_table._ID + " = ?", new String[]{String.valueOf(rowid)});
 
         db.close();
+
+        Notification_handler.reset_notification(context, this);
     }
 
     public void delete(Context context)
     {
         if(rowid < 0)
             throw new IllegalStateException("Tried to delete when rowid isn't set");
+
+         Notification_handler.cancel_notification(context, this);
 
         SQLiteDatabase db = new Progress_bar_DB(context).getWritableDatabase();
 

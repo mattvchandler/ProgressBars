@@ -5,6 +5,8 @@
     <string name="set_dark">Set dark theme</string>
     <string name="set_light">Set light theme</string>
 
+    <string name="notification_title">%1$s completed</string>
+
     <string name="date_format">yyyy-MM-dd</string>
     <string name="time_format">HH:mm:ss</string>
     <string name="date_format_sprintf">%1$04d-%2$02d-%3$02d</string>

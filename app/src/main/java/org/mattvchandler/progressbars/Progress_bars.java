@@ -1,7 +1,5 @@
 package org.mattvchandler.progressbars;
 
-import android.app.AlarmManager;
-import android.app.PendingIntent;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
@@ -16,11 +14,8 @@ import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Toast;
 
 import org.mattvchandler.progressbars.databinding.ActivityProgressBarsBinding;
-
-import java.util.Calendar;
 
 public class Progress_bars extends AppCompatActivity
 {
@@ -54,6 +49,8 @@ public class Progress_bars extends AppCompatActivity
             }
             cursor.close();
             db.close();
+
+            Notification_handler.reset_all_alarms(this);
         }
         adapter = new Progress_bar_adapter(this);
 
@@ -105,6 +102,7 @@ public class Progress_bars extends AppCompatActivity
             recreate();
             return true;
         case R.id.about:
+
             return  true;
         }
         return false;

@@ -485,6 +485,7 @@ public class Settings extends AppCompatActivity implements Precision_dialog_frag
         frag.setArguments(args);
         frag.show(getSupportFragmentManager(), "end_time_picker");
     }
+
     public void on_precision_butt(View view)
     {
         Precision_dialog_frag d = new Precision_dialog_frag();
