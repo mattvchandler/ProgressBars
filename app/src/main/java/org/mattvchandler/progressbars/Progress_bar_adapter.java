@@ -60,13 +60,15 @@ public class Progress_bar_adapter extends RecyclerView.Adapter<Progress_bar_adap
         }
     }
 
+    private SQLiteDatabase db;
     private Cursor cursor;
     private final Progress_bars context;
 
-    public Progress_bar_adapter(Cursor cur, Progress_bars con)
+    public Progress_bar_adapter(Progress_bars con)
     {
-        cursor = cur;
         context = con;
+        db = new Progress_bar_DB(context).getWritableDatabase();
+        cursor = db.rawQuery(Progress_bar_table.SELECT_ALL_ROWS, null);
     }
 
     public void resetCursor(Cursor cur)
@@ -80,7 +82,6 @@ public class Progress_bar_adapter extends RecyclerView.Adapter<Progress_bar_adap
         }
         else
         {
-            SQLiteDatabase db = new Progress_bar_DB(context).getWritableDatabase();
             cursor = db.rawQuery(Progress_bar_table.SELECT_ALL_ROWS, null);
         }
     }
@@ -131,7 +132,6 @@ public class Progress_bar_adapter extends RecyclerView.Adapter<Progress_bar_adap
         String to_rowid = cursor.getString(cursor.getColumnIndexOrThrow(Progress_bar_table._ID));
         String to_order = cursor.getString(cursor.getColumnIndexOrThrow(Progress_bar_table.ORDER_COL));
 
-        SQLiteDatabase db = new Progress_bar_DB(context).getWritableDatabase();
         ContentValues values = new ContentValues();
 
         values.put(Progress_bar_table.ORDER_COL, to_order);
@@ -142,8 +142,6 @@ public class Progress_bar_adapter extends RecyclerView.Adapter<Progress_bar_adap
         values.put(Progress_bar_table.ORDER_COL, from_order);
         db.update(Progress_bar_table.TABLE_NAME, values,
                 Progress_bar_table._ID + " = ?", new String[] {to_rowid});
-
-        db.close();
 
         resetCursor(null);
 

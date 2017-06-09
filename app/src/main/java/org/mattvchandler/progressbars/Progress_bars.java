@@ -5,6 +5,7 @@ import android.app.PendingIntent;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
@@ -42,14 +43,19 @@ public class Progress_bars extends AppCompatActivity
         setSupportActionBar(binding.progressBarToolbar);
         binding.mainList.addItemDecoration(new DividerItemDecoration(binding.mainList.getContext(), DividerItemDecoration.VERTICAL));
 
-        Cursor cursor = new Progress_bar_DB(this).getReadableDatabase().rawQuery(Progress_bar_table.SELECT_ALL_ROWS, null);
-        if(cursor.getCount() == 0)
+        // on first run, create a new prog bar if empty
+        if(savedInstanceState == null)
         {
-            new Progress_bar_data(this).insert(this);
+            SQLiteDatabase db = new Progress_bar_DB(this).getReadableDatabase();
+            Cursor cursor = db.rawQuery(Progress_bar_table.SELECT_ALL_ROWS, null);
+            if(cursor.getCount() == 0)
+            {
+                new Progress_bar_data(this).insert(this);
+            }
             cursor.close();
-            cursor = new Progress_bar_DB(this).getReadableDatabase().rawQuery(Progress_bar_table.SELECT_ALL_ROWS, null);
+            db.close();
         }
-        adapter = new Progress_bar_adapter(cursor, this);
+        adapter = new Progress_bar_adapter(this);
 
         binding.mainList.setLayoutManager(new LinearLayoutManager(this));
         binding.mainList.setAdapter(adapter);
