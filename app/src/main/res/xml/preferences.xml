@@ -1,7 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
     <PreferenceCategory
-        android:title="someething">
+        android:title="something">
+
+        <ListPreference
+            android:key="date_format"
+            android:title="@string/pref_date_format"
+            android:entries="@array/date_formats_display"
+            android:entryValues="@array/date_formats_java"
+            android:defaultValue="@string/pref_date_format_default"
+            android:summary="%s"
+            />
+
+        <SwitchPreference
+            android:key="master_notification"
+            android:title="@string/pref_master_notification"
+            android:summary="@string/pref_master_notification_summary"
+            android:defaultValue="true"
+            />
+
+        <SwitchPreference
+            android:key="dark_theme"
+            android:title="@string/pref_dark_theme"
+            android:defaultValue="false"
+            />
+
 
     </PreferenceCategory>
 

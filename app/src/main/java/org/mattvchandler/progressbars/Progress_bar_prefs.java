@@ -2,6 +2,7 @@ package org.mattvchandler.progressbars;
 
 import android.databinding.DataBindingUtil;
 import android.preference.PreferenceFragment;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.MenuItem;
@@ -17,8 +18,10 @@ public class Progress_bar_prefs extends AppCompatActivity
         {
             super.onCreate(savedInstanceState);
             addPreferencesFromResource(R.xml.preferences);
+            PreferenceManager.setDefaultValues(getActivity(), R.xml.preferences, false);
         }
     }
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
