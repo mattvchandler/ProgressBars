@@ -107,7 +107,7 @@ public class Progress_bars extends AppCompatActivity
             recreate();
             return true;
         case R.id.about:
-
+            new About_dialog_frag().show(getSupportFragmentManager(), "about");
             return  true;
         }
         return false;
