@@ -153,11 +153,13 @@ public class Settings extends AppCompatActivity implements Precision_dialog_frag
             // no rowid passed? make a new one
             if(rowid < 0)
             {
+                setTitle(R.string.add_title);
                 data = new Progress_bar_data(this);
             }
             else
             {
                 // get data from row
+                setTitle(R.string.edit_title);
                 data = new Progress_bar_data(this, rowid);
             }
             save_data = new Progress_bar_data(data);
