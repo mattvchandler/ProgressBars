@@ -2,7 +2,7 @@
     <string name="app_name">Progress Bars</string>
     <string name="app_description">Countdown/up timers for Android</string>
     <string name="app_copyright">© 2017 Matthew Chandler</string>
-    <string name="app_license">This program comes with absolutely no warranty.\nSee the The <a href="https://opensource.org/licenses/mit-license.php">MIT License (MIT)</a> for details.</string>
+    <string name="app_license">This program comes with absolutely no warranty.\nSee the <a href="https://opensource.org/licenses/mit-license.php">MIT License (MIT)</a> for details.</string>
     <string name="app_website"><a href="https://www.github.com/mattvchandler/ProgressBars">ProgressBars on Github</a></string>
 
     <string name="settings_title">Edit timer</string>
