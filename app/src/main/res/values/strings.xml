@@ -9,6 +9,8 @@
     <string name="add_title">Add new timer</string>
 
     <string name="about">About</string>
+
+    <string name="settings">Settings</string>
     <string name="set_dark">Set dark theme</string>
     <string name="set_light">Set light theme</string>
 

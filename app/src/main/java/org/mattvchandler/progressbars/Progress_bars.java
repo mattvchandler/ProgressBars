@@ -21,7 +21,6 @@ public class Progress_bars extends AppCompatActivity
 {
     private ActivityProgressBarsBinding binding;
     private Progress_bar_adapter adapter;
-    private Menu menu;
 
     public static final int UPDATE_REQUEST = 1;
 
@@ -67,20 +66,10 @@ public class Progress_bars extends AppCompatActivity
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu_in)
+    public boolean onCreateOptionsMenu(Menu menu)
     {
-        super.onCreateOptionsMenu(menu_in);
-        menu = menu_in;
+        super.onCreateOptionsMenu(menu);
         getMenuInflater().inflate(R.menu.progress_bar_action_bar, menu);
-        if(getSharedPreferences(getResources().getString(R.string.shared_prefs), MODE_PRIVATE).
-                getInt(getResources().getString(R.string.theme_pref), R.style.Theme_progress_bars) == R.style.Theme_progress_bars_dark)
-        {
-            menu.findItem(R.id.theme).setTitle(getResources().getString(R.string.set_light));
-        }
-        else
-        {
-            menu.findItem(R.id.theme).setTitle(getResources().getString(R.string.set_dark));
-        }
         return true;
     }
 
@@ -92,19 +81,7 @@ public class Progress_bars extends AppCompatActivity
         case R.id.add_butt:
             startActivityForResult(new Intent(this, Settings.class), UPDATE_REQUEST);
             return true;
-        case R.id.theme:
-            SharedPreferences prefs = getSharedPreferences(getResources().getString(R.string.shared_prefs), MODE_PRIVATE);
-            if(prefs.getInt(getResources().getString(R.string.theme_pref), R.style.Theme_progress_bars) == R.style.Theme_progress_bars)
-            {
-                prefs.edit().putInt(getResources().getString(R.string.theme_pref), R.style.Theme_progress_bars_dark).apply();
-                menu.findItem(R.id.theme).setTitle(getResources().getString(R.string.set_light));
-            }
-            else
-            {
-                prefs.edit().putInt(getResources().getString(R.string.theme_pref), R.style.Theme_progress_bars).apply();
-                menu.findItem(R.id.theme).setTitle(getResources().getString(R.string.set_dark));
-            }
-            recreate();
+        case R.id.settings:
             return true;
         case R.id.about:
             new About_dialog_frag().show(getSupportFragmentManager(), "about");

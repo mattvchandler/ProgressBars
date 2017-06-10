@@ -8,4 +8,8 @@
         android:icon="@android:drawable/ic_menu_save"
         android:title="@string/save_butt_title"
         app:showAsAction="ifRoom"/>
+    <item
+        android:id="@+id/settings"
+        android:title="@string/settings"
+        app:showAsAction="never"/>
 </menu>
