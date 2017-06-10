@@ -82,6 +82,7 @@ public class Progress_bars extends AppCompatActivity
             startActivityForResult(new Intent(this, Settings.class), UPDATE_REQUEST);
             return true;
         case R.id.settings:
+            startActivity(new Intent(this, Progress_bar_prefs.class));
             return true;
         case R.id.about:
             new About_dialog_frag().show(getSupportFragmentManager(), "about");

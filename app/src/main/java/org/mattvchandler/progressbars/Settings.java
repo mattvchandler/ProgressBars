@@ -247,6 +247,10 @@ public class Settings extends AppCompatActivity implements Precision_dialog_frag
                 setResult(RESULT_OK, intent);
                 finish();
                 return true;
+
+            case R.id.settings:
+                startActivity(new Intent(this, Progress_bar_prefs.class));
+                return true;
         }
         return false;
     }
