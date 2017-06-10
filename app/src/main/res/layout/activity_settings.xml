@@ -63,7 +63,7 @@
 
                     <TextView
                         android:text="@string/time_date_header"
-                        android:textAppearance="?android:textAppearanceListItemSmall"
+                        android:textAppearance="?android:textAppearanceSmall"
                         android:textStyle="bold"
                         android:textColor="?colorAccent"
                         android:layout_width="match_parent"
@@ -265,7 +265,7 @@
 
                     <TextView
                         android:text="@string/text_header"
-                        android:textAppearance="?android:textAppearanceListItemSmall"
+                        android:textAppearance="?android:textAppearanceSmall"
                         android:textStyle="bold"
                         android:textColor="?colorAccent"
                         android:layout_width="match_parent"
@@ -373,7 +373,7 @@
                         <TextView
                             android:id="@+id/precision"
                             android:text="@{String.valueOf(data.precision)}"
-                            android:textAppearance="?android:textAppearanceListItemSmall"
+                            android:textAppearance="?android:textAppearanceSmall"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginEnd="@dimen/margin_size"
@@ -384,7 +384,7 @@
 
                     <TextView
                         android:text="@string/show_elements_header"
-                        android:textAppearance="?android:textAppearanceListItemSmall"
+                        android:textAppearance="?android:textAppearanceSmall"
                         android:textStyle="bold"
                         android:textColor="?colorAccent"
                         android:layout_width="match_parent"
@@ -424,7 +424,7 @@
 
                     <TextView
                         android:text="@string/show_times_header"
-                        android:textAppearance="?android:textAppearanceListItemSmall"
+                        android:textAppearance="?android:textAppearanceSmall"
                         android:textStyle="bold"
                         android:textColor="?colorAccent"
                         android:layout_width="match_parent"
@@ -506,7 +506,7 @@
 
                     <TextView
                         android:text="@string/timer_opts_header"
-                        android:textAppearance="?android:textAppearanceListItemSmall"
+                        android:textAppearance="?android:textAppearanceSmall"
                         android:textStyle="bold"
                         android:textColor="?colorAccent"
                         android:layout_width="match_parent"
