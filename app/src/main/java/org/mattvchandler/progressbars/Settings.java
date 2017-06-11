@@ -5,6 +5,7 @@ import android.app.Dialog;
 import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
 import android.os.Bundle;
@@ -43,6 +44,9 @@ public class Settings extends Dynamic_theme_activity implements Precision_dialog
 
     private EditText date_time_dialog_target;
 
+    private String date_format;
+    private String time_format;
+
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -51,6 +55,11 @@ public class Settings extends Dynamic_theme_activity implements Precision_dialog
         binding = DataBindingUtil.setContentView(this, R.layout.activity_settings);
         setSupportActionBar(binding.progressBarToolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        date_format = PreferenceManager.getDefaultSharedPreferences(this).getString("date_format",
+                getResources().getString(R.string.pref_date_format_default));
+        time_format = getResources().getString(R.string.time_format);
+
 
         // fill timezone spinners
         ArrayAdapter<String> tz_adapter = new ArrayAdapter<>(this, R.layout.right_aligned_spinner, TimeZone.getAvailableIDs());
@@ -67,14 +76,13 @@ public class Settings extends Dynamic_theme_activity implements Precision_dialog
                 if(!hasFocus)
                 {
                     String new_date = ((EditText)v).getText().toString();
-                    SimpleDateFormat df = new SimpleDateFormat(Settings.this.getResources().getString(R.string.date_format), Locale.US);
+                    SimpleDateFormat df = new SimpleDateFormat(date_format , Locale.US);
 
                     Date date = df.parse(new_date, new ParsePosition(0));
                     if(date == null)
                     {
                         Toast.makeText(Settings.this, getResources().getString(R.string.invalid_date,
-                                  new_date, Settings.this.getResources().getString(R.string.date_format)),
-                                Toast.LENGTH_LONG).show();
+                                  new_date, date_format), Toast.LENGTH_LONG).show();
 
                         if(v.getId() == R.id.start_date_sel)
                         {
@@ -104,14 +112,13 @@ public class Settings extends Dynamic_theme_activity implements Precision_dialog
                 if(!hasFocus)
                 {
                     String new_time = ((EditText)v).getText().toString();
-                    SimpleDateFormat df = new SimpleDateFormat(Settings.this.getResources().getString(R.string.time_format), Locale.US);
+                    SimpleDateFormat df = new SimpleDateFormat(time_format, Locale.US);
 
                     Date time = df.parse(new_time, new ParsePosition(0));
                     if(time == null)
                     {
                         Toast.makeText(Settings.this, getResources().getString(R.string.invalid_time,
-                                                      new_time,
-                                                      Settings.this.getResources().getString(R.string.time_format)),
+                                                      new_time, time_format),
                                 Toast.LENGTH_LONG).show();
 
                         if(v.getId() == R.id.start_time_sel)
@@ -184,8 +191,8 @@ public class Settings extends Dynamic_theme_activity implements Precision_dialog
                 break;
         }
 
-        SimpleDateFormat df_date = new SimpleDateFormat(getResources().getString(R.string.date_format), Locale.US);
-        SimpleDateFormat df_time = new SimpleDateFormat(getResources().getString(R.string.time_format), Locale.US);
+        SimpleDateFormat df_date = new SimpleDateFormat(date_format, Locale.US);
+        SimpleDateFormat df_time = new SimpleDateFormat(time_format, Locale.US);
 
         Date start_date = new Date(data.start_time * 1000);
         df_date.setTimeZone(TimeZone.getTimeZone(data.start_tz));
@@ -198,6 +205,42 @@ public class Settings extends Dynamic_theme_activity implements Precision_dialog
         df_time.setTimeZone(TimeZone.getTimeZone(data.end_tz));
         binding.endDateSel.setText(df_date.format(end_date));
         binding.endTimeSel.setText(df_time.format(end_date));
+    }
+
+    @Override
+    public void onResume()
+    {
+        super.onResume();
+        String old_date_format = date_format;
+        date_format = PreferenceManager.getDefaultSharedPreferences(this).getString("date_format",
+                getResources().getString(R.string.pref_date_format_default));
+
+        if(!old_date_format.equals(date_format))
+        {
+            SimpleDateFormat new_df = new SimpleDateFormat(date_format, Locale.US);
+            SimpleDateFormat old_df = new SimpleDateFormat(old_date_format, Locale.US);
+
+            String date;
+            Date date_obj;
+
+            date = binding.startDateSel.getText().toString();
+            date_obj = old_df.parse(date, new ParsePosition(0));
+            if(date_obj != null)
+            {
+                date = new_df.format(date_obj);
+                binding.startDateSel.setText(date);
+            }
+
+            date = binding.endDateSel.getText().toString();
+            date_obj = old_df.parse(date, new ParsePosition(0));
+            if(date_obj != null)
+            {
+                date = new_df.format(date_obj);
+                binding.endDateSel.setText(date);
+            }
+
+            recreate();
+        }
     }
 
     @Override
@@ -258,10 +301,9 @@ public class Settings extends Dynamic_theme_activity implements Precision_dialog
         data.end_tz = binding.endTz.getSelectedItem().toString();
 
         // validate dates and times
-        SimpleDateFormat datetime_df = new SimpleDateFormat(getResources().getString(R.string.date_format) + " " +
-                                                            getResources().getString(R.string.time_format), Locale.US);
-        SimpleDateFormat date_df = new SimpleDateFormat(getResources().getString(R.string.date_format), Locale.US);
-        SimpleDateFormat time_df = new SimpleDateFormat(getResources().getString(R.string.time_format), Locale.US);
+        SimpleDateFormat datetime_df = new SimpleDateFormat(date_format + " " + time_format, Locale.US);
+        SimpleDateFormat date_df = new SimpleDateFormat(date_format, Locale.US);
+        SimpleDateFormat time_df = new SimpleDateFormat(time_format, Locale.US);
 
         datetime_df.setTimeZone(TimeZone.getTimeZone(data.start_tz));
         date_df.setTimeZone(TimeZone.getTimeZone(data.start_tz));
@@ -273,8 +315,7 @@ public class Settings extends Dynamic_theme_activity implements Precision_dialog
         if(start_date == null)
         {
             Toast.makeText(Settings.this, getResources().getString(R.string.invalid_date,
-                                          binding.startDateSel.getText(),
-                                          Settings.this.getResources().getString(R.string.date_format)),
+                                          binding.startDateSel.getText(), date_format),
                     Toast.LENGTH_LONG).show();
 
             errors = true;
@@ -282,8 +323,7 @@ public class Settings extends Dynamic_theme_activity implements Precision_dialog
         if(start_time == null)
         {
             Toast.makeText(Settings.this, getResources().getString(R.string.invalid_time,
-                                          binding.startTimeSel.getText(),
-                                          Settings.this.getResources().getString(R.string.time_format)),
+                                          binding.startTimeSel.getText(), time_format),
                     Toast.LENGTH_LONG).show();
 
             errors = true;
@@ -306,8 +346,7 @@ public class Settings extends Dynamic_theme_activity implements Precision_dialog
         if(end_date == null)
         {
             Toast.makeText(Settings.this, getResources().getString(R.string.invalid_date,
-                                          binding.endDateSel.getText(),
-                                          Settings.this.getResources().getString(R.string.date_format)),
+                                          binding.endDateSel.getText(), date_format),
                     Toast.LENGTH_LONG).show();
 
             errors = true;
@@ -315,8 +354,7 @@ public class Settings extends Dynamic_theme_activity implements Precision_dialog
         if(end_time == null)
         {
             Toast.makeText(Settings.this, getResources().getString(R.string.invalid_time,
-                                          binding.endTimeSel.getText(),
-                                          Settings.this.getResources().getString(R.string.time_format)),
+                                          binding.endTimeSel.getText(), time_format),
                     Toast.LENGTH_LONG).show();
 
             errors = true;
@@ -368,29 +406,33 @@ public class Settings extends Dynamic_theme_activity implements Precision_dialog
         @Override
         public Dialog onCreateDialog(Bundle saved_instance_state)
         {
-            String date = getArguments().getString(DATE);
             int year, month, day;
-            try
+
+            Calendar cal = Calendar.getInstance();
+
+            String date_format = PreferenceManager.getDefaultSharedPreferences(getActivity())
+                    .getString("date_format", getResources().getString(R.string.pref_date_format_default));
+
+            String date = getArguments().getString(DATE);
+
+            SimpleDateFormat df = new SimpleDateFormat(date_format, Locale.US);
+            Date date_obj = df.parse(date, new ParsePosition(0));
+            if(date_obj == null)
             {
-                String[] date_components = date.split("-");
-                year = Integer.parseInt(date_components[0]);
-                month = Integer.parseInt(date_components[1]) - 1;
-                day = Integer.parseInt(date_components[2]);
-            }
-            catch(NumberFormatException | ArrayIndexOutOfBoundsException e)
-            {
-                Toast.makeText(getActivity(), getResources().getString(R.string.invalid_date,
-                                              date,
-                                              getResources().getString(R.string.date_format)),
+                Toast.makeText(getActivity(), getResources().getString(R.string.invalid_date, date, date_format),
                         Toast.LENGTH_LONG).show();
 
                 // set to stored date
-                Calendar cal = Calendar.getInstance();
                 cal.setTimeInMillis(getArguments().getLong(STORE_DATE, 0) * 1000);
-                year = cal.get(Calendar.YEAR);
-                month = cal.get(Calendar.MONTH);
-                day = cal.get(Calendar.DAY_OF_MONTH);
             }
+            else
+            {
+                cal.setTime(date_obj);
+            }
+
+            year = cal.get(Calendar.YEAR);
+            month = cal.get(Calendar.MONTH);
+            day = cal.get(Calendar.DAY_OF_MONTH);
 
             return new DatePickerDialog(getActivity(), (Settings) getActivity(), year, month, day);
         }
@@ -399,8 +441,13 @@ public class Settings extends Dynamic_theme_activity implements Precision_dialog
     @Override
     public void onDateSet(DatePicker view, int year, int month, int day)
     {
-        String date = getResources().getString(R.string.date_format_sprintf, year, month + 1, day);
-        date_time_dialog_target.setText(date);
+        Calendar cal = Calendar.getInstance();
+        cal.set(Calendar.YEAR, year);
+        cal.set(Calendar.MONTH, month);
+        cal.set(Calendar.DAY_OF_MONTH, day);
+
+        SimpleDateFormat df = new SimpleDateFormat(date_format, Locale.US);
+        date_time_dialog_target.setText(df.format(cal.getTime()));
     }
 
     public static class Timepicker_frag extends DialogFragment
@@ -412,27 +459,31 @@ public class Settings extends Dynamic_theme_activity implements Precision_dialog
         @Override
         public Dialog onCreateDialog(Bundle saved_instance_state)
         {
-            String time = getArguments().getString(TIME);
             int hour, minute;
-            try
+
+            Calendar cal = Calendar.getInstance();
+
+            String time_format = getResources().getString(R.string.time_format);
+
+            String time = getArguments().getString(TIME);
+
+            SimpleDateFormat df = new SimpleDateFormat(time_format, Locale.US);
+            Date date_obj = df.parse(time, new ParsePosition(0));
+            if(date_obj == null)
             {
-                String[] date_components = time.split(":");
-                hour = Integer.parseInt(date_components[0]);
-                minute = Integer.parseInt(date_components[1]);
-            }
-            catch(NumberFormatException | ArrayIndexOutOfBoundsException e)
-            {
-                Toast.makeText(getActivity(), getResources().getString(R.string.invalid_time,
-                                              time,
-                                              getResources().getString(R.string.time_format)),
+                Toast.makeText(getActivity(), getResources().getString(R.string.invalid_time, time, time_format),
                         Toast.LENGTH_LONG).show();
 
-                // set to stored time
-                Calendar cal = Calendar.getInstance();
+                // set to stored date
                 cal.setTimeInMillis(getArguments().getLong(STORE_TIME, 0) * 1000);
-                hour = cal.get(Calendar.HOUR_OF_DAY);
-                minute = cal.get(Calendar.MINUTE);
             }
+            else
+            {
+                cal.setTime(date_obj);
+            }
+
+            hour = cal.get(Calendar.HOUR_OF_DAY);
+            minute = cal.get(Calendar.MINUTE);
 
             return new TimePickerDialog(getActivity(), (Settings) getActivity(), hour, minute, true);
         }
@@ -441,8 +492,13 @@ public class Settings extends Dynamic_theme_activity implements Precision_dialog
     @Override
     public void onTimeSet(TimePicker view, int hour, int minute)
     {
-        String time = getResources().getString(R.string.time_format_sprintf, hour, minute);
-        date_time_dialog_target.setText(time);
+        Calendar cal = Calendar.getInstance();
+        cal.set(Calendar.HOUR_OF_DAY, hour);
+        cal.set(Calendar.MINUTE, minute);
+        cal.set(Calendar.SECOND, 0);
+
+        SimpleDateFormat df = new SimpleDateFormat(time_format, Locale.US);
+        date_time_dialog_target.setText(df.format(cal.getTime()));
     }
 
     public void on_start_cal_butt(View view)

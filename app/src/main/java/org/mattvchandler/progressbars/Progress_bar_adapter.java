@@ -34,7 +34,7 @@ public class Progress_bar_adapter extends RecyclerView.Adapter<Progress_bar_adap
 
         public void bind_cursor(Cursor cursor)
         {
-            data = new Progress_bar_view_data(cursor);
+            data = new Progress_bar_view_data(context, cursor);
             row_binding.setData(data);
         }
         @Override

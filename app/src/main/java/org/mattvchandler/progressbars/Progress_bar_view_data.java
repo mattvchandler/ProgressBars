@@ -1,10 +1,12 @@
 package org.mattvchandler.progressbars;
 
+import android.content.Context;
 import android.database.Cursor;
 import android.databinding.ObservableBoolean;
 import android.databinding.ObservableField;
 import android.databinding.ObservableInt;
 import android.os.Handler;
+import android.preference.PreferenceManager;
 
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
@@ -374,7 +376,7 @@ public final class Progress_bar_view_data extends Progress_bar_data
         }
     }
 
-    Progress_bar_view_data(Cursor cursor)
+    Progress_bar_view_data(Context context, Cursor cursor)
     {
         super(cursor);
 
@@ -387,8 +389,11 @@ public final class Progress_bar_view_data extends Progress_bar_data
         show_end_disp.set(show_end);
         show_progress_disp.set(show_progress);
 
-        SimpleDateFormat date_df = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
-        SimpleDateFormat time_df = new SimpleDateFormat("HH:mm:ss", Locale.US);
+        SimpleDateFormat date_df = new SimpleDateFormat(
+                PreferenceManager.getDefaultSharedPreferences(context)
+                .getString("date_format", context.getResources().getString(R.string.pref_date_format_default)),
+                Locale.US);
+        SimpleDateFormat time_df = new SimpleDateFormat(context.getResources().getString(R.string.time_format), Locale.US);
 
         start_date_disp.set(date_df.format(start_time_date));
         start_time_disp.set(time_df.format(start_time_date));

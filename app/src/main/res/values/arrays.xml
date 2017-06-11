@@ -14,11 +14,4 @@
         <item>MM-dd-yyyy</item>
         <item>dd-MM-yyyy</item>
     </string-array>
-    <string-array name="date_formats_sprintf">
-        <item>%1$04d-%2$02d-%3$02d</item>
-        <item>%1$02d/%2$02d/%3$04d</item>
-        <item>%1$02d/%2$02d/%3$04d</item>
-        <item>%1$02d-%2$02d-%3$04d</item>
-        <item>%1$02d-%2$02d-%3$04d</item>
-    </string-array>
 </resources>

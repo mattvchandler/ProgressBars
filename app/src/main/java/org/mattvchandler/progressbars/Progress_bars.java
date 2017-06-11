@@ -5,6 +5,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
@@ -22,6 +23,8 @@ public class Progress_bars extends Dynamic_theme_activity
 
     public static final int UPDATE_REQUEST = 1;
 
+    private String date_format;
+
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -30,6 +33,9 @@ public class Progress_bars extends Dynamic_theme_activity
         binding = DataBindingUtil.setContentView(this, R.layout.activity_progress_bars);
         setSupportActionBar(binding.progressBarToolbar);
         binding.mainList.addItemDecoration(new DividerItemDecoration(binding.mainList.getContext(), DividerItemDecoration.VERTICAL));
+
+        date_format = PreferenceManager.getDefaultSharedPreferences(this).getString("date_format",
+                getResources().getString(R.string.pref_date_format_default));
 
         // on first run, create a new prog bar if empty
         if(savedInstanceState == null)
@@ -57,6 +63,19 @@ public class Progress_bars extends Dynamic_theme_activity
 
         ItemTouchHelper touch_helper = new ItemTouchHelper(new Progress_bar_row_touch_helper_callback(adapter));
         touch_helper.attachToRecyclerView(binding.mainList);
+    }
+
+    @Override
+    public void onResume()
+    {
+        super.onResume();
+        String new_date_format = PreferenceManager.getDefaultSharedPreferences(this).getString("date_format",
+                getResources().getString(R.string.pref_date_format_default));
+
+        if(!new_date_format.equals(date_format))
+        {
+            recreate();
+        }
     }
 
     @Override
