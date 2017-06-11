@@ -1,13 +1,11 @@
 package org.mattvchandler.progressbars;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.helper.ItemTouchHelper;
@@ -17,7 +15,7 @@ import android.view.View;
 
 import org.mattvchandler.progressbars.databinding.ActivityProgressBarsBinding;
 
-public class Progress_bars extends AppCompatActivity
+public class Progress_bars extends Dynamic_theme_activity
 {
     private ActivityProgressBarsBinding binding;
     private Progress_bar_adapter adapter;
@@ -28,10 +26,6 @@ public class Progress_bars extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-
-        int theme = getSharedPreferences(getResources().getString(R.string.shared_prefs), MODE_PRIVATE)
-                .getInt(getResources().getString(R.string.theme_pref), R.style.Theme_progress_bars);
-        setTheme(theme);
 
         binding = DataBindingUtil.setContentView(this, R.layout.activity_progress_bars);
         setSupportActionBar(binding.progressBarToolbar);

@@ -10,6 +10,8 @@
 
     <string name="about">About</string>
 
+    <string name="settings">Settings</string>
+
     <string name="pref_date_format">Date format</string>
     <string name="pref_date_format_default">yyyy-MM-dd</string>
 
@@ -17,10 +19,6 @@
     <string name="pref_master_notification_summary">Allow individual timers to send notifications</string>
 
     <string name="pref_dark_theme">Enable dark theme</string>
-
-    <string name="settings">Settings</string>
-    <string name="set_dark">Set dark theme</string>
-    <string name="set_light">Set light theme</string>
 
     <string name="notification_start_title">%1$s started</string>
     <string name="notification_end_title">%1$s completed</string>
@@ -94,7 +92,4 @@
     <string name="default_countdown_text">"Time remaining: "</string>
     <string name="default_complete_text">Completed</string>
     <string name="default_post_text">"Time since completion: "</string>
-
-    <string name="shared_prefs">org.mattvchandler.progressbars_preferences</string>
-    <string name="theme_pref">theme</string>
 </resources>

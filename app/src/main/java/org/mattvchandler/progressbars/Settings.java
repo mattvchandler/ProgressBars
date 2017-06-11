@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -27,16 +26,16 @@ import java.util.Date;
 import java.util.Locale;
 import java.util.TimeZone;
 
-public class Settings extends AppCompatActivity implements Precision_dialog_frag.NoticeDialogListener,
-                                                           DatePickerDialog.OnDateSetListener,
-                                                           TimePickerDialog.OnTimeSetListener
+public class Settings extends Dynamic_theme_activity implements Precision_dialog_frag.NoticeDialogListener,
+                                                                DatePickerDialog.OnDateSetListener,
+                                                                TimePickerDialog.OnTimeSetListener
 {
     public static final String EXTRA_EDIT_ROW_ID = "org.mattvchandler.progressbars.EDIT_ROW_ID";
     public static final String RESULT_NEW_DATA = "org.mattvchandler.progressbars.RESULT_ROW_ID";
     public static final String RESULT_OLD_DATA = "org.mattvchandler.progressbars.RESULT_OLD_DATA";
 
     private static final String STATE_DATA = "data";
-    private static final String STATE_SAVE_DATA = "data";
+    private static final String STATE_SAVE_DATA = "save_data";
 
     private ActivitySettingsBinding binding;
     private Progress_bar_data data;
@@ -48,10 +47,6 @@ public class Settings extends AppCompatActivity implements Precision_dialog_frag
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-
-        int theme = getSharedPreferences(getResources().getString(R.string.shared_prefs), MODE_PRIVATE)
-                .getInt(getResources().getString(R.string.theme_pref), R.style.Theme_progress_bars);
-        setTheme(theme);
 
         binding = DataBindingUtil.setContentView(this, R.layout.activity_settings);
         setSupportActionBar(binding.progressBarToolbar);
