@@ -10,6 +10,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v7.app.NotificationCompat;
 
 public class Notification_handler extends BroadcastReceiver
@@ -86,6 +87,9 @@ public class Notification_handler extends BroadcastReceiver
 
         long now = System.currentTimeMillis() / 1000;
 
+        boolean master_notification = PreferenceManager.getDefaultSharedPreferences(context)
+                .getBoolean("master_notification", true);
+
         AlarmManager am = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         for(int i = 0; i < cursor.getCount(); ++i)
         {
@@ -95,12 +99,12 @@ public class Notification_handler extends BroadcastReceiver
             PendingIntent start_pi = get_intent(context, data, BASE_STARTED_ACTION_NAME);
             PendingIntent complete_pi = get_intent(context, data, BASE_COMPLETED_ACTION_NAME);
 
-            if(data.notify_start && now < data.start_time)
+            if(master_notification && data.notify_start && now < data.start_time)
                 am.setExact(AlarmManager.RTC_WAKEUP, data.start_time * 1000, start_pi);
             else
                 am.cancel(start_pi);
 
-            if(data.notify_end && now < data.end_time)
+            if(master_notification && data.notify_end && now < data.end_time)
                 am.setExact(AlarmManager.RTC_WAKEUP, data.end_time * 1000, complete_pi);
             else
                 am.cancel(complete_pi);
@@ -111,18 +115,21 @@ public class Notification_handler extends BroadcastReceiver
 
     public static void reset_notification(Context context, Progress_bar_data data)
     {
+        boolean master_notification = PreferenceManager.getDefaultSharedPreferences(context)
+                .getBoolean("master_notification", true);
+
         AlarmManager am = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         long now = System.currentTimeMillis() / 1000;
 
         PendingIntent start_pi = get_intent(context, data, BASE_STARTED_ACTION_NAME);
         PendingIntent complete_pi = get_intent(context, data, BASE_COMPLETED_ACTION_NAME);
 
-        if(data.notify_start && now < data.start_time)
+        if(master_notification && data.notify_start && now < data.start_time)
             am.setExact(AlarmManager.RTC_WAKEUP, data.start_time * 1000, start_pi);
         else
             am.cancel(start_pi);
 
-        if(data.notify_end && now < data.end_time)
+        if(master_notification && data.notify_end && now < data.end_time)
             am.setExact(AlarmManager.RTC_WAKEUP, data.end_time * 1000, complete_pi);
         else
             am.cancel(complete_pi);

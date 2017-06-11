@@ -40,7 +40,11 @@ public class Progress_bar_prefs extends Dynamic_theme_activity
         @Override
         public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key)
         {
-            if(key.equals("dark_theme"))
+            if(key.equals("master_notification"))
+            {
+                Notification_handler.reset_all_alarms(getActivity());
+            }
+            else if(key.equals("dark_theme"))
             {
                 getActivity().recreate();
             }
