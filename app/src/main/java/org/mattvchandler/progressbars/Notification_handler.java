@@ -14,9 +14,9 @@ import android.support.v7.app.NotificationCompat;
 
 public class Notification_handler extends BroadcastReceiver
 {
-    public static final String BASE_STARTED_ACTION_NAME = "org.mattvchandler.progressbars.STARTED_ROWID_";
-    public static final String BASE_COMPLETED_ACTION_NAME = "org.mattvchandler.progressbars.COMPLETED_ROWID_";
-    public static final String EXTRA_ROWID = "EXTRA_ROWID";
+    private static final String BASE_STARTED_ACTION_NAME = "org.mattvchandler.progressbars.STARTED_ROWID_";
+    private static final String BASE_COMPLETED_ACTION_NAME = "org.mattvchandler.progressbars.COMPLETED_ROWID_";
+    private static final String EXTRA_ROWID = "EXTRA_ROWID";
     @Override
     public void onReceive(Context context, Intent intent)
     {

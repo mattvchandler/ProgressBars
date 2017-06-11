@@ -60,7 +60,7 @@ public class Progress_bar_adapter extends RecyclerView.Adapter<Progress_bar_adap
         }
     }
 
-    private SQLiteDatabase db;
+    private final SQLiteDatabase db;
     private Cursor cursor;
     private final Progress_bars context;
 
