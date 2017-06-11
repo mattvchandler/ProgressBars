@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.provider.BaseColumns;
 
+// DB Table schema
 final class Progress_bar_table implements BaseColumns
 {
     public static final String TABLE_NAME = "progress_bar";
@@ -41,9 +42,11 @@ final class Progress_bar_table implements BaseColumns
     public static final String NOTIFY_START_COL = "notify_start";
     public static final String NOTIFY_END_COL = "notify_end";
 
+    // Select stmt to get all columns, all rows, ordered by order #
     public static final String SELECT_ALL_ROWS =
             "SELECT * FROM " + TABLE_NAME + " ORDER BY " + ORDER_COL;
 
+    // table schema
     public static final String CREATE_TABLE =
             "CREATE TABLE IF NOT EXISTS " + TABLE_NAME + " (" +
             _ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
@@ -78,7 +81,7 @@ final class Progress_bar_table implements BaseColumns
             NOTIFY_START_COL + " INTEGER NOT NULL, " +
             NOTIFY_END_COL + " INTEGER NOT NULL)";
 
-    // redo order column to remove gaps, etc.
+    // redo order column to remove gaps, etc. Order #s will be sequential, from 0 to count
     public static void cleanup_order(Context context)
     {
         SQLiteDatabase db = new Progress_bar_DB(context).getWritableDatabase();

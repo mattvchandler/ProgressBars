@@ -8,11 +8,12 @@ import android.database.sqlite.SQLiteDatabase;
 import java.io.Serializable;
 import java.util.Calendar;
 
+// struct w/ copy of all DB columns. Serializable so we can store the whole thing
 public class Progress_bar_data implements Serializable
 {
-    public long rowid;
+    public long rowid; // is -1 when not set, ie. the data doesn't exist in the DB
 
-    public long order;
+    public long order; // -1 until set
     public long start_time;
     public long end_time;
 
@@ -100,6 +101,7 @@ public class Progress_bar_data implements Serializable
         notify_end = notify_end_in;
     }
 
+    // construct from a DB cursor
     Progress_bar_data(Cursor cursor)
     {
         this(
@@ -132,6 +134,7 @@ public class Progress_bar_data implements Serializable
         );
     }
 
+    // default ctor
     Progress_bar_data(Context context)
     {
         Calendar start_time_cal = Calendar.getInstance();
@@ -166,12 +169,7 @@ public class Progress_bar_data implements Serializable
         notify_end     = true;
     }
 
-    public Progress_bar_data(Context context, String title_in)
-    {
-        this(context);
-        title = title_in;
-    }
-
+    // get data from DB given rowid
     public Progress_bar_data(Context context, long rowid_in)
     {
         SQLiteDatabase db = new Progress_bar_DB(context).getReadableDatabase();
@@ -209,6 +207,7 @@ public class Progress_bar_data implements Serializable
         db.close();
     }
 
+    // trivial copy ctor. Because Java apparently can't figure this out on its own
     public Progress_bar_data(Progress_bar_data b)
     {
         rowid          = b.rowid;
@@ -239,6 +238,8 @@ public class Progress_bar_data implements Serializable
         notify_end     = b.notify_end;
     }
 
+    // insert data into the DB. rowid must not be set
+    // if order is not set, it will be placed at the bottom
     public void insert(Context context)
     {
         if(rowid >= 0)
@@ -248,6 +249,7 @@ public class Progress_bar_data implements Serializable
 
         if(order < 0)
         {
+            // get next available order #
             Cursor cursor = db.rawQuery("SELECT MAX(" + Progress_bar_table.ORDER_COL + ") + 1 FROM " + Progress_bar_table.TABLE_NAME, null);
             cursor.moveToFirst();
             order = cursor.getLong(0);
@@ -288,6 +290,8 @@ public class Progress_bar_data implements Serializable
         Notification_handler.reset_notification(context, this);
     }
 
+    // update the DB with new data
+    // rowid must be set
     public void update(Context context)
     {
         if(rowid < 0)
@@ -330,12 +334,14 @@ public class Progress_bar_data implements Serializable
         Notification_handler.reset_notification(context, this);
     }
 
+    // delete from DB
+    // rowid must be set, and will be unset after deletion
     public void delete(Context context)
     {
         if(rowid < 0)
             throw new IllegalStateException("Tried to delete when rowid isn't set");
 
-         Notification_handler.cancel_notification(context, this);
+        Notification_handler.cancel_notification(context, this);
 
         SQLiteDatabase db = new Progress_bar_DB(context).getWritableDatabase();
 
@@ -344,7 +350,7 @@ public class Progress_bar_data implements Serializable
                 new String[] {String.valueOf(rowid)});
         db.close();
 
-        rowid = -1;
+        rowid = -1; // unset rowid
     }
 }
 

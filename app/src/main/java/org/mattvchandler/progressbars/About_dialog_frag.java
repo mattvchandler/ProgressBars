@@ -23,9 +23,13 @@ public class About_dialog_frag extends DialogFragment
 
         builder.setView(binding.getRoot());
 
+        // can't set mipmap resources from XML, so set it here
         binding.logo.setImageResource(R.mipmap.progress_bar_launcher_icon);
-        binding.version.setText("v. " + BuildConfig.VERSION_NAME);
 
+        // also can't get version number set it here
+        binding.version.setText(getActivity().getResources().getString(R.string.app_version, BuildConfig.VERSION_NAME));
+
+        // allow clicking links in license and website text
         binding.license.setMovementMethod(LinkMovementMethod.getInstance());
         binding.website.setMovementMethod(LinkMovementMethod.getInstance());
 

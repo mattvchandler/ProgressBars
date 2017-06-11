@@ -16,6 +16,7 @@ import android.view.View;
 
 import org.mattvchandler.progressbars.databinding.ActivityProgressBarsBinding;
 
+// main activity. display each timer in a list
 public class Progress_bars extends Dynamic_theme_activity
 {
     private ActivityProgressBarsBinding binding;
@@ -34,10 +35,11 @@ public class Progress_bars extends Dynamic_theme_activity
         setSupportActionBar(binding.progressBarToolbar);
         binding.mainList.addItemDecoration(new DividerItemDecoration(binding.mainList.getContext(), DividerItemDecoration.VERTICAL));
 
+        // save date format to detect when it changes
         date_format = PreferenceManager.getDefaultSharedPreferences(this).getString("date_format",
                 getResources().getString(R.string.pref_date_format_default));
 
-        // on first run, create a new prog bar if empty
+        // on first run, create a new prog bar if DB is empty
         if(savedInstanceState == null)
         {
             SQLiteDatabase db = new Progress_bar_DB(this).getReadableDatabase();
@@ -48,7 +50,7 @@ public class Progress_bars extends Dynamic_theme_activity
             }
             else
             {
-                // clean up existing data
+                // clean up existing orders. make them sequential
                 Progress_bar_table.cleanup_order(this);
             }
             cursor.close();
@@ -58,6 +60,7 @@ public class Progress_bars extends Dynamic_theme_activity
         }
         adapter = new Progress_bar_adapter(this);
 
+        // set row adapter
         binding.mainList.setLayoutManager(new LinearLayoutManager(this));
         binding.mainList.setAdapter(adapter);
 
@@ -69,6 +72,8 @@ public class Progress_bars extends Dynamic_theme_activity
     public void onResume()
     {
         super.onResume();
+
+        // check to see if date format has changed. rebuild activity with new format if it has
         String new_date_format = PreferenceManager.getDefaultSharedPreferences(this).getString("date_format",
                 getResources().getString(R.string.pref_date_format_default));
 
@@ -81,70 +86,85 @@ public class Progress_bars extends Dynamic_theme_activity
     @Override
     public boolean onCreateOptionsMenu(Menu menu)
     {
+        // set toolbar menu
         super.onCreateOptionsMenu(menu);
         getMenuInflater().inflate(R.menu.progress_bar_action_bar, menu);
         return true;
     }
 
+    // handle toolbar menu presses
     @Override
     public boolean onOptionsItemSelected(MenuItem item)
     {
         switch(item.getItemId())
         {
         case R.id.add_butt:
+            // open editor with no rowid set
             startActivityForResult(new Intent(this, Settings.class), UPDATE_REQUEST);
             return true;
+
         case R.id.settings:
+            // open app settings menu
             startActivity(new Intent(this, Progress_bar_prefs.class));
             return true;
+
         case R.id.about:
+            // show about dialog
             new About_dialog_frag().show(getSupportFragmentManager(), "about");
             return  true;
         }
         return false;
     }
 
+    // catch return from adding or editing a row
     @Override
     protected void onActivityResult(int request_code, int result_code, Intent data)
     {
         if(request_code == UPDATE_REQUEST && result_code == RESULT_OK)
         {
+            // get new data and keep a backup of old
             final Progress_bar_data new_data = (Progress_bar_data)data.getSerializableExtra(Settings.RESULT_NEW_DATA);
             final Progress_bar_data old_data = (Progress_bar_data)data.getSerializableExtra(Settings.RESULT_OLD_DATA);
 
-            adapter.resetCursor(null);
+            adapter.reset_cursor();
 
+            // was a row added?
             if(old_data == null)
             {
                 adapter.notifyItemInserted(adapter.getItemCount());
 
+                // show message and offer undo action
                 Snackbar.make(binding.mainList, getResources().getString(R.string.added_new,  new_data.title), Snackbar.LENGTH_LONG)
                         .setAction(getResources().getString(R.string.undo), new View.OnClickListener()
                         {
                             @Override
                             public void onClick(View v)
                             {
+                                // delete the new row
                                 int pos = adapter.find_by_rowid(new_data.rowid);
                                 new_data.delete(Progress_bars.this);
 
-                                adapter.resetCursor(null);
+                                // inform the adapter of the changes
+                                adapter.reset_cursor();
                                 adapter.notifyItemRemoved(pos);
                             }
                         }).show();
             }
-            else
+            else // an existing row was changed
             {
                 adapter.notifyItemChanged(adapter.find_by_rowid(new_data.rowid));
 
+                // show message and offer undo action
                 Snackbar.make(binding.mainList, getResources().getString(R.string.saved, new_data.title), Snackbar.LENGTH_LONG)
                         .setAction(getResources().getString(R.string.undo), new View.OnClickListener()
                         {
                             @Override
                             public void onClick(View v)
                             {
+                                // update DB with old info
                                 old_data.update(Progress_bars.this);
 
-                                adapter.resetCursor(null);
+                                adapter.reset_cursor();
                                 adapter.notifyItemChanged(adapter.find_by_rowid(old_data.rowid));
                             }
                         }).show();

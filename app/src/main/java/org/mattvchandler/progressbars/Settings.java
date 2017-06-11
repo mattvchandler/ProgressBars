@@ -27,6 +27,7 @@ import java.util.Date;
 import java.util.Locale;
 import java.util.TimeZone;
 
+// Settings for each timer
 public class Settings extends Dynamic_theme_activity implements Precision_dialog_frag.NoticeDialogListener,
                                                                 DatePickerDialog.OnDateSetListener,
                                                                 TimePickerDialog.OnTimeSetListener
@@ -56,12 +57,12 @@ public class Settings extends Dynamic_theme_activity implements Precision_dialog
         setSupportActionBar(binding.progressBarToolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
+        // we'll reference these a lot, so look them up now
         date_format = PreferenceManager.getDefaultSharedPreferences(this).getString("date_format",
                 getResources().getString(R.string.pref_date_format_default));
         time_format = getResources().getString(R.string.time_format);
 
-
-        // fill timezone spinners
+        // set up timezone spinners
         ArrayAdapter<String> tz_adapter = new ArrayAdapter<>(this, R.layout.right_aligned_spinner, TimeZone.getAvailableIDs());
         tz_adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
@@ -73,17 +74,21 @@ public class Settings extends Dynamic_theme_activity implements Precision_dialog
             @Override
             public void onFocusChange(View v, boolean hasFocus)
             {
+                // check format when date entry loses focus
                 if(!hasFocus)
                 {
+                    // attempt to parse current text
                     String new_date = ((EditText)v).getText().toString();
                     SimpleDateFormat df = new SimpleDateFormat(date_format , Locale.US);
 
                     Date date = df.parse(new_date, new ParsePosition(0));
                     if(date == null)
                     {
+                        // couldn't parse, show message
                         Toast.makeText(Settings.this, getResources().getString(R.string.invalid_date,
                                   new_date, date_format), Toast.LENGTH_LONG).show();
 
+                        // replace with old value, so field contains valid data
                         if(v.getId() == R.id.start_date_sel)
                         {
                             df.setTimeZone(TimeZone.getTimeZone(data.start_tz));
@@ -97,6 +102,7 @@ public class Settings extends Dynamic_theme_activity implements Precision_dialog
                     }
                     else
                     {
+                        // new value is valid, set it.
                         new_date = df.format(date);
                         ((EditText) v).setText(new_date);
                     }
@@ -109,18 +115,22 @@ public class Settings extends Dynamic_theme_activity implements Precision_dialog
             @Override
             public void onFocusChange(View v, boolean hasFocus)
             {
+                // check format when time entry loses focus
                 if(!hasFocus)
                 {
+                    // attempt to parse current text
                     String new_time = ((EditText)v).getText().toString();
                     SimpleDateFormat df = new SimpleDateFormat(time_format, Locale.US);
 
                     Date time = df.parse(new_time, new ParsePosition(0));
                     if(time == null)
                     {
+                        // couldn't parse, show message
                         Toast.makeText(Settings.this, getResources().getString(R.string.invalid_time,
                                                       new_time, time_format),
                                 Toast.LENGTH_LONG).show();
 
+                        // replace with old value, so field contains valid data
                         if(v.getId() == R.id.start_time_sel)
                         {
                             df.setTimeZone(TimeZone.getTimeZone(data.start_tz));
@@ -134,6 +144,7 @@ public class Settings extends Dynamic_theme_activity implements Precision_dialog
                     }
                     else
                     {
+                        // new value is valid, set it.
                         new_time = df.format(time);
                         ((EditText) v).setText(new_time);
                     }
@@ -141,6 +152,7 @@ public class Settings extends Dynamic_theme_activity implements Precision_dialog
             }
         };
 
+        // set above listeners on time and date fields
         binding.startTimeSel.setOnFocusChangeListener(time_listener);
         binding.endTimeSel.setOnFocusChangeListener(time_listener);
 
@@ -168,10 +180,12 @@ public class Settings extends Dynamic_theme_activity implements Precision_dialog
         }
         else
         {
+            // reload old and current data from save state
             data = (Progress_bar_data)savedInstanceState.getSerializable(STATE_DATA);
             save_data = (Progress_bar_data)savedInstanceState.getSerializable(STATE_SAVE_DATA);
         }
 
+        // populate timezones and set selected values
         binding.setData(data);
 
         int found = 0;
@@ -191,6 +205,7 @@ public class Settings extends Dynamic_theme_activity implements Precision_dialog
                 break;
         }
 
+        // populate date/time widget values
         SimpleDateFormat df_date = new SimpleDateFormat(date_format, Locale.US);
         SimpleDateFormat df_time = new SimpleDateFormat(time_format, Locale.US);
 
@@ -211,18 +226,22 @@ public class Settings extends Dynamic_theme_activity implements Precision_dialog
     public void onResume()
     {
         super.onResume();
+
+        // check for date format change
         String old_date_format = date_format;
         date_format = PreferenceManager.getDefaultSharedPreferences(this).getString("date_format",
                 getResources().getString(R.string.pref_date_format_default));
 
         if(!old_date_format.equals(date_format))
         {
+            // date format has changed. get formatter for old and new formats
             SimpleDateFormat new_df = new SimpleDateFormat(date_format, Locale.US);
             SimpleDateFormat old_df = new SimpleDateFormat(old_date_format, Locale.US);
 
             String date;
             Date date_obj;
 
+            // parse date as old format, replace w/ new
             date = binding.startDateSel.getText().toString();
             date_obj = old_df.parse(date, new ParsePosition(0));
             if(date_obj != null)
@@ -238,14 +257,13 @@ public class Settings extends Dynamic_theme_activity implements Precision_dialog
                 date = new_df.format(date_obj);
                 binding.endDateSel.setText(date);
             }
-
-            recreate();
         }
     }
 
     @Override
     protected void onSaveInstanceState(Bundle out)
     {
+        // save all data to be restored
         store_widgets_to_data();
         super.onSaveInstanceState(out);
         out.putSerializable(STATE_DATA, data);
@@ -266,20 +284,25 @@ public class Settings extends Dynamic_theme_activity implements Precision_dialog
         {
             case R.id.save_butt:
 
+                // dump all widget data into data struct
                 if(!store_widgets_to_data())
                     return true;
 
+                // insert new or update existing row
                 Intent intent = new Intent();
                 if(data.rowid < 0)
                 {
                     data.insert(this);
+                    // don't send old data so caller knows that we added a new row
                 }
                 else
                 {
                     data.update(this);
+                    // send back old data
                     intent.putExtra(RESULT_OLD_DATA, save_data);
                 }
 
+                // send back new data
                 intent.putExtra(RESULT_NEW_DATA, data);
 
                 setResult(RESULT_OK, intent);
@@ -293,10 +316,11 @@ public class Settings extends Dynamic_theme_activity implements Precision_dialog
         return false;
     }
 
+    // dump all widget data into data obj
     private boolean store_widgets_to_data()
     {
         boolean errors = false;
-        // get data from widgets precision has been stored through its callback already
+        // precision data has been stored through its callback already
         data.start_tz = binding.startTz.getSelectedItem().toString();
         data.end_tz = binding.endTz.getSelectedItem().toString();
 
@@ -373,6 +397,7 @@ public class Settings extends Dynamic_theme_activity implements Precision_dialog
             errors = true;
         }
 
+        // get all 'easy' data
         data.title = binding.title.getText().toString();
         data.pre_text = binding.preText.getText().toString();
         data.start_text = binding.startText.getText().toString();
@@ -397,6 +422,7 @@ public class Settings extends Dynamic_theme_activity implements Precision_dialog
         return !errors;
     }
 
+    // date picker dialog
     public static class Datepicker_frag extends DialogFragment
     {
         public static final String STORE_DATE = "STORE_DATE";
@@ -406,6 +432,7 @@ public class Settings extends Dynamic_theme_activity implements Precision_dialog
         @Override
         public Dialog onCreateDialog(Bundle saved_instance_state)
         {
+            // parse from current widget text
             int year, month, day;
 
             Calendar cal = Calendar.getInstance();
@@ -419,6 +446,7 @@ public class Settings extends Dynamic_theme_activity implements Precision_dialog
             Date date_obj = df.parse(date, new ParsePosition(0));
             if(date_obj == null)
             {
+                // couldn't parse
                 Toast.makeText(getActivity(), getResources().getString(R.string.invalid_date, date, date_format),
                         Toast.LENGTH_LONG).show();
 
@@ -441,6 +469,7 @@ public class Settings extends Dynamic_theme_activity implements Precision_dialog
     @Override
     public void onDateSet(DatePicker view, int year, int month, int day)
     {
+        // build new string from returned data
         Calendar cal = Calendar.getInstance();
         cal.set(Calendar.YEAR, year);
         cal.set(Calendar.MONTH, month);
@@ -459,6 +488,7 @@ public class Settings extends Dynamic_theme_activity implements Precision_dialog
         @Override
         public Dialog onCreateDialog(Bundle saved_instance_state)
         {
+            // parse from current widget text
             int hour, minute;
 
             Calendar cal = Calendar.getInstance();
@@ -471,6 +501,7 @@ public class Settings extends Dynamic_theme_activity implements Precision_dialog
             Date date_obj = df.parse(time, new ParsePosition(0));
             if(date_obj == null)
             {
+                // couldn't parse
                 Toast.makeText(getActivity(), getResources().getString(R.string.invalid_time, time, time_format),
                         Toast.LENGTH_LONG).show();
 
@@ -492,6 +523,7 @@ public class Settings extends Dynamic_theme_activity implements Precision_dialog
     @Override
     public void onTimeSet(TimePicker view, int hour, int minute)
     {
+        // build new string from returned data
         Calendar cal = Calendar.getInstance();
         cal.set(Calendar.HOUR_OF_DAY, hour);
         cal.set(Calendar.MINUTE, minute);
@@ -503,6 +535,7 @@ public class Settings extends Dynamic_theme_activity implements Precision_dialog
 
     public void on_start_cal_butt(View view)
     {
+        // create a calendar dialog, pass current date string
         date_time_dialog_target = binding.startDateSel;
         Datepicker_frag frag = new Datepicker_frag();
         Bundle args = new Bundle();
@@ -514,6 +547,7 @@ public class Settings extends Dynamic_theme_activity implements Precision_dialog
 
     public void on_start_clock_butt(View view)
     {
+        // create a clock dialog, pass current time string
         date_time_dialog_target = binding.startTimeSel;
         Timepicker_frag frag = new Timepicker_frag();
         Bundle args = new Bundle();
@@ -525,6 +559,7 @@ public class Settings extends Dynamic_theme_activity implements Precision_dialog
 
     public void on_end_cal_butt(View view)
     {
+        // create a calendar dialog, pass current date string
         date_time_dialog_target = binding.endDateSel;
         Datepicker_frag frag = new Datepicker_frag();
         Bundle args = new Bundle();
@@ -536,6 +571,7 @@ public class Settings extends Dynamic_theme_activity implements Precision_dialog
 
     public void on_end_clock_butt(View view)
     {
+        // create a clock dialog, pass current time string
         date_time_dialog_target = binding.endTimeSel;
         Timepicker_frag frag = new Timepicker_frag();
         Bundle args = new Bundle();
@@ -554,9 +590,11 @@ public class Settings extends Dynamic_theme_activity implements Precision_dialog
         d.show(getSupportFragmentManager(), "precision");
     }
 
+    // called when OK pressed on precision dialog
     @Override
     public void on_precision_dialog_positive(Precision_dialog_frag dialog)
     {
+        // get and store the data
         data.precision = dialog.getValue();
         binding.precision.setText(String.valueOf(data.precision));
     }

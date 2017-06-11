@@ -18,8 +18,10 @@ import java.util.NoSuchElementException;
 
 import static java.lang.Math.min;
 
+// keeps track of timer GUI rows
 public class Progress_bar_adapter extends RecyclerView.Adapter<Progress_bar_adapter.Progress_bar_row_view_holder>
 {
+    // an individual row object
     public class Progress_bar_row_view_holder extends RecyclerView.ViewHolder
                                                      implements View.OnClickListener
     {
@@ -32,28 +34,37 @@ public class Progress_bar_adapter extends RecyclerView.Adapter<Progress_bar_adap
             row_binding = DataBindingUtil.bind(v);
         }
 
+        // get DB and display data from the cursor for this row
         public void bind_cursor(Cursor cursor)
         {
             data = new Progress_bar_view_data(context, cursor);
-            row_binding.setData(data);
+            row_binding.setData(data); // let the GUI elements see the data
         }
+
+        // click the row to edit its data
         @Override
         public void onClick(View v)
         {
+            // create and launch an intent to launch the editor, and pass the rowid
             Intent intent = new Intent(v.getContext(), Settings.class);
             intent.putExtra(Settings.EXTRA_EDIT_ROW_ID, data.rowid);
             context.startActivityForResult(intent, Progress_bars.UPDATE_REQUEST);
         }
 
+        // called when a row is dragged for deletion or reordering
         public void on_selected()
         {
+            // get the background color
             TypedValue tv = new TypedValue();
             context.getTheme().resolveAttribute(android.R.attr.colorBackground, tv, true);
+            // make it darker and-semi transparent
             row_binding.progressRow.setBackgroundColor(min(tv.data - 0x40202020, 0));
         }
 
+        // called when a row is released from reordering
         public void on_cleared()
         {
+            // reset the original background color
             TypedValue tv = new TypedValue();
             context.getTheme().resolveAttribute(android.R.attr.colorBackground, tv, true);
             row_binding.progressRow.setBackgroundColor(tv.data);
@@ -66,29 +77,26 @@ public class Progress_bar_adapter extends RecyclerView.Adapter<Progress_bar_adap
 
     public Progress_bar_adapter(Progress_bars con)
     {
+        // store the data we'll need for the lifetime of this object
         context = con;
         db = new Progress_bar_DB(context).getWritableDatabase();
         cursor = db.rawQuery(Progress_bar_table.SELECT_ALL_ROWS, null);
     }
 
-    public void resetCursor(Cursor cur)
+    // call when DB info has changed, to let the adapter update its cursor
+    public void reset_cursor()
     {
         if(cursor != null)
             cursor.close();
 
-        if(cur != null)
-        {
-            cursor = cur;
-        }
-        else
-        {
-            cursor = db.rawQuery(Progress_bar_table.SELECT_ALL_ROWS, null);
-        }
+        // get new DB data
+        cursor = db.rawQuery(Progress_bar_table.SELECT_ALL_ROWS, null);
     }
 
     @Override
     public Progress_bar_row_view_holder onCreateViewHolder(ViewGroup parent_in, int viewType)
     {
+        // create a new row
         View v = LayoutInflater.from(parent_in.getContext()).inflate(R.layout.progress_bar_row, parent_in, false);
         Progress_bar_row_view_holder holder = new Progress_bar_row_view_holder(v);
         v.setOnClickListener(holder);
@@ -98,6 +106,7 @@ public class Progress_bar_adapter extends RecyclerView.Adapter<Progress_bar_adap
     @Override
     public void onBindViewHolder(Progress_bar_row_view_holder holder, int position)
     {
+        // move to the requested position and bind the data
         cursor.moveToPosition(position);
         holder.bind_cursor(cursor);
     }
@@ -108,8 +117,10 @@ public class Progress_bar_adapter extends RecyclerView.Adapter<Progress_bar_adap
         return cursor.getCount();
     }
 
+    // look up position by rowid.
     public int find_by_rowid(long rowid)
     {
+        // linear search of cursor to find the row with matching rowid
         for(int i = 0; i < getItemCount(); ++i)
         {
             cursor.moveToPosition(i);
@@ -122,8 +133,10 @@ public class Progress_bar_adapter extends RecyclerView.Adapter<Progress_bar_adap
         throw new NoSuchElementException("rowid: " + String.valueOf(rowid) + " not found in cursor");
     }
 
+    // called when two rows need to switch places
     public void on_item_move(int from_pos, int to_pos)
     {
+        // get current order # and rowids
         cursor.moveToPosition(from_pos);
         String from_rowid = cursor.getString(cursor.getColumnIndexOrThrow(Progress_bar_table._ID));
         String from_order = cursor.getString(cursor.getColumnIndexOrThrow(Progress_bar_table.ORDER_COL));
@@ -134,44 +147,58 @@ public class Progress_bar_adapter extends RecyclerView.Adapter<Progress_bar_adap
 
         ContentValues values = new ContentValues();
 
+        // swap orders
+
+        // put 'from' at order #-1
         values.put(Progress_bar_table.ORDER_COL, -1);
         db.update(Progress_bar_table.TABLE_NAME, values,
                 Progress_bar_table._ID + " = ?", new String[] {from_rowid});
 
+        // put 'to' at 'from's old old position
         values.clear();
         values.put(Progress_bar_table.ORDER_COL, from_order);
         db.update(Progress_bar_table.TABLE_NAME, values,
                 Progress_bar_table._ID + " = ?", new String[] {to_rowid});
 
+        // put 'from' at 'to's old old position
         values.clear();
         values.put(Progress_bar_table.ORDER_COL, to_order);
         db.update(Progress_bar_table.TABLE_NAME, values,
                 Progress_bar_table._ID + " = ?", new String[] {from_rowid});
 
-        resetCursor(null);
+        // get new data
+        reset_cursor();
 
+        // swap items in GUI
         notifyItemMoved(to_pos, from_pos);
     }
 
+    // called when a row is deleted
     public void on_item_dismiss(final int pos)
     {
         cursor.moveToPosition(pos);
+
+        // get a copy of the data before we delete it
         final Progress_bar_data save_data = new Progress_bar_data(cursor);
 
+        // delete from DB
         save_data.delete(context);
 
-        resetCursor(null);
+        // get new data
+        reset_cursor();
 
         notifyItemRemoved(pos);
 
+        // show deletion message with undo option
         Snackbar.make(context.findViewById(R.id.mainList), context.getResources().getString(R.string.deleted, save_data.title), Snackbar.LENGTH_LONG)
                 .setAction(context.getResources().getString(R.string.undo), new View.OnClickListener()
                 {
                     @Override
                     public void onClick(View v)
                     {
+                        // re-insert the deleted row
                         save_data.insert(context);
-                        resetCursor(null);
+                        reset_cursor();
                         Progress_bar_adapter.this.notifyItemInserted(pos);
                     }
                 }).show();
