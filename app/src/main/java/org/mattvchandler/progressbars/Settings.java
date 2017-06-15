@@ -59,12 +59,13 @@ public class Settings extends Dynamic_theme_activity implements Precision_dialog
 
     private static final String STATE_DATA = "data";
     private static final String STATE_SAVE_DATA = "save_data";
+    private static final String STATE_TARGET = "target";
 
     private ActivitySettingsBinding binding;
     private Progress_bar_data data;
     private Progress_bar_data save_data;
 
-    private EditText date_time_dialog_target;
+    private int date_time_dialog_target;
 
     private String date_format;
     private String time_format;
@@ -204,6 +205,7 @@ public class Settings extends Dynamic_theme_activity implements Precision_dialog
             // reload old and current data from save state
             data = (Progress_bar_data)savedInstanceState.getSerializable(STATE_DATA);
             save_data = (Progress_bar_data)savedInstanceState.getSerializable(STATE_SAVE_DATA);
+            date_time_dialog_target = savedInstanceState.getInt(STATE_TARGET);
         }
 
         // populate timezones and set selected values
@@ -289,6 +291,7 @@ public class Settings extends Dynamic_theme_activity implements Precision_dialog
         super.onSaveInstanceState(out);
         out.putSerializable(STATE_DATA, data);
         out.putSerializable(STATE_SAVE_DATA, save_data);
+        out.putInt(STATE_TARGET, date_time_dialog_target);
     }
 
     @Override
@@ -497,7 +500,7 @@ public class Settings extends Dynamic_theme_activity implements Precision_dialog
         cal.set(Calendar.DAY_OF_MONTH, day);
 
         SimpleDateFormat df = new SimpleDateFormat(date_format, Locale.US);
-        date_time_dialog_target.setText(df.format(cal.getTime()));
+        ((android.support.design.widget.TextInputEditText)findViewById(date_time_dialog_target)).setText(df.format(cal.getTime()));
     }
 
     public static class Timepicker_frag extends DialogFragment
@@ -551,13 +554,13 @@ public class Settings extends Dynamic_theme_activity implements Precision_dialog
         cal.set(Calendar.SECOND, 0);
 
         SimpleDateFormat df = new SimpleDateFormat(time_format, Locale.US);
-        date_time_dialog_target.setText(df.format(cal.getTime()));
+        ((android.support.design.widget.TextInputEditText)findViewById(date_time_dialog_target)).setText(df.format(cal.getTime()));
     }
 
     public void on_start_cal_butt(View view)
     {
         // create a calendar dialog, pass current date string
-        date_time_dialog_target = binding.startDateSel;
+        date_time_dialog_target = R.id.start_date_sel;
         Datepicker_frag frag = new Datepicker_frag();
         Bundle args = new Bundle();
         args.putString(Datepicker_frag.DATE, binding.startDateSel.getText().toString());
@@ -569,7 +572,7 @@ public class Settings extends Dynamic_theme_activity implements Precision_dialog
     public void on_start_clock_butt(View view)
     {
         // create a clock dialog, pass current time string
-        date_time_dialog_target = binding.startTimeSel;
+        date_time_dialog_target = R.id.start_time_sel;
         Timepicker_frag frag = new Timepicker_frag();
         Bundle args = new Bundle();
         args.putString(Timepicker_frag.TIME, binding.startTimeSel.getText().toString());
@@ -581,7 +584,7 @@ public class Settings extends Dynamic_theme_activity implements Precision_dialog
     public void on_end_cal_butt(View view)
     {
         // create a calendar dialog, pass current date string
-        date_time_dialog_target = binding.endDateSel;
+        date_time_dialog_target = R.id.end_date_sel;
         Datepicker_frag frag = new Datepicker_frag();
         Bundle args = new Bundle();
         args.putString(Datepicker_frag.DATE, binding.endDateSel.getText().toString());
@@ -593,7 +596,7 @@ public class Settings extends Dynamic_theme_activity implements Precision_dialog
     public void on_end_clock_butt(View view)
     {
         // create a clock dialog, pass current time string
-        date_time_dialog_target = binding.endTimeSel;
+        date_time_dialog_target = R.id.end_time_sel;
         Timepicker_frag frag = new Timepicker_frag();
         Bundle args = new Bundle();
         args.putString(Timepicker_frag.TIME, binding.endTimeSel.getText().toString());
