@@ -312,6 +312,13 @@ public class Settings extends Dynamic_theme_activity implements Precision_dialog
                 if(!store_widgets_to_data())
                     return true;
 
+                // check to make sure start time is before end
+                if(data.end_time < data.start_time)
+                {
+                    Toast.makeText(this, getResources().getString(R.string.end_before_start_err), Toast.LENGTH_LONG).show();
+                    return true;
+                }
+
                 // insert new or update existing row
                 Intent intent = new Intent();
                 if(data.rowid < 0)
@@ -413,12 +420,6 @@ public class Settings extends Dynamic_theme_activity implements Precision_dialog
             data.end_time = datetime_df.parse(binding.endDateSel.getText().toString() + " " +
                                               binding.endTimeSel.getText().toString(),
                     new ParsePosition((0))).getTime() / 1000;
-        }
-
-        if(data.end_time < data.start_time)
-        {
-            Toast.makeText(this, getResources().getString(R.string.end_before_start_err), Toast.LENGTH_LONG).show();
-            errors = true;
         }
 
         // get all 'easy' data
