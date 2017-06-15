@@ -81,6 +81,7 @@ public class Notification_handler extends BroadcastReceiver
                     .setContentTitle(title)
                     .setContentText(content)
                     .setPriority(NotificationCompat.PRIORITY_HIGH)
+                    .setAutoCancel(true)
                     .setDefaults(NotificationCompat.DEFAULT_ALL);
 
             // create an intent for clicking the notification to take us to the main activity
