@@ -4,6 +4,7 @@ import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.TimePickerDialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.databinding.DataBindingUtil;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
@@ -15,6 +16,7 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
@@ -69,6 +71,11 @@ public class Settings extends Dynamic_theme_activity implements Precision_dialog
 
     private String date_format;
     private String time_format;
+    private String time_format_edit;
+    private boolean hour_24;
+
+    private int array_am_i;
+    private int array_pm_i;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -80,9 +87,20 @@ public class Settings extends Dynamic_theme_activity implements Precision_dialog
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         // we'll reference these a lot, so look them up now
-        date_format = PreferenceManager.getDefaultSharedPreferences(this).getString("date_format",
-                getResources().getString(R.string.pref_date_format_default));
-        time_format = getResources().getString(R.string.time_format);
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        date_format = prefs.getString("date_format", getResources().getString(R.string.pref_date_format_default));
+
+        hour_24 = prefs.getBoolean("hour_24", true);
+
+        // time_format is the displayed time, time_format_edit is the time in an edittext box
+        // for 24-hour time the format, is the same
+        // for 12-hour time, the am/pm is dropped from the edit format, and is set with a spinner instead
+        time_format = getResources().getString(hour_24 ? R.string.time_format_24 : R.string.time_format_12);
+        time_format_edit = getResources().getString(hour_24 ? R.string.time_format_24 : R.string.time_format_12_edit);
+
+        // show or hide the AM/PM dropdowns as needed
+        binding.startAmPm.setVisibility(hour_24 ? View.GONE : View.VISIBLE);
+        binding.endAmPm.setVisibility(hour_24 ? View.GONE : View.VISIBLE);
 
         // set up timezone spinners
         ArrayAdapter<String> tz_adapter = new ArrayAdapter<>(this, R.layout.right_aligned_spinner, TimeZone.getAvailableIDs());
@@ -91,6 +109,7 @@ public class Settings extends Dynamic_theme_activity implements Precision_dialog
         binding.startTz.setAdapter(tz_adapter);
         binding.endTz.setAdapter(tz_adapter);
 
+        // listen for changes to date text
         View.OnFocusChangeListener date_listener = new View.OnFocusChangeListener()
         {
             @Override
@@ -132,6 +151,7 @@ public class Settings extends Dynamic_theme_activity implements Precision_dialog
             }
         };
 
+        // listen for changes to time text
         View.OnFocusChangeListener time_listener = new View.OnFocusChangeListener()
         {
             @Override
@@ -142,14 +162,14 @@ public class Settings extends Dynamic_theme_activity implements Precision_dialog
                 {
                     // attempt to parse current text
                     String new_time = ((EditText)v).getText().toString();
-                    SimpleDateFormat df = new SimpleDateFormat(time_format, Locale.US);
+                    SimpleDateFormat df = new SimpleDateFormat(time_format_edit, Locale.US);
 
                     Date time = df.parse(new_time, new ParsePosition(0));
                     if(time == null)
                     {
                         // couldn't parse, show message
                         Toast.makeText(Settings.this, getResources().getString(R.string.invalid_time,
-                                                      new_time, time_format),
+                                                      new_time, time_format_edit),
                                 Toast.LENGTH_LONG).show();
 
                         // replace with old value, so field contains valid data
@@ -230,7 +250,7 @@ public class Settings extends Dynamic_theme_activity implements Precision_dialog
 
         // populate date/time widget values
         SimpleDateFormat df_date = new SimpleDateFormat(date_format, Locale.US);
-        SimpleDateFormat df_time = new SimpleDateFormat(time_format, Locale.US);
+        SimpleDateFormat df_time = new SimpleDateFormat(time_format_edit, Locale.US);
 
         Date start_date = new Date(data.start_time * 1000);
         df_date.setTimeZone(TimeZone.getTimeZone(data.start_tz));
@@ -238,11 +258,48 @@ public class Settings extends Dynamic_theme_activity implements Precision_dialog
         binding.startDateSel.setText(df_date.format(start_date));
         binding.startTimeSel.setText(df_time.format(start_date));
 
+        // find which index in the spinner is am and which is PM
+        for(int i = 0; i < binding.startAmPm.getAdapter().getCount(); ++i)
+        {
+            CharSequence item = (CharSequence)binding.startAmPm.getAdapter().getItem(i);
+
+            if(item.equals(getResources().getString(R.string.AM)))
+                array_am_i = i;
+            else if(item.equals(getResources().getString(R.string.PM)))
+                array_pm_i = i;
+        }
+
+        if(!hour_24)
+        {
+            // get am/pm status
+            Calendar start_cal = Calendar.getInstance(TimeZone.getTimeZone(data.start_tz));
+            start_cal.setTime(start_date);
+            int am_pm = start_cal.get(Calendar.AM_PM);
+
+            if(am_pm == Calendar.AM)
+                binding.startAmPm.setSelection(array_am_i);
+            else
+                binding.startAmPm.setSelection(array_pm_i);
+        }
+
         Date end_date = new Date(data.end_time * 1000);
         df_date.setTimeZone(TimeZone.getTimeZone(data.end_tz));
         df_time.setTimeZone(TimeZone.getTimeZone(data.end_tz));
         binding.endDateSel.setText(df_date.format(end_date));
         binding.endTimeSel.setText(df_time.format(end_date));
+
+        if(!hour_24)
+        {
+            // get am/pm status
+            Calendar end_cal = Calendar.getInstance(TimeZone.getTimeZone(data.end_tz));
+            end_cal.setTime(end_date);
+            int am_pm = end_cal.get(Calendar.AM_PM);
+
+            if(am_pm == Calendar.AM)
+                binding.endAmPm.setSelection(array_am_i);
+            else
+                binding.endAmPm.setSelection(array_pm_i);
+        }
     }
 
     @Override
@@ -252,8 +309,17 @@ public class Settings extends Dynamic_theme_activity implements Precision_dialog
 
         // check for date format change
         String old_date_format = date_format;
-        date_format = PreferenceManager.getDefaultSharedPreferences(this).getString("date_format",
-                getResources().getString(R.string.pref_date_format_default));
+        String old_time_format = time_format;
+        boolean old_hour_24 = hour_24;
+
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        date_format = prefs.getString("date_format", getResources().getString(R.string.pref_date_format_default));
+
+        hour_24 = prefs.getBoolean("hour_24", true);
+        time_format = getResources().getString(hour_24 ? R.string.time_format_24 : R.string.time_format_12);
+        time_format_edit = getResources().getString(hour_24 ? R.string.time_format_24 : R.string.time_format_12_edit);
+
+        boolean new_hour_24 = prefs.getBoolean("hour_24", true);
 
         if(!old_date_format.equals(date_format))
         {
@@ -280,6 +346,66 @@ public class Settings extends Dynamic_theme_activity implements Precision_dialog
                 date = new_df.format(date_obj);
                 binding.endDateSel.setText(date);
             }
+        }
+
+        if(old_hour_24 != hour_24)
+        {
+            // time format has changed. get formatter for old and new formats
+            // NOTE: get disp format for old, edit for new
+            SimpleDateFormat new_df = new SimpleDateFormat(time_format_edit, Locale.US);
+            SimpleDateFormat old_df = new SimpleDateFormat(old_time_format, Locale.US);
+
+            String time;
+            Date time_obj;
+
+            // parse date as old format, replace w/ new
+            time = binding.startTimeSel.getText().toString();
+            // add am/pm (as text) if needed
+            if(!old_hour_24)
+                time += " " + binding.startAmPm.getSelectedItem().toString();
+
+            // attempt to parse
+            time_obj = old_df.parse(time, new ParsePosition(0));
+            if(time_obj != null)
+            {
+                time = new_df.format(time_obj);
+                binding.startTimeSel.setText(time);
+
+                // get am/pm and set spinner if needed
+                if(!hour_24)
+                {
+                    Calendar cal = Calendar.getInstance();
+                    cal.setTime(time_obj);
+                    int am_pm = cal.get(Calendar.AM_PM);
+                    binding.startAmPm.setSelection(am_pm == Calendar.AM ? array_am_i : array_pm_i);
+                }
+            }
+
+            time = binding.endTimeSel.getText().toString();
+            // add am/pm if needed
+            if(!old_hour_24)
+                time += " " + binding.endAmPm.getSelectedItem().toString();
+
+            // attempt to parse
+            time_obj = old_df.parse(time, new ParsePosition(0));
+            if(time_obj != null)
+            {
+                time = new_df.format(time_obj);
+
+                // get am/pm and set spinner if needed
+                binding.endTimeSel.setText(time);
+                if(!hour_24)
+                {
+                    Calendar cal = Calendar.getInstance();
+                    cal.setTime(time_obj);
+                    int am_pm = cal.get(Calendar.AM_PM);
+                    binding.endAmPm.setSelection(am_pm == Calendar.AM ? array_am_i : array_pm_i);
+                }
+            }
+
+            // reset am/pm spinner visibility
+            binding.startAmPm.setVisibility(hour_24 ? View.GONE : View.VISIBLE);
+            binding.endAmPm.setVisibility(hour_24 ? View.GONE : View.VISIBLE);
         }
     }
 
@@ -355,10 +481,9 @@ public class Settings extends Dynamic_theme_activity implements Precision_dialog
         data.start_tz = binding.startTz.getSelectedItem().toString();
         data.end_tz = binding.endTz.getSelectedItem().toString();
 
-        // validate dates and times
         SimpleDateFormat datetime_df = new SimpleDateFormat(date_format + " " + time_format, Locale.US);
         SimpleDateFormat date_df = new SimpleDateFormat(date_format, Locale.US);
-        SimpleDateFormat time_df = new SimpleDateFormat(time_format, Locale.US);
+        SimpleDateFormat time_df = new SimpleDateFormat(time_format_edit, Locale.US);
 
         datetime_df.setTimeZone(TimeZone.getTimeZone(data.start_tz));
         date_df.setTimeZone(TimeZone.getTimeZone(data.start_tz));
@@ -367,6 +492,7 @@ public class Settings extends Dynamic_theme_activity implements Precision_dialog
         Date start_date = date_df.parse(binding.startDateSel.getText().toString(), new ParsePosition((0)));
         Date start_time = time_df.parse(binding.startTimeSel.getText().toString(), new ParsePosition((0)));
 
+        // validate date and time
         if(start_date == null)
         {
             Toast.makeText(Settings.this, getResources().getString(R.string.invalid_date,
@@ -378,17 +504,28 @@ public class Settings extends Dynamic_theme_activity implements Precision_dialog
         if(start_time == null)
         {
             Toast.makeText(Settings.this, getResources().getString(R.string.invalid_time,
-                                          binding.startTimeSel.getText(), time_format),
+                                          binding.startTimeSel.getText(), time_format_edit),
                     Toast.LENGTH_LONG).show();
 
             errors = true;
         }
 
+        // parse full date-time string
         if(start_date != null && start_time!= null)
         {
-            data.start_time = datetime_df.parse(binding.startDateSel.getText().toString() + " " +
-                                                binding.startTimeSel.getText().toString(),
-                    new ParsePosition((0))).getTime() / 1000;
+            if(hour_24)
+            {
+                data.start_time = datetime_df.parse(binding.startDateSel.getText().toString() + " " +
+                                binding.startTimeSel.getText().toString(),
+                        new ParsePosition((0))).getTime() / 1000;
+            }
+            else
+            {
+                data.start_time = datetime_df.parse(binding.startDateSel.getText().toString() + " " +
+                                                    binding.startTimeSel.getText().toString() + " " +
+                                                    binding.startAmPm.getSelectedItem().toString(),
+                        new ParsePosition((0))).getTime() / 1000;
+            }
         }
 
         datetime_df.setTimeZone(TimeZone.getTimeZone(data.end_tz));
@@ -398,6 +535,7 @@ public class Settings extends Dynamic_theme_activity implements Precision_dialog
         Date end_date = date_df.parse(binding.endDateSel.getText().toString(), new ParsePosition((0)));
         Date end_time = time_df.parse(binding.endTimeSel.getText().toString(), new ParsePosition((0)));
 
+        // validate date and time
         if(end_date == null)
         {
             Toast.makeText(Settings.this, getResources().getString(R.string.invalid_date,
@@ -409,17 +547,28 @@ public class Settings extends Dynamic_theme_activity implements Precision_dialog
         if(end_time == null)
         {
             Toast.makeText(Settings.this, getResources().getString(R.string.invalid_time,
-                                          binding.endTimeSel.getText(), time_format),
+                                          binding.endTimeSel.getText(), time_format_edit),
                     Toast.LENGTH_LONG).show();
 
             errors = true;
         }
 
+        // parse full date-time string
         if(end_date != null && end_time != null)
         {
-            data.end_time = datetime_df.parse(binding.endDateSel.getText().toString() + " " +
-                                              binding.endTimeSel.getText().toString(),
-                    new ParsePosition((0))).getTime() / 1000;
+            if(hour_24)
+            {
+                data.end_time = datetime_df.parse(binding.endDateSel.getText().toString() + " " +
+                                binding.endTimeSel.getText().toString(),
+                        new ParsePosition((0))).getTime() / 1000;
+            }
+            else
+            {
+                data.end_time = datetime_df.parse(binding.endDateSel.getText().toString() + " " +
+                                binding.endTimeSel.getText().toString() + " " +
+                                binding.endAmPm.getSelectedItem().toString(),
+                        new ParsePosition((0))).getTime() / 1000;
+            }
         }
 
         // get all 'easy' data
@@ -508,6 +657,7 @@ public class Settings extends Dynamic_theme_activity implements Precision_dialog
     {
         public static final String STORE_TIME = "STORE_TIME";
         public static final String TIME = "TIME";
+        public static final String AM_PM = "AM_PM";
 
         @NonNull
         @Override
@@ -518,16 +668,23 @@ public class Settings extends Dynamic_theme_activity implements Precision_dialog
 
             Calendar cal = Calendar.getInstance();
 
-            String time_format = getResources().getString(R.string.time_format);
+            boolean hour_24 = PreferenceManager.getDefaultSharedPreferences(getContext()).getBoolean("hour_24", true);
+
+            String time_format = getResources().getString(hour_24 ? R.string.time_format_24 : R.string.time_format_12);
+            String time_format_edit = getResources().getString(hour_24 ? R.string.time_format_24 : R.string.time_format_12_edit);
 
             String time = getArguments().getString(TIME);
+            String am_pm = getArguments().getString(AM_PM);
+
+            if(!hour_24)
+                time += " " + am_pm;
 
             SimpleDateFormat df = new SimpleDateFormat(time_format, Locale.US);
             Date date_obj = df.parse(time, new ParsePosition(0));
             if(date_obj == null)
             {
                 // couldn't parse
-                Toast.makeText(getActivity(), getResources().getString(R.string.invalid_time, time, time_format),
+                Toast.makeText(getActivity(), getResources().getString(R.string.invalid_time, time, time_format_edit),
                         Toast.LENGTH_LONG).show();
 
                 // set to stored date
@@ -541,7 +698,7 @@ public class Settings extends Dynamic_theme_activity implements Precision_dialog
             hour = cal.get(Calendar.HOUR_OF_DAY);
             minute = cal.get(Calendar.MINUTE);
 
-            return new TimePickerDialog(getActivity(), (Settings) getActivity(), hour, minute, true);
+            return new TimePickerDialog(getActivity(), (Settings) getActivity(), hour, minute, hour_24);
         }
     }
 
@@ -554,8 +711,16 @@ public class Settings extends Dynamic_theme_activity implements Precision_dialog
         cal.set(Calendar.MINUTE, minute);
         cal.set(Calendar.SECOND, 0);
 
-        SimpleDateFormat df = new SimpleDateFormat(time_format, Locale.US);
+        SimpleDateFormat df = new SimpleDateFormat(time_format_edit, Locale.US);
         ((android.support.design.widget.TextInputEditText)findViewById(date_time_dialog_target)).setText(df.format(cal.getTime()));
+
+        // set AM/PM spinner if needed
+        if(!hour_24)
+        {
+            Spinner spin_target = date_time_dialog_target == R.id.start_date_sel ? binding.startAmPm : binding.endAmPm;
+            int am_pm = cal.get(Calendar.AM_PM);
+            spin_target.setSelection(am_pm == Calendar.AM ? array_am_i : array_pm_i);
+        }
     }
 
     public void on_start_cal_butt(View view)
@@ -578,6 +743,7 @@ public class Settings extends Dynamic_theme_activity implements Precision_dialog
         Bundle args = new Bundle();
         args.putString(Timepicker_frag.TIME, binding.startTimeSel.getText().toString());
         args.putLong(Timepicker_frag.STORE_TIME, data.start_time);
+        args.putString(Timepicker_frag.AM_PM, binding.startAmPm.getSelectedItem().toString());
         frag.setArguments(args);
         frag.show(getSupportFragmentManager(), "start_time_picker");
     }
@@ -602,6 +768,7 @@ public class Settings extends Dynamic_theme_activity implements Precision_dialog
         Bundle args = new Bundle();
         args.putString(Timepicker_frag.TIME, binding.endTimeSel.getText().toString());
         args.putLong(Timepicker_frag.STORE_TIME, data.end_time);
+        args.putString(Timepicker_frag.AM_PM, binding.endAmPm.getSelectedItem().toString());
         frag.setArguments(args);
         frag.show(getSupportFragmentManager(), "end_time_picker");
     }

@@ -443,12 +443,14 @@ public final class Progress_bar_view_data extends Progress_bar_data // contains 
         // only show countdown when there is something to show
         show_time_text_disp.set((show_years || show_months || show_weeks || show_days || show_hours || show_minutes || show_seconds));
 
+        boolean hour_24 = PreferenceManager.getDefaultSharedPreferences(context).getBoolean("hour_24", true);
+
         // format start and end dates and times
         SimpleDateFormat date_df = new SimpleDateFormat(
                 PreferenceManager.getDefaultSharedPreferences(context)
                 .getString("date_format", context.getResources().getString(R.string.pref_date_format_default)),
                 Locale.US);
-        SimpleDateFormat time_df = new SimpleDateFormat(context.getResources().getString(R.string.time_format), Locale.US);
+        SimpleDateFormat time_df = new SimpleDateFormat(context.getResources().getString(hour_24 ? R.string.time_format_24 : R.string.time_format_12), Locale.US);
 
         start_time_date.setTime(start_time * 1000L);
         end_time_date.setTime(end_time * 1000L);

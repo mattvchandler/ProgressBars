@@ -131,6 +131,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
+                        android:gravity="center_vertical"
                         >
                         <android.support.design.widget.TextInputLayout
                             android:id="@+id/start_time_txt"
@@ -147,6 +148,16 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
                                 android:inputType="time"
                                 />
                         </android.support.design.widget.TextInputLayout>
+
+                        <Spinner
+                            android:id="@+id/start_am_pm"
+                            android:entries="@array/AM_PM"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="@dimen/margin_size"
+                            android:layout_marginEnd="@dimen/margin_size"
+                            android:layout_marginTop="@dimen/margin_size"
+                            />
 
                         <ImageButton
                             android:id="@+id/start_time_butt"
@@ -227,6 +238,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
+                        android:gravity="center_vertical"
                         >
                         <android.support.design.widget.TextInputLayout
                             android:id="@+id/end_time_txt"
@@ -243,6 +255,16 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
                                 android:inputType="time"
                                 />
                         </android.support.design.widget.TextInputLayout>
+
+                        <Spinner
+                            android:id="@+id/end_am_pm"
+                            android:entries="@array/AM_PM"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/margin_size"
+                            android:layout_marginBottom="@dimen/margin_size"
+                            android:layout_marginEnd="@dimen/margin_size"
+                            />
 
                         <ImageButton
                             android:id="@+id/end_time_butt"

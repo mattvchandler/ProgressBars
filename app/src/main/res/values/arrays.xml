@@ -29,11 +29,17 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
         <item>MM-DD-YYYY</item>
         <item>DD-MM-YYYY</item>
     </string-array>
+
     <string-array name="date_formats_java">
         <item>yyyy-MM-dd</item>
         <item>MM/dd/yyyy</item>
         <item>dd/MM/yyyy</item>
         <item>MM-dd-yyyy</item>
         <item>dd-MM-yyyy</item>
+    </string-array>
+
+    <string-array name="AM_PM">
+        <item>@string/AM</item>
+        <item>@string/PM</item>
     </string-array>
 </resources>

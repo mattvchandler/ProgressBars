@@ -32,6 +32,12 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
         />
 
     <SwitchPreference
+        android:key="hour_24"
+        android:title="@string/pref_hour_24"
+        android:defaultValue="true"
+        />
+
+    <SwitchPreference
         android:key="master_notification"
         android:title="@string/pref_master_notification"
         android:summary="@string/pref_master_notification_summary"

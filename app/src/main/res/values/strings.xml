@@ -37,6 +37,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
     <string name="pref_date_format">Date format</string>
     <string name="pref_date_format_default">yyyy-MM-dd</string>
+    <string name="pref_hour_24">Use 24-hour format</string>
 
     <string name="pref_master_notification">Enable notifications</string>
     <string name="pref_master_notification_summary">Allow individual timers to send notifications</string>
@@ -46,7 +47,11 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
     <string name="notification_start_title">%1$s started</string>
     <string name="notification_end_title">%1$s completed</string>
 
-    <string name="time_format">HH:mm:ss</string>
+    <string name="time_format_24">HH:mm:ss</string>
+    <string name="time_format_12">h:mm:ss a</string>
+    <string name="time_format_12_edit">h:mm:ss</string>
+    <string name="AM">AM</string>
+    <string name="PM">PM</string>
 
     <string name="invalid_date">"Invalid date: %1$s. Correct format is: %2$s"</string>
     <string name="invalid_time">"Invalid time: %1$s. Correct format is: %2$s"</string>

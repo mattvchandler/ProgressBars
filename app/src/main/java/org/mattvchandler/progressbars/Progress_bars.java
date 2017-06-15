@@ -1,6 +1,7 @@
 package org.mattvchandler.progressbars;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.databinding.DataBindingUtil;
@@ -46,6 +47,7 @@ public class Progress_bars extends Dynamic_theme_activity
     public static final int UPDATE_REQUEST = 1;
 
     private String date_format;
+    private boolean hour_24;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -57,8 +59,9 @@ public class Progress_bars extends Dynamic_theme_activity
         binding.mainList.addItemDecoration(new DividerItemDecoration(binding.mainList.getContext(), DividerItemDecoration.VERTICAL));
 
         // save date format to detect when it changes
-        date_format = PreferenceManager.getDefaultSharedPreferences(this).getString("date_format",
-                getResources().getString(R.string.pref_date_format_default));
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        date_format = prefs.getString("date_format", getResources().getString(R.string.pref_date_format_default));
+        hour_24 = prefs.getBoolean("hour_24", true);
 
         // on first run, create a new prog bar if DB is empty
         if(savedInstanceState == null)
@@ -95,10 +98,11 @@ public class Progress_bars extends Dynamic_theme_activity
         super.onResume();
 
         // check to see if date format has changed. rebuild activity with new format if it has
-        String new_date_format = PreferenceManager.getDefaultSharedPreferences(this).getString("date_format",
-                getResources().getString(R.string.pref_date_format_default));
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        String new_date_format = prefs.getString("date_format", getResources().getString(R.string.pref_date_format_default));
+        boolean new_hour_24 = prefs.getBoolean("hour_24", true);
 
-        if(!new_date_format.equals(date_format))
+        if(!new_date_format.equals(date_format) || new_hour_24 != hour_24)
         {
             recreate();
         }
