@@ -86,13 +86,18 @@ public class Notification_handler extends BroadcastReceiver
 
             // create an intent for clicking the notification to take us to the main activity
             Intent i = new Intent(context, Progress_bars.class);
+            i.putExtra(Progress_bars.EXTRA_SCROLL_TO_ROWID, data.rowid);
+
+            // create an artificial back-stack
             TaskStackBuilder stack = TaskStackBuilder.create(context);
             stack.addParentStack(Progress_bars.class);
             stack.addNextIntent(i);
+
+            // package intent into a pending intent for the notification
             PendingIntent pi = stack.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
             not_builder.setContentIntent(pi);
 
-            // send the notification
+            // send the notification. rowid will be used as the notification's ID
             NotificationManager nm = (NotificationManager)context.getSystemService(Context.NOTIFICATION_SERVICE);
             nm.notify((int)data.rowid, not_builder.build());
         }

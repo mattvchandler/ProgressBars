@@ -18,6 +18,8 @@ import android.view.View;
 
 import org.mattvchandler.progressbars.databinding.ActivityProgressBarsBinding;
 
+import java.util.NoSuchElementException;
+
 /*
 Copyright (C) 2017 Matthew Chandler
 
@@ -39,8 +41,6 @@ IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-// TODO: scroll to position on new timer create and notification click
-
 // main activity. display each timer in a list
 public class Progress_bars extends Dynamic_theme_activity
 {
@@ -48,6 +48,7 @@ public class Progress_bars extends Dynamic_theme_activity
     private Progress_bar_adapter adapter;
 
     public static final int UPDATE_REQUEST = 1;
+    public static final String EXTRA_SCROLL_TO_ROWID = "org.mattvchandler.progressbars.SCROLL_TO_ROWID";
 
     private String date_format;
     private boolean hour_24;
@@ -94,6 +95,16 @@ public class Progress_bars extends Dynamic_theme_activity
 
         ItemTouchHelper touch_helper = new ItemTouchHelper(new Progress_bar_row_touch_helper_callback(adapter));
         touch_helper.attachToRecyclerView(binding.mainList);
+
+        long scroll_to_rowid = getIntent().getLongExtra(EXTRA_SCROLL_TO_ROWID, -1);
+        if(scroll_to_rowid >= 0)
+        {
+            try
+            {
+                binding.mainList.scrollToPosition(adapter.find_by_rowid(scroll_to_rowid));
+            }
+            catch(NoSuchElementException ignored) {}
+        }
 
         // start running each second
         new update().run();
