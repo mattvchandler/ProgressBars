@@ -62,6 +62,11 @@ public class Progress_bar_adapter extends RecyclerView.Adapter<Progress_bar_adap
             row_binding.setData(data); // let the GUI elements see the data
         }
 
+        public void update()
+        {
+            data.update();
+        }
+
         // click the row to edit its data
         @Override
         public void onClick(View v)

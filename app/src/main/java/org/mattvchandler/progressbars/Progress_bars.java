@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
+import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.DividerItemDecoration;
@@ -37,6 +38,8 @@ COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
 IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
+
+// TODO: scroll to position on new timer create and notification click
 
 // main activity. display each timer in a list
 public class Progress_bars extends Dynamic_theme_activity
@@ -82,14 +85,18 @@ public class Progress_bars extends Dynamic_theme_activity
 
             Notification_handler.reset_all_alarms(this);
         }
+
+        // set up row adapter
         adapter = new Progress_bar_adapter(this);
 
-        // set row adapter
         binding.mainList.setLayoutManager(new LinearLayoutManager(this));
         binding.mainList.setAdapter(adapter);
 
         ItemTouchHelper touch_helper = new ItemTouchHelper(new Progress_bar_row_touch_helper_callback(adapter));
         touch_helper.attachToRecyclerView(binding.mainList);
+
+        // start running each second
+        new update().run();
     }
 
     @Override
@@ -194,6 +201,25 @@ public class Progress_bars extends Dynamic_theme_activity
                             }
                         }).show();
             }
+        }
+    }
+
+    private class update implements Runnable
+    {
+        private final Handler handler = new Handler();
+        private final int delay = 1000; // 1000ms
+
+        @Override
+        public void run()
+        {
+            for (int i = 0; i < adapter.getItemCount(); ++i)
+            {
+                Progress_bar_adapter.Progress_bar_row_view_holder view_holder = (Progress_bar_adapter.Progress_bar_row_view_holder) binding.mainList.findViewHolderForAdapterPosition(i);
+                if(view_holder != null)
+                    view_holder.update();
+            }
+
+            handler.postDelayed(this, delay);
         }
     }
 }
