@@ -319,8 +319,6 @@ public class Settings extends Dynamic_theme_activity implements Precision_dialog
         time_format = getResources().getString(hour_24 ? R.string.time_format_24 : R.string.time_format_12);
         time_format_edit = getResources().getString(hour_24 ? R.string.time_format_24 : R.string.time_format_12_edit);
 
-        boolean new_hour_24 = prefs.getBoolean("hour_24", true);
-
         if(!old_date_format.equals(date_format))
         {
             // date format has changed. get formatter for old and new formats
