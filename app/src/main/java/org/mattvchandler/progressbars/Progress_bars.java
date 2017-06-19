@@ -106,6 +106,9 @@ public class Progress_bars extends Dynamic_theme_activity
             catch(NoSuchElementException ignored) {}
         }
 
+        if(getIntent().getAction().equals("org.mattvchandler.progressbars.ACTION_ADD_SHORTCUT"))
+            startActivityForResult(new Intent(this, Settings.class), UPDATE_REQUEST);
+
         // start running each second
         new update().run();
     }

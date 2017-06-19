@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shortcuts xmlns:android="http://schemas.android.com/apk/res/android">
+    <shortcut
+        android:shortcutId="add"
+        android:enabled="true"
+        android:icon="@mipmap/new_progress_bar_shortcut_icon"
+        android:shortcutShortLabel="@string/add_title_short"
+        android:shortcutLongLabel="@string/add_title"
+    >
+        <intent
+            android:action="org.mattvchandler.progressbars.ACTION_ADD_SHORTCUT"
+            android:targetPackage="org.mattvchandler.progressbars"
+            android:targetClass="org.mattvchandler.progressbars.Progress_bars"
+            />
+    </shortcut>
+</shortcuts>

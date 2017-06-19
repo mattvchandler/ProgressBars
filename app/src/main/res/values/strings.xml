@@ -31,6 +31,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
     <string name="edit_title">Edit timer</string>
     <string name="add_title">Add new timer</string>
+    <string name="add_title_short">Add timer</string>
 
     <string name="about">About</string>
 
