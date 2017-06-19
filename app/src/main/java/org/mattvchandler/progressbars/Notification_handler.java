@@ -12,6 +12,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v7.app.NotificationCompat;
+import android.util.TypedValue;
 
 /*
 Copyright (C) 2017 Matthew Chandler
@@ -64,25 +65,35 @@ public class Notification_handler extends BroadcastReceiver
 
             // set up start or completion text
             String title, content;
+            long when;
             if(intent.getAction().substring(0, BASE_STARTED_ACTION_NAME.length()).equals(BASE_STARTED_ACTION_NAME))
             {
                 title = context.getResources().getString(R.string.notification_start_title, data.title);
                 content = data.start_text;
+                when = data.start_time;
             }
             else // if(intent.getAction().substring(0, BASE_COMPLETED_ACTION_NAME.length()).equals(BASE_COMPLETED_ACTION_NAME))
             {
                 title = context.getResources().getString(R.string.notification_end_title, data.title);
                 content = data.complete_text;
+                when = data.end_time;
             }
+
+            // get the primary color from the theme
+            context.setTheme(PreferenceManager.getDefaultSharedPreferences(context).getBoolean("dark_theme", false) ? R.style.Theme_progress_bars_dark : R.style.Theme_progress_bars);
+            TypedValue color_tv = new TypedValue();
+            context.getTheme().resolveAttribute(R.attr.colorPrimary, color_tv, true);
 
             // build the notification
             NotificationCompat.Builder not_builder = (NotificationCompat.Builder) new NotificationCompat.Builder(context)
-                    .setSmallIcon(R.drawable.progress_bar_notification)
+                    .setSmallIcon(R.mipmap.progress_bar_notification_icon)
                     .setContentTitle(title)
                     .setContentText(content)
                     .setPriority(NotificationCompat.PRIORITY_HIGH)
                     .setAutoCancel(true)
-                    .setDefaults(NotificationCompat.DEFAULT_ALL);
+                    .setDefaults(NotificationCompat.DEFAULT_ALL)
+                    .setWhen(when * 1000)
+                    .setColor(color_tv.data);
 
             // create an intent for clicking the notification to take us to the main activity
             Intent i = new Intent(context, Progress_bars.class);
