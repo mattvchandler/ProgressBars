@@ -84,7 +84,8 @@ public class Settings extends Dynamic_theme_activity implements Precision_dialog
 
         binding = DataBindingUtil.setContentView(this, R.layout.activity_settings);
         setSupportActionBar(binding.progressBarToolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        if(getSupportActionBar() != null)
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         // we'll reference these a lot, so look them up now
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);

@@ -83,7 +83,8 @@ public class Progress_bar_prefs extends Dynamic_theme_activity
 
         ActivityProgressBarsPrefsBinding binding = DataBindingUtil.setContentView(this, R.layout.activity_progress_bars_prefs);
         setSupportActionBar(binding.progressBarToolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        if(getSupportActionBar() != null)
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         // put settings content into framelayout
         getFragmentManager().beginTransaction().replace(R.id.preferences, new Progress_bar_prefs_frag()).commit();
