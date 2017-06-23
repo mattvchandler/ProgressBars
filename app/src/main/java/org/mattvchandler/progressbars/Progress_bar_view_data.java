@@ -241,8 +241,7 @@ public final class Progress_bar_view_data extends Progress_bar_data // contains 
 
                     int cal_end_month = cal_end.get(Calendar.MONTH);
 
-                    if(cal_end_month == Calendar.MARCH &&
-                            is_leap_year(cal_end.get(Calendar.YEAR)))
+                    if(cal_end_month == Calendar.MARCH && is_leap_year(cal_end.get(Calendar.YEAR)))
                     {
                         // for Feb on a leap year, we get 29 days
                         days += 29L;
@@ -255,11 +254,11 @@ public final class Progress_bar_view_data extends Progress_bar_data // contains 
                         else
                             days += days_in_mon[cal_end_month - 1];
                     }
-
-                    // recalculate weeks from # of days
-                    weeks = days / 7L;
-                    days %= 7L;
                 }
+
+                // recalculate weeks from # of days
+                weeks = days / 7L;
+                days %= 7L;
 
                 months += cal_end.get(Calendar.MONTH) - cal_start.get(Calendar.MONTH);
                 if(months < 0L)
