@@ -13,6 +13,7 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.DatePicker;
 import android.widget.EditText;
@@ -203,6 +204,19 @@ public class Settings extends Dynamic_theme_activity implements Precision_dialog
 
         binding.startDateSel.setOnFocusChangeListener(date_listener);
         binding.endDateSel.setOnFocusChangeListener(date_listener);
+
+        binding.repeatUnits.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
+        {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l)
+            {
+                binding.repeatWeekdays.setVisibility(i == Progress_bar_table.Unit.WEEK.index ? View.VISIBLE : View.GONE);
+                data.repeat_unit = i;
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {}
+        });
 
         // only run this on 1st creation
         if(savedInstanceState == null)
@@ -790,5 +804,16 @@ public class Settings extends Dynamic_theme_activity implements Precision_dialog
         // get and store the data
         data.precision = dialog.getValue();
         binding.precision.setText(String.valueOf(data.precision));
+    }
+
+    public void on_repeat_butt(View view)
+    {
+        data.repeats = binding.repeatSw.isChecked();
+        binding.repeatFreq.setVisibility(data.repeats ? View.VISIBLE : View.GONE);
+    }
+
+    public void on_weekdays_butt(View view)
+    {
+        // TODO: dialog to choose weekdays
     }
 }

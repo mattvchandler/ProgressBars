@@ -52,4 +52,24 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
         <item>@string/months</item>
         <item>@string/years</item>
     </string-array>
+
+    <string-array name="day_of_week_abbr">
+        <item>U</item>
+        <item>M</item>
+        <item>T</item>
+        <item>W</item>
+        <item>R</item>
+        <item>F</item>
+        <item>S</item>
+    </string-array>
+
+    <string-array name="day_of_week">
+        <item>Sunday</item>
+        <item>Monday</item>
+        <item>Tuesday</item>
+        <item>Wednesday</item>
+        <item>Thursday</item>
+        <item>Friday</item>
+        <item>Saturday</item>
+    </string-array>
 </resources>
