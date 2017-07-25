@@ -42,4 +42,14 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
         <item>@string/AM</item>
         <item>@string/PM</item>
     </string-array>
+
+    <string-array name="repeat_units">
+        <item>@string/seconds</item>
+        <item>@string/minutes</item>
+        <item>@string/hours</item>
+        <item>@string/days</item>
+        <item>@string/weeks</item>
+        <item>@string/months</item>
+        <item>@string/years</item>
+    </string-array>
 </resources>

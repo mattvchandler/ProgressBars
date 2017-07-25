@@ -29,6 +29,24 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
     <string name="app_website"><a href="https://www.github.com/mattvchandler/ProgressBars">Progress Bars on Github</a></string>
     <string name="app_logo_desc">Progress Bars logo</string>
 
+    <string name="seconds">seconds</string>
+    <string name="minutes">minutes</string>
+    <string name="hours">hours</string>
+    <string name="days">days</string>
+    <string name="weeks">weeks</string>
+    <string name="months">months</string>
+    <string name="years">years</string>
+
+    <string name="second">second</string>
+    <string name="minute">minute</string>
+    <string name="hour">hour</string>
+    <string name="day">day</string>
+    <string name="week">week</string>
+    <string name="month">month</string>
+    <string name="year">year</string>
+
+    <string name="and">and</string>
+
     <string name="edit_title">Edit timer</string>
     <string name="add_title">Add new timer</string>
     <string name="add_title_short">Add timer</string>
@@ -86,6 +104,10 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
     <string name="start_tz_prompt">Start time zone</string>
     <string name="end_tz_prompt">End time zone</string>
+
+    <string name="repeat">Repeat</string>
+    <string name="repeat_freq">Frequency</string>
+    <string name="repeat_unit_prompt">Repetition units</string>
 
     <string name="start_clock_butt">Choose start time from a clock</string>
     <string name="start_cal_butt">Choose start date from a calendar</string>

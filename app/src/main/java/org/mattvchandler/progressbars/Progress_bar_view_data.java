@@ -331,6 +331,7 @@ public final class Progress_bar_view_data extends Progress_bar_data // contains 
             boolean years_shown = show_years && (years > 0 || (!months_shown && !weeks_shown && !days_shown && !hours_shown && !minutes_shown && !seconds_shown));
 
             // figure out plurality and which unit to add 'and' to
+            // TODO: use string res in place of units
             if(years_shown)
             {
                 remaining_str += String.valueOf(years) + " year" + (years == 1 ? "" : "s");

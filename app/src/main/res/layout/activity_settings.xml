@@ -306,6 +306,54 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
                     <View style="@style/Divider"/>
 
+                    <Switch
+                        android:id="@+id/repeat_sw"
+                        android:text="@string/repeat"
+                        android:textAppearance="?android:textAppearanceListItem"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="@dimen/margin_size"
+                        />
+
+                    <!-- TODO: visiblilty and values filled in from DB values -->
+                    <LinearLayout
+                        android:id="@+id/repeat_freq"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:layout_margin="@dimen/margin_size"
+                        >
+                        <TextView
+                            android:text="@string/repeat_freq"
+                            android:textAppearance="?android:textAppearanceListItem"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="10"
+                            android:layout_marginEnd="@dimen/margin_size"
+                            />
+
+                        <TextView
+                            android:id="@+id/repeat_count"
+                            android:text="TODO: replace me"
+                            android:textAppearance="?android:textAppearanceListItem"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginEnd="@dimen/margin_size"
+                            />
+
+                        <Spinner
+                            android:id="@+id/repeat_units"
+                            android:entries="@array/repeat_units"
+                            android:prompt="@string/repeat_unit_prompt"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:spinnerMode="dialog"
+                            />
+                    </LinearLayout>
+
+                    <View style="@style/Divider"/>
+
                     <TextView
                         android:text="@string/text_header"
                         android:textAppearance="?android:textAppearanceSmall"
