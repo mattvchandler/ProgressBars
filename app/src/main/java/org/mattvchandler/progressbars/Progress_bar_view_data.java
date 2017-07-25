@@ -79,6 +79,7 @@ public final class Progress_bar_view_data extends Progress_bar_data // contains 
     private static final int[] days_in_mon = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
 
     // run every second. updates percentage and time remaining text
+    // TODO: split up
     public void update()
     {
         // get now, start and end times as unix epoch timestamps

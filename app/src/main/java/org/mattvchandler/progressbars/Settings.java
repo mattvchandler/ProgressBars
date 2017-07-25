@@ -77,6 +77,8 @@ public class Settings extends Dynamic_theme_activity implements Precision_dialog
     private int array_am_i;
     private int array_pm_i;
 
+    // TODO: repeat vars
+
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {

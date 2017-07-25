@@ -111,6 +111,8 @@ public class Notification_handler extends BroadcastReceiver
             // send the notification. rowid will be used as the notification's ID
             NotificationManager nm = (NotificationManager)context.getSystemService(Context.NOTIFICATION_SERVICE);
             nm.notify((int)data.rowid, not_builder.build());
+
+            // TODO: if repeat set, increment start & end times by specified amount
         }
     }
 

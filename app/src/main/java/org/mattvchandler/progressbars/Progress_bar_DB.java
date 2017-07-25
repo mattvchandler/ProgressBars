@@ -28,7 +28,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 // DB container
 public class Progress_bar_DB extends SQLiteOpenHelper
 {
-    private static final int DB_VERSION = 1;
+    private static final int DB_VERSION = 2;
     public static final String DB_NAME = "progress_bar_db";
 
     public Progress_bar_DB(Context context)
@@ -45,9 +45,11 @@ public class Progress_bar_DB extends SQLiteOpenHelper
 
     // if DB schema changes, put logic to migrate data here
     @Override
-    public void onUpgrade(SQLiteDatabase sqLiteDatabase, int old_version, int new_version)
+    public void onUpgrade(SQLiteDatabase db, int old_version, int new_version)
     {
-        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + Progress_bar_table.TABLE_NAME);
-        onCreate(sqLiteDatabase);
+        if(new_version != DB_VERSION)
+            throw new IllegalStateException("DB version mismatch");
+
+        Progress_bar_table.upgrade(db, old_version);
     }
 }
