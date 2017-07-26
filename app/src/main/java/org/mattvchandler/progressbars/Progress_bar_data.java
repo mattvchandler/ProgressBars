@@ -7,6 +7,7 @@ import android.database.sqlite.SQLiteDatabase;
 
 import java.io.Serializable;
 import java.util.Calendar;
+import java.util.TimeZone;
 
 /*
 Copyright (C) 2017 Matthew Chandler
@@ -242,6 +243,8 @@ public class Progress_bar_data implements Serializable
         if(rowid >= 0)
             throw new IllegalStateException("Tried to insert when rowid already set");
 
+        apply_repeat();
+
         SQLiteDatabase db = new Progress_bar_DB(context).getWritableDatabase();
 
         if(order < 0)
@@ -252,11 +255,10 @@ public class Progress_bar_data implements Serializable
             order = cursor.getLong(0);
             cursor.close();
         }
-        // TODO: update repeat times
 
         rowid = db.insert(Progress_bar_table.TABLE_NAME, null, build_ContentValues());
-
         db.close();
+
         Notification_handler.reset_notification(context, this);
     }
 
@@ -267,12 +269,10 @@ public class Progress_bar_data implements Serializable
         if(rowid < 0)
             throw new IllegalStateException("Tried to update when rowid isn't set");
 
-        // TODO: update repeat times
+        apply_repeat();
 
         SQLiteDatabase db = new Progress_bar_DB(context).getWritableDatabase();
-
         db.update(Progress_bar_table.TABLE_NAME, build_ContentValues(), Progress_bar_table._ID + " = ?", new String[]{String.valueOf(rowid)});
-
         db.close();
 
         Notification_handler.reset_notification(context, this);
@@ -295,6 +295,97 @@ public class Progress_bar_data implements Serializable
         db.close();
 
         rowid = -1; // unset rowid
+    }
+
+    // if repeat is set, update start and end times as needed
+    public void apply_repeat()
+    {
+        if(!repeats)
+            return;
+
+        long now_s = System.currentTimeMillis() / 1000L;
+
+        while(now_s >= end_time)
+        {
+            // convert to calendar, add month/year, convert back
+            Calendar start_cal = Calendar.getInstance(TimeZone.getTimeZone(start_tz));
+            Calendar end_cal = Calendar.getInstance(TimeZone.getTimeZone(start_tz));
+
+            start_cal.setTimeInMillis(start_time * 1000);
+            end_cal.setTimeInMillis(end_time * 1000);
+
+            if(repeat_unit == Progress_bar_table.Unit.SECOND.index)
+            {
+                start_cal.add(Calendar.SECOND, repeat_count);
+                end_cal.add(Calendar.SECOND, repeat_count);
+            }
+            else if(repeat_unit == Progress_bar_table.Unit.MINUTE.index)
+            {
+                start_cal.add(Calendar.MINUTE, repeat_count);
+                end_cal.add(Calendar.MINUTE, repeat_count);
+            }
+            else if(repeat_unit == Progress_bar_table.Unit.HOUR.index)
+            {
+                start_cal.add(Calendar.HOUR, repeat_count);
+                end_cal.add(Calendar.HOUR, repeat_count);
+            }
+            else if(repeat_unit == Progress_bar_table.Unit.DAY.index)
+            {
+                start_cal.add(Calendar.DAY_OF_MONTH, repeat_count);
+                end_cal.add(Calendar.DAY_OF_MONTH, repeat_count);
+            }
+            else if(repeat_unit == Progress_bar_table.Unit.WEEK.index)
+            {
+                if(repeat_days_of_week != 0)
+                {
+                    int day_of_week = start_cal.get(Calendar.DAY_OF_WEEK) - 1;
+                    int increment_days = 0;
+                    while((repeat_days_of_week & (1 << day_of_week)) == 0)
+                    {
+                        ++increment_days;
+                        if(++day_of_week >= 7)
+                        {
+                            increment_days += 7 * repeat_count;
+                            day_of_week = 0;
+                        }
+                    }
+                    start_cal.add(Calendar.DAY_OF_MONTH, increment_days);
+                    end_cal.add(Calendar.DAY_OF_MONTH, increment_days);
+                }
+            }
+
+            else if(repeat_unit == Progress_bar_table.Unit.MONTH.index)
+            {
+                start_cal.add(Calendar.MONTH, repeat_count);
+                end_cal.add(Calendar.MONTH, repeat_count);
+            }
+            else // repeat_unit == Progress_bar_table.Unit.YEAR.index
+            {
+                start_cal.add(Calendar.YEAR, repeat_count);
+                end_cal.add(Calendar.YEAR, repeat_count);
+            }
+
+            start_time = start_cal.getTimeInMillis() / 1000;
+            end_time = end_cal.getTimeInMillis() / 1000;
+        }
+    }
+
+    public static void apply_all_repeats(Context context)
+    {
+        SQLiteDatabase db = new Progress_bar_DB(context).getReadableDatabase();
+        Cursor cursor = db.rawQuery(Progress_bar_table.SELECT_ALL_ROWS, null);
+
+        // for every timer
+        for(int i = 0; i < cursor.getCount(); ++i)
+        {
+            cursor.moveToPosition(i);
+            Progress_bar_data data = new Progress_bar_data(cursor);
+
+            data.apply_repeat();
+            db.update(Progress_bar_table.TABLE_NAME, data.build_ContentValues(), Progress_bar_table._ID + " = ?", new String[]{String.valueOf(data.rowid)});
+        }
+        cursor.close();
+        db.close();
     }
 }
 

@@ -51,7 +51,8 @@ public class Notification_handler extends BroadcastReceiver
         // we're set up to receive the system's bootup broadcast, so use it to reset the alarms
         if(intent.getAction().equals("android.intent.action.BOOT_COMPLETED"))
         {
-            // TODO: update repeat times too, and save to DB
+            // get new start/end times first
+            Progress_bar_data.apply_all_repeats(context);
             reset_all_alarms(context);
         }
         // one of the alarms went off - send a notification
@@ -78,6 +79,13 @@ public class Notification_handler extends BroadcastReceiver
                 title = context.getResources().getString(R.string.notification_end_title, data.title);
                 content = data.complete_text;
                 when = data.end_time;
+
+                // update row to get new repeat time, if needed
+                if(data.repeats)
+                {
+                    data.update(context);
+                    // TODO: invalidate cursor
+                }
             }
 
             // get the primary color from the theme
@@ -112,8 +120,6 @@ public class Notification_handler extends BroadcastReceiver
             // send the notification. rowid will be used as the notification's ID
             NotificationManager nm = (NotificationManager)context.getSystemService(Context.NOTIFICATION_SERVICE);
             nm.notify((int)data.rowid, not_builder.build());
-
-            // TODO: update repeat times, save to DB
         }
     }
 

@@ -124,8 +124,8 @@ final public class Progress_bar_table implements BaseColumns
         FRIDAY    (5, 0x20),
         SATURDAY  (6, 0x40);
 
-        public int index;
-        public int mask;
+        public final int index;
+        public final int mask;
 
         Days_of_week(int index, int mask)
         {
@@ -149,7 +149,7 @@ final public class Progress_bar_table implements BaseColumns
         MONTH(5),
         YEAR(6);
 
-        public int index;
+        public final int index;
 
         Unit(int index)
         {

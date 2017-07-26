@@ -101,10 +101,10 @@ public class Progress_bar_adapter extends RecyclerView.Adapter<Progress_bar_adap
     private Cursor cursor;
     private final Progress_bars context;
 
-    public Progress_bar_adapter(Progress_bars con)
+    public Progress_bar_adapter(Progress_bars context)
     {
         // store the data we'll need for the lifetime of this object
-        context = con;
+        this.context = context;
         db = new Progress_bar_DB(context).getWritableDatabase();
         cursor = db.rawQuery(Progress_bar_table.SELECT_ALL_ROWS, null);
     }
@@ -229,4 +229,5 @@ public class Progress_bar_adapter extends RecyclerView.Adapter<Progress_bar_adap
                     }
                 }).show();
     }
+
 }
