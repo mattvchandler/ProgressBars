@@ -85,7 +85,7 @@ public class Progress_bars extends Dynamic_theme_activity
             db.close();
 
             Notification_handler.reset_all_alarms(this);
-            // TODO: update repeat times
+            // TODO: update repeat times, and save to DB
         }
 
         // set up row adapter

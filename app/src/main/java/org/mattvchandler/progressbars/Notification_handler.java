@@ -51,7 +51,7 @@ public class Notification_handler extends BroadcastReceiver
         // we're set up to receive the system's bootup broadcast, so use it to reset the alarms
         if(intent.getAction().equals("android.intent.action.BOOT_COMPLETED"))
         {
-            // TODO: update repeat times too
+            // TODO: update repeat times too, and save to DB
             reset_all_alarms(context);
         }
         // one of the alarms went off - send a notification
@@ -113,7 +113,7 @@ public class Notification_handler extends BroadcastReceiver
             NotificationManager nm = (NotificationManager)context.getSystemService(Context.NOTIFICATION_SERVICE);
             nm.notify((int)data.rowid, not_builder.build());
 
-            // TODO: if repeat set, increment start & end times by specified amount. Also need to do this if we are after the end time and no alarm was triggered, such as when the phone is off
+            // TODO: update repeat times, save to DB
         }
     }
 

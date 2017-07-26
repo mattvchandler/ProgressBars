@@ -37,6 +37,7 @@ public class Precision_dialog_frag extends DialogFragment
 
     private int value;
 
+    // TODO. get rid of the interface nonsense. just directly call Setting's method
     public interface NoticeDialogListener
     {
         void on_precision_dialog_positive(Precision_dialog_frag dialog);

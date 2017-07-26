@@ -205,8 +205,8 @@ final public class Progress_bar_table implements BaseColumns
                         START_TZ_COL + ", " +
                         END_TZ_COL + ", " +
                         "0, " +
-                        "0, " +
-                        "0, " +
+                        "1, " +
+                        String.valueOf(Unit.DAY.index)+ ", " +
                         String.valueOf(Days_of_week.all_days_mask()) + ", " +
                         TITLE_COL + ", " +
                         PRE_TEXT_COL + ", " +
