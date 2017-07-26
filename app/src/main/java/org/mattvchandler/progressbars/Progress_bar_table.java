@@ -41,7 +41,7 @@ final public class Progress_bar_table implements BaseColumns
     public static final String REPEATS_COL = "repeats";
     public static final String REPEAT_COUNT_COL = "repeat_count";
     public static final String REPEAT_UNIT_COL = "repeat_unit";
-    public static final String REPEAT_WEEKDAYS_COL = "repeat_weekdays";
+    public static final String REPEAT_DAYS_OF_WEEK_COL = "repeat_days_of_week";
 
     public static final String TITLE_COL = "title";
     public static final String PRE_TEXT_COL = "pre_text";
@@ -85,7 +85,7 @@ final public class Progress_bar_table implements BaseColumns
             REPEATS_COL + " INTEGER NOT NULL, " +
             REPEAT_COUNT_COL + " INTEGER NOT NULL, " +
             REPEAT_UNIT_COL + " INTEGER NOT NULL, " +
-            REPEAT_WEEKDAYS_COL + " INTEGER NOT NULL, " +
+            REPEAT_DAYS_OF_WEEK_COL + " INTEGER NOT NULL, " +
 
             TITLE_COL + " TEXT NOT NULL, " +
             PRE_TEXT_COL + " TEXT, " +
@@ -114,7 +114,7 @@ final public class Progress_bar_table implements BaseColumns
 
     // associated enums
 
-    public enum Days
+    public enum Days_of_week
     {
         SUNDAY    (0, 0x01),
         MONDAY    (1, 0x02),
@@ -127,7 +127,7 @@ final public class Progress_bar_table implements BaseColumns
         public int index;
         public int mask;
 
-        Days(int index, int mask)
+        Days_of_week(int index, int mask)
         {
             this.index = index;
             this.mask = mask;
@@ -176,7 +176,7 @@ final public class Progress_bar_table implements BaseColumns
                         REPEATS_COL + ", " +
                         REPEAT_COUNT_COL + ", " +
                         REPEAT_UNIT_COL + ", " +
-                        REPEAT_WEEKDAYS_COL + ", " +
+                        REPEAT_DAYS_OF_WEEK_COL + ", " +
                         TITLE_COL + ", " +
                         PRE_TEXT_COL + ", " +
                         START_TEXT_COL + ", " +
@@ -207,7 +207,7 @@ final public class Progress_bar_table implements BaseColumns
                         "0, " +
                         "0, " +
                         "0, " +
-                        "UMTWHFS, " +
+                        String.valueOf(Days_of_week.all_days_mask()) + ", " +
                         TITLE_COL + ", " +
                         PRE_TEXT_COL + ", " +
                         START_TEXT_COL + ", " +

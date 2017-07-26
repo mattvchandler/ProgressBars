@@ -29,7 +29,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
     <data>
         <import type="android.view.View"/>
-        <import type="org.mattvchandler.progressbars.Progress_bar_table.Unit"/>
         <import type="org.mattvchandler.progressbars.Progress_bar_data"/>
         <variable name="data" type="Progress_bar_data"/>
     </data>
@@ -311,6 +310,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
                     <Switch
                         android:id="@+id/repeat_sw"
                         android:text="@string/repeat"
+                        android:checked="@{data.repeats}"
                         android:textAppearance="?android:textAppearanceListItem"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -320,7 +320,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
                     <LinearLayout
                         android:id="@+id/repeat_freq"
-                        android:visibility="@{data.repeats ? View.VISIBLE : View.GONE}"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
@@ -328,8 +327,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
                         android:layout_margin="@dimen/margin_size"
                         >
                         <TextView
-                            android:text="@string/repeat_freq"
-                            android:textAppearance="?android:textAppearanceListItem"
+                            android:text="@string/repeat_every"
+                            android:textAppearance="?android:textAppearanceSmall"
                             android:labelFor="@+id/repeat_count"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
@@ -339,7 +338,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
                         <EditText
                             android:id="@+id/repeat_count"
-                            android:text="@{String.valueOf(data.repeat_count)}"
                             android:inputType="number"
                             android:textAppearance="?android:textAppearanceListItem"
                             android:layout_width="wrap_content"
@@ -357,13 +355,21 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
                             />
 
                         <TextView
-                            android:id="@+id/repeat_weekdays"
-                            android:visibility='@{data.repeat_unit == Unit.WEEK.index ? View.VISIBLE : View.GONE}'
-                            android:text="@{String.valueOf(data.repeat_weekdays)}"
+                            android:id="@+id/repeat_on"
+                            android:text="@string/on"
+                            android:textAppearance="?android:textAppearanceSmall"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="@dimen/margin_size"
+                            android:layout_marginEnd="@dimen/margin_size"
+                            android:onClick="on_weekdays_butt"
+                            />
+
+                        <TextView
+                            android:id="@+id/repeat_days_of_week"
                             android:textAppearance="?android:textAppearanceListItem"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginEnd="@dimen/margin_size"
                             android:onClick="on_weekdays_butt"
                             />
                     </LinearLayout>

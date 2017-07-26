@@ -45,6 +45,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
     <string name="month">month</string>
     <string name="year">year</string>
 
+    <string name="on">on</string>
     <string name="and">and</string>
 
     <string name="edit_title">Edit timer</string>
@@ -106,8 +107,11 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
     <string name="end_tz_prompt">End time zone</string>
 
     <string name="repeat">Repeat</string>
-    <string name="repeat_freq">Frequency</string>
+    <string name="repeat_every">every</string>
     <string name="repeat_unit_prompt">Repetition units</string>
+    <string name="invalid_repeat_count">Invalid repeat count. Must be > 0</string>
+    <string name="days_of_week_title">Days of week to repeat on</string>
+    <string name="no_days_of_week_err">Error: No days selected</string>
 
     <string name="start_clock_butt">Choose start time from a clock</string>
     <string name="start_cal_butt">Choose start date from a calendar</string>

@@ -3,6 +3,7 @@ package org.mattvchandler.progressbars;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.TimePickerDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.databinding.DataBindingUtil;
@@ -10,6 +11,7 @@ import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -51,6 +53,8 @@ IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
+// TODO: replace all toast errors that we can with ID form instead of get Resources
+
 // Settings for each timer
 public class Settings extends Dynamic_theme_activity implements Precision_dialog_frag.NoticeDialogListener,
                                                                 DatePickerDialog.OnDateSetListener,
@@ -77,8 +81,6 @@ public class Settings extends Dynamic_theme_activity implements Precision_dialog
 
     private int array_am_i;
     private int array_pm_i;
-
-    // TODO: repeat vars
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -205,12 +207,40 @@ public class Settings extends Dynamic_theme_activity implements Precision_dialog
         binding.startDateSel.setOnFocusChangeListener(date_listener);
         binding.endDateSel.setOnFocusChangeListener(date_listener);
 
+        // listen for changes to repeat count & units
+        binding.repeatCount.setOnFocusChangeListener(new View.OnFocusChangeListener()
+        {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus)
+            {
+                // check value when count loses focus
+                if(!hasFocus)
+                {
+                    int count = 0;
+                    try
+                    {
+                        count = Integer.parseInt(binding.repeatCount.getText().toString());
+                    }
+                    catch(NumberFormatException ignored) {}
+
+                    if(count <= 0)
+                    {
+                        binding.repeatCount.setText(String.valueOf(data.repeat_count));
+                        Toast.makeText(Settings.this, R.string.invalid_repeat_count, Toast.LENGTH_LONG).show();
+                    }
+                }
+            }
+        });
+
         binding.repeatUnits.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
         {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l)
             {
-                binding.repeatWeekdays.setVisibility(i == Progress_bar_table.Unit.WEEK.index ? View.VISIBLE : View.GONE);
+                boolean week_selected = i == Progress_bar_table.Unit.WEEK.index;
+                binding.repeatOn.setVisibility(week_selected ? View.VISIBLE : View.GONE);
+                binding.repeatDaysOfWeek.setVisibility(week_selected ? View.VISIBLE : View.GONE);
+
                 data.repeat_unit = i;
             }
 
@@ -317,6 +347,11 @@ public class Settings extends Dynamic_theme_activity implements Precision_dialog
             else
                 binding.endAmPm.setSelection(array_pm_i);
         }
+
+        binding.repeatFreq.setVisibility(data.repeats ? View.VISIBLE : View.GONE);
+        binding.repeatCount.setText(String.valueOf(data.repeat_count));
+        binding.repeatUnits.setSelection(data.repeat_unit);
+        binding.repeatDaysOfWeek.setText(get_days_of_week_abbr());
     }
 
     @Override
@@ -588,6 +623,25 @@ public class Settings extends Dynamic_theme_activity implements Precision_dialog
 
         // get all 'easy' data
         data.title = binding.title.getText().toString();
+
+        // other repeat data stored in callbacks
+        int repeat_count = 0;
+        try
+        {
+            repeat_count = Integer.parseInt(binding.repeatCount.getText().toString());
+        }
+        catch(NumberFormatException ignored) {}
+
+        if(repeat_count <= 0)
+        {
+            Toast.makeText(Settings.this, R.string.invalid_repeat_count, Toast.LENGTH_LONG).show();
+            errors = true;
+        }
+        else
+        {
+            data.repeat_count = repeat_count;
+        }
+
         data.pre_text = binding.preText.getText().toString();
         data.start_text = binding.startText.getText().toString();
         data.countdown_text = binding.countdownText.getText().toString();
@@ -609,6 +663,19 @@ public class Settings extends Dynamic_theme_activity implements Precision_dialog
         data.notify_end = binding.notifyEnd.isChecked();
 
         return !errors;
+    }
+
+    private String get_days_of_week_abbr()
+    {
+        // set days of week for weekly repeat (ex: MWF)
+        String days_of_week = "";
+        for(Progress_bar_table.Days_of_week day : Progress_bar_table.Days_of_week.values())
+        {
+            if((data.repeat_days_of_week & day.mask) != 0)
+                days_of_week += getResources().getStringArray(R.array.day_of_week_abbr)[day.index];
+        }
+
+        return days_of_week;
     }
 
     // date picker dialog
@@ -814,6 +881,55 @@ public class Settings extends Dynamic_theme_activity implements Precision_dialog
 
     public void on_weekdays_butt(View view)
     {
-        // TODO: dialog to choose weekdays
+        final int old_days_of_week = data.repeat_days_of_week;
+
+        boolean selected[] = new boolean[Progress_bar_table.Days_of_week.values().length];
+        for(Progress_bar_table.Days_of_week day : Progress_bar_table.Days_of_week.values())
+        {
+            selected[day.index] = (data.repeat_days_of_week & day.mask) != 0;
+        }
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(R.string.days_of_week_title)
+            .setMultiChoiceItems(R.array.day_of_week, selected,
+                new DialogInterface.OnMultiChoiceClickListener()
+                {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which, boolean isChecked)
+                    {
+                        if(isChecked)
+                            data.repeat_days_of_week |= (1 << which);
+                        else
+                            data.repeat_days_of_week &= ~(1 << which);
+                    }
+                })
+            .setPositiveButton(android.R.string.ok,
+                    new DialogInterface.OnClickListener()
+                    {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i)
+                        {
+                            if(data.repeat_days_of_week == 0)
+                            {
+                                data.repeat_days_of_week = old_days_of_week;
+                                Toast.makeText(Settings.this, R.string.no_days_of_week_err, Toast.LENGTH_LONG).show();
+                            }
+                            else
+                            {
+                                binding.repeatDaysOfWeek.setText(get_days_of_week_abbr());
+                            }
+                        }
+                    })
+            .setNegativeButton(android.R.string.cancel,
+                new DialogInterface.OnClickListener()
+                {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i)
+                    {
+                        data.repeat_days_of_week = old_days_of_week;
+                    }
+                });
+
+        builder.create().show();
     }
 }

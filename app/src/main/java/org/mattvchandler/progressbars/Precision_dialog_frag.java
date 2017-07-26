@@ -93,7 +93,7 @@ public class Precision_dialog_frag extends DialogFragment
         });
 
         // create a dialog containing the number picker, w/ OK and CANCEL buttons
-        builder.setMessage(R.string.precision)
+        builder.setTitle(R.string.precision)
                 .setView(np)
                 .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener()
                 {
