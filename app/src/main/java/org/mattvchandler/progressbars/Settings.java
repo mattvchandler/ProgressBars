@@ -355,6 +355,10 @@ public class Settings extends Dynamic_theme_activity implements Precision_dialog
         binding.repeatCount.setText(String.valueOf(data.repeat_count));
         binding.repeatUnits.setSelection(data.repeat_unit);
         binding.repeatDaysOfWeek.setText(get_days_of_week_abbr(this, data.repeat_days_of_week));
+
+        boolean week_selected = data.repeat_unit == Progress_bar_table.Unit.WEEK.index;
+        binding.repeatOn.setVisibility(week_selected ? View.VISIBLE : View.GONE);
+        binding.repeatDaysOfWeek.setVisibility(week_selected ? View.VISIBLE : View.GONE);
     }
 
     @Override
