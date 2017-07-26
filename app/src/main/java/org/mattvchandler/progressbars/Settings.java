@@ -3,6 +3,7 @@ package org.mattvchandler.progressbars;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.TimePickerDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -54,6 +55,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 // TODO: replace all toast errors that we can with ID form instead of get Resources
+// TODO: very long and disorganized. split out into components
+// TODO: maybe rename classes and organize into dirs?
 
 // Settings for each timer
 public class Settings extends Dynamic_theme_activity implements Precision_dialog_frag.NoticeDialogListener,
@@ -351,7 +354,7 @@ public class Settings extends Dynamic_theme_activity implements Precision_dialog
         binding.repeatFreq.setVisibility(data.repeats ? View.VISIBLE : View.GONE);
         binding.repeatCount.setText(String.valueOf(data.repeat_count));
         binding.repeatUnits.setSelection(data.repeat_unit);
-        binding.repeatDaysOfWeek.setText(get_days_of_week_abbr());
+        binding.repeatDaysOfWeek.setText(get_days_of_week_abbr(this, data.repeat_days_of_week));
     }
 
     @Override
@@ -665,17 +668,17 @@ public class Settings extends Dynamic_theme_activity implements Precision_dialog
         return !errors;
     }
 
-    private String get_days_of_week_abbr()
+    private static String get_days_of_week_abbr(Context context, int days_of_week)
     {
         // set days of week for weekly repeat (ex: MWF)
-        String days_of_week = "";
+        String days_of_week_str = "";
         for(Progress_bar_table.Days_of_week day : Progress_bar_table.Days_of_week.values())
         {
-            if((data.repeat_days_of_week & day.mask) != 0)
-                days_of_week += getResources().getStringArray(R.array.day_of_week_abbr)[day.index];
+            if((days_of_week & day.mask) != 0)
+                days_of_week_str += context.getResources().getStringArray(R.array.day_of_week_abbr)[day.index];
         }
 
-        return days_of_week;
+        return days_of_week_str;
     }
 
     // date picker dialog
@@ -718,7 +721,7 @@ public class Settings extends Dynamic_theme_activity implements Precision_dialog
             month = cal.get(Calendar.MONTH);
             day = cal.get(Calendar.DAY_OF_MONTH);
 
-            return new DatePickerDialog(getActivity(), (Settings) getActivity(), year, month, day);
+            return new DatePickerDialog(getActivity(), (Settings)getActivity(), year, month, day);
         }
     }
 
@@ -780,7 +783,7 @@ public class Settings extends Dynamic_theme_activity implements Precision_dialog
             hour = cal.get(Calendar.HOUR_OF_DAY);
             minute = cal.get(Calendar.MINUTE);
 
-            return new TimePickerDialog(getActivity(), (Settings) getActivity(), hour, minute, hour_24);
+            return new TimePickerDialog(getActivity(), (Settings)getActivity(), hour, minute, hour_24);
         }
     }
 
@@ -879,57 +882,82 @@ public class Settings extends Dynamic_theme_activity implements Precision_dialog
         binding.repeatFreq.setVisibility(data.repeats ? View.VISIBLE : View.GONE);
     }
 
-    public void on_weekdays_butt(View view)
+    public static class Days_of_week_frag extends DialogFragment
     {
-        final int old_days_of_week = data.repeat_days_of_week;
+        public static final String DAYS_OF_WEEK_ARG = "DAYS_OF_WEEK";
+        int days_of_week;
 
-        boolean selected[] = new boolean[Progress_bar_table.Days_of_week.values().length];
-        for(Progress_bar_table.Days_of_week day : Progress_bar_table.Days_of_week.values())
+        @Override
+        @NonNull
+        public Dialog onCreateDialog(Bundle savedInstanceState)
         {
-            selected[day.index] = (data.repeat_days_of_week & day.mask) != 0;
+            super.onCreateDialog(savedInstanceState);
+            if(savedInstanceState == null)
+                days_of_week = getArguments().getInt(DAYS_OF_WEEK_ARG);
+            else
+                days_of_week = savedInstanceState.getInt(DAYS_OF_WEEK_ARG);
+
+            boolean selected[] = new boolean[Progress_bar_table.Days_of_week.values().length];
+            for(Progress_bar_table.Days_of_week day : Progress_bar_table.Days_of_week.values())
+            {
+                selected[day.index] = (days_of_week & day.mask) != 0;
+            }
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+            builder.setTitle(R.string.days_of_week_title)
+                    .setMultiChoiceItems(R.array.day_of_week, selected,
+                            new DialogInterface.OnMultiChoiceClickListener()
+                            {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which, boolean isChecked)
+                                {
+                                    if(isChecked)
+                                        days_of_week |= (1 << which);
+                                    else
+                                        days_of_week &= ~(1 << which);
+                                }
+                            })
+                    .setPositiveButton(android.R.string.ok,
+                            new DialogInterface.OnClickListener()
+                            {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i)
+                                {
+                                    if(days_of_week == 0)
+                                    {
+                                        Toast.makeText(getContext(), R.string.no_days_of_week_err, Toast.LENGTH_LONG).show();
+                                    }
+                                    else
+                                    {
+                                        // binding.repeatDaysOfWeek.setText(get_days_of_week_abbr(getContext(), days_of_week));
+                                        ((Settings)getActivity()).on_days_of_week_set(days_of_week);
+                                    }
+                                }
+                            })
+                    .setNegativeButton(android.R.string.cancel, null);
+
+            return builder.create();
         }
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle(R.string.days_of_week_title)
-            .setMultiChoiceItems(R.array.day_of_week, selected,
-                new DialogInterface.OnMultiChoiceClickListener()
-                {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which, boolean isChecked)
-                    {
-                        if(isChecked)
-                            data.repeat_days_of_week |= (1 << which);
-                        else
-                            data.repeat_days_of_week &= ~(1 << which);
-                    }
-                })
-            .setPositiveButton(android.R.string.ok,
-                    new DialogInterface.OnClickListener()
-                    {
-                        @Override
-                        public void onClick(DialogInterface dialogInterface, int i)
-                        {
-                            if(data.repeat_days_of_week == 0)
-                            {
-                                data.repeat_days_of_week = old_days_of_week;
-                                Toast.makeText(Settings.this, R.string.no_days_of_week_err, Toast.LENGTH_LONG).show();
-                            }
-                            else
-                            {
-                                binding.repeatDaysOfWeek.setText(get_days_of_week_abbr());
-                            }
-                        }
-                    })
-            .setNegativeButton(android.R.string.cancel,
-                new DialogInterface.OnClickListener()
-                {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i)
-                    {
-                        data.repeat_days_of_week = old_days_of_week;
-                    }
-                });
+        @Override
+        public void onSaveInstanceState(Bundle out)
+        {
+            out.putInt(DAYS_OF_WEEK_ARG, days_of_week);
+        }
+    }
 
-        builder.create().show();
+    public void on_days_of_week_butt(View view)
+    {
+        Days_of_week_frag frag = new Days_of_week_frag();
+        Bundle args = new Bundle();
+        args.putInt(Days_of_week_frag.DAYS_OF_WEEK_ARG, data.repeat_days_of_week);
+        frag.setArguments(args);
+        frag.show(getSupportFragmentManager(), "days_of_week_picker");
+    }
+
+    public void on_days_of_week_set(int days_of_week)
+    {
+        data.repeat_days_of_week = days_of_week;
+        binding.repeatDaysOfWeek.setText(get_days_of_week_abbr(this, days_of_week));
     }
 }

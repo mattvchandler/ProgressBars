@@ -201,7 +201,6 @@ public class Progress_bar_data implements Serializable
 
     private ContentValues build_ContentValues()
     {
-
         ContentValues values = new ContentValues();
 
         values.put(Progress_bar_table.ORDER_COL, order);
@@ -253,6 +252,7 @@ public class Progress_bar_data implements Serializable
             order = cursor.getLong(0);
             cursor.close();
         }
+        // TODO: update repeat times
 
         rowid = db.insert(Progress_bar_table.TABLE_NAME, null, build_ContentValues());
 
@@ -266,6 +266,8 @@ public class Progress_bar_data implements Serializable
     {
         if(rowid < 0)
             throw new IllegalStateException("Tried to update when rowid isn't set");
+
+        // TODO: update repeat times
 
         SQLiteDatabase db = new Progress_bar_DB(context).getWritableDatabase();
 

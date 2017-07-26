@@ -71,6 +71,7 @@ public class Precision_dialog_frag extends DialogFragment
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState)
     {
+        super.onCreateDialog(savedInstanceState);
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 
         // unpack and set the starting value

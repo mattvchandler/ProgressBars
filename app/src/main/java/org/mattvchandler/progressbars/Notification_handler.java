@@ -51,6 +51,7 @@ public class Notification_handler extends BroadcastReceiver
         // we're set up to receive the system's bootup broadcast, so use it to reset the alarms
         if(intent.getAction().equals("android.intent.action.BOOT_COMPLETED"))
         {
+            // TODO: update repeat times too
             reset_all_alarms(context);
         }
         // one of the alarms went off - send a notification
@@ -174,6 +175,7 @@ public class Notification_handler extends BroadcastReceiver
 
     // reset an individual timer's notification alarm
     // logic is the same as in reset_all_alarms
+    // TODO: move identical logic to a function
     public static void reset_notification(Context context, Progress_bar_data data)
     {
         boolean master_notification = PreferenceManager.getDefaultSharedPreferences(context)
