@@ -71,106 +71,45 @@ public class Progress_bar_data implements Serializable
     public boolean notify_start;
     public boolean notify_end;
 
-    // TODO: replace _in vars w/ this.a = a
-    Progress_bar_data(
-            long rowid_in,
-            long order_in,
-            long start_time_in,
-            long end_time_in,
-            String start_tz_in,
-            String end_tz_in,
-            boolean repeats_in,
-            int repeat_count_in,
-            int repeat_unit_in,
-            int repeat_days_of_week_in,
-            String title_in,
-            String pre_text_in,
-            String start_text_in,
-            String countdown_text_in,
-            String complete_text_in,
-            String post_text_in,
-            Integer precision_in,
-            boolean show_progress_in,
-            boolean show_start_in,
-            boolean show_end_in,
-            boolean show_years_in,
-            boolean show_months_in,
-            boolean show_weeks_in,
-            boolean show_days_in,
-            boolean show_hours_in,
-            boolean show_minutes_in,
-            boolean show_seconds_in,
-            boolean terminate_in,
-            boolean notify_start_in,
-            boolean notify_end_in)
+    // set all fields from DB cursor
+    private void set_from_cursor(Cursor cursor)
     {
-        rowid = rowid_in;
-        order = order_in;
-        start_time = start_time_in;
-        end_time = end_time_in;
-        start_tz = start_tz_in;
-        end_tz = end_tz_in;
-        repeats = repeats_in;
-        repeat_count = repeat_count_in;
-        repeat_unit = repeat_unit_in;
-        repeat_days_of_week = repeat_days_of_week_in;
-        title = title_in;
-        pre_text = pre_text_in;
-        start_text = start_text_in;
-        countdown_text = countdown_text_in;
-        complete_text = complete_text_in;
-        post_text = post_text_in;
-        precision = precision_in;
-        show_progress = show_progress_in;
-        show_start = show_start_in;
-        show_end = show_end_in;
-        show_years = show_years_in;
-        show_months = show_months_in;
-        show_weeks = show_weeks_in;
-        show_days = show_days_in;
-        show_hours = show_hours_in;
-        show_minutes = show_minutes_in;
-        show_seconds = show_seconds_in;
-        terminate = terminate_in;
-        notify_start = notify_start_in;
-        notify_end = notify_end_in;
+        rowid               = cursor.getLong(cursor.getColumnIndexOrThrow(Progress_bar_table._ID));
+        order               = cursor.getLong(cursor.getColumnIndexOrThrow(Progress_bar_table.ORDER_COL));
+        start_time          = cursor.getLong(cursor.getColumnIndexOrThrow(Progress_bar_table.START_TIME_COL));
+        end_time            = cursor.getLong(cursor.getColumnIndexOrThrow(Progress_bar_table.END_TIME_COL));
+        start_tz            = cursor.getString(cursor.getColumnIndexOrThrow(Progress_bar_table.START_TZ_COL));
+        end_tz              = cursor.getString(cursor.getColumnIndexOrThrow(Progress_bar_table.END_TZ_COL));
+        repeats             = cursor.getInt(cursor.getColumnIndexOrThrow(Progress_bar_table.REPEATS_COL)) > 0;
+        repeat_count        = cursor.getInt(cursor.getColumnIndexOrThrow(Progress_bar_table.REPEAT_COUNT_COL));
+        repeat_unit         = cursor.getInt(cursor.getColumnIndexOrThrow(Progress_bar_table.REPEAT_UNIT_COL));
+        repeat_days_of_week = cursor.getInt(cursor.getColumnIndexOrThrow(Progress_bar_table.REPEAT_DAYS_OF_WEEK_COL));
+        title               = cursor.getString(cursor.getColumnIndexOrThrow(Progress_bar_table.TITLE_COL));
+        pre_text            = cursor.getString(cursor.getColumnIndexOrThrow(Progress_bar_table.PRE_TEXT_COL));
+        start_text          = cursor.getString(cursor.getColumnIndexOrThrow(Progress_bar_table.START_TEXT_COL));
+        countdown_text      = cursor.getString(cursor.getColumnIndexOrThrow(Progress_bar_table.COUNTDOWN_TEXT_COL));
+        complete_text       = cursor.getString(cursor.getColumnIndexOrThrow(Progress_bar_table.COMPLETE_TEXT_COL));
+        post_text           = cursor.getString(cursor.getColumnIndexOrThrow(Progress_bar_table.POST_TEXT_COL));
+        precision           = cursor.getInt(cursor.getColumnIndexOrThrow(Progress_bar_table.PRECISION_COL));
+        show_progress       = cursor.getInt(cursor.getColumnIndexOrThrow(Progress_bar_table.SHOW_PROGRESS_COL)) > 0;
+        show_start          = cursor.getInt(cursor.getColumnIndexOrThrow(Progress_bar_table.SHOW_START_COL))    > 0;
+        show_end            = cursor.getInt(cursor.getColumnIndexOrThrow(Progress_bar_table.SHOW_END_COL))      > 0;
+        show_years          = cursor.getInt(cursor.getColumnIndexOrThrow(Progress_bar_table.SHOW_YEARS_COL))    > 0;
+        show_months         = cursor.getInt(cursor.getColumnIndexOrThrow(Progress_bar_table.SHOW_MONTHS_COL))   > 0;
+        show_weeks          = cursor.getInt(cursor.getColumnIndexOrThrow(Progress_bar_table.SHOW_WEEKS_COL))    > 0;
+        show_days           = cursor.getInt(cursor.getColumnIndexOrThrow(Progress_bar_table.SHOW_DAYS_COL))     > 0;
+        show_hours          = cursor.getInt(cursor.getColumnIndexOrThrow(Progress_bar_table.SHOW_HOURS_COL))    > 0;
+        show_minutes        = cursor.getInt(cursor.getColumnIndexOrThrow(Progress_bar_table.SHOW_MINUTES_COL))  > 0;
+        show_seconds        = cursor.getInt(cursor.getColumnIndexOrThrow(Progress_bar_table.SHOW_SECONDS_COL))  > 0;
+        terminate           = cursor.getInt(cursor.getColumnIndexOrThrow(Progress_bar_table.TERMINATE_COL))     > 0;
+        notify_start        = cursor.getInt(cursor.getColumnIndexOrThrow(Progress_bar_table.NOTIFY_START_COL))  > 0;
+        notify_end          = cursor.getInt(cursor.getColumnIndexOrThrow(Progress_bar_table.NOTIFY_END_COL))    > 0;
     }
 
     // construct from a DB cursor
     Progress_bar_data(Cursor cursor)
     {
-        this(
-            cursor.getLong(cursor.getColumnIndexOrThrow(Progress_bar_table._ID)),
-            cursor.getLong(cursor.getColumnIndexOrThrow(Progress_bar_table.ORDER_COL)),
-            cursor.getLong(cursor.getColumnIndexOrThrow(Progress_bar_table.START_TIME_COL)),
-            cursor.getLong(cursor.getColumnIndexOrThrow(Progress_bar_table.END_TIME_COL)),
-            cursor.getString(cursor.getColumnIndexOrThrow(Progress_bar_table.START_TZ_COL)),
-            cursor.getString(cursor.getColumnIndexOrThrow(Progress_bar_table.END_TZ_COL)),
-            cursor.getInt(cursor.getColumnIndexOrThrow(Progress_bar_table.REPEATS_COL)) > 0,
-            cursor.getInt(cursor.getColumnIndexOrThrow(Progress_bar_table.REPEAT_COUNT_COL)),
-            cursor.getInt(cursor.getColumnIndexOrThrow(Progress_bar_table.REPEAT_UNIT_COL)),
-            cursor.getInt(cursor.getColumnIndexOrThrow(Progress_bar_table.REPEAT_DAYS_OF_WEEK_COL)),
-            cursor.getString(cursor.getColumnIndexOrThrow(Progress_bar_table.TITLE_COL)),
-            cursor.getString(cursor.getColumnIndexOrThrow(Progress_bar_table.PRE_TEXT_COL)),
-            cursor.getString(cursor.getColumnIndexOrThrow(Progress_bar_table.START_TEXT_COL)),
-            cursor.getString(cursor.getColumnIndexOrThrow(Progress_bar_table.COUNTDOWN_TEXT_COL)),
-            cursor.getString(cursor.getColumnIndexOrThrow(Progress_bar_table.COMPLETE_TEXT_COL)),
-            cursor.getString(cursor.getColumnIndexOrThrow(Progress_bar_table.POST_TEXT_COL)),
-            cursor.getInt(cursor.getColumnIndexOrThrow(Progress_bar_table.PRECISION_COL)),
-            cursor.getInt(cursor.getColumnIndexOrThrow(Progress_bar_table.SHOW_PROGRESS_COL)) > 0,
-            cursor.getInt(cursor.getColumnIndexOrThrow(Progress_bar_table.SHOW_START_COL))    > 0,
-            cursor.getInt(cursor.getColumnIndexOrThrow(Progress_bar_table.SHOW_END_COL))      > 0,
-            cursor.getInt(cursor.getColumnIndexOrThrow(Progress_bar_table.SHOW_YEARS_COL))    > 0,
-            cursor.getInt(cursor.getColumnIndexOrThrow(Progress_bar_table.SHOW_MONTHS_COL))   > 0,
-            cursor.getInt(cursor.getColumnIndexOrThrow(Progress_bar_table.SHOW_WEEKS_COL))    > 0,
-            cursor.getInt(cursor.getColumnIndexOrThrow(Progress_bar_table.SHOW_DAYS_COL))     > 0,
-            cursor.getInt(cursor.getColumnIndexOrThrow(Progress_bar_table.SHOW_HOURS_COL))    > 0,
-            cursor.getInt(cursor.getColumnIndexOrThrow(Progress_bar_table.SHOW_MINUTES_COL))  > 0,
-            cursor.getInt(cursor.getColumnIndexOrThrow(Progress_bar_table.SHOW_SECONDS_COL))  > 0,
-            cursor.getInt(cursor.getColumnIndexOrThrow(Progress_bar_table.TERMINATE_COL))     > 0,
-            cursor.getInt(cursor.getColumnIndexOrThrow(Progress_bar_table.NOTIFY_START_COL))  > 0,
-            cursor.getInt(cursor.getColumnIndexOrThrow(Progress_bar_table.NOTIFY_END_COL))    > 0
-        );
+        set_from_cursor(cursor);
     }
 
     // default ctor
@@ -187,7 +126,7 @@ public class Progress_bar_data implements Serializable
         start_tz            = start_time_cal.getTimeZone().getID();
         end_tz              = end_time_cal.getTimeZone().getID();
         repeats             = false;
-        repeat_count        = 0;
+        repeat_count        = 1;
         repeat_unit         = Progress_bar_table.Unit.DAY.index;
         repeat_days_of_week = Progress_bar_table.Days_of_week.all_days_mask();
         title               = context.getResources().getString(R.string.default_title);
@@ -219,37 +158,7 @@ public class Progress_bar_data implements Serializable
         Cursor cursor = db.rawQuery("SELECT * FROM " + Progress_bar_table.TABLE_NAME + " WHERE " + Progress_bar_table._ID + " = ?", new String[]{ String.valueOf(rowid_in)});
         cursor.moveToFirst();
 
-        // TODO: same as curosr ctor. Probably can't call the ctor, so put in a function
-        rowid               = cursor.getLong(cursor.getColumnIndexOrThrow(Progress_bar_table._ID));
-        order               = cursor.getLong(cursor.getColumnIndexOrThrow(Progress_bar_table.ORDER_COL));
-        start_time          = cursor.getLong(cursor.getColumnIndexOrThrow(Progress_bar_table.START_TIME_COL));
-        end_time            = cursor.getLong(cursor.getColumnIndexOrThrow(Progress_bar_table.END_TIME_COL));
-        start_tz            = cursor.getString(cursor.getColumnIndexOrThrow(Progress_bar_table.START_TZ_COL));
-        end_tz              = cursor.getString(cursor.getColumnIndexOrThrow(Progress_bar_table.END_TZ_COL));
-        repeats             = cursor.getInt(cursor.getColumnIndexOrThrow(Progress_bar_table.REPEATS_COL)) > 0;
-        repeat_count        = cursor.getInt(cursor.getColumnIndexOrThrow(Progress_bar_table.REPEAT_COUNT_COL));
-        repeat_unit         = cursor.getInt(cursor.getColumnIndexOrThrow(Progress_bar_table.REPEAT_UNIT_COL));
-        repeat_days_of_week = cursor.getInt(cursor.getColumnIndexOrThrow(Progress_bar_table.REPEAT_DAYS_OF_WEEK_COL));
-        title               = cursor.getString(cursor.getColumnIndexOrThrow(Progress_bar_table.TITLE_COL));
-        pre_text            = cursor.getString(cursor.getColumnIndexOrThrow(Progress_bar_table.PRE_TEXT_COL));
-        start_text          = cursor.getString(cursor.getColumnIndexOrThrow(Progress_bar_table.START_TEXT_COL));
-        countdown_text      = cursor.getString(cursor.getColumnIndexOrThrow(Progress_bar_table.COUNTDOWN_TEXT_COL));
-        complete_text       = cursor.getString(cursor.getColumnIndexOrThrow(Progress_bar_table.COMPLETE_TEXT_COL));
-        post_text           = cursor.getString(cursor.getColumnIndexOrThrow(Progress_bar_table.POST_TEXT_COL));
-        precision           = cursor.getInt(cursor.getColumnIndexOrThrow(Progress_bar_table.PRECISION_COL));
-        show_progress       = cursor.getInt(cursor.getColumnIndexOrThrow(Progress_bar_table.SHOW_PROGRESS_COL)) > 0;
-        show_start          = cursor.getInt(cursor.getColumnIndexOrThrow(Progress_bar_table.SHOW_START_COL))    > 0;
-        show_end            = cursor.getInt(cursor.getColumnIndexOrThrow(Progress_bar_table.SHOW_END_COL))      > 0;
-        show_years          = cursor.getInt(cursor.getColumnIndexOrThrow(Progress_bar_table.SHOW_YEARS_COL))    > 0;
-        show_months         = cursor.getInt(cursor.getColumnIndexOrThrow(Progress_bar_table.SHOW_MONTHS_COL))   > 0;
-        show_weeks          = cursor.getInt(cursor.getColumnIndexOrThrow(Progress_bar_table.SHOW_WEEKS_COL))    > 0;
-        show_days           = cursor.getInt(cursor.getColumnIndexOrThrow(Progress_bar_table.SHOW_DAYS_COL))     > 0;
-        show_hours          = cursor.getInt(cursor.getColumnIndexOrThrow(Progress_bar_table.SHOW_HOURS_COL))    > 0;
-        show_minutes        = cursor.getInt(cursor.getColumnIndexOrThrow(Progress_bar_table.SHOW_MINUTES_COL))  > 0;
-        show_seconds        = cursor.getInt(cursor.getColumnIndexOrThrow(Progress_bar_table.SHOW_SECONDS_COL))  > 0;
-        terminate           = cursor.getInt(cursor.getColumnIndexOrThrow(Progress_bar_table.TERMINATE_COL))     > 0;
-        notify_start        = cursor.getInt(cursor.getColumnIndexOrThrow(Progress_bar_table.NOTIFY_START_COL))  > 0;
-        notify_end          = cursor.getInt(cursor.getColumnIndexOrThrow(Progress_bar_table.NOTIFY_END_COL))    > 0;
+        set_from_cursor(cursor);
 
         cursor.close();
         db.close();
@@ -290,6 +199,43 @@ public class Progress_bar_data implements Serializable
         notify_end          = b.notify_end;
     }
 
+    private ContentValues build_ContentValues()
+    {
+
+        ContentValues values = new ContentValues();
+
+        values.put(Progress_bar_table.ORDER_COL, order);
+        values.put(Progress_bar_table.START_TIME_COL, start_time);
+        values.put(Progress_bar_table.END_TIME_COL, end_time);
+        values.put(Progress_bar_table.START_TZ_COL, start_tz);
+        values.put(Progress_bar_table.END_TZ_COL, end_tz);
+        values.put(Progress_bar_table.REPEATS_COL, repeats);
+        values.put(Progress_bar_table.REPEAT_COUNT_COL, repeat_count);
+        values.put(Progress_bar_table.REPEAT_UNIT_COL, repeat_unit);
+        values.put(Progress_bar_table.REPEAT_DAYS_OF_WEEK_COL, repeat_days_of_week);
+        values.put(Progress_bar_table.TITLE_COL, title);
+        values.put(Progress_bar_table.PRE_TEXT_COL, pre_text);
+        values.put(Progress_bar_table.START_TEXT_COL, start_text);
+        values.put(Progress_bar_table.COUNTDOWN_TEXT_COL, countdown_text);
+        values.put(Progress_bar_table.COMPLETE_TEXT_COL, complete_text);
+        values.put(Progress_bar_table.POST_TEXT_COL, post_text);
+        values.put(Progress_bar_table.PRECISION_COL, precision);
+        values.put(Progress_bar_table.SHOW_START_COL, show_start);
+        values.put(Progress_bar_table.SHOW_END_COL, show_end);
+        values.put(Progress_bar_table.SHOW_PROGRESS_COL, show_progress);
+        values.put(Progress_bar_table.SHOW_YEARS_COL, show_years);
+        values.put(Progress_bar_table.SHOW_MONTHS_COL, show_months);
+        values.put(Progress_bar_table.SHOW_WEEKS_COL, show_weeks);
+        values.put(Progress_bar_table.SHOW_DAYS_COL, show_days);
+        values.put(Progress_bar_table.SHOW_HOURS_COL, show_hours);
+        values.put(Progress_bar_table.SHOW_MINUTES_COL, show_minutes);
+        values.put(Progress_bar_table.SHOW_SECONDS_COL, show_seconds);
+        values.put(Progress_bar_table.TERMINATE_COL, terminate);
+        values.put(Progress_bar_table.NOTIFY_START_COL, notify_start);
+        values.put(Progress_bar_table.NOTIFY_END_COL, notify_end);
+
+        return values;
+    }
     // insert data into the DB. rowid must not be set
     // if order is not set, it will be placed at the bottom
     public void insert(Context context)
@@ -308,39 +254,7 @@ public class Progress_bar_data implements Serializable
             cursor.close();
         }
 
-        ContentValues values = new ContentValues();
-
-        values.put(Progress_bar_table.ORDER_COL, order);
-        values.put(Progress_bar_table.START_TIME_COL, start_time);
-        values.put(Progress_bar_table.END_TIME_COL, end_time);
-        values.put(Progress_bar_table.START_TZ_COL, start_tz);
-        values.put(Progress_bar_table.END_TZ_COL, end_tz);
-        values.put(Progress_bar_table.REPEATS_COL, repeats);
-        values.put(Progress_bar_table.REPEAT_COUNT_COL, repeat_count);
-        values.put(Progress_bar_table.REPEAT_UNIT_COL, repeat_unit);
-        values.put(Progress_bar_table.REPEAT_DAYS_OF_WEEK_COL, repeat_days_of_week);
-        values.put(Progress_bar_table.TITLE_COL, title);
-        values.put(Progress_bar_table.PRE_TEXT_COL, pre_text);
-        values.put(Progress_bar_table.START_TEXT_COL, start_text);
-        values.put(Progress_bar_table.COUNTDOWN_TEXT_COL, countdown_text);
-        values.put(Progress_bar_table.COMPLETE_TEXT_COL, complete_text);
-        values.put(Progress_bar_table.POST_TEXT_COL, post_text);
-        values.put(Progress_bar_table.PRECISION_COL, precision);
-        values.put(Progress_bar_table.SHOW_START_COL, show_start);
-        values.put(Progress_bar_table.SHOW_END_COL, show_end);
-        values.put(Progress_bar_table.SHOW_PROGRESS_COL, show_progress);
-        values.put(Progress_bar_table.SHOW_YEARS_COL, show_years);
-        values.put(Progress_bar_table.SHOW_MONTHS_COL, show_months);
-        values.put(Progress_bar_table.SHOW_WEEKS_COL, show_weeks);
-        values.put(Progress_bar_table.SHOW_DAYS_COL, show_days);
-        values.put(Progress_bar_table.SHOW_HOURS_COL, show_hours);
-        values.put(Progress_bar_table.SHOW_MINUTES_COL, show_minutes);
-        values.put(Progress_bar_table.SHOW_SECONDS_COL, show_seconds);
-        values.put(Progress_bar_table.TERMINATE_COL, terminate);
-        values.put(Progress_bar_table.NOTIFY_START_COL, notify_start);
-        values.put(Progress_bar_table.NOTIFY_END_COL, notify_end);
-
-        rowid = db.insert(Progress_bar_table.TABLE_NAME, null, values);
+        rowid = db.insert(Progress_bar_table.TABLE_NAME, null, build_ContentValues());
 
         db.close();
         Notification_handler.reset_notification(context, this);
@@ -355,40 +269,7 @@ public class Progress_bar_data implements Serializable
 
         SQLiteDatabase db = new Progress_bar_DB(context).getWritableDatabase();
 
-        ContentValues values = new ContentValues();
-
-        // TODO: same as insert. make into a function
-        values.put(Progress_bar_table.ORDER_COL, order);
-        values.put(Progress_bar_table.START_TIME_COL, start_time);
-        values.put(Progress_bar_table.END_TIME_COL, end_time);
-        values.put(Progress_bar_table.START_TZ_COL, start_tz);
-        values.put(Progress_bar_table.END_TZ_COL, end_tz);
-        values.put(Progress_bar_table.REPEATS_COL, repeats);
-        values.put(Progress_bar_table.REPEAT_COUNT_COL, repeat_count);
-        values.put(Progress_bar_table.REPEAT_UNIT_COL, repeat_unit);
-        values.put(Progress_bar_table.REPEAT_DAYS_OF_WEEK_COL, repeat_days_of_week);
-        values.put(Progress_bar_table.TITLE_COL, title);
-        values.put(Progress_bar_table.PRE_TEXT_COL, pre_text);
-        values.put(Progress_bar_table.START_TEXT_COL, start_text);
-        values.put(Progress_bar_table.COUNTDOWN_TEXT_COL, countdown_text);
-        values.put(Progress_bar_table.COMPLETE_TEXT_COL, complete_text);
-        values.put(Progress_bar_table.POST_TEXT_COL, post_text);
-        values.put(Progress_bar_table.PRECISION_COL, precision);
-        values.put(Progress_bar_table.SHOW_START_COL, show_start);
-        values.put(Progress_bar_table.SHOW_END_COL, show_end);
-        values.put(Progress_bar_table.SHOW_PROGRESS_COL, show_progress);
-        values.put(Progress_bar_table.SHOW_YEARS_COL, show_years);
-        values.put(Progress_bar_table.SHOW_MONTHS_COL, show_months);
-        values.put(Progress_bar_table.SHOW_WEEKS_COL, show_weeks);
-        values.put(Progress_bar_table.SHOW_DAYS_COL, show_days);
-        values.put(Progress_bar_table.SHOW_HOURS_COL, show_hours);
-        values.put(Progress_bar_table.SHOW_MINUTES_COL, show_minutes);
-        values.put(Progress_bar_table.SHOW_SECONDS_COL, show_seconds);
-        values.put(Progress_bar_table.TERMINATE_COL, terminate);
-        values.put(Progress_bar_table.NOTIFY_START_COL, notify_start);
-        values.put(Progress_bar_table.NOTIFY_END_COL, notify_end);
-
-        db.update(Progress_bar_table.TABLE_NAME, values, Progress_bar_table._ID + " = ?", new String[]{String.valueOf(rowid)});
+        db.update(Progress_bar_table.TABLE_NAME, build_ContentValues(), Progress_bar_table._ID + " = ?", new String[]{String.valueOf(rowid)});
 
         db.close();
 

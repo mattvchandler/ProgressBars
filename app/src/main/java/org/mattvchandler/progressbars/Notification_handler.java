@@ -112,7 +112,7 @@ public class Notification_handler extends BroadcastReceiver
             NotificationManager nm = (NotificationManager)context.getSystemService(Context.NOTIFICATION_SERVICE);
             nm.notify((int)data.rowid, not_builder.build());
 
-            // TODO: if repeat set, increment start & end times by specified amount
+            // TODO: if repeat set, increment start & end times by specified amount. Also need to do this if we are after the end time and no alarm was triggered, such as when the phone is off
         }
     }
 
