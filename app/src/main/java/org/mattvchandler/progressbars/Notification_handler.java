@@ -66,7 +66,7 @@ public class Notification_handler extends BroadcastReceiver
             Progress_bar_data data = new Progress_bar_data(context, rowid);
 
             // update row to get new repeat time, if needed
-            if(data.repeats)
+            if(data.repeats && data.end_time >= System.currentTimeMillis() / 1000)
             {
                 data.update(context);
             }

@@ -410,4 +410,3 @@ public class Progress_bar_data implements Serializable
         db.close();
     }
 }
-
