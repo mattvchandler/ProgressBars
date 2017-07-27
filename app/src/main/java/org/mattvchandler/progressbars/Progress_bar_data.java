@@ -361,15 +361,16 @@ public class Progress_bar_data implements Serializable
                 {
                     int day_of_week = start_cal.get(Calendar.DAY_OF_WEEK) - 1;
                     int increment_days = 0;
-                    while((repeat_days_of_week & (1 << day_of_week)) == 0)
+                    do
                     {
                         ++increment_days;
                         if(++day_of_week >= 7)
                         {
-                            increment_days += 7 * repeat_count;
+                            increment_days += 7 * (repeat_count - 1);
                             day_of_week = 0;
                         }
-                    }
+                    } while((repeat_days_of_week & (1 << day_of_week)) == 0);
+
                     start_cal.add(Calendar.DAY_OF_MONTH, increment_days);
                     end_cal.add(Calendar.DAY_OF_MONTH, increment_days);
                 }
