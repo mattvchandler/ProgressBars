@@ -1,25 +1,19 @@
 package org.mattvchandler.progressbars.Settings;
 
 import android.app.DatePickerDialog;
-import android.app.Dialog;
 import android.app.TimePickerDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.databinding.DataBindingUtil;
 import android.preference.PreferenceManager;
-import android.support.annotation.NonNull;
-import android.support.v4.app.DialogFragment;
 import android.os.Bundle;
-import android.support.v7.app.AlertDialog;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.DatePicker;
-import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TimePicker;
 import android.widget.Toast;
@@ -31,7 +25,6 @@ import org.mattvchandler.progressbars.Util.Preferences;
 import org.mattvchandler.progressbars.R;
 import org.mattvchandler.progressbars.databinding.ActivitySettingsBinding;
 
-import java.security.InvalidParameterException;
 import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -123,122 +116,14 @@ public class Settings extends Dynamic_theme_activity implements DatePickerDialog
         binding.startTz.setAdapter(tz_adapter);
         binding.endTz.setAdapter(tz_adapter);
 
-        // listen for changes to date text
-        View.OnFocusChangeListener date_listener = new View.OnFocusChangeListener()
-        {
-            @Override
-            public void onFocusChange(View v, boolean hasFocus)
-            {
-                // check format when date entry loses focus
-                if(!hasFocus)
-                {
-                    // attempt to parse current text
-                    String new_date = ((EditText)v).getText().toString();
-                    SimpleDateFormat df = new SimpleDateFormat(date_format , Locale.US);
-
-                    Date date = df.parse(new_date, new ParsePosition(0));
-                    if(date == null)
-                    {
-                        // couldn't parse, show message
-                        Toast.makeText(Settings.this, getResources().getString(R.string.invalid_date,
-                                  new_date, date_format), Toast.LENGTH_LONG).show();
-
-                        // replace with old value, so field contains valid data
-                        if(v.getId() == R.id.start_date_sel)
-                        {
-                            df.setTimeZone(TimeZone.getTimeZone(data.start_tz));
-                            ((EditText) v).setText(df.format(new Date(data.start_time * 1000)));
-                        }
-                        else if(v.getId() == R.id.end_date_sel)
-                        {
-                            df.setTimeZone(TimeZone.getTimeZone(data.end_tz));
-                            ((EditText) v).setText(df.format(new Date(data.end_time * 1000)));
-                        }
-                    }
-                    else
-                    {
-                        // new value is valid, set it.
-                        new_date = df.format(date);
-                        ((EditText) v).setText(new_date);
-                    }
-                }
-            }
-        };
-
-        // listen for changes to time text
-        View.OnFocusChangeListener time_listener = new View.OnFocusChangeListener()
-        {
-            @Override
-            public void onFocusChange(View v, boolean hasFocus)
-            {
-                // check format when time entry loses focus
-                if(!hasFocus)
-                {
-                    // attempt to parse current text
-                    String new_time = ((EditText)v).getText().toString();
-                    SimpleDateFormat df = new SimpleDateFormat(time_format_edit, Locale.US);
-
-                    Date time = df.parse(new_time, new ParsePosition(0));
-                    if(time == null)
-                    {
-                        // couldn't parse, show message
-                        Toast.makeText(Settings.this, getResources().getString(R.string.invalid_time,
-                                                      new_time, time_format_edit),
-                                Toast.LENGTH_LONG).show();
-
-                        // replace with old value, so field contains valid data
-                        if(v.getId() == R.id.start_time_sel)
-                        {
-                            df.setTimeZone(TimeZone.getTimeZone(data.start_tz));
-                            ((EditText) v).setText(df.format(new Date(data.start_time * 1000)));
-                        }
-                        else if(v.getId() == R.id.end_time_sel)
-                        {
-                            df.setTimeZone(TimeZone.getTimeZone(data.end_tz));
-                            ((EditText) v).setText(df.format(new Date(data.end_time * 1000)));
-                        }
-                    }
-                    else
-                    {
-                        // new value is valid, set it.
-                        new_time = df.format(time);
-                        ((EditText) v).setText(new_time);
-                    }
-                }
-            }
-        };
-
         // set above listeners on time and date fields
-        binding.startTimeSel.setOnFocusChangeListener(time_listener);
-        binding.endTimeSel.setOnFocusChangeListener(time_listener);
+        binding.startTimeSel.setOnFocusChangeListener(new Time_listener(time_format_edit, data));
+        binding.endTimeSel.setOnFocusChangeListener(new Time_listener(time_format_edit, data));
 
-        binding.startDateSel.setOnFocusChangeListener(date_listener);
-        binding.endDateSel.setOnFocusChangeListener(date_listener);
+        binding.startDateSel.setOnFocusChangeListener(new Date_listener(date_format, data));
+        binding.endDateSel.setOnFocusChangeListener(new Date_listener(date_format, data));
 
-        // listen for changes to repeat count & units
-        binding.repeatCount.setOnFocusChangeListener(new View.OnFocusChangeListener()
-        {
-            @Override
-            public void onFocusChange(View v, boolean hasFocus)
-            {
-                // check value when count loses focus
-                if(!hasFocus)
-                {
-                    int count = 0;
-                    try
-                    {
-                        count = Integer.parseInt(binding.repeatCount.getText().toString());
-                    }
-                    catch(NumberFormatException ignored) {}
-
-                    if(count <= 0)
-                    {
-                        binding.repeatCount.setText(String.valueOf(data.repeat_count));
-                        Toast.makeText(Settings.this, R.string.invalid_repeat_count, Toast.LENGTH_LONG).show();
-                    }
-                }
-            }
-        });
+        binding.repeatCount.setOnFocusChangeListener(new Repeat_count_listener(data));
 
         binding.repeatUnits.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
         {
@@ -697,139 +582,7 @@ public class Settings extends Dynamic_theme_activity implements DatePickerDialog
         return days_of_week_str;
     }
 
-    // date picker dialog
-    public static class Datepicker_frag extends DialogFragment
-    {
-        public static final String STORE_DATE = "STORE_DATE";
-        public static final String DATE = "DATE";
-
-        @NonNull
-        @Override
-        public Dialog onCreateDialog(Bundle saved_instance_state)
-        {
-            // parse from current widget text
-            int year, month, day;
-
-            Calendar cal = Calendar.getInstance();
-
-            String date_format = PreferenceManager.getDefaultSharedPreferences(getActivity())
-                    .getString("date_format", getResources().getString(R.string.pref_date_format_default));
-
-            String date = getArguments().getString(DATE);
-            if(date == null)
-                throw new InvalidParameterException("No date argument given");
-
-            SimpleDateFormat df = new SimpleDateFormat(date_format, Locale.US);
-            Date date_obj = df.parse(date, new ParsePosition(0));
-            if(date_obj == null)
-            {
-                // couldn't parse
-                Toast.makeText(getActivity(), getResources().getString(R.string.invalid_date, date, date_format),
-                        Toast.LENGTH_LONG).show();
-
-                // set to stored date
-                cal.setTimeInMillis(getArguments().getLong(STORE_DATE, 0) * 1000);
-            }
-            else
-            {
-                cal.setTime(date_obj);
-            }
-
-            year = cal.get(Calendar.YEAR);
-            month = cal.get(Calendar.MONTH);
-            day = cal.get(Calendar.DAY_OF_MONTH);
-
-            return new DatePickerDialog(getActivity(), (Settings)getActivity(), year, month, day);
-        }
-    }
-
-    @Override
-    public void onDateSet(DatePicker view, int year, int month, int day)
-    {
-        // build new string from returned data
-        Calendar cal = Calendar.getInstance();
-        cal.set(Calendar.YEAR, year);
-        cal.set(Calendar.MONTH, month);
-        cal.set(Calendar.DAY_OF_MONTH, day);
-
-        SimpleDateFormat df = new SimpleDateFormat(date_format, Locale.US);
-        ((android.support.design.widget.TextInputEditText)findViewById(date_time_dialog_target)).setText(df.format(cal.getTime()));
-    }
-
-    public static class Timepicker_frag extends DialogFragment
-    {
-        public static final String STORE_TIME = "STORE_TIME";
-        public static final String TIME = "TIME";
-        public static final String AM_PM = "AM_PM";
-
-        @NonNull
-        @Override
-        public Dialog onCreateDialog(Bundle saved_instance_state)
-        {
-            // parse from current widget text
-            int hour, minute;
-
-            Calendar cal = Calendar.getInstance();
-
-            boolean hour_24 = PreferenceManager.getDefaultSharedPreferences(getContext()).getBoolean("hour_24", true);
-
-            String time_format = getResources().getString(hour_24 ? R.string.time_format_24 : R.string.time_format_12);
-            String time_format_edit = getResources().getString(hour_24 ? R.string.time_format_24 : R.string.time_format_12_edit);
-
-            String time = getArguments().getString(TIME);
-            String am_pm = getArguments().getString(AM_PM);
-
-            if(time == null)
-                throw new InvalidParameterException("No time argument given");
-            if(am_pm == null)
-                throw new InvalidParameterException("No am/pm argument given");
-
-            if(!hour_24)
-                time += " " + am_pm;
-
-            SimpleDateFormat df = new SimpleDateFormat(time_format, Locale.US);
-            Date date_obj = df.parse(time, new ParsePosition(0));
-            if(date_obj == null)
-            {
-                // couldn't parse
-                Toast.makeText(getActivity(), getResources().getString(R.string.invalid_time, time, time_format_edit),
-                        Toast.LENGTH_LONG).show();
-
-                // set to stored date
-                cal.setTimeInMillis(getArguments().getLong(STORE_TIME, 0) * 1000);
-            }
-            else
-            {
-                cal.setTime(date_obj);
-            }
-
-            hour = cal.get(Calendar.HOUR_OF_DAY);
-            minute = cal.get(Calendar.MINUTE);
-
-            return new TimePickerDialog(getActivity(), (Settings)getActivity(), hour, minute, hour_24);
-        }
-    }
-
-    @Override
-    public void onTimeSet(TimePicker view, int hour, int minute)
-    {
-        // build new string from returned data
-        Calendar cal = Calendar.getInstance();
-        cal.set(Calendar.HOUR_OF_DAY, hour);
-        cal.set(Calendar.MINUTE, minute);
-        cal.set(Calendar.SECOND, 0);
-
-        SimpleDateFormat df = new SimpleDateFormat(time_format_edit, Locale.US);
-        ((android.support.design.widget.TextInputEditText)findViewById(date_time_dialog_target)).setText(df.format(cal.getTime()));
-
-        // set AM/PM spinner if needed
-        if(!hour_24)
-        {
-            Spinner spin_target = date_time_dialog_target == R.id.start_date_sel ? binding.startAmPm : binding.endAmPm;
-            int am_pm = cal.get(Calendar.AM_PM);
-            spin_target.setSelection(am_pm == Calendar.AM ? array_am_i : array_pm_i);
-        }
-    }
+    // Button pressed callbacks
 
     @SuppressWarnings("UnusedParameters")
     public void on_start_cal_butt(View view)
@@ -912,68 +665,47 @@ public class Settings extends Dynamic_theme_activity implements DatePickerDialog
         d.show(getSupportFragmentManager(), "precision");
     }
 
-    public static class Days_of_week_frag extends DialogFragment
+    // Dialog return callbacks
+
+    @Override
+    public void onDateSet(DatePicker view, int year, int month, int day)
     {
-        public static final String DAYS_OF_WEEK_ARG = "DAYS_OF_WEEK";
-        int days_of_week;
+        // build new string from returned data
+        Calendar cal = Calendar.getInstance();
+        cal.set(Calendar.YEAR, year);
+        cal.set(Calendar.MONTH, month);
+        cal.set(Calendar.DAY_OF_MONTH, day);
 
-        @Override
-        @NonNull
-        public Dialog onCreateDialog(Bundle savedInstanceState)
+        SimpleDateFormat df = new SimpleDateFormat(date_format, Locale.US);
+        ((android.support.design.widget.TextInputEditText)findViewById(date_time_dialog_target)).setText(df.format(cal.getTime()));
+    }
+
+    @Override
+    public void onTimeSet(TimePicker view, int hour, int minute)
+    {
+        // build new string from returned data
+        Calendar cal = Calendar.getInstance();
+        cal.set(Calendar.HOUR_OF_DAY, hour);
+        cal.set(Calendar.MINUTE, minute);
+        cal.set(Calendar.SECOND, 0);
+
+        SimpleDateFormat df = new SimpleDateFormat(time_format_edit, Locale.US);
+        ((android.support.design.widget.TextInputEditText)findViewById(date_time_dialog_target)).setText(df.format(cal.getTime()));
+
+        // set AM/PM spinner if needed
+        if(!hour_24)
         {
-            super.onCreateDialog(savedInstanceState);
-            if(savedInstanceState == null)
-                days_of_week = getArguments().getInt(DAYS_OF_WEEK_ARG);
-            else
-                days_of_week = savedInstanceState.getInt(DAYS_OF_WEEK_ARG);
-
-            boolean selected[] = new boolean[Table.Days_of_week.values().length];
-            for(Table.Days_of_week day : Table.Days_of_week.values())
-            {
-                selected[day.index] = (days_of_week & day.mask) != 0;
-            }
-
-            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-            builder.setTitle(R.string.days_of_week_title)
-                    .setMultiChoiceItems(R.array.day_of_week, selected,
-                            new DialogInterface.OnMultiChoiceClickListener()
-                            {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which, boolean isChecked)
-                                {
-                                    if(isChecked)
-                                        days_of_week |= (1 << which);
-                                    else
-                                        days_of_week &= ~(1 << which);
-                                }
-                            })
-                    .setPositiveButton(android.R.string.ok,
-                            new DialogInterface.OnClickListener()
-                            {
-                                @Override
-                                public void onClick(DialogInterface dialogInterface, int i)
-                                {
-                                    if(days_of_week == 0)
-                                    {
-                                        Toast.makeText(getContext(), R.string.no_days_of_week_err, Toast.LENGTH_LONG).show();
-                                    }
-                                    else
-                                    {
-                                        // binding.repeatDaysOfWeek.setText(get_days_of_week_abbr(getContext(), days_of_week));
-                                        ((Settings)getActivity()).on_days_of_week_set(days_of_week);
-                                    }
-                                }
-                            })
-                    .setNegativeButton(android.R.string.cancel, null);
-
-            return builder.create();
+            Spinner spin_target = date_time_dialog_target == R.id.start_date_sel ? binding.startAmPm : binding.endAmPm;
+            int am_pm = cal.get(Calendar.AM_PM);
+            spin_target.setSelection(am_pm == Calendar.AM ? array_am_i : array_pm_i);
         }
+    }
 
-        @Override
-        public void onSaveInstanceState(Bundle out)
-        {
-            out.putInt(DAYS_OF_WEEK_ARG, days_of_week);
-        }
+    // called when OK pressed on days of week dialog
+    public void on_days_of_week_set(int days_of_week)
+    {
+        data.repeat_days_of_week = days_of_week;
+        binding.repeatDaysOfWeek.setText(get_days_of_week_abbr(this, days_of_week));
     }
 
     // called when OK pressed on precision dialog
@@ -982,12 +714,5 @@ public class Settings extends Dynamic_theme_activity implements DatePickerDialog
         // get and store the data
         data.precision = precision;
         binding.precision.setText(String.valueOf(data.precision));
-    }
-
-    // called when OK pressed on days of week dialog
-    private void on_days_of_week_set(int days_of_week)
-    {
-        data.repeat_days_of_week = days_of_week;
-        binding.repeatDaysOfWeek.setText(get_days_of_week_abbr(this, days_of_week));
     }
 }
