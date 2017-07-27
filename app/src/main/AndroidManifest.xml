@@ -26,7 +26,7 @@
                 android:resource="@xml/shortcuts"/>
         </activity>
         <activity
-            android:name=".Settings"
+            android:name=".Settings.Settings"
             android:label="@string/edit_title"
             android:parentActivityName=".Progress_bars"
             android:windowSoftInputMode="stateHidden">
@@ -35,12 +35,12 @@
                 android:value=".Progress_bars"/>
         </activity>
         <activity
-            android:name=".Progress_bar_prefs"
+            android:name=".Util.Preferences"
             android:label="@string/settings"
             >
         </activity>
 
-        <receiver android:name=".Notification_handler">
+        <receiver android:name=".Util.Notification_handler">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED"/>
             </intent-filter>

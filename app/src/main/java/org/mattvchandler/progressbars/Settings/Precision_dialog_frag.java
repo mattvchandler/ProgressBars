@@ -1,13 +1,15 @@
-package org.mattvchandler.progressbars;
+package org.mattvchandler.progressbars.Settings;
 
 import android.app.Dialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AlertDialog;
 import android.widget.NumberPicker;
+
+import org.mattvchandler.progressbars.R;
+import org.mattvchandler.progressbars.Settings.Settings;
 
 /*
 Copyright (C) 2017 Matthew Chandler
@@ -66,7 +68,7 @@ public class Precision_dialog_frag extends DialogFragment
                     public void onClick(DialogInterface dialog, int which)
                     {
                         // ON OK, set the value one last time, and call the listener
-                        ((Settings)getActivity()).on_precision_dialog_positive(np.getValue());
+                        ((Settings)getActivity()).on_precision_set(np.getValue());
                     }
                 })
                 .setNegativeButton(android.R.string.cancel, null);

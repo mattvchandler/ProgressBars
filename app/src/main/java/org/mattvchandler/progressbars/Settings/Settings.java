@@ -1,4 +1,4 @@
-package org.mattvchandler.progressbars;
+package org.mattvchandler.progressbars.Settings;
 
 import android.app.DatePickerDialog;
 import android.app.Dialog;
@@ -24,8 +24,14 @@ import android.widget.Spinner;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
+import org.mattvchandler.progressbars.DB.Data;
+import org.mattvchandler.progressbars.DB.Table;
+import org.mattvchandler.progressbars.Util.Dynamic_theme_activity;
+import org.mattvchandler.progressbars.Util.Preferences;
+import org.mattvchandler.progressbars.R;
 import org.mattvchandler.progressbars.databinding.ActivitySettingsBinding;
 
+import java.security.InvalidParameterException;
 import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -71,8 +77,8 @@ public class Settings extends Dynamic_theme_activity implements DatePickerDialog
     private static final String STATE_TARGET = "target";
 
     private ActivitySettingsBinding binding;
-    private Progress_bar_data data;
-    private Progress_bar_data save_data;
+    private Data data;
+    private Data save_data;
 
     private int date_time_dialog_target;
 
@@ -239,7 +245,7 @@ public class Settings extends Dynamic_theme_activity implements DatePickerDialog
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l)
             {
-                boolean week_selected = i == Progress_bar_table.Unit.WEEK.index;
+                boolean week_selected = i == Table.Unit.WEEK.index;
                 binding.repeatOn.setVisibility(week_selected ? View.VISIBLE : View.GONE);
                 binding.repeatDaysOfWeek.setVisibility(week_selected ? View.VISIBLE : View.GONE);
 
@@ -259,21 +265,21 @@ public class Settings extends Dynamic_theme_activity implements DatePickerDialog
             if(rowid < 0)
             {
                 setTitle(R.string.add_title);
-                data = new Progress_bar_data(this);
+                data = new Data(this);
             }
             else
             {
                 // get data from row
                 setTitle(R.string.edit_title);
-                data = new Progress_bar_data(this, rowid);
+                data = new Data(this, rowid);
             }
-            save_data = new Progress_bar_data(data);
+            save_data = new Data(data);
         }
         else
         {
             // reload old and current data from save state
-            data = (Progress_bar_data)savedInstanceState.getSerializable(STATE_DATA);
-            save_data = (Progress_bar_data)savedInstanceState.getSerializable(STATE_SAVE_DATA);
+            data = (Data)savedInstanceState.getSerializable(STATE_DATA);
+            save_data = (Data)savedInstanceState.getSerializable(STATE_SAVE_DATA);
             date_time_dialog_target = savedInstanceState.getInt(STATE_TARGET);
         }
 
@@ -283,18 +289,23 @@ public class Settings extends Dynamic_theme_activity implements DatePickerDialog
         int found = 0;
         for(int i = 0; i < tz_adapter.getCount(); ++i)
         {
-            if(tz_adapter.getItem(i).equals(data.start_tz))
+            if(tz_adapter.getItem(i) != null)
             {
-                binding.startTz.setSelection(i);
-                ++found;
+                //noinspection ConstantConditions
+                if(tz_adapter.getItem(i).equals(data.start_tz))
+                {
+                    binding.startTz.setSelection(i);
+                    ++found;
+                }
+                //noinspection ConstantConditions
+                if(tz_adapter.getItem(i).equals(data.end_tz))
+                {
+                    binding.endTz.setSelection(i);
+                    ++found;
+                }
+                if(found == 2)
+                    break;
             }
-            if(tz_adapter.getItem(i).equals(data.end_tz))
-            {
-                binding.endTz.setSelection(i);
-                ++found;
-            }
-            if(found == 2)
-                break;
         }
 
         // populate date/time widget values
@@ -355,7 +366,7 @@ public class Settings extends Dynamic_theme_activity implements DatePickerDialog
         binding.repeatUnits.setSelection(data.repeat_unit);
         binding.repeatDaysOfWeek.setText(get_days_of_week_abbr(this, data.repeat_days_of_week));
 
-        boolean week_selected = data.repeat_unit == Progress_bar_table.Unit.WEEK.index;
+        boolean week_selected = data.repeat_unit == Table.Unit.WEEK.index;
         binding.repeatOn.setVisibility(week_selected ? View.VISIBLE : View.GONE);
         binding.repeatDaysOfWeek.setVisibility(week_selected ? View.VISIBLE : View.GONE);
     }
@@ -523,7 +534,7 @@ public class Settings extends Dynamic_theme_activity implements DatePickerDialog
                 return true;
 
             case R.id.settings:
-                startActivity(new Intent(this, Progress_bar_prefs.class));
+                startActivity(new Intent(this, Preferences.class));
                 return true;
         }
         return false;
@@ -627,9 +638,6 @@ public class Settings extends Dynamic_theme_activity implements DatePickerDialog
             }
         }
 
-        // get all 'easy' data
-        data.title = binding.title.getText().toString();
-
         // other repeat data stored in callbacks
         int repeat_count = 0;
         try
@@ -648,6 +656,9 @@ public class Settings extends Dynamic_theme_activity implements DatePickerDialog
             data.repeat_count = repeat_count;
         }
 
+        // get all 'easy' data
+        data.title = binding.title.getText().toString();
+
         data.pre_text = binding.preText.getText().toString();
         data.start_text = binding.startText.getText().toString();
         data.countdown_text = binding.countdownText.getText().toString();
@@ -657,6 +668,7 @@ public class Settings extends Dynamic_theme_activity implements DatePickerDialog
         data.show_progress = binding.showProgress.isChecked();
         data.show_start = binding.showStart.isChecked();
         data.show_end = binding.showEnd.isChecked();
+
         data.show_years = binding.showYears.isChecked();
         data.show_months = binding.showMonths.isChecked();
         data.show_weeks = binding.showWeeks.isChecked();
@@ -664,6 +676,7 @@ public class Settings extends Dynamic_theme_activity implements DatePickerDialog
         data.show_hours = binding.showHours.isChecked();
         data.show_minutes = binding.showMinutes.isChecked();
         data.show_seconds = binding.showSeconds.isChecked();
+
         data.terminate = binding.terminate.isChecked();
         data.notify_start = binding.notifyStart.isChecked();
         data.notify_end = binding.notifyEnd.isChecked();
@@ -675,7 +688,7 @@ public class Settings extends Dynamic_theme_activity implements DatePickerDialog
     {
         // set days of week for weekly repeat (ex: MWF)
         String days_of_week_str = "";
-        for(Progress_bar_table.Days_of_week day : Progress_bar_table.Days_of_week.values())
+        for(Table.Days_of_week day : Table.Days_of_week.values())
         {
             if((days_of_week & day.mask) != 0)
                 days_of_week_str += context.getResources().getStringArray(R.array.day_of_week_abbr)[day.index];
@@ -703,6 +716,8 @@ public class Settings extends Dynamic_theme_activity implements DatePickerDialog
                     .getString("date_format", getResources().getString(R.string.pref_date_format_default));
 
             String date = getArguments().getString(DATE);
+            if(date == null)
+                throw new InvalidParameterException("No date argument given");
 
             SimpleDateFormat df = new SimpleDateFormat(date_format, Locale.US);
             Date date_obj = df.parse(date, new ParsePosition(0));
@@ -764,6 +779,11 @@ public class Settings extends Dynamic_theme_activity implements DatePickerDialog
             String time = getArguments().getString(TIME);
             String am_pm = getArguments().getString(AM_PM);
 
+            if(time == null)
+                throw new InvalidParameterException("No time argument given");
+            if(am_pm == null)
+                throw new InvalidParameterException("No am/pm argument given");
+
             if(!hour_24)
                 time += " " + am_pm;
 
@@ -811,6 +831,7 @@ public class Settings extends Dynamic_theme_activity implements DatePickerDialog
         }
     }
 
+    @SuppressWarnings("UnusedParameters")
     public void on_start_cal_butt(View view)
     {
         // create a calendar dialog, pass current date string
@@ -823,6 +844,7 @@ public class Settings extends Dynamic_theme_activity implements DatePickerDialog
         frag.show(getSupportFragmentManager(), "start_date_picker");
     }
 
+    @SuppressWarnings("UnusedParameters")
     public void on_start_clock_butt(View view)
     {
         // create a clock dialog, pass current time string
@@ -836,6 +858,7 @@ public class Settings extends Dynamic_theme_activity implements DatePickerDialog
         frag.show(getSupportFragmentManager(), "start_time_picker");
     }
 
+    @SuppressWarnings("UnusedParameters")
     public void on_end_cal_butt(View view)
     {
         // create a calendar dialog, pass current date string
@@ -848,6 +871,7 @@ public class Settings extends Dynamic_theme_activity implements DatePickerDialog
         frag.show(getSupportFragmentManager(), "end_date_picker");
     }
 
+    @SuppressWarnings("UnusedParameters")
     public void on_end_clock_butt(View view)
     {
         // create a clock dialog, pass current time string
@@ -861,6 +885,24 @@ public class Settings extends Dynamic_theme_activity implements DatePickerDialog
         frag.show(getSupportFragmentManager(), "end_time_picker");
     }
 
+    @SuppressWarnings("UnusedParameters")
+    public void on_repeat_butt(View view)
+    {
+        data.repeats = binding.repeatSw.isChecked();
+        binding.repeatFreq.setVisibility(data.repeats ? View.VISIBLE : View.GONE);
+    }
+
+    @SuppressWarnings("UnusedParameters")
+    public void on_days_of_week_butt(View view)
+    {
+        Days_of_week_frag frag = new Days_of_week_frag();
+        Bundle args = new Bundle();
+        args.putInt(Days_of_week_frag.DAYS_OF_WEEK_ARG, data.repeat_days_of_week);
+        frag.setArguments(args);
+        frag.show(getSupportFragmentManager(), "days_of_week_picker");
+    }
+
+    @SuppressWarnings("UnusedParameters")
     public void on_precision_butt(View view)
     {
         Precision_dialog_frag d = new Precision_dialog_frag();
@@ -868,20 +910,6 @@ public class Settings extends Dynamic_theme_activity implements DatePickerDialog
         args.putInt(Precision_dialog_frag.PRECISION_ARG, data.precision);
         d.setArguments(args);
         d.show(getSupportFragmentManager(), "precision");
-    }
-
-    // called when OK pressed on precision dialog
-    public void on_precision_dialog_positive(int precision)
-    {
-        // get and store the data
-        data.precision = precision;
-        binding.precision.setText(String.valueOf(data.precision));
-    }
-
-    public void on_repeat_butt(View view)
-    {
-        data.repeats = binding.repeatSw.isChecked();
-        binding.repeatFreq.setVisibility(data.repeats ? View.VISIBLE : View.GONE);
     }
 
     public static class Days_of_week_frag extends DialogFragment
@@ -899,8 +927,8 @@ public class Settings extends Dynamic_theme_activity implements DatePickerDialog
             else
                 days_of_week = savedInstanceState.getInt(DAYS_OF_WEEK_ARG);
 
-            boolean selected[] = new boolean[Progress_bar_table.Days_of_week.values().length];
-            for(Progress_bar_table.Days_of_week day : Progress_bar_table.Days_of_week.values())
+            boolean selected[] = new boolean[Table.Days_of_week.values().length];
+            for(Table.Days_of_week day : Table.Days_of_week.values())
             {
                 selected[day.index] = (days_of_week & day.mask) != 0;
             }
@@ -948,16 +976,16 @@ public class Settings extends Dynamic_theme_activity implements DatePickerDialog
         }
     }
 
-    public void on_days_of_week_butt(View view)
+    // called when OK pressed on precision dialog
+    public void on_precision_set(int precision)
     {
-        Days_of_week_frag frag = new Days_of_week_frag();
-        Bundle args = new Bundle();
-        args.putInt(Days_of_week_frag.DAYS_OF_WEEK_ARG, data.repeat_days_of_week);
-        frag.setArguments(args);
-        frag.show(getSupportFragmentManager(), "days_of_week_picker");
+        // get and store the data
+        data.precision = precision;
+        binding.precision.setText(String.valueOf(data.precision));
     }
 
-    public void on_days_of_week_set(int days_of_week)
+    // called when OK pressed on days of week dialog
+    private void on_days_of_week_set(int days_of_week)
     {
         data.repeat_days_of_week = days_of_week;
         binding.repeatDaysOfWeek.setText(get_days_of_week_abbr(this, days_of_week));

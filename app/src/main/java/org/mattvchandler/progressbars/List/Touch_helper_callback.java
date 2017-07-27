@@ -1,9 +1,7 @@
-package org.mattvchandler.progressbars;
+package org.mattvchandler.progressbars.List;
 
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
-
-import org.mattvchandler.progressbars.Progress_bar_adapter;
 
 /*
 Copyright (C) 2017 Matthew Chandler
@@ -27,11 +25,11 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 // handle drag gestures for reorder and dismiss in RecyclerView
-class Progress_bar_row_touch_helper_callback extends ItemTouchHelper.Callback
+public class Touch_helper_callback extends ItemTouchHelper.Callback
 {
-    private final Progress_bar_adapter adapter;
+    private final Adapter adapter;
 
-    Progress_bar_row_touch_helper_callback(Progress_bar_adapter adapter_in)
+    public Touch_helper_callback(Adapter adapter_in)
     {
         adapter = adapter_in;
     }
@@ -76,7 +74,7 @@ class Progress_bar_row_touch_helper_callback extends ItemTouchHelper.Callback
         super.onSelectedChanged(viewHolder, actionState);
         // notify when a row is selected
         if (actionState != ItemTouchHelper.ACTION_STATE_IDLE)
-            ((Progress_bar_adapter.Progress_bar_row_view_holder)viewHolder).on_selected();
+            ((Adapter.Progress_bar_row_view_holder)viewHolder).on_selected();
     }
 
     @Override
@@ -84,6 +82,6 @@ class Progress_bar_row_touch_helper_callback extends ItemTouchHelper.Callback
     {
         super.clearView(recyclerView, viewHolder);
         // notify when a row is deselected
-        ((Progress_bar_adapter.Progress_bar_row_view_holder)viewHolder).on_cleared();
+        ((Adapter.Progress_bar_row_view_holder)viewHolder).on_cleared();
     }
 }

@@ -1,4 +1,4 @@
-package org.mattvchandler.progressbars;
+package org.mattvchandler.progressbars.Util;
 
 import android.app.Dialog;
 import android.databinding.DataBindingUtil;
@@ -9,6 +9,8 @@ import android.support.v7.app.AlertDialog;
 import android.text.method.LinkMovementMethod;
 import android.view.LayoutInflater;
 
+import org.mattvchandler.progressbars.BuildConfig;
+import org.mattvchandler.progressbars.R;
 import org.mattvchandler.progressbars.databinding.AboutDialogBinding;
 
 /*

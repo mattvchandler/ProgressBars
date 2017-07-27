@@ -1,4 +1,4 @@
-package org.mattvchandler.progressbars;
+package org.mattvchandler.progressbars.Util;
 
 import android.app.AlarmManager;
 import android.app.NotificationManager;
@@ -13,6 +13,12 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v7.app.NotificationCompat;
 import android.util.TypedValue;
+
+import org.mattvchandler.progressbars.DB.Data;
+import org.mattvchandler.progressbars.DB.DB;
+import org.mattvchandler.progressbars.DB.Table;
+import org.mattvchandler.progressbars.Progress_bars;
+import org.mattvchandler.progressbars.R;
 
 /*
 Copyright (C) 2017 Matthew Chandler
@@ -52,7 +58,7 @@ public class Notification_handler extends BroadcastReceiver
         if(intent.getAction().equals("android.intent.action.BOOT_COMPLETED"))
         {
             // get new start/end times first
-            Progress_bar_data.apply_all_repeats(context);
+            Data.apply_all_repeats(context);
             reset_all_alarms(context);
         }
         // one of the alarms went off - send a notification
@@ -63,7 +69,7 @@ public class Notification_handler extends BroadcastReceiver
             long rowid = intent.getLongExtra(EXTRA_ROWID, -1);
             if(rowid < 0)
                 return;
-            Progress_bar_data data = new Progress_bar_data(context, rowid);
+            Data data = new Data(context, rowid);
 
             // update row to get new repeat time, if needed
             if(data.repeats && data.end_time >= System.currentTimeMillis() / 1000)
@@ -136,7 +142,7 @@ public class Notification_handler extends BroadcastReceiver
     }
 
     // build start or completion intent for a start/end alarms
-    private static PendingIntent get_intent(Context context, Progress_bar_data data, String base_action)
+    private static PendingIntent get_intent(Context context, Data data, String base_action)
     {
         // set intent to bring us to the notification handler
         Intent intent = new Intent(context, Notification_handler.class);
@@ -150,7 +156,7 @@ public class Notification_handler extends BroadcastReceiver
         return PendingIntent.getBroadcast(context, 0, intent, 0);
     }
 
-    private static void reset_alarm_details(Context context, Progress_bar_data data, AlarmManager am, long now)
+    private static void reset_alarm_details(Context context, Data data, AlarmManager am, long now)
     {
         // build start and completion intents
         PendingIntent start_pi = get_intent(context, data, BASE_STARTED_ACTION_NAME);
@@ -173,8 +179,8 @@ public class Notification_handler extends BroadcastReceiver
 
     public static void reset_all_alarms(Context context)
     {
-        SQLiteDatabase db = new Progress_bar_DB(context).getReadableDatabase();
-        Cursor cursor = db.rawQuery(Progress_bar_table.SELECT_ALL_ROWS, null);
+        SQLiteDatabase db = new DB(context).getReadableDatabase();
+        Cursor cursor = db.rawQuery(Table.SELECT_ALL_ROWS, null);
 
         long now = System.currentTimeMillis() / 1000;
 
@@ -184,7 +190,7 @@ public class Notification_handler extends BroadcastReceiver
         for(int i = 0; i < cursor.getCount(); ++i)
         {
             cursor.moveToPosition(i);
-            Progress_bar_data data = new Progress_bar_data(cursor);
+            Data data = new Data(cursor);
 
             reset_alarm_details(context, data, am, now);
         }
@@ -193,7 +199,7 @@ public class Notification_handler extends BroadcastReceiver
     }
 
     // reset an individual timer's start/end alarms
-    public static void reset_alarm(Context context, Progress_bar_data data)
+    public static void reset_alarm(Context context, Data data)
     {
         AlarmManager am = (AlarmManager)context.getSystemService(Context.ALARM_SERVICE);
         long now = System.currentTimeMillis() / 1000;
@@ -202,7 +208,7 @@ public class Notification_handler extends BroadcastReceiver
     }
 
     // cancel an alarm
-    public static void cancel_alarm(Context context, Progress_bar_data data)
+    public static void cancel_alarm(Context context, Data data)
     {
         AlarmManager am = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
 

@@ -1,4 +1,4 @@
-package org.mattvchandler.progressbars;
+package org.mattvchandler.progressbars.DB;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
@@ -26,12 +26,12 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 // DB container
-public class Progress_bar_DB extends SQLiteOpenHelper
+public class DB extends SQLiteOpenHelper
 {
     private static final int DB_VERSION = 2;
     public static final String DB_NAME = "progress_bar_db";
 
-    public Progress_bar_DB(Context context)
+    public DB(Context context)
     {
         super(context, DB_NAME, null, DB_VERSION);
     }
@@ -40,7 +40,7 @@ public class Progress_bar_DB extends SQLiteOpenHelper
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase)
     {
-        sqLiteDatabase.execSQL(Progress_bar_table.CREATE_TABLE);
+        sqLiteDatabase.execSQL(Table.CREATE_TABLE);
     }
 
     // if DB schema changes, put logic to migrate data here
@@ -50,6 +50,6 @@ public class Progress_bar_DB extends SQLiteOpenHelper
         if(new_version != DB_VERSION)
             throw new IllegalStateException("DB version mismatch");
 
-        Progress_bar_table.upgrade(db, old_version);
+        Table.upgrade(db, old_version);
     }
 }

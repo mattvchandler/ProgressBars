@@ -1,4 +1,4 @@
-package org.mattvchandler.progressbars;
+package org.mattvchandler.progressbars.List;
 
 import android.content.BroadcastReceiver;
 import android.content.ContentValues;
@@ -16,6 +16,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import org.mattvchandler.progressbars.DB.DB;
+import org.mattvchandler.progressbars.DB.Data;
+import org.mattvchandler.progressbars.DB.Table;
+import org.mattvchandler.progressbars.Progress_bars;
+import org.mattvchandler.progressbars.R;
+import org.mattvchandler.progressbars.Settings.Settings;
 import org.mattvchandler.progressbars.databinding.ProgressBarRowBinding;
 
 import java.util.NoSuchElementException;
@@ -44,14 +50,14 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 // keeps track of timer GUI rows
-public class Progress_bar_adapter extends RecyclerView.Adapter<Progress_bar_adapter.Progress_bar_row_view_holder>
+public class Adapter extends RecyclerView.Adapter<Adapter.Progress_bar_row_view_holder>
 {
     // an individual row object
     public class Progress_bar_row_view_holder extends RecyclerView.ViewHolder
                                                      implements View.OnClickListener
     {
         final ProgressBarRowBinding row_binding;
-        Progress_bar_view_data data;
+        View_data data;
 
         public Progress_bar_row_view_holder(View v)
         {
@@ -62,7 +68,7 @@ public class Progress_bar_adapter extends RecyclerView.Adapter<Progress_bar_adap
         // get DB and display data from the cursor for this row
         public void bind_cursor(Cursor cursor)
         {
-            data = new Progress_bar_view_data(context, cursor);
+            data = new View_data(context, cursor);
             row_binding.setData(data); // let the GUI elements see the data
         }
 
@@ -105,34 +111,34 @@ public class Progress_bar_adapter extends RecyclerView.Adapter<Progress_bar_adap
     private Cursor cursor;
     private final Progress_bars context;
 
-    public Progress_bar_adapter(Progress_bars context)
+    public Adapter(Progress_bars context)
     {
         // store the data we'll need for the lifetime of this object
         this.context = context;
-        db = new Progress_bar_DB(context).getWritableDatabase();
-        cursor = db.rawQuery(Progress_bar_table.SELECT_ALL_ROWS, null);
+        db = new DB(context).getWritableDatabase();
+        cursor = db.rawQuery(Table.SELECT_ALL_ROWS, null);
 
         BroadcastReceiver db_change_receiver = new BroadcastReceiver()
         {
             @Override
             public void onReceive(Context context, Intent intent)
             {
-                long rowid = intent.getLongExtra(Progress_bar_data.DB_CHANGED_ROWID, -1);
+                long rowid = intent.getLongExtra(Data.DB_CHANGED_ROWID, -1);
                 if(rowid == -1)
                     return;
 
-                switch(intent.getStringExtra(Progress_bar_data.DB_CHANGED_TYPE))
+                switch(intent.getStringExtra(Data.DB_CHANGED_TYPE))
                 {
                 case "insert":
                     reset_cursor();
-                    Progress_bar_adapter.this.notifyItemInserted(find_by_rowid(rowid));
+                    Adapter.this.notifyItemInserted(find_by_rowid(rowid));
                     break;
                 case "update":
-                    Progress_bar_adapter.this.notifyItemChanged(find_by_rowid(rowid));
+                    Adapter.this.notifyItemChanged(find_by_rowid(rowid));
                     reset_cursor();
                     break;
                 case "delete":
-                    Progress_bar_adapter.this.notifyItemRemoved(find_by_rowid(rowid));
+                    Adapter.this.notifyItemRemoved(find_by_rowid(rowid));
                     reset_cursor();
                     break;
                 default:
@@ -140,7 +146,7 @@ public class Progress_bar_adapter extends RecyclerView.Adapter<Progress_bar_adap
             }
         };
 
-        LocalBroadcastManager.getInstance(context).registerReceiver(db_change_receiver, new IntentFilter(Progress_bar_data.DB_CHANGED_EVENT));
+        LocalBroadcastManager.getInstance(context).registerReceiver(db_change_receiver, new IntentFilter(Data.DB_CHANGED_EVENT));
     }
 
     // called when DB info has changed, to let us update the cursor
@@ -150,7 +156,7 @@ public class Progress_bar_adapter extends RecyclerView.Adapter<Progress_bar_adap
             cursor.close();
 
         // get new DB data
-        cursor = db.rawQuery(Progress_bar_table.SELECT_ALL_ROWS, null);
+        cursor = db.rawQuery(Table.SELECT_ALL_ROWS, null);
     }
 
     @Override
@@ -184,7 +190,7 @@ public class Progress_bar_adapter extends RecyclerView.Adapter<Progress_bar_adap
         for(int i = 0; i < getItemCount(); ++i)
         {
             cursor.moveToPosition(i);
-            if(cursor.getLong(cursor.getColumnIndexOrThrow(Progress_bar_table._ID)) == rowid)
+            if(cursor.getLong(cursor.getColumnIndexOrThrow(Table._ID)) == rowid)
             {
                 return i;
             }
@@ -198,34 +204,34 @@ public class Progress_bar_adapter extends RecyclerView.Adapter<Progress_bar_adap
     {
         // get current order # and rowids
         cursor.moveToPosition(from_pos);
-        String from_rowid = cursor.getString(cursor.getColumnIndexOrThrow(Progress_bar_table._ID));
-        String from_order = cursor.getString(cursor.getColumnIndexOrThrow(Progress_bar_table.ORDER_COL));
+        String from_rowid = cursor.getString(cursor.getColumnIndexOrThrow(Table._ID));
+        String from_order = cursor.getString(cursor.getColumnIndexOrThrow(Table.ORDER_COL));
 
         cursor.moveToPosition(to_pos);
-        String to_rowid = cursor.getString(cursor.getColumnIndexOrThrow(Progress_bar_table._ID));
-        String to_order = cursor.getString(cursor.getColumnIndexOrThrow(Progress_bar_table.ORDER_COL));
+        String to_rowid = cursor.getString(cursor.getColumnIndexOrThrow(Table._ID));
+        String to_order = cursor.getString(cursor.getColumnIndexOrThrow(Table.ORDER_COL));
 
         ContentValues values = new ContentValues();
 
         // swap orders
-        // NOTE: we are not calling Progress_bar_data.update when updating the orders, for performance
+        // NOTE: we are not calling Data.update when updating the orders, for performance
 
         // put 'from' at order #-1
-        values.put(Progress_bar_table.ORDER_COL, -1);
-        db.update(Progress_bar_table.TABLE_NAME, values,
-                Progress_bar_table._ID + " = ?", new String[] {from_rowid});
+        values.put(Table.ORDER_COL, -1);
+        db.update(Table.TABLE_NAME, values,
+                Table._ID + " = ?", new String[] {from_rowid});
 
         // put 'to' at 'from's old old position
         values.clear();
-        values.put(Progress_bar_table.ORDER_COL, from_order);
-        db.update(Progress_bar_table.TABLE_NAME, values,
-                Progress_bar_table._ID + " = ?", new String[] {to_rowid});
+        values.put(Table.ORDER_COL, from_order);
+        db.update(Table.TABLE_NAME, values,
+                Table._ID + " = ?", new String[] {to_rowid});
 
         // put 'from' at 'to's old old position
         values.clear();
-        values.put(Progress_bar_table.ORDER_COL, to_order);
-        db.update(Progress_bar_table.TABLE_NAME, values,
-                Progress_bar_table._ID + " = ?", new String[] {from_rowid});
+        values.put(Table.ORDER_COL, to_order);
+        db.update(Table.TABLE_NAME, values,
+                Table._ID + " = ?", new String[] {from_rowid});
 
         // get new data, since we won't get a message about these DB changes
         reset_cursor();
@@ -240,7 +246,7 @@ public class Progress_bar_adapter extends RecyclerView.Adapter<Progress_bar_adap
         cursor.moveToPosition(pos);
 
         // get a copy of the data before we delete it
-        final Progress_bar_data save_data = new Progress_bar_data(cursor);
+        final Data save_data = new Data(cursor);
 
         // delete from DB
         save_data.delete(context);

@@ -28,8 +28,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
     <data>
         <import type="android.view.View"/>
-        <import type="org.mattvchandler.progressbars.Progress_bar_view_data"/>
-        <variable name="data" type="Progress_bar_view_data"/>
+        <import type="org.mattvchandler.progressbars.List.View_data"/>
+        <variable name="data" type="View_data"/>
     </data>
 
     <android.support.constraint.ConstraintLayout

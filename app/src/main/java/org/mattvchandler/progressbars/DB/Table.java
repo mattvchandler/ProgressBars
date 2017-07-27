@@ -1,4 +1,4 @@
-package org.mattvchandler.progressbars;
+package org.mattvchandler.progressbars.DB;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -28,7 +28,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 // DB Table schema
-final public class Progress_bar_table implements BaseColumns
+final public class Table implements BaseColumns
 {
     public static final String TABLE_NAME = "progress_bar";
 
@@ -247,7 +247,7 @@ final public class Progress_bar_table implements BaseColumns
     // redo order column to remove gaps, etc. Order #s will be sequential, from 0 to count
     public static void cleanup_order(Context context)
     {
-        SQLiteDatabase db = new Progress_bar_DB(context).getWritableDatabase();
+        SQLiteDatabase db = new DB(context).getWritableDatabase();
         Cursor cursor = db.rawQuery(SELECT_ALL_ROWS, null);
 
         ContentValues values = new ContentValues();

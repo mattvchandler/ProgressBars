@@ -1,9 +1,11 @@
-package org.mattvchandler.progressbars;
+package org.mattvchandler.progressbars.Util;
 
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+
+import org.mattvchandler.progressbars.R;
 
 /*
 Copyright (C) 2017 Matthew Chandler

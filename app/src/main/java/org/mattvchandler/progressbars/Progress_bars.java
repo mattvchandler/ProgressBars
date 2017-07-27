@@ -16,6 +16,16 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
+import org.mattvchandler.progressbars.DB.Data;
+import org.mattvchandler.progressbars.DB.DB;
+import org.mattvchandler.progressbars.DB.Table;
+import org.mattvchandler.progressbars.List.Adapter;
+import org.mattvchandler.progressbars.List.Touch_helper_callback;
+import org.mattvchandler.progressbars.Util.Notification_handler;
+import org.mattvchandler.progressbars.Settings.Settings;
+import org.mattvchandler.progressbars.Util.About_dialog_frag;
+import org.mattvchandler.progressbars.Util.Dynamic_theme_activity;
+import org.mattvchandler.progressbars.Util.Preferences;
 import org.mattvchandler.progressbars.databinding.ActivityProgressBarsBinding;
 
 import java.util.NoSuchElementException;
@@ -45,7 +55,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 public class Progress_bars extends Dynamic_theme_activity
 {
     private ActivityProgressBarsBinding binding;
-    private Progress_bar_adapter adapter;
+    private Adapter adapter;
 
     public static final int UPDATE_REQUEST = 1;
     public static final String EXTRA_SCROLL_TO_ROWID = "org.mattvchandler.progressbars.SCROLL_TO_ROWID";
@@ -70,32 +80,32 @@ public class Progress_bars extends Dynamic_theme_activity
         // on first run, create a new prog bar if DB is empty
         if(savedInstanceState == null)
         {
-            SQLiteDatabase db = new Progress_bar_DB(this).getReadableDatabase();
-            Cursor cursor = db.rawQuery(Progress_bar_table.SELECT_ALL_ROWS, null);
+            SQLiteDatabase db = new DB(this).getReadableDatabase();
+            Cursor cursor = db.rawQuery(Table.SELECT_ALL_ROWS, null);
             if(cursor.getCount() == 0)
             {
-                new Progress_bar_data(this).insert(this);
+                new Data(this).insert(this);
             }
             else
             {
                 // clean up existing orders. make them sequential
-                Progress_bar_table.cleanup_order(this);
+                Table.cleanup_order(this);
             }
             cursor.close();
             db.close();
 
             // update repeat times and alarms
-            Progress_bar_data.apply_all_repeats(this);
+            Data.apply_all_repeats(this);
             Notification_handler.reset_all_alarms(this);
         }
 
-        // set up row adapter
-        adapter = new Progress_bar_adapter(this);
+        // set up row Adapter
+        adapter = new Adapter(this);
 
         binding.mainList.setLayoutManager(new LinearLayoutManager(this));
         binding.mainList.setAdapter(adapter);
 
-        ItemTouchHelper touch_helper = new ItemTouchHelper(new Progress_bar_row_touch_helper_callback(adapter));
+        ItemTouchHelper touch_helper = new ItemTouchHelper(new Touch_helper_callback(adapter));
         touch_helper.attachToRecyclerView(binding.mainList);
 
         long scroll_to_rowid = getIntent().getLongExtra(EXTRA_SCROLL_TO_ROWID, -1);
@@ -153,7 +163,7 @@ public class Progress_bars extends Dynamic_theme_activity
 
         case R.id.settings:
             // open app settings menu
-            startActivity(new Intent(this, Progress_bar_prefs.class));
+            startActivity(new Intent(this, Preferences.class));
             return true;
 
         case R.id.about:
@@ -171,8 +181,8 @@ public class Progress_bars extends Dynamic_theme_activity
         if(request_code == UPDATE_REQUEST && result_code == RESULT_OK)
         {
             // get new data and keep a backup of old
-            final Progress_bar_data new_data = (Progress_bar_data)data.getSerializableExtra(Settings.RESULT_NEW_DATA);
-            final Progress_bar_data old_data = (Progress_bar_data)data.getSerializableExtra(Settings.RESULT_OLD_DATA);
+            final Data new_data = (Data)data.getSerializableExtra(Settings.RESULT_NEW_DATA);
+            final Data old_data = (Data)data.getSerializableExtra(Settings.RESULT_OLD_DATA);
 
             // was a row added?
             if(old_data == null)
@@ -216,7 +226,7 @@ public class Progress_bars extends Dynamic_theme_activity
         {
             for (int i = 0; i < adapter.getItemCount(); ++i)
             {
-                Progress_bar_adapter.Progress_bar_row_view_holder view_holder = (Progress_bar_adapter.Progress_bar_row_view_holder) binding.mainList.findViewHolderForAdapterPosition(i);
+                Adapter.Progress_bar_row_view_holder view_holder = (Adapter.Progress_bar_row_view_holder) binding.mainList.findViewHolderForAdapterPosition(i);
                 if(view_holder != null)
                     view_holder.update();
             }

@@ -29,8 +29,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
     <data>
         <import type="android.view.View"/>
-        <import type="org.mattvchandler.progressbars.Progress_bar_data"/>
-        <variable name="data" type="Progress_bar_data"/>
+        <import type="org.mattvchandler.progressbars.DB.Data"/>
+        <variable name="data" type="Data"/>
     </data>
 
     <android.support.design.widget.CoordinatorLayout
@@ -41,7 +41,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            tools:context="org.mattvchandler.progressbars.Settings"
+            tools:context="org.mattvchandler.progressbars.Settings.Settings"
             android:orientation="vertical"
         >
 

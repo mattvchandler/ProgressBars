@@ -1,4 +1,4 @@
-package org.mattvchandler.progressbars;
+package org.mattvchandler.progressbars.Util;
 
 import android.content.SharedPreferences;
 import android.databinding.DataBindingUtil;
@@ -7,7 +7,10 @@ import android.preference.PreferenceManager;
 import android.os.Bundle;
 import android.view.MenuItem;
 
-import org.mattvchandler.progressbars.databinding.ActivityProgressBarsPrefsBinding;
+import org.mattvchandler.progressbars.R;
+import org.mattvchandler.progressbars.Util.Notification_handler;
+import org.mattvchandler.progressbars.Util.Dynamic_theme_activity;
+import org.mattvchandler.progressbars.databinding.ActivityPreferencesBinding;
 
 /*
 Copyright (C) 2017 Matthew Chandler
@@ -31,7 +34,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 // application settings screen
-public class Progress_bar_prefs extends Dynamic_theme_activity
+public class Preferences extends Dynamic_theme_activity
 {
     public static class Progress_bar_prefs_frag extends PreferenceFragment
             implements SharedPreferences.OnSharedPreferenceChangeListener
@@ -81,7 +84,7 @@ public class Progress_bar_prefs extends Dynamic_theme_activity
     {
         super.onCreate(savedInstanceState);
 
-        ActivityProgressBarsPrefsBinding binding = DataBindingUtil.setContentView(this, R.layout.activity_progress_bars_prefs);
+        ActivityPreferencesBinding binding = DataBindingUtil.setContentView(this, R.layout.activity_preferences);
         setSupportActionBar(binding.progressBarToolbar);
         if(getSupportActionBar() != null)
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);

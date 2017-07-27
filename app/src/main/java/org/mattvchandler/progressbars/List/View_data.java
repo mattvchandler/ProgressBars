@@ -1,4 +1,4 @@
-package org.mattvchandler.progressbars;
+package org.mattvchandler.progressbars.List;
 
 import android.content.Context;
 import android.database.Cursor;
@@ -6,6 +6,9 @@ import android.databinding.ObservableBoolean;
 import android.databinding.ObservableField;
 import android.databinding.ObservableInt;
 import android.preference.PreferenceManager;
+
+import org.mattvchandler.progressbars.DB.Data;
+import org.mattvchandler.progressbars.R;
 
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
@@ -39,7 +42,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 // struct bound to progress_bar_row layout
-public final class Progress_bar_view_data extends Progress_bar_data // contains all DB data from inherited struct
+public final class View_data extends Data // contains all DB data from inherited struct
 {
     // observable fields used by UI
     public final ObservableField<String>  title_disp          = new ObservableField<>();
@@ -469,7 +472,7 @@ public final class Progress_bar_view_data extends Progress_bar_data // contains 
         }
     }
 
-    Progress_bar_view_data(Context context, Cursor cursor)
+    View_data(Context context, Cursor cursor)
     {
         // get the DB data
         super(cursor);
