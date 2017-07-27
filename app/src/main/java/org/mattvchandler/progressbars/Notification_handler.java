@@ -150,6 +150,27 @@ public class Notification_handler extends BroadcastReceiver
         return PendingIntent.getBroadcast(context, 0, intent, 0);
     }
 
+    private static void reset_alarm_details(Context context, Progress_bar_data data, AlarmManager am, long now)
+    {
+        // build start and completion intents
+        PendingIntent start_pi = get_intent(context, data, BASE_STARTED_ACTION_NAME);
+        PendingIntent complete_pi = get_intent(context, data, BASE_COMPLETED_ACTION_NAME);
+
+        // if notifications are enabled and the start time is in the future, set an alarm
+        // (will overwrite any existing alarm with the same action and target)
+        if(now < data.start_time)
+            am.setExact(AlarmManager.RTC_WAKEUP, data.start_time * 1000, start_pi);
+            // otherwise cancel any existing alarm
+        else
+            am.cancel(start_pi);
+
+        // same as above for completion alarms
+        if(now < data.end_time)
+            am.setExact(AlarmManager.RTC_WAKEUP, data.end_time * 1000, complete_pi);
+        else
+            am.cancel(complete_pi);
+    }
+
     public static void reset_all_alarms(Context context)
     {
         SQLiteDatabase db = new Progress_bar_DB(context).getReadableDatabase();
@@ -157,7 +178,7 @@ public class Notification_handler extends BroadcastReceiver
 
         long now = System.currentTimeMillis() / 1000;
 
-        AlarmManager am = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+        AlarmManager am = (AlarmManager)context.getSystemService(Context.ALARM_SERVICE);
 
         // for every timer
         for(int i = 0; i < cursor.getCount(); ++i)
@@ -165,48 +186,19 @@ public class Notification_handler extends BroadcastReceiver
             cursor.moveToPosition(i);
             Progress_bar_data data = new Progress_bar_data(cursor);
 
-            // build start and completion intents
-            PendingIntent start_pi = get_intent(context, data, BASE_STARTED_ACTION_NAME);
-            PendingIntent complete_pi = get_intent(context, data, BASE_COMPLETED_ACTION_NAME);
-
-            // if notifications are enabled and the start time is in the future, set an alarm
-            // (will overwrite any existing alarm with the same action and target)
-            if(now < data.start_time)
-                am.setExact(AlarmManager.RTC_WAKEUP, data.start_time * 1000, start_pi);
-            // otherwise cancel any existing alarm
-            else
-                am.cancel(start_pi);
-
-            // same as above for completion alarms
-            if(now < data.end_time)
-                am.setExact(AlarmManager.RTC_WAKEUP, data.end_time * 1000, complete_pi);
-            else
-                am.cancel(complete_pi);
+            reset_alarm_details(context, data, am, now);
         }
         cursor.close();
         db.close();
     }
 
     // reset an individual timer's start/end alarms
-    // logic is the same as in reset_all_alarms
-    // TODO: move identical logic to a function
     public static void reset_alarm(Context context, Progress_bar_data data)
     {
-        AlarmManager am = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+        AlarmManager am = (AlarmManager)context.getSystemService(Context.ALARM_SERVICE);
         long now = System.currentTimeMillis() / 1000;
 
-        PendingIntent start_pi = get_intent(context, data, BASE_STARTED_ACTION_NAME);
-        PendingIntent complete_pi = get_intent(context, data, BASE_COMPLETED_ACTION_NAME);
-
-        if(now < data.start_time)
-            am.setExact(AlarmManager.RTC_WAKEUP, data.start_time * 1000, start_pi);
-        else
-            am.cancel(start_pi);
-
-        if(now < data.end_time)
-            am.setExact(AlarmManager.RTC_WAKEUP, data.end_time * 1000, complete_pi);
-        else
-            am.cancel(complete_pi);
+        reset_alarm_details(context, data, am, now);
     }
 
     // cancel an alarm
