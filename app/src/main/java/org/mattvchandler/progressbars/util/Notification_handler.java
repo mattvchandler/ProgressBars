@@ -1,4 +1,4 @@
-package org.mattvchandler.progressbars.Util;
+package org.mattvchandler.progressbars.util;
 
 import android.app.AlarmManager;
 import android.app.NotificationManager;
@@ -14,9 +14,9 @@ import android.preference.PreferenceManager;
 import android.support.v7.app.NotificationCompat;
 import android.util.TypedValue;
 
-import org.mattvchandler.progressbars.DB.Data;
-import org.mattvchandler.progressbars.DB.DB;
-import org.mattvchandler.progressbars.DB.Table;
+import org.mattvchandler.progressbars.db.Data;
+import org.mattvchandler.progressbars.db.DB;
+import org.mattvchandler.progressbars.db.Table;
 import org.mattvchandler.progressbars.Progress_bars;
 import org.mattvchandler.progressbars.R;
 

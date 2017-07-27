@@ -1,4 +1,4 @@
-package org.mattvchandler.progressbars.Settings;
+package org.mattvchandler.progressbars.settings;
 
 import android.app.DatePickerDialog;
 import android.app.Dialog;

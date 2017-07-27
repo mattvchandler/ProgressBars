@@ -1,4 +1,4 @@
-package org.mattvchandler.progressbars.List;
+package org.mattvchandler.progressbars.list;
 
 import android.content.BroadcastReceiver;
 import android.content.ContentValues;
@@ -16,12 +16,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import org.mattvchandler.progressbars.DB.DB;
-import org.mattvchandler.progressbars.DB.Data;
-import org.mattvchandler.progressbars.DB.Table;
+import org.mattvchandler.progressbars.db.DB;
+import org.mattvchandler.progressbars.db.Data;
+import org.mattvchandler.progressbars.db.Table;
 import org.mattvchandler.progressbars.Progress_bars;
 import org.mattvchandler.progressbars.R;
-import org.mattvchandler.progressbars.Settings.Settings;
+import org.mattvchandler.progressbars.settings.Settings;
 import org.mattvchandler.progressbars.databinding.ProgressBarRowBinding;
 
 import java.util.NoSuchElementException;

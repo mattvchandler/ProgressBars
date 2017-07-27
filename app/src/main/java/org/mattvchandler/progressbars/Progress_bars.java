@@ -16,16 +16,16 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
-import org.mattvchandler.progressbars.DB.Data;
-import org.mattvchandler.progressbars.DB.DB;
-import org.mattvchandler.progressbars.DB.Table;
-import org.mattvchandler.progressbars.List.Adapter;
-import org.mattvchandler.progressbars.List.Touch_helper_callback;
-import org.mattvchandler.progressbars.Util.Notification_handler;
-import org.mattvchandler.progressbars.Settings.Settings;
-import org.mattvchandler.progressbars.Util.About_dialog_frag;
-import org.mattvchandler.progressbars.Util.Dynamic_theme_activity;
-import org.mattvchandler.progressbars.Util.Preferences;
+import org.mattvchandler.progressbars.db.Data;
+import org.mattvchandler.progressbars.db.DB;
+import org.mattvchandler.progressbars.db.Table;
+import org.mattvchandler.progressbars.list.Adapter;
+import org.mattvchandler.progressbars.list.Touch_helper_callback;
+import org.mattvchandler.progressbars.util.Notification_handler;
+import org.mattvchandler.progressbars.settings.Settings;
+import org.mattvchandler.progressbars.util.About_dialog_frag;
+import org.mattvchandler.progressbars.util.Dynamic_theme_activity;
+import org.mattvchandler.progressbars.util.Preferences;
 import org.mattvchandler.progressbars.databinding.ActivityProgressBarsBinding;
 
 import java.util.NoSuchElementException;

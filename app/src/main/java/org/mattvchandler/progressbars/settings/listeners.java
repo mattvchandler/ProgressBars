@@ -1,4 +1,4 @@
-package org.mattvchandler.progressbars.Settings;
+package org.mattvchandler.progressbars.settings;
 
 /*
 Copyright (C) 2017 Matthew Chandler
@@ -25,7 +25,7 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import org.mattvchandler.progressbars.DB.Data;
+import org.mattvchandler.progressbars.db.Data;
 import org.mattvchandler.progressbars.R;
 
 import java.text.ParsePosition;
@@ -37,8 +37,8 @@ import java.util.TimeZone;
 // listen for changes to date text
 class Date_listener implements View.OnFocusChangeListener
 {
-    private String date_format;
-    private Data data;
+    private final String date_format;
+    private final Data data;
 
     Date_listener(String date_format, Data data)
     {
@@ -88,8 +88,8 @@ class Date_listener implements View.OnFocusChangeListener
 // listen for changes to time text
 class Time_listener implements View.OnFocusChangeListener
 {
-    private String time_format_edit;
-    private Data data;
+    private final String time_format_edit;
+    private final Data data;
 
     Time_listener(String time_format_edit, Data data)
     {
@@ -140,7 +140,7 @@ class Time_listener implements View.OnFocusChangeListener
 // listen for changes to repeat count & units
 class Repeat_count_listener implements View.OnFocusChangeListener
 {
-    private Data data;
+    private final Data data;
 
     Repeat_count_listener(Data data)
     {

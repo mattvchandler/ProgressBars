@@ -1,4 +1,4 @@
-package org.mattvchandler.progressbars.DB;
+package org.mattvchandler.progressbars.db;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -8,7 +8,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.support.v4.content.LocalBroadcastManager;
 
 import org.mattvchandler.progressbars.R;
-import org.mattvchandler.progressbars.Util.Notification_handler;
+import org.mattvchandler.progressbars.util.Notification_handler;
 
 import java.io.Serializable;
 import java.util.Calendar;
@@ -44,6 +44,7 @@ public class Data implements Serializable
 
     public long rowid; // is -1 when not set, ie. the data doesn't exist in the DB
 
+    @SuppressWarnings("WeakerAccess")
     public long order; // -1 until set
     public long start_time;
     public long end_time;
@@ -322,7 +323,7 @@ public class Data implements Serializable
     }
 
     // if repeat is set, update start and end times as needed
-    public void apply_repeat()
+    private void apply_repeat()
     {
         if(!repeats)
             return;
@@ -384,7 +385,7 @@ public class Data implements Serializable
                 start_cal.add(Calendar.MONTH, repeat_count);
                 end_cal.add(Calendar.MONTH, repeat_count);
             }
-            else // repeat_unit == Table.Unit.YEAR.index
+            else if(repeat_unit == Table.Unit.YEAR.index)
             {
                 start_cal.add(Calendar.YEAR, repeat_count);
                 end_cal.add(Calendar.YEAR, repeat_count);

@@ -1,4 +1,4 @@
-package org.mattvchandler.progressbars.List;
+package org.mattvchandler.progressbars.list;
 
 import android.content.Context;
 import android.database.Cursor;
@@ -7,7 +7,7 @@ import android.databinding.ObservableField;
 import android.databinding.ObservableInt;
 import android.preference.PreferenceManager;
 
-import org.mattvchandler.progressbars.DB.Data;
+import org.mattvchandler.progressbars.db.Data;
 import org.mattvchandler.progressbars.R;
 
 import java.text.DecimalFormat;
@@ -42,6 +42,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 // struct bound to progress_bar_row layout
+@SuppressWarnings("WeakerAccess") // class and fields need to be public so they can be accessed by binding
 public final class View_data extends Data // contains all DB data from inherited struct
 {
     // observable fields used by UI

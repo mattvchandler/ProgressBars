@@ -1,4 +1,4 @@
-package org.mattvchandler.progressbars.Settings;
+package org.mattvchandler.progressbars.settings;
 
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
@@ -18,10 +18,10 @@ import android.widget.Spinner;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
-import org.mattvchandler.progressbars.DB.Data;
-import org.mattvchandler.progressbars.DB.Table;
-import org.mattvchandler.progressbars.Util.Dynamic_theme_activity;
-import org.mattvchandler.progressbars.Util.Preferences;
+import org.mattvchandler.progressbars.db.Data;
+import org.mattvchandler.progressbars.db.Table;
+import org.mattvchandler.progressbars.util.Dynamic_theme_activity;
+import org.mattvchandler.progressbars.util.Preferences;
 import org.mattvchandler.progressbars.R;
 import org.mattvchandler.progressbars.databinding.ActivitySettingsBinding;
 
@@ -54,8 +54,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 // TODO: replace all toast errors that we can with ID form instead of get Resources
-// TODO: very long and disorganized. split out into components
-// TODO: maybe rename classes and organize into dirs?
 
 // Settings for each timer
 public class Settings extends Dynamic_theme_activity implements DatePickerDialog.OnDateSetListener,

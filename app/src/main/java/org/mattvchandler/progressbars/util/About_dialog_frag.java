@@ -1,4 +1,4 @@
-package org.mattvchandler.progressbars.Util;
+package org.mattvchandler.progressbars.util;
 
 import android.app.Dialog;
 import android.databinding.DataBindingUtil;

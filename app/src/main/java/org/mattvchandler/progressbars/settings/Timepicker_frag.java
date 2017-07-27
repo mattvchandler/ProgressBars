@@ -1,4 +1,4 @@
-package org.mattvchandler.progressbars.Settings;
+package org.mattvchandler.progressbars.settings;
 
 import android.app.Dialog;
 import android.app.TimePickerDialog;

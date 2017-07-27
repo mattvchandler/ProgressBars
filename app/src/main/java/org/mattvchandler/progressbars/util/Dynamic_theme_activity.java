@@ -1,4 +1,4 @@
-package org.mattvchandler.progressbars.Util;
+package org.mattvchandler.progressbars.util;
 
 import android.os.Bundle;
 import android.preference.PreferenceManager;

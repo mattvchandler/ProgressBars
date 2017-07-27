@@ -1,4 +1,4 @@
-package org.mattvchandler.progressbars.Settings;
+package org.mattvchandler.progressbars.settings;
 
 import android.app.Dialog;
 import android.content.DialogInterface;
@@ -9,7 +9,6 @@ import android.support.v7.app.AlertDialog;
 import android.widget.NumberPicker;
 
 import org.mattvchandler.progressbars.R;
-import org.mattvchandler.progressbars.Settings.Settings;
 
 /*
 Copyright (C) 2017 Matthew Chandler

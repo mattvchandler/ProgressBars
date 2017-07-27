@@ -28,7 +28,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
     <data>
         <import type="android.view.View"/>
-        <import type="org.mattvchandler.progressbars.List.View_data"/>
+        <import type="org.mattvchandler.progressbars.list.View_data"/>
         <variable name="data" type="View_data"/>
     </data>
 

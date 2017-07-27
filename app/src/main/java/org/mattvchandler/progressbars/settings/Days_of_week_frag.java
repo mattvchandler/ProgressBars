@@ -1,4 +1,4 @@
-package org.mattvchandler.progressbars.Settings;
+package org.mattvchandler.progressbars.settings;
 
 import android.app.Dialog;
 import android.content.DialogInterface;
@@ -8,7 +8,7 @@ import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AlertDialog;
 import android.widget.Toast;
 
-import org.mattvchandler.progressbars.DB.Table;
+import org.mattvchandler.progressbars.db.Table;
 import org.mattvchandler.progressbars.R;
 
 /*

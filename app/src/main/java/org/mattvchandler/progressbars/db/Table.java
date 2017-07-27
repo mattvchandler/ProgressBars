@@ -1,4 +1,4 @@
-package org.mattvchandler.progressbars.DB;
+package org.mattvchandler.progressbars.db;
 
 import android.content.ContentValues;
 import android.content.Context;

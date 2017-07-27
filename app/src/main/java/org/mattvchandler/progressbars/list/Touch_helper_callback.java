@@ -1,4 +1,4 @@
-package org.mattvchandler.progressbars.List;
+package org.mattvchandler.progressbars.list;
 
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;

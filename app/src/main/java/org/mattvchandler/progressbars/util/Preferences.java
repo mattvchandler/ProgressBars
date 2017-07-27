@@ -1,4 +1,4 @@
-package org.mattvchandler.progressbars.Util;
+package org.mattvchandler.progressbars.util;
 
 import android.content.SharedPreferences;
 import android.databinding.DataBindingUtil;
@@ -8,8 +8,6 @@ import android.os.Bundle;
 import android.view.MenuItem;
 
 import org.mattvchandler.progressbars.R;
-import org.mattvchandler.progressbars.Util.Notification_handler;
-import org.mattvchandler.progressbars.Util.Dynamic_theme_activity;
 import org.mattvchandler.progressbars.databinding.ActivityPreferencesBinding;
 
 /*

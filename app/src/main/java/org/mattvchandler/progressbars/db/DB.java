@@ -1,4 +1,4 @@
-package org.mattvchandler.progressbars.DB;
+package org.mattvchandler.progressbars.db;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
@@ -29,7 +29,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 public class DB extends SQLiteOpenHelper
 {
     private static final int DB_VERSION = 2;
-    public static final String DB_NAME = "progress_bar_db";
+    private static final String DB_NAME = "progress_bar_db";
 
     public DB(Context context)
     {
