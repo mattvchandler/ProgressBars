@@ -419,7 +419,7 @@ public final class View_data extends Data // contains all DB data from inherited
     }
 
     // run every second. updates percentage and time remaining text
-    public void update()
+    void update()
     {
         // get now, start and end times as unix epoch timestamps
         long now_s = System.currentTimeMillis() / 1000L;
@@ -461,11 +461,11 @@ public final class View_data extends Data // contains all DB data from inherited
             // if not needing calendar time difference, we can do calculation from the difference in seconds (much easier)
             if(!show_years && !show_months)
             {
-                remaining_str = get_remaining_easy(remaining, to_start);
+                remaining_str = get_remaining_easy(to_start, remaining);
             }
             else
             {
-                remaining_str = get_remaining_hard(remaining, to_start);
+                remaining_str = get_remaining_hard(to_start, remaining);
             }
 
             time_text_disp.set(remaining_str);
