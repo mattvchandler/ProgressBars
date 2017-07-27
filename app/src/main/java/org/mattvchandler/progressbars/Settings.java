@@ -59,8 +59,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 // TODO: maybe rename classes and organize into dirs?
 
 // Settings for each timer
-public class Settings extends Dynamic_theme_activity implements Precision_dialog_frag.NoticeDialogListener,
-                                                                DatePickerDialog.OnDateSetListener,
+public class Settings extends Dynamic_theme_activity implements DatePickerDialog.OnDateSetListener,
                                                                 TimePickerDialog.OnTimeSetListener
 {
     public static final String EXTRA_EDIT_ROW_ID = "org.mattvchandler.progressbars.EDIT_ROW_ID";
@@ -872,11 +871,10 @@ public class Settings extends Dynamic_theme_activity implements Precision_dialog
     }
 
     // called when OK pressed on precision dialog
-    @Override
-    public void on_precision_dialog_positive(Precision_dialog_frag dialog)
+    public void on_precision_dialog_positive(int precision)
     {
         // get and store the data
-        data.precision = dialog.getValue();
+        data.precision = precision;
         binding.precision.setText(String.valueOf(data.precision));
     }
 
