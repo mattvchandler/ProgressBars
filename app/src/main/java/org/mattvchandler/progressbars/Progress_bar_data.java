@@ -2,8 +2,10 @@ package org.mattvchandler.progressbars;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.support.v4.content.LocalBroadcastManager;
 
 import java.io.Serializable;
 import java.util.Calendar;
@@ -33,6 +35,10 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 // struct w/ copy of all DB columns. Serializable so we can store the whole thing
 public class Progress_bar_data implements Serializable
 {
+    public static final String DB_CHANGED_EVENT = "Progress_bar_data.DB_CHANGED_EVENT";
+    public static final String DB_CHANGED_TYPE  = "Progress_bar_data.DB_CHANGED_TYPE";
+    public static final String DB_CHANGED_ROWID = "Progress_bar_data.DB_CHANGED_ROWID";
+
     public long rowid; // is -1 when not set, ie. the data doesn't exist in the DB
 
     public long order; // -1 until set
@@ -260,6 +266,11 @@ public class Progress_bar_data implements Serializable
         db.close();
 
         Notification_handler.reset_notification(context, this);
+
+        Intent intent = new Intent(DB_CHANGED_EVENT);
+        intent.putExtra(DB_CHANGED_TYPE, "insert");
+        intent.putExtra(DB_CHANGED_ROWID, rowid);
+        LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
     }
 
     // update the DB with new data
@@ -276,6 +287,11 @@ public class Progress_bar_data implements Serializable
         db.close();
 
         Notification_handler.reset_notification(context, this);
+
+        Intent intent = new Intent(DB_CHANGED_EVENT);
+        intent.putExtra(DB_CHANGED_TYPE, "update");
+        intent.putExtra(DB_CHANGED_ROWID, rowid);
+        LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
     }
 
     // delete from DB
@@ -293,6 +309,11 @@ public class Progress_bar_data implements Serializable
                 Progress_bar_table._ID + " = ?",
                 new String[] {String.valueOf(rowid)});
         db.close();
+
+        Intent intent = new Intent(DB_CHANGED_EVENT);
+        intent.putExtra(DB_CHANGED_TYPE, "delete");
+        intent.putExtra(DB_CHANGED_ROWID, rowid);
+        LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
 
         rowid = -1; // unset rowid
     }

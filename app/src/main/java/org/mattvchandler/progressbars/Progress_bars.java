@@ -174,13 +174,9 @@ public class Progress_bars extends Dynamic_theme_activity
             final Progress_bar_data new_data = (Progress_bar_data)data.getSerializableExtra(Settings.RESULT_NEW_DATA);
             final Progress_bar_data old_data = (Progress_bar_data)data.getSerializableExtra(Settings.RESULT_OLD_DATA);
 
-            adapter.reset_cursor();
-
             // was a row added?
             if(old_data == null)
             {
-                adapter.notifyItemInserted(adapter.getItemCount());
-
                 // show message and offer undo action
                 Snackbar.make(binding.mainList, getResources().getString(R.string.added_new,  new_data.title), Snackbar.LENGTH_LONG)
                         .setAction(getResources().getString(R.string.undo), new View.OnClickListener()
@@ -189,19 +185,12 @@ public class Progress_bars extends Dynamic_theme_activity
                             public void onClick(View v)
                             {
                                 // delete the new row
-                                int pos = adapter.find_by_rowid(new_data.rowid);
                                 new_data.delete(Progress_bars.this);
-
-                                // inform the adapter of the changes
-                                adapter.reset_cursor();
-                                adapter.notifyItemRemoved(pos);
                             }
                         }).show();
             }
             else // an existing row was changed
             {
-                adapter.notifyItemChanged(adapter.find_by_rowid(new_data.rowid));
-
                 // show message and offer undo action
                 Snackbar.make(binding.mainList, getResources().getString(R.string.saved, new_data.title), Snackbar.LENGTH_LONG)
                         .setAction(getResources().getString(R.string.undo), new View.OnClickListener()
@@ -211,9 +200,6 @@ public class Progress_bars extends Dynamic_theme_activity
                             {
                                 // update DB with old info
                                 old_data.update(Progress_bars.this);
-
-                                adapter.reset_cursor();
-                                adapter.notifyItemChanged(adapter.find_by_rowid(old_data.rowid));
                             }
                         }).show();
             }

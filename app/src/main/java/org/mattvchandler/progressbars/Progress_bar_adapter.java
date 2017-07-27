@@ -1,11 +1,15 @@
 package org.mattvchandler.progressbars;
 
+import android.content.BroadcastReceiver;
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.databinding.DataBindingUtil;
 import android.support.design.widget.Snackbar;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
@@ -107,10 +111,40 @@ public class Progress_bar_adapter extends RecyclerView.Adapter<Progress_bar_adap
         this.context = context;
         db = new Progress_bar_DB(context).getWritableDatabase();
         cursor = db.rawQuery(Progress_bar_table.SELECT_ALL_ROWS, null);
+
+        BroadcastReceiver db_change_receiver = new BroadcastReceiver()
+        {
+            @Override
+            public void onReceive(Context context, Intent intent)
+            {
+                long rowid = intent.getLongExtra(Progress_bar_data.DB_CHANGED_ROWID, -1);
+                if(rowid == -1)
+                    return;
+
+                switch(intent.getStringExtra(Progress_bar_data.DB_CHANGED_TYPE))
+                {
+                case "insert":
+                    reset_cursor();
+                    Progress_bar_adapter.this.notifyItemInserted(find_by_rowid(rowid));
+                    break;
+                case "update":
+                    Progress_bar_adapter.this.notifyItemChanged(find_by_rowid(rowid));
+                    reset_cursor();
+                    break;
+                case "delete":
+                    Progress_bar_adapter.this.notifyItemRemoved(find_by_rowid(rowid));
+                    reset_cursor();
+                    break;
+                default:
+                }
+            }
+        };
+
+        LocalBroadcastManager.getInstance(context).registerReceiver(db_change_receiver, new IntentFilter(Progress_bar_data.DB_CHANGED_EVENT));
     }
 
-    // call when DB info has changed, to let the adapter update its cursor
-    public void reset_cursor()
+    // called when DB info has changed, to let us update the cursor
+    private void reset_cursor()
     {
         if(cursor != null)
             cursor.close();
@@ -174,6 +208,7 @@ public class Progress_bar_adapter extends RecyclerView.Adapter<Progress_bar_adap
         ContentValues values = new ContentValues();
 
         // swap orders
+        // NOTE: we are not calling Progress_bar_data.update when updating the orders, for performance
 
         // put 'from' at order #-1
         values.put(Progress_bar_table.ORDER_COL, -1);
@@ -192,7 +227,7 @@ public class Progress_bar_adapter extends RecyclerView.Adapter<Progress_bar_adap
         db.update(Progress_bar_table.TABLE_NAME, values,
                 Progress_bar_table._ID + " = ?", new String[] {from_rowid});
 
-        // get new data
+        // get new data, since we won't get a message about these DB changes
         reset_cursor();
 
         // swap items in GUI
@@ -210,11 +245,6 @@ public class Progress_bar_adapter extends RecyclerView.Adapter<Progress_bar_adap
         // delete from DB
         save_data.delete(context);
 
-        // get new data
-        reset_cursor();
-
-        notifyItemRemoved(pos);
-
         // show deletion message with undo option
         Snackbar.make(context.findViewById(R.id.mainList), context.getResources().getString(R.string.deleted, save_data.title), Snackbar.LENGTH_LONG)
                 .setAction(context.getResources().getString(R.string.undo), new View.OnClickListener()
@@ -224,10 +254,7 @@ public class Progress_bar_adapter extends RecyclerView.Adapter<Progress_bar_adap
                     {
                         // re-insert the deleted row
                         save_data.insert(context);
-                        reset_cursor();
-                        Progress_bar_adapter.this.notifyItemInserted(pos);
                     }
                 }).show();
     }
-
 }
