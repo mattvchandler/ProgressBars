@@ -265,7 +265,7 @@ public class Progress_bar_data implements Serializable
         rowid = db.insert(Progress_bar_table.TABLE_NAME, null, build_ContentValues());
         db.close();
 
-        Notification_handler.reset_notification(context, this);
+        Notification_handler.reset_alarm(context, this);
 
         Intent intent = new Intent(DB_CHANGED_EVENT);
         intent.putExtra(DB_CHANGED_TYPE, "insert");
@@ -286,7 +286,7 @@ public class Progress_bar_data implements Serializable
         db.update(Progress_bar_table.TABLE_NAME, build_ContentValues(), Progress_bar_table._ID + " = ?", new String[]{String.valueOf(rowid)});
         db.close();
 
-        Notification_handler.reset_notification(context, this);
+        Notification_handler.reset_alarm(context, this);
 
         Intent intent = new Intent(DB_CHANGED_EVENT);
         intent.putExtra(DB_CHANGED_TYPE, "update");
@@ -301,7 +301,7 @@ public class Progress_bar_data implements Serializable
         if(rowid < 0)
             throw new IllegalStateException("Tried to delete when rowid isn't set");
 
-        Notification_handler.cancel_notification(context, this);
+        Notification_handler.cancel_alarm(context, this);
 
         SQLiteDatabase db = new Progress_bar_DB(context).getWritableDatabase();
 
