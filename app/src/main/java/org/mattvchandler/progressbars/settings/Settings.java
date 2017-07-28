@@ -68,6 +68,11 @@ public class Settings extends Dynamic_theme_activity implements DatePickerDialog
     private static final String STATE_TARGET = "target";
 
     private static final String DAYS_OF_WEEK_CHECKBOX_DIALOG = "DAYS_OF_WEEK";
+    private static final String SHOW_ELEMENTS_CHECKBOX_DIALOG = "SHOW_ELEMENTS";
+
+    private static final int SHOW_PROGRESS_CHECKBOX = 0;
+    private static final int SHOW_START_CHECKBOX = 1;
+    private static final int SHOW_END_CHECKBOX = 2;
 
     private ActivitySettingsBinding binding;
     private Data data;
@@ -550,22 +555,6 @@ public class Settings extends Dynamic_theme_activity implements DatePickerDialog
         data.countdown_text = binding.countdownText.getText().toString();
         data.complete_text = binding.completeText.getText().toString();
         data.post_text = binding.postText.getText().toString();
-
-        data.show_progress = binding.showProgress.isChecked();
-        data.show_start = binding.showStart.isChecked();
-        data.show_end = binding.showEnd.isChecked();
-
-        data.show_years = binding.showYears.isChecked();
-        data.show_months = binding.showMonths.isChecked();
-        data.show_weeks = binding.showWeeks.isChecked();
-        data.show_days = binding.showDays.isChecked();
-        data.show_hours = binding.showHours.isChecked();
-        data.show_minutes = binding.showMinutes.isChecked();
-        data.show_seconds = binding.showSeconds.isChecked();
-
-        data.terminate = binding.terminate.isChecked();
-        data.notify_start = binding.notifyStart.isChecked();
-        data.notify_end = binding.notifyEnd.isChecked();
         */
 
         return !errors;
@@ -677,6 +666,25 @@ public class Settings extends Dynamic_theme_activity implements DatePickerDialog
         d.show(getSupportFragmentManager(), "precision");
     }
 
+    @SuppressWarnings("UnusedParameters")
+    public void on_show_widgets_butt(View view)
+    {
+        boolean selected[] = new boolean[3];
+        selected[SHOW_PROGRESS_CHECKBOX] = data.show_progress;
+        selected[SHOW_START_CHECKBOX] = data.show_start;
+        selected[SHOW_END_CHECKBOX] = data.show_end;
+
+        Checkbox_dialog_frag frag = new Checkbox_dialog_frag();
+
+        Bundle args = new Bundle();
+        args.putInt(Checkbox_dialog_frag.TITLE_ARG, R.string.show_elements_header);
+        args.putInt(Checkbox_dialog_frag.ENTRIES_ARG, R.array.show_elements);
+        args.putBooleanArray(Checkbox_dialog_frag.SELECTION_ARG, selected);
+
+        frag.setArguments(args);
+        frag.show(getSupportFragmentManager(), SHOW_ELEMENTS_CHECKBOX_DIALOG);
+    }
+
     // Dialog return callbacks
 
     @Override
@@ -734,6 +742,12 @@ public class Settings extends Dynamic_theme_activity implements DatePickerDialog
                 data.repeat_days_of_week = days_of_week;
                 binding.repeatDaysOfWeek.setText(get_days_of_week_abbr(Settings.this, data.repeat_days_of_week));
             }
+        }
+        if(id.equals(SHOW_ELEMENTS_CHECKBOX_DIALOG))
+        {
+            data.show_progress = selected[SHOW_PROGRESS_CHECKBOX];
+            data.show_start = selected[SHOW_START_CHECKBOX];
+            data.show_end = selected[SHOW_END_CHECKBOX];
         }
     }
 

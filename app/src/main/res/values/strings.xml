@@ -121,9 +121,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
     <string name="precision">Percentage complete precision</string>
 
     <string name="show_elements_header">Information to display</string>
-    <string name="show_progress_sw">Progress bar</string>
-    <string name="show_start_sw">Start time</string>
-    <string name="show_end_sw">End time</string>
 
     <string name="show_times_header">Units of time to display</string>
     <string name="show_year_sw">Years</string>
