@@ -70,6 +70,7 @@ public class Settings extends Dynamic_theme_activity implements DatePickerDialog
     private static final String DAYS_OF_WEEK_CHECKBOX_DIALOG  = "DAYS_OF_WEEK";
     private static final String SHOW_ELEMENTS_CHECKBOX_DIALOG = "SHOW_ELEMENTS";
     private static final String SHOW_UNITS_CHECKBOX_DIALOG    = "SHOW_UNITS";
+    private static final String TIMER_OPTS_CHECKBOX_DIALOG    = "SHOW_TIMER_OPTS";
 
     private static final int SHOW_PROGRESS_CHECKBOX = 0;
     private static final int SHOW_START_CHECKBOX    = 1;
@@ -82,6 +83,10 @@ public class Settings extends Dynamic_theme_activity implements DatePickerDialog
     private static final int SHOW_WEEKS_CHECKBOX   = 4;
     private static final int SHOW_MONTHS_CHECKBOX  = 5;
     private static final int SHOW_YEARS_CHECKBOX   = 6;
+
+    private static final int TERMINATE_CHECKBOX    = 0;
+    private static final int NOTIFY_START_CHECKBOX = 1;
+    private static final int NOTIFY_END_CHECKBOX   = 2;
 
     private ActivitySettingsBinding binding;
     private Data data;
@@ -717,6 +722,25 @@ public class Settings extends Dynamic_theme_activity implements DatePickerDialog
         frag.show(getSupportFragmentManager(), SHOW_UNITS_CHECKBOX_DIALOG);
     }
 
+    @SuppressWarnings("UnusedParameters")
+    public void on_timer_opts_butt(View view)
+    {
+        boolean selected[] = new boolean[3];
+        selected[TERMINATE_CHECKBOX]    = data.terminate;
+        selected[NOTIFY_START_CHECKBOX] = data.notify_start;
+        selected[NOTIFY_END_CHECKBOX]   = data.notify_end;
+
+        Checkbox_dialog_frag frag = new Checkbox_dialog_frag();
+
+        Bundle args = new Bundle();
+        args.putInt(Checkbox_dialog_frag.TITLE_ARG, R.string.timer_opts_header);
+        args.putInt(Checkbox_dialog_frag.ENTRIES_ARG, R.array.timer_opts);
+        args.putBooleanArray(Checkbox_dialog_frag.SELECTION_ARG, selected);
+
+        frag.setArguments(args);
+        frag.show(getSupportFragmentManager(), TIMER_OPTS_CHECKBOX_DIALOG);
+    }
+
     // Dialog return callbacks
 
     @Override
@@ -790,6 +814,12 @@ public class Settings extends Dynamic_theme_activity implements DatePickerDialog
             data.show_weeks   = selected[SHOW_WEEKS_CHECKBOX];
             data.show_months  = selected[SHOW_MONTHS_CHECKBOX];
             data.show_years   = selected[SHOW_YEARS_CHECKBOX];
+        }
+        if(id.equals(TIMER_OPTS_CHECKBOX_DIALOG))
+        {
+            data.terminate    = selected[TERMINATE_CHECKBOX];
+            data.notify_start = selected[NOTIFY_START_CHECKBOX];
+            data.notify_end   = selected[NOTIFY_END_CHECKBOX];
         }
     }
 

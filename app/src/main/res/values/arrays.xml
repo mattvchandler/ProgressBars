@@ -88,4 +88,11 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
         <item>Start time</item>
         <item>End time</item>
     </string-array>
+
+    <string-array name="timer_opts">
+        <item>Stop timer when completed</item>
+        <item>Send notification on start</item>
+        <item>Send notification on completion</item>
+    </string-array>
+
 </resources>

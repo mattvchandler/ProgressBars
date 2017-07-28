@@ -124,10 +124,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
     <string name="show_units_header">Units of time to display</string>
     <string name="timer_opts_header">Timer start / end options</string>
 
-    <string name="terminate_sw">Stop timer when completed</string>
-    <string name="notify_start_sw">Send notification on start</string>
-    <string name="notify_end_sw">Send notification on completion</string>
-
     <string name="default_title">New timer</string>
     <string name="default_pre_text">"Time until start: "</string>
     <string name="default_start_text">Started</string>
