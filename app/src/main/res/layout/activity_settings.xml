@@ -380,98 +380,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
                     <View style="@style/Divider"/>
 
-                    <TextView
-                        android:text="@string/text_header"
-                        android:textAppearance="?android:textAppearanceSmall"
-                        android:textStyle="bold"
-                        android:textColor="?colorAccent"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_margin="@dimen/margin_size"
-                        />
-
-                    <android.support.design.widget.TextInputLayout
-                        android:hint="@string/pre_text"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="@dimen/margin_size"
-                        android:layout_marginEnd="@dimen/margin_size"
-                        >
-                        <android.support.design.widget.TextInputEditText
-                            android:id="@+id/pre_text"
-                            android:text="@{data.pre_text}"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:inputType="textCapSentences"
-                            />
-                    </android.support.design.widget.TextInputLayout>
-
-                    <android.support.design.widget.TextInputLayout
-                        android:hint="@string/start_text"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="@dimen/margin_size"
-                        android:layout_marginEnd="@dimen/margin_size"
-                        >
-                        <android.support.design.widget.TextInputEditText
-                            android:id="@+id/start_text"
-                            android:text="@{data.start_text}"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:inputType="textCapSentences"
-                            />
-                    </android.support.design.widget.TextInputLayout>
-
-                    <android.support.design.widget.TextInputLayout
-                        android:hint="@string/countdown_text"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="@dimen/margin_size"
-                        android:layout_marginEnd="@dimen/margin_size"
-                        >
-                        <android.support.design.widget.TextInputEditText
-                            android:id="@+id/countdown_text"
-                            android:text="@{data.countdown_text}"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:inputType="textCapSentences"
-                            />
-                    </android.support.design.widget.TextInputLayout>
-
-                    <android.support.design.widget.TextInputLayout
-                        android:hint="@string/complete_text"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="@dimen/margin_size"
-                        android:layout_marginEnd="@dimen/margin_size"
-                        >
-                        <android.support.design.widget.TextInputEditText
-                            android:id="@+id/complete_text"
-                            android:text="@{data.complete_text}"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:inputType="textCapSentences"
-                            />
-                    </android.support.design.widget.TextInputLayout>
-
-                    <android.support.design.widget.TextInputLayout
-                        android:hint="@string/post_text"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="@dimen/margin_size"
-                        android:layout_marginEnd="@dimen/margin_size"
-                        >
-                        <android.support.design.widget.TextInputEditText
-                            android:id="@+id/post_text"
-                            android:text="@{data.post_text}"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:inputType="textCapSentences"
-                            />
-                    </android.support.design.widget.TextInputLayout>
-
-                    <View style="@style/Divider"/>
-
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -480,13 +388,16 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
                         android:layout_margin="@dimen/margin_size"
                         android:onClick="on_precision_butt"
                         >
+
                         <TextView
+                            android:id="@+id/textView"
                             android:text="@string/precision"
                             android:textAppearance="?android:textAppearanceListItem"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginBottom="@dimen/margin_size"
                             />
+
                         <TextView
                             android:id="@+id/precision"
                             android:text="@{String.valueOf(data.precision)}"
@@ -501,36 +412,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
                     <TextView
                         android:text="@string/show_elements_header"
-                        android:textAppearance="?android:textAppearanceSmall"
-                        android:textStyle="bold"
-                        android:textColor="?colorAccent"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_margin="@dimen/margin_size"
-                    />
-
-                    <Switch
-                        android:id="@+id/show_progress"
-                        android:checked="@{data.show_progress}"
-                        android:text="@string/show_progress_sw"
-                        android:textAppearance="?android:textAppearanceListItem"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_margin="@dimen/margin_size"
-                    />
-                    <Switch
-                        android:id="@+id/show_start"
-                        android:checked="@{data.show_start}"
-                        android:text="@string/show_start_sw"
-                        android:textAppearance="?android:textAppearanceListItem"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_margin="@dimen/margin_size"
-                    />
-                    <Switch
-                        android:id="@+id/show_end"
-                        android:checked="@{data.show_end}"
-                        android:text="@string/show_end_sw"
                         android:textAppearance="?android:textAppearanceListItem"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -541,119 +422,26 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
                     <TextView
                         android:text="@string/show_times_header"
-                        android:textAppearance="?android:textAppearanceSmall"
-                        android:textStyle="bold"
-                        android:textColor="?colorAccent"
+                        android:textAppearance="?android:textAppearanceListItem"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_margin="@dimen/margin_size"
                         />
 
-                    <Switch
-                        android:id="@+id/show_years"
-                        android:checked="@{data.show_years}"
-                        android:text="@string/show_year_sw"
-                        android:textAppearance="?android:textAppearanceListItem"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_margin="@dimen/margin_size"
-                    />
+                    <View style="@style/Divider"/>
 
-                    <Switch
-                        android:id="@+id/show_months"
-                        android:checked="@{data.show_months}"
-                        android:text="@string/show_month_sw"
+                    <TextView
+                        android:text="@string/text_header"
                         android:textAppearance="?android:textAppearanceListItem"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_margin="@dimen/margin_size"
-                    />
-
-                    <Switch
-                        android:id="@+id/show_weeks"
-                        android:checked="@{data.show_weeks}"
-                        android:text="@string/show_week_sw"
-                        android:textAppearance="?android:textAppearanceListItem"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_margin="@dimen/margin_size"
-                    />
-
-                    <Switch
-                        android:id="@+id/show_days"
-                        android:checked="@{data.show_days}"
-                        android:text="@string/show_day_sw"
-                        android:textAppearance="?android:textAppearanceListItem"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_margin="@dimen/margin_size"
-                    />
-
-                    <Switch
-                        android:id="@+id/show_hours"
-                        android:checked="@{data.show_hours}"
-                        android:text="@string/show_hour_sw"
-                        android:textAppearance="?android:textAppearanceListItem"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_margin="@dimen/margin_size"
-                    />
-
-                    <Switch
-                        android:id="@+id/show_minutes"
-                        android:checked="@{data.show_minutes}"
-                        android:text="@string/show_minute_sw"
-                        android:textAppearance="?android:textAppearanceListItem"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_margin="@dimen/margin_size"
-                    />
-
-                    <Switch
-                        android:id="@+id/show_seconds"
-                        android:checked="@{data.show_seconds}"
-                        android:text="@string/show_second_sw"
-                        android:textAppearance="?android:textAppearanceListItem"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_margin="@dimen/margin_size"
-                    />
+                        />
 
                     <View style="@style/Divider"/>
 
                     <TextView
                         android:text="@string/timer_opts_header"
-                        android:textAppearance="?android:textAppearanceSmall"
-                        android:textStyle="bold"
-                        android:textColor="?colorAccent"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_margin="@dimen/margin_size"
-                    />
-
-                    <Switch
-                        android:id="@+id/terminate"
-                        android:checked="@{data.terminate}"
-                        android:text="@string/terminate_sw"
-                        android:textAppearance="?android:textAppearanceListItem"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_margin="@dimen/margin_size"
-                    />
-
-                    <Switch
-                        android:id="@+id/notify_start"
-                        android:checked="@{data.notify_start}"
-                        android:text="@string/notify_start_sw"
-                        android:textAppearance="?android:textAppearanceListItem"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_margin="@dimen/margin_size"
-                        />
-                    <Switch
-                        android:id="@+id/notify_end"
-                        android:checked="@{data.notify_end}"
-                        android:text="@string/notify_end_sw"
                         android:textAppearance="?android:textAppearanceListItem"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"

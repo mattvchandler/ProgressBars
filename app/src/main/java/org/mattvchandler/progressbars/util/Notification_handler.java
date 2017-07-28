@@ -119,7 +119,7 @@ public class Notification_handler extends BroadcastReceiver
                     .setPriority(NotificationCompat.PRIORITY_HIGH)
                     .setAutoCancel(true)
                     .setDefaults(NotificationCompat.DEFAULT_ALL)
-                    .setWhen(when * 1000)
+                    .setWhen(when * 1000) // TODO: this is wrong when repeating
                     .setColor(color_tv.data);
 
             // create an intent for clicking the notification to take us to the main activity

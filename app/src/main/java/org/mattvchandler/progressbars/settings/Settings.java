@@ -542,6 +542,7 @@ public class Settings extends Dynamic_theme_activity implements DatePickerDialog
         // get all 'easy' data
         data.title = binding.title.getText().toString();
 
+        /*
         data.pre_text = binding.preText.getText().toString();
         data.start_text = binding.startText.getText().toString();
         data.countdown_text = binding.countdownText.getText().toString();
@@ -563,6 +564,7 @@ public class Settings extends Dynamic_theme_activity implements DatePickerDialog
         data.terminate = binding.terminate.isChecked();
         data.notify_start = binding.notifyStart.isChecked();
         data.notify_end = binding.notifyEnd.isChecked();
+        */
 
         return !errors;
     }
