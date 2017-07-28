@@ -121,17 +121,9 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
     <string name="precision">Percentage complete precision</string>
 
     <string name="show_elements_header">Information to display</string>
-
-    <string name="show_times_header">Units of time to display</string>
-    <string name="show_year_sw">Years</string>
-    <string name="show_month_sw">Months</string>
-    <string name="show_week_sw">Weeks</string>
-    <string name="show_day_sw">Days</string>
-    <string name="show_hour_sw">Hours</string>
-    <string name="show_minute_sw">Minutes</string>
-    <string name="show_second_sw">Seconds</string>
-
+    <string name="show_units_header">Units of time to display</string>
     <string name="timer_opts_header">Timer start / end options</string>
+
     <string name="terminate_sw">Stop timer when completed</string>
     <string name="notify_start_sw">Send notification on start</string>
     <string name="notify_end_sw">Send notification on completion</string>

@@ -43,7 +43,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
         <item>@string/PM</item>
     </string-array>
 
-    <string-array name="repeat_units">
+    <string-array name="time_units">
         <item>@string/seconds</item>
         <item>@string/minutes</item>
         <item>@string/hours</item>
@@ -51,6 +51,16 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
         <item>@string/weeks</item>
         <item>@string/months</item>
         <item>@string/years</item>
+    </string-array>
+
+    <string-array name="time_units_capitalized">
+        <item>Seconds</item>
+        <item>Minutes</item>
+        <item>Hours</item>
+        <item>Days</item>
+        <item>Weeks</item>
+        <item>Months</item>
+        <item>Years</item>
     </string-array>
 
     <string-array name="day_of_week_abbr">

@@ -60,19 +60,28 @@ public class Settings extends Dynamic_theme_activity implements DatePickerDialog
                                                                 TimePickerDialog.OnTimeSetListener
 {
     public static final String EXTRA_EDIT_ROW_ID = "org.mattvchandler.progressbars.EDIT_ROW_ID";
-    public static final String RESULT_NEW_DATA = "org.mattvchandler.progressbars.RESULT_ROW_ID";
-    public static final String RESULT_OLD_DATA = "org.mattvchandler.progressbars.RESULT_OLD_DATA";
+    public static final String RESULT_NEW_DATA   = "org.mattvchandler.progressbars.RESULT_ROW_ID";
+    public static final String RESULT_OLD_DATA   = "org.mattvchandler.progressbars.RESULT_OLD_DATA";
 
-    private static final String STATE_DATA = "data";
+    private static final String STATE_DATA      = "data";
     private static final String STATE_SAVE_DATA = "save_data";
-    private static final String STATE_TARGET = "target";
+    private static final String STATE_TARGET    = "target";
 
-    private static final String DAYS_OF_WEEK_CHECKBOX_DIALOG = "DAYS_OF_WEEK";
+    private static final String DAYS_OF_WEEK_CHECKBOX_DIALOG  = "DAYS_OF_WEEK";
     private static final String SHOW_ELEMENTS_CHECKBOX_DIALOG = "SHOW_ELEMENTS";
+    private static final String SHOW_UNITS_CHECKBOX_DIALOG    = "SHOW_UNITS";
 
     private static final int SHOW_PROGRESS_CHECKBOX = 0;
-    private static final int SHOW_START_CHECKBOX = 1;
-    private static final int SHOW_END_CHECKBOX = 2;
+    private static final int SHOW_START_CHECKBOX    = 1;
+    private static final int SHOW_END_CHECKBOX      = 2;
+
+    private static final int SHOW_SECONDS_CHECKBOX = 0;
+    private static final int SHOW_MINUTES_CHECKBOX = 1;
+    private static final int SHOW_HOURS_CHECKBOX   = 2;
+    private static final int SHOW_DAYS_CHECKBOX    = 3;
+    private static final int SHOW_WEEKS_CHECKBOX   = 4;
+    private static final int SHOW_MONTHS_CHECKBOX  = 5;
+    private static final int SHOW_YEARS_CHECKBOX   = 6;
 
     private ActivitySettingsBinding binding;
     private Data data;
@@ -667,12 +676,12 @@ public class Settings extends Dynamic_theme_activity implements DatePickerDialog
     }
 
     @SuppressWarnings("UnusedParameters")
-    public void on_show_widgets_butt(View view)
+    public void on_show_elements_butt(View view)
     {
         boolean selected[] = new boolean[3];
         selected[SHOW_PROGRESS_CHECKBOX] = data.show_progress;
-        selected[SHOW_START_CHECKBOX] = data.show_start;
-        selected[SHOW_END_CHECKBOX] = data.show_end;
+        selected[SHOW_START_CHECKBOX]    = data.show_start;
+        selected[SHOW_END_CHECKBOX]      = data.show_end;
 
         Checkbox_dialog_frag frag = new Checkbox_dialog_frag();
 
@@ -683,6 +692,29 @@ public class Settings extends Dynamic_theme_activity implements DatePickerDialog
 
         frag.setArguments(args);
         frag.show(getSupportFragmentManager(), SHOW_ELEMENTS_CHECKBOX_DIALOG);
+    }
+
+    @SuppressWarnings("UnusedParameters")
+    public void on_show_units_butt(View view)
+    {
+        boolean selected[] = new boolean[7];
+        selected[SHOW_SECONDS_CHECKBOX] = data.show_seconds;
+        selected[SHOW_MINUTES_CHECKBOX] = data.show_minutes;
+        selected[SHOW_HOURS_CHECKBOX]   = data.show_hours;
+        selected[SHOW_DAYS_CHECKBOX]    = data.show_days;
+        selected[SHOW_WEEKS_CHECKBOX]   = data.show_weeks;
+        selected[SHOW_MONTHS_CHECKBOX]  = data.show_months;
+        selected[SHOW_YEARS_CHECKBOX]   = data.show_years;
+
+        Checkbox_dialog_frag frag = new Checkbox_dialog_frag();
+
+        Bundle args = new Bundle();
+        args.putInt(Checkbox_dialog_frag.TITLE_ARG, R.string.show_units_header);
+        args.putInt(Checkbox_dialog_frag.ENTRIES_ARG, R.array.time_units_capitalized);
+        args.putBooleanArray(Checkbox_dialog_frag.SELECTION_ARG, selected);
+
+        frag.setArguments(args);
+        frag.show(getSupportFragmentManager(), SHOW_UNITS_CHECKBOX_DIALOG);
     }
 
     // Dialog return callbacks
@@ -746,8 +778,18 @@ public class Settings extends Dynamic_theme_activity implements DatePickerDialog
         if(id.equals(SHOW_ELEMENTS_CHECKBOX_DIALOG))
         {
             data.show_progress = selected[SHOW_PROGRESS_CHECKBOX];
-            data.show_start = selected[SHOW_START_CHECKBOX];
-            data.show_end = selected[SHOW_END_CHECKBOX];
+            data.show_start    = selected[SHOW_START_CHECKBOX];
+            data.show_end      = selected[SHOW_END_CHECKBOX];
+        }
+        if(id.equals(SHOW_UNITS_CHECKBOX_DIALOG))
+        {
+            data.show_seconds = selected[SHOW_SECONDS_CHECKBOX];
+            data.show_minutes = selected[SHOW_MINUTES_CHECKBOX];
+            data.show_hours   = selected[SHOW_HOURS_CHECKBOX];
+            data.show_days    = selected[SHOW_DAYS_CHECKBOX];
+            data.show_weeks   = selected[SHOW_WEEKS_CHECKBOX];
+            data.show_months  = selected[SHOW_MONTHS_CHECKBOX];
+            data.show_years   = selected[SHOW_YEARS_CHECKBOX];
         }
     }
 
