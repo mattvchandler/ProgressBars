@@ -67,6 +67,8 @@ public class Settings extends Dynamic_theme_activity implements DatePickerDialog
     private static final String STATE_SAVE_DATA = "save_data";
     private static final String STATE_TARGET = "target";
 
+    private static final String DAYS_OF_WEEK_CHECKBOX_DIALOG = "DAYS_OF_WEEK";
+
     private ActivitySettingsBinding binding;
     private Data data;
     private Data save_data;
@@ -648,11 +650,21 @@ public class Settings extends Dynamic_theme_activity implements DatePickerDialog
     @SuppressWarnings("UnusedParameters")
     public void on_days_of_week_butt(View view)
     {
-        Days_of_week_frag frag = new Days_of_week_frag();
+        boolean selected[] = new boolean[Table.Days_of_week.values().length];
+        for(Table.Days_of_week day : Table.Days_of_week.values())
+        {
+            selected[day.index] = (data.repeat_days_of_week & day.mask) != 0;
+        }
+
+        Checkbox_dialog_frag frag = new Checkbox_dialog_frag();
+
         Bundle args = new Bundle();
-        args.putInt(Days_of_week_frag.DAYS_OF_WEEK_ARG, data.repeat_days_of_week);
+        args.putInt(Checkbox_dialog_frag.TITLE_ARG, R.string.days_of_week_title);
+        args.putInt(Checkbox_dialog_frag.ENTRIES_ARG, R.array.day_of_week);
+        args.putBooleanArray(Checkbox_dialog_frag.SELECTION_ARG, selected);
+
         frag.setArguments(args);
-        frag.show(getSupportFragmentManager(), "days_of_week_picker");
+        frag.show(getSupportFragmentManager(), DAYS_OF_WEEK_CHECKBOX_DIALOG);
     }
 
     @SuppressWarnings("UnusedParameters")
@@ -701,11 +713,28 @@ public class Settings extends Dynamic_theme_activity implements DatePickerDialog
         }
     }
 
-    // called when OK pressed on days of week dialog
-    public void on_days_of_week_set(int days_of_week)
+    // called when OK pressed on checkbox dialogs
+    public void on_checkbox_dialog_ok(String id, boolean[] selected)
     {
-        data.repeat_days_of_week = days_of_week;
-        binding.repeatDaysOfWeek.setText(get_days_of_week_abbr(this, days_of_week));
+        if(id.equals(DAYS_OF_WEEK_CHECKBOX_DIALOG))
+        {
+            int days_of_week = 0;
+            for(int day = 0; day < selected.length; ++ day)
+            {
+                if(selected[day])
+                    days_of_week |= (1 << day);
+            }
+
+            if(days_of_week == 0)
+            {
+                Toast.makeText(Settings.this, R.string.no_days_of_week_err, Toast.LENGTH_LONG).show();
+            }
+            else
+            {
+                data.repeat_days_of_week = days_of_week;
+                binding.repeatDaysOfWeek.setText(get_days_of_week_abbr(Settings.this, data.repeat_days_of_week));
+            }
+        }
     }
 
     // called when OK pressed on precision dialog

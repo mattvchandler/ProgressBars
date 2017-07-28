@@ -6,10 +6,8 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AlertDialog;
-import android.widget.Toast;
 
-import org.mattvchandler.progressbars.db.Table;
-import org.mattvchandler.progressbars.R;
+import java.security.InvalidParameterException;
 
 /*
 Copyright (C) 2017 Matthew Chandler
@@ -32,40 +30,37 @@ IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-// Dialog box for choosing days of the week
-public class Days_of_week_frag extends DialogFragment
+// Dialog box w/ checkboxes
+public class Checkbox_dialog_frag extends DialogFragment
 {
-    public static final String DAYS_OF_WEEK_ARG = "DAYS_OF_WEEK";
-    private int days_of_week;
+    public static final String TITLE_ARG = "TITLE_ARG";
+    public static final String ENTRIES_ARG = "ENTRIES_ARG";
+    public static final String SELECTION_ARG = "SELECTION_ARG";
+    private boolean selection[];
 
     @Override
     @NonNull
     public Dialog onCreateDialog(Bundle savedInstanceState)
     {
         super.onCreateDialog(savedInstanceState);
-        if(savedInstanceState == null)
-            days_of_week = getArguments().getInt(DAYS_OF_WEEK_ARG);
-        else
-            days_of_week = savedInstanceState.getInt(DAYS_OF_WEEK_ARG);
 
-        boolean selected[] = new boolean[Table.Days_of_week.values().length];
-        for(Table.Days_of_week day : Table.Days_of_week.values())
-        {
-            selected[day.index] = (days_of_week & day.mask) != 0;
-        }
+        if(savedInstanceState == null)
+            selection = getArguments().getBooleanArray(SELECTION_ARG);
+        else
+            selection = savedInstanceState.getBooleanArray(SELECTION_ARG);
+
+        if(selection == null)
+            throw new InvalidParameterException("No selection specified");
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setTitle(R.string.days_of_week_title)
-                .setMultiChoiceItems(R.array.day_of_week, selected,
+        builder.setTitle(getArguments().getInt(TITLE_ARG))
+                .setMultiChoiceItems(getArguments().getInt(ENTRIES_ARG), selection,
                         new DialogInterface.OnMultiChoiceClickListener()
                         {
                             @Override
                             public void onClick(DialogInterface dialog, int which, boolean isChecked)
                             {
-                                if(isChecked)
-                                    days_of_week |= (1 << which);
-                                else
-                                    days_of_week &= ~(1 << which);
+                                selection[which] = isChecked;
                             }
                         })
                 .setPositiveButton(android.R.string.ok,
@@ -74,15 +69,7 @@ public class Days_of_week_frag extends DialogFragment
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i)
                             {
-                                if(days_of_week == 0)
-                                {
-                                    Toast.makeText(getContext(), R.string.no_days_of_week_err, Toast.LENGTH_LONG).show();
-                                }
-                                else
-                                {
-                                    // binding.repeatDaysOfWeek.setText(get_days_of_week_abbr(getContext(), days_of_week));
-                                    ((Settings)getActivity()).on_days_of_week_set(days_of_week);
-                                }
+                                ((Settings)getActivity()).on_checkbox_dialog_ok(getTag(), selection);
                             }
                         })
                 .setNegativeButton(android.R.string.cancel, null);
@@ -93,6 +80,6 @@ public class Days_of_week_frag extends DialogFragment
     @Override
     public void onSaveInstanceState(Bundle out)
     {
-        out.putInt(DAYS_OF_WEEK_ARG, days_of_week);
+        out.putBooleanArray(SELECTION_ARG, selection);
     }
 }
