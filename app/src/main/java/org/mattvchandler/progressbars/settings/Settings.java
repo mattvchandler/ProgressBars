@@ -108,7 +108,7 @@ public class Settings extends Dynamic_theme_activity implements DatePickerDialog
         super.onCreate(savedInstanceState);
 
         binding = DataBindingUtil.setContentView(this, R.layout.activity_settings);
-        setSupportActionBar(binding.progressBarToolbar);
+        setSupportActionBar(binding.toolbar);
         if(getSupportActionBar() != null)
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
@@ -651,6 +651,16 @@ public class Settings extends Dynamic_theme_activity implements DatePickerDialog
     }
 
     @SuppressWarnings("UnusedParameters")
+    public void on_precision_butt(View view)
+    {
+        Precision_dialog_frag d = new Precision_dialog_frag();
+        Bundle args = new Bundle();
+        args.putInt(Precision_dialog_frag.PRECISION_ARG, data.precision);
+        d.setArguments(args);
+        d.show(getSupportFragmentManager(), "precision");
+    }
+
+    @SuppressWarnings("UnusedParameters")
     public void on_days_of_week_butt(View view)
     {
         boolean selected[] = new boolean[Table.Days_of_week.values().length];
@@ -668,16 +678,6 @@ public class Settings extends Dynamic_theme_activity implements DatePickerDialog
 
         frag.setArguments(args);
         frag.show(getSupportFragmentManager(), DAYS_OF_WEEK_CHECKBOX_DIALOG);
-    }
-
-    @SuppressWarnings("UnusedParameters")
-    public void on_precision_butt(View view)
-    {
-        Precision_dialog_frag d = new Precision_dialog_frag();
-        Bundle args = new Bundle();
-        args.putInt(Precision_dialog_frag.PRECISION_ARG, data.precision);
-        d.setArguments(args);
-        d.show(getSupportFragmentManager(), "precision");
     }
 
     @SuppressWarnings("UnusedParameters")
@@ -777,6 +777,14 @@ public class Settings extends Dynamic_theme_activity implements DatePickerDialog
         }
     }
 
+    // called when OK pressed on precision dialog
+    public void on_precision_set(int precision)
+    {
+        // get and store the data
+        data.precision = precision;
+        binding.precision.setText(String.valueOf(data.precision));
+    }
+
     // called when OK pressed on checkbox dialogs
     public void on_checkbox_dialog_ok(String id, boolean[] selected)
     {
@@ -821,13 +829,5 @@ public class Settings extends Dynamic_theme_activity implements DatePickerDialog
             data.notify_start = selected[NOTIFY_START_CHECKBOX];
             data.notify_end   = selected[NOTIFY_END_CHECKBOX];
         }
-    }
-
-    // called when OK pressed on precision dialog
-    public void on_precision_set(int precision)
-    {
-        // get and store the data
-        data.precision = precision;
-        binding.precision.setText(String.valueOf(data.precision));
     }
 }

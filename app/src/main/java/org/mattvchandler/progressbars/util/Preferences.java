@@ -83,7 +83,7 @@ public class Preferences extends Dynamic_theme_activity
         super.onCreate(savedInstanceState);
 
         ActivityPreferencesBinding binding = DataBindingUtil.setContentView(this, R.layout.activity_preferences);
-        setSupportActionBar(binding.progressBarToolbar);
+        setSupportActionBar(binding.toolbar);
         if(getSupportActionBar() != null)
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 

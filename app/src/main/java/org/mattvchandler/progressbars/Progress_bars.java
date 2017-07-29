@@ -69,7 +69,7 @@ public class Progress_bars extends Dynamic_theme_activity
         super.onCreate(savedInstanceState);
 
         binding = DataBindingUtil.setContentView(this, R.layout.activity_progress_bars);
-        setSupportActionBar(binding.progressBarToolbar);
+        setSupportActionBar(binding.toolbar);
         binding.mainList.addItemDecoration(new DividerItemDecoration(binding.mainList.getContext(), DividerItemDecoration.VERTICAL));
 
         // save date format to detect when it changes

@@ -32,7 +32,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
             >
 
             <android.support.v7.widget.Toolbar
-                android:id="@+id/progress_bar_toolbar"
+                android:id="@+id/toolbar"
                 android:background="?attr/colorPrimary"
                 android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
                 tools:ignore="UnusedAttribute"
