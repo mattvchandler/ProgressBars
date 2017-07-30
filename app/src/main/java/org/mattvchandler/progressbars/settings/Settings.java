@@ -54,6 +54,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 // TODO: replace all toast errors that we can with ID form instead of get Resources
+// TODO: reword precision
 
 // Settings for each timer
 public class Settings extends Dynamic_theme_activity implements DatePickerDialog.OnDateSetListener,

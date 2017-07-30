@@ -71,73 +71,73 @@ public class Notification_handler extends BroadcastReceiver
                 return;
             Data data = new Data(context, rowid);
 
+            // send notifications iff master notification setting is on
+            if(PreferenceManager.getDefaultSharedPreferences(context).getBoolean("master_notification", true))
+            {
+                // set up start or completion text
+                String title = new String(), content = new String();
+                long when = 0;
+                boolean do_notify = false;
+                if(data.notify_start && intent.getAction().substring(0, BASE_STARTED_ACTION_NAME.length()).equals(BASE_STARTED_ACTION_NAME))
+                {
+                    do_notify = true;
+
+                    title = context.getResources().getString(R.string.notification_start_title, data.title);
+                    content = data.start_text;
+                    when = data.start_time;
+                }
+                else if(data.notify_end && intent.getAction().substring(0, BASE_COMPLETED_ACTION_NAME.length()).equals(BASE_COMPLETED_ACTION_NAME))
+                {
+                    do_notify = true;
+
+                    title = context.getResources().getString(R.string.notification_end_title, data.title);
+                    content = data.complete_text;
+                    when = data.end_time;
+
+                }
+
+                if(do_notify)
+                {
+                    // get the primary color from the theme
+                    context.setTheme(PreferenceManager.getDefaultSharedPreferences(context).getBoolean("dark_theme", false) ? R.style.Theme_progress_bars_dark : R.style.Theme_progress_bars);
+                    TypedValue color_tv = new TypedValue();
+                    context.getTheme().resolveAttribute(R.attr.colorPrimary, color_tv, true);
+
+                    // build the notification
+                    NotificationCompat.Builder not_builder = (NotificationCompat.Builder) new NotificationCompat.Builder(context)
+                            .setSmallIcon(R.mipmap.progress_bar_notification_icon)
+                            .setContentTitle(title)
+                            .setContentText(content)
+                            .setPriority(NotificationCompat.PRIORITY_HIGH)
+                            .setAutoCancel(true)
+                            .setDefaults(NotificationCompat.DEFAULT_ALL)
+                            .setWhen(when * 1000)
+                            .setColor(color_tv.data);
+
+                    // create an intent for clicking the notification to take us to the main activity
+                    Intent i = new Intent(context, Progress_bars.class);
+                    i.putExtra(Progress_bars.EXTRA_SCROLL_TO_ROWID, data.rowid);
+
+                    // create an artificial back-stack
+                    TaskStackBuilder stack = TaskStackBuilder.create(context);
+                    stack.addParentStack(Progress_bars.class);
+                    stack.addNextIntent(i);
+
+                    // package intent into a pending intent for the notification
+                    PendingIntent pi = stack.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
+                    not_builder.setContentIntent(pi);
+
+                    // send the notification. rowid will be used as the notification's ID
+                    NotificationManager nm = (NotificationManager)context.getSystemService(Context.NOTIFICATION_SERVICE);
+                    nm.notify((int)data.rowid, not_builder.build());
+                }
+            }
+
             // update row to get new repeat time, if needed
             if(data.repeats && data.end_time >= System.currentTimeMillis() / 1000)
             {
                 data.update(context);
             }
-
-            // send notifications iff master notification setting is on
-            if(!PreferenceManager.getDefaultSharedPreferences(context).getBoolean("master_notification", true))
-                return;
-
-            // set up start or completion text
-            String title, content;
-            long when;
-            if(intent.getAction().substring(0, BASE_STARTED_ACTION_NAME.length()).equals(BASE_STARTED_ACTION_NAME))
-            {
-                // don't notify if notification is off
-                if(!data.notify_start)
-                    return;
-
-                title = context.getResources().getString(R.string.notification_start_title, data.title);
-                content = data.start_text;
-                when = data.start_time;
-            }
-            else // if(intent.getAction().substring(0, BASE_COMPLETED_ACTION_NAME.length()).equals(BASE_COMPLETED_ACTION_NAME))
-            {
-                // don't notify if notification is off
-                if(!data.notify_end)
-                    return;
-
-                title = context.getResources().getString(R.string.notification_end_title, data.title);
-                content = data.complete_text;
-                when = data.end_time;
-
-            }
-
-            // get the primary color from the theme
-            context.setTheme(PreferenceManager.getDefaultSharedPreferences(context).getBoolean("dark_theme", false) ? R.style.Theme_progress_bars_dark : R.style.Theme_progress_bars);
-            TypedValue color_tv = new TypedValue();
-            context.getTheme().resolveAttribute(R.attr.colorPrimary, color_tv, true);
-
-            // build the notification
-            NotificationCompat.Builder not_builder = (NotificationCompat.Builder) new NotificationCompat.Builder(context)
-                    .setSmallIcon(R.mipmap.progress_bar_notification_icon)
-                    .setContentTitle(title)
-                    .setContentText(content)
-                    .setPriority(NotificationCompat.PRIORITY_HIGH)
-                    .setAutoCancel(true)
-                    .setDefaults(NotificationCompat.DEFAULT_ALL)
-                    .setWhen(when * 1000) // TODO: this is wrong when repeating
-                    .setColor(color_tv.data);
-
-            // create an intent for clicking the notification to take us to the main activity
-            Intent i = new Intent(context, Progress_bars.class);
-            i.putExtra(Progress_bars.EXTRA_SCROLL_TO_ROWID, data.rowid);
-
-            // create an artificial back-stack
-            TaskStackBuilder stack = TaskStackBuilder.create(context);
-            stack.addParentStack(Progress_bars.class);
-            stack.addNextIntent(i);
-
-            // package intent into a pending intent for the notification
-            PendingIntent pi = stack.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
-            not_builder.setContentIntent(pi);
-
-            // send the notification. rowid will be used as the notification's ID
-            NotificationManager nm = (NotificationManager)context.getSystemService(Context.NOTIFICATION_SERVICE);
-            nm.notify((int)data.rowid, not_builder.build());
         }
     }
 
