@@ -433,11 +433,12 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
                     <View style="@style/Divider"/>
 
                     <TextView
-                        android:text="@string/text_header"
+                        android:text="@string/countdown_text_header"
                         android:textAppearance="?android:textAppearanceListItem"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_margin="@dimen/margin_size"
+                        android:onClick="on_countdown_text_butt"
                         />
 
                     <View style="@style/Divider"/>

@@ -14,9 +14,11 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.progress_bars"
         tools:ignore="GoogleAppIndexingWarning">
+
         <activity
             android:name=".Progress_bars"
-            android:launchMode="singleTop">
+            android:launchMode="singleTop"
+            >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
@@ -25,20 +27,30 @@
                 android:name="android.app.shortcuts"
                 android:resource="@xml/shortcuts"/>
         </activity>
+
         <activity
             android:name=".settings.Settings"
+            android:launchMode="singleTop"
             android:label="@string/edit_title"
             android:parentActivityName=".Progress_bars"
-            android:windowSoftInputMode="stateHidden">
+            android:windowSoftInputMode="stateHidden"
+            >
             <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".Progress_bars"/>
+                android:name="android.support.parent_activity"
+                android:value=".progress_bars"
+                />
         </activity>
+
+        <activity
+            android:name=".settings.Countdown_text"
+            android:label="@string/countdown_text_header"
+            android:windowSoftInputMode="stateHidden"
+            />
+
         <activity
             android:name=".util.Preferences"
             android:label="@string/settings"
-            >
-        </activity>
+            />
 
         <receiver android:name=".util.Notification_handler">
             <intent-filter>

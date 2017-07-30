@@ -563,14 +563,6 @@ public class Settings extends Dynamic_theme_activity implements DatePickerDialog
         // get all 'easy' data
         data.title = binding.title.getText().toString();
 
-        /*
-        data.pre_text = binding.preText.getText().toString();
-        data.start_text = binding.startText.getText().toString();
-        data.countdown_text = binding.countdownText.getText().toString();
-        data.complete_text = binding.completeText.getText().toString();
-        data.post_text = binding.postText.getText().toString();
-        */
-
         return !errors;
     }
 
@@ -741,6 +733,15 @@ public class Settings extends Dynamic_theme_activity implements DatePickerDialog
         frag.show(getSupportFragmentManager(), TIMER_OPTS_CHECKBOX_DIALOG);
     }
 
+    @SuppressWarnings("UnusedParameters")
+    public void on_countdown_text_butt(View view)
+    {
+        // Launch screen to enter countdown text
+        Intent intent = new Intent(this, Countdown_text.class);
+        intent.putExtra(Countdown_text.EXTRA_DATA, data);
+        startActivityForResult(intent, Countdown_text.RESULT_COUNTDOWN_TEXT);
+    }
+
     // Dialog return callbacks
 
     @Override
@@ -828,6 +829,17 @@ public class Settings extends Dynamic_theme_activity implements DatePickerDialog
             data.terminate    = selected[TERMINATE_CHECKBOX];
             data.notify_start = selected[NOTIFY_START_CHECKBOX];
             data.notify_end   = selected[NOTIFY_END_CHECKBOX];
+        }
+    }
+
+    // get data back from Countdown_text
+    @Override
+    protected void onActivityResult(int request_code, int result_code, Intent intent)
+    {
+        if(request_code == Countdown_text.RESULT_COUNTDOWN_TEXT && result_code == RESULT_OK)
+        {
+            // get changed data
+            data = (Data)intent.getSerializableExtra(Countdown_text.EXTRA_DATA);
         }
     }
 }
