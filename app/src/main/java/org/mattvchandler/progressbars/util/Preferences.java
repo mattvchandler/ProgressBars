@@ -87,7 +87,7 @@ public class Preferences extends Dynamic_theme_activity
         if(getSupportActionBar() != null)
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        // put settings content into framelayout
+        // put settings content into frame layout
         getFragmentManager().beginTransaction().replace(R.id.preferences, new Progress_bar_prefs_frag()).commit();
     }
 

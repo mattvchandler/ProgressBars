@@ -75,7 +75,7 @@ public class Notification_handler extends BroadcastReceiver
             if(PreferenceManager.getDefaultSharedPreferences(context).getBoolean("master_notification", true))
             {
                 // set up start or completion text
-                String title = new String(), content = new String();
+                String title = "", content = "";
                 long when = 0;
                 boolean do_notify = false;
                 if(data.notify_start && intent.getAction().substring(0, BASE_STARTED_ACTION_NAME.length()).equals(BASE_STARTED_ACTION_NAME))

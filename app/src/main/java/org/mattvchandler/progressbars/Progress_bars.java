@@ -77,7 +77,7 @@ public class Progress_bars extends Dynamic_theme_activity
         date_format = prefs.getString("date_format", getResources().getString(R.string.pref_date_format_default));
         hour_24 = prefs.getBoolean("hour_24", true);
 
-        // on first run, create a new prog bar if DB is empty
+        // on first run, create a new progress bar if DB is empty
         if(savedInstanceState == null)
         {
             SQLiteDatabase db = new DB(this).getReadableDatabase();

@@ -34,7 +34,7 @@ public class Touch_helper_callback extends ItemTouchHelper.Callback
         adapter = adapter_in;
     }
 
-    // longpress and drag to reorder list
+    // long press and drag to reorder list
     @Override
     public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder source, RecyclerView.ViewHolder target)
     {
