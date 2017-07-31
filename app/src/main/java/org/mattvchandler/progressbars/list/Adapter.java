@@ -74,7 +74,7 @@ public class Adapter extends RecyclerView.Adapter<Adapter.Progress_bar_row_view_
 
         public void update()
         {
-            data.update();
+            data.update(context.getResources());
         }
 
         // click the row to edit its data

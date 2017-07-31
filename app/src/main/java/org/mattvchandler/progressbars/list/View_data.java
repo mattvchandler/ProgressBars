@@ -1,6 +1,7 @@
 package org.mattvchandler.progressbars.list;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.database.Cursor;
 import android.databinding.ObservableBoolean;
 import android.databinding.ObservableField;
@@ -114,7 +115,7 @@ public final class View_data extends Data // contains all DB data from inherited
     }
 
     // get remaining time - time based (easy)
-    private String get_remaining_easy(long remaining, long to_start)
+    private String get_remaining_easy(Resources res, long remaining, long to_start)
     {
         // get and format remaining time
         String remaining_prefix;
@@ -171,11 +172,11 @@ public final class View_data extends Data // contains all DB data from inherited
             seconds %= 60L;
         }
 
-        return format_text(remaining_prefix, seconds, minutes, hours, days, weeks, 0, 0);
+        return format_text(res, remaining_prefix, seconds, minutes, hours, days, weeks, 0, 0);
     }
 
     // get remaining time - calendar based (not as easy)
-    private String get_remaining_hard(long to_start, long remaining)
+    private String get_remaining_hard(Resources res, long to_start, long remaining)
     {
         Calendar cal_start = Calendar.getInstance();
         Calendar cal_end = Calendar.getInstance();
@@ -314,11 +315,11 @@ public final class View_data extends Data // contains all DB data from inherited
             seconds += minutes * 60L;
         }
 
-        return format_text(remaining_prefix, seconds, minutes, hours, days, weeks, months, years);
+        return format_text(res, remaining_prefix, seconds, minutes, hours, days, weeks, months, years);
     }
 
     @SuppressWarnings("ConstantConditions")
-    private String format_text(String remaining_prefix, long seconds, long minutes, long hours, long days, long weeks, long months, long years)
+    private String format_text(Resources res, String remaining_prefix, long seconds, long minutes, long hours, long days, long weeks, long months, long years)
     {
         String remaining_str = remaining_prefix;
 
@@ -331,11 +332,12 @@ public final class View_data extends Data // contains all DB data from inherited
         boolean months_shown = show_months && (months > 0 || (!weeks_shown && !days_shown && !hours_shown && !minutes_shown && !seconds_shown));
         boolean years_shown = show_years && (years > 0 || (!months_shown && !weeks_shown && !days_shown && !hours_shown && !minutes_shown && !seconds_shown));
 
+        String and = res.getString(R.string.and);
+
         // figure out plurality and which unit to add 'and' to
-        // TODO: use string res in place of units
         if(years_shown)
         {
-            remaining_str += String.valueOf(years) + " year" + (years == 1 ? "" : "s");
+            remaining_str += String.valueOf(years) + " " + res.getString(years == 1 ? R.string.year: R.string.years);
 
             int trailing = (months_shown ? 1 : 0) +
                     (weeks_shown ? 1 : 0) +
@@ -346,12 +348,12 @@ public final class View_data extends Data // contains all DB data from inherited
             if(trailing > 1)
                 remaining_str += ", ";
             else if(trailing == 1)
-                remaining_str += ", and ";
+                remaining_str += ", " + and + " ";
         }
 
         if(months_shown)
         {
-            remaining_str += months + " month" + (months == 1 ? "" : "s");
+            remaining_str += months + " " + res.getString(months == 1 ? R.string.month : R.string.months);
 
             int trailing = (weeks_shown ? 1 : 0) +
                     (days_shown ? 1 : 0) +
@@ -361,12 +363,12 @@ public final class View_data extends Data // contains all DB data from inherited
             if(trailing > 1)
                 remaining_str += ", ";
             else if(trailing == 1)
-                remaining_str += ", and ";
+                remaining_str += ", " + and + " ";
         }
 
         if(weeks_shown)
         {
-            remaining_str += weeks + " week" + (weeks == 1 ? "" : "s");
+            remaining_str += weeks + " " + res.getString(weeks == 1 ? R.string.week : R.string.weeks);
 
             int trailing = (days_shown ? 1 : 0) +
                     (hours_shown ? 1 : 0) +
@@ -375,12 +377,12 @@ public final class View_data extends Data // contains all DB data from inherited
             if(trailing > 1)
                 remaining_str += ", ";
             else if(trailing == 1)
-                remaining_str += ", and ";
+                remaining_str += ", " + and + " ";
         }
 
         if(days_shown)
         {
-            remaining_str += days + " day" + (days == 1 ? "" : "s");
+            remaining_str += days + " " + res.getString(days == 1 ? R.string.day : R.string.days);
 
             int trailing = (hours_shown ? 1 : 0) +
                     (minutes_shown ? 1 : 0) +
@@ -388,39 +390,39 @@ public final class View_data extends Data // contains all DB data from inherited
             if(trailing > 1)
                 remaining_str += ", ";
             else if(trailing == 1)
-                remaining_str += ", and ";
+                remaining_str += ", " + and + " ";
         }
 
         if(hours_shown)
         {
-            remaining_str += hours + " hour" + (hours == 1 ? "" : "s");
+            remaining_str += hours + " " + res.getString(hours == 1 ? R.string.hour : R.string.hours);
 
             int trailing = (minutes_shown ? 1 : 0) +
                     (seconds_shown ? 1 : 0);
             if(trailing > 1)
                 remaining_str += ", ";
             else if(trailing == 1)
-                remaining_str += ", and ";
+                remaining_str += ", " + and + " ";
         }
 
         if(minutes_shown)
         {
-            remaining_str += minutes + " minute" + (minutes == 1 ? "" : "s");
+            remaining_str += minutes + " " + res.getString(minutes == 1 ? R.string.minute : R.string.minutes);
 
             if(seconds_shown)
-                remaining_str += ", and ";
+                remaining_str += ", " + and + " ";
         }
 
         if(seconds_shown)
         {
-            remaining_str += seconds + " second" + (seconds == 1 ? "" : "s");
+            remaining_str += seconds + " " + res.getString(seconds == 1 ? R.string.second : R.string.seconds);
         }
 
         return remaining_str;
     }
 
     // run every second. updates percentage and time remaining text
-    void update()
+    void update(Resources res)
     {
         // get now, start and end times as unix epoch timestamps
         long now_s = System.currentTimeMillis() / 1000L;
@@ -462,11 +464,11 @@ public final class View_data extends Data // contains all DB data from inherited
             // if not needing calendar time difference, we can do calculation from the difference in seconds (much easier)
             if(!show_years && !show_months)
             {
-                remaining_str = get_remaining_easy(to_start, remaining);
+                remaining_str = get_remaining_easy(res, to_start, remaining);
             }
             else
             {
-                remaining_str = get_remaining_hard(to_start, remaining);
+                remaining_str = get_remaining_hard(res, to_start, remaining);
             }
 
             time_text_disp.set(remaining_str);
@@ -508,6 +510,6 @@ public final class View_data extends Data // contains all DB data from inherited
         progress_disp.set(0);
 
         // do a run now, to set up remaining display data
-        update();
+        update(context.getResources());
     }
 }
