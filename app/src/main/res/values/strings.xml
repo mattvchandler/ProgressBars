@@ -117,7 +117,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
     <string name="end_clock_butt">Choose end time from a clock</string>
     <string name="end_cal_butt">Choose end date from a calendar</string>
 
-    <string name="precision">Percentage complete precision</string>
+    <string name="precision">Number of decimal places shown</string>
 
     <string name="show_elements_header">Information to display</string>
     <string name="show_units_header">Units of time to display</string>
