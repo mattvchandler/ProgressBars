@@ -53,8 +53,6 @@ IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-// TODO: replace all toast errors that we can with ID form instead of get Resources
-
 // Settings for each timer
 public class Settings extends Dynamic_theme_activity implements DatePickerDialog.OnDateSetListener,
                                                                 TimePickerDialog.OnTimeSetListener
@@ -412,7 +410,7 @@ public class Settings extends Dynamic_theme_activity implements DatePickerDialog
                 // check to make sure start time is before end
                 if(data.end_time < data.start_time)
                 {
-                    Toast.makeText(this, getResources().getString(R.string.end_before_start_err), Toast.LENGTH_LONG).show();
+                    Toast.makeText(this, R.string.end_before_start_err, Toast.LENGTH_LONG).show();
                     return true;
                 }
 

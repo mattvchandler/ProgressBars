@@ -189,7 +189,7 @@ public class Progress_bars extends Dynamic_theme_activity
             {
                 // show message and offer undo action
                 Snackbar.make(binding.mainList, getResources().getString(R.string.added_new,  new_data.title), Snackbar.LENGTH_LONG)
-                        .setAction(getResources().getString(R.string.undo), new View.OnClickListener()
+                        .setAction(R.string.undo, new View.OnClickListener()
                         {
                             @Override
                             public void onClick(View v)
@@ -203,7 +203,7 @@ public class Progress_bars extends Dynamic_theme_activity
             {
                 // show message and offer undo action
                 Snackbar.make(binding.mainList, getResources().getString(R.string.saved, new_data.title), Snackbar.LENGTH_LONG)
-                        .setAction(getResources().getString(R.string.undo), new View.OnClickListener()
+                        .setAction(R.string.undo, new View.OnClickListener()
                         {
                             @Override
                             public void onClick(View v)

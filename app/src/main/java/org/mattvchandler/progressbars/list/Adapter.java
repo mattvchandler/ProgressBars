@@ -253,7 +253,7 @@ public class Adapter extends RecyclerView.Adapter<Adapter.Progress_bar_row_view_
 
         // show deletion message with undo option
         Snackbar.make(context.findViewById(R.id.mainList), context.getResources().getString(R.string.deleted, save_data.title), Snackbar.LENGTH_LONG)
-                .setAction(context.getResources().getString(R.string.undo), new View.OnClickListener()
+                .setAction(R.string.undo, new View.OnClickListener()
                 {
                     @Override
                     public void onClick(View v)
