@@ -133,31 +133,6 @@ public class Settings extends Dynamic_theme_activity implements DatePickerDialog
         binding.startTz.setAdapter(tz_adapter);
         binding.endTz.setAdapter(tz_adapter);
 
-        // set above listeners on time and date fields
-        binding.startTimeSel.setOnFocusChangeListener(new Time_listener(time_format_edit, data));
-        binding.endTimeSel.setOnFocusChangeListener(new Time_listener(time_format_edit, data));
-
-        binding.startDateSel.setOnFocusChangeListener(new Date_listener(date_format, data));
-        binding.endDateSel.setOnFocusChangeListener(new Date_listener(date_format, data));
-
-        binding.repeatCount.setOnFocusChangeListener(new Repeat_count_listener(data));
-
-        binding.repeatUnits.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
-        {
-            @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l)
-            {
-                boolean week_selected = i == Table.Unit.WEEK.index;
-                binding.repeatOn.setVisibility(week_selected ? View.VISIBLE : View.GONE);
-                binding.repeatDaysOfWeek.setVisibility(week_selected ? View.VISIBLE : View.GONE);
-
-                data.repeat_unit = i;
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {}
-        });
-
         // only run this on 1st creation
         if(savedInstanceState == null)
         {
@@ -184,6 +159,31 @@ public class Settings extends Dynamic_theme_activity implements DatePickerDialog
             save_data = (Data)savedInstanceState.getSerializable(STATE_SAVE_DATA);
             date_time_dialog_target = savedInstanceState.getInt(STATE_TARGET);
         }
+
+        // set listeners on time and date fields
+        binding.startTimeSel.setOnFocusChangeListener(new Time_listener(time_format_edit, data));
+        binding.endTimeSel.setOnFocusChangeListener(new Time_listener(time_format_edit, data));
+
+        binding.startDateSel.setOnFocusChangeListener(new Date_listener(date_format, data));
+        binding.endDateSel.setOnFocusChangeListener(new Date_listener(date_format, data));
+
+        binding.repeatCount.setOnFocusChangeListener(new Repeat_count_listener(data));
+
+        binding.repeatUnits.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
+        {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l)
+            {
+                boolean week_selected = i == Table.Unit.WEEK.index;
+                binding.repeatOn.setVisibility(week_selected ? View.VISIBLE : View.GONE);
+                binding.repeatDaysOfWeek.setVisibility(week_selected ? View.VISIBLE : View.GONE);
+
+                data.repeat_unit = i;
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {}
+        });
 
         // populate timezones and set selected values
         binding.setData(data);
@@ -387,6 +387,14 @@ public class Settings extends Dynamic_theme_activity implements DatePickerDialog
         out.putSerializable(STATE_DATA, data);
         out.putSerializable(STATE_SAVE_DATA, save_data);
         out.putInt(STATE_TARGET, date_time_dialog_target);
+
+        // clear listeners
+        binding.startTimeSel.setOnFocusChangeListener(null);
+        binding.endTimeSel.setOnFocusChangeListener(null);
+        binding.startDateSel.setOnFocusChangeListener(null);
+        binding.endDateSel.setOnFocusChangeListener(null);
+        binding.repeatCount.setOnFocusChangeListener(null);
+        binding.repeatUnits.setOnItemSelectedListener(null);
     }
 
     @Override
