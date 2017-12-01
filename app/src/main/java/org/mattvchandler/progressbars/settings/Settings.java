@@ -160,6 +160,15 @@ public class Settings extends Dynamic_theme_activity implements DatePickerDialog
             data = (Data)savedInstanceState.getSerializable(STATE_DATA);
             save_data = (Data)savedInstanceState.getSerializable(STATE_SAVE_DATA);
             date_time_dialog_target = savedInstanceState.getInt(STATE_TARGET);
+
+            if(data.rowid < 0)
+            {
+                setTitle(R.string.add_title);
+            }
+            else
+            {
+                setTitle(R.string.edit_title);
+            }
         }
 
         // set listeners on time and date fields
