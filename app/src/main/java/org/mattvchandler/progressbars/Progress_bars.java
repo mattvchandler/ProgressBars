@@ -1,5 +1,6 @@
 package org.mattvchandler.progressbars;
 
+import android.app.NotificationChannel;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
@@ -98,6 +99,9 @@ public class Progress_bars extends Dynamic_theme_activity
             // update repeat times and alarms
             Data.apply_all_repeats(this);
             Notification_handler.reset_all_alarms(this);
+
+            // register notification handler
+            Notification_handler.setup_notification_channel(this);
         }
 
         // set up row Adapter

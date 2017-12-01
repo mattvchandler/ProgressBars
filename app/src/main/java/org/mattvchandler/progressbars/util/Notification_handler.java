@@ -1,6 +1,7 @@
 package org.mattvchandler.progressbars.util;
 
 import android.app.AlarmManager;
+import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.TaskStackBuilder;
@@ -9,9 +10,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.support.v7.app.NotificationCompat;
+import android.support.v4.app.NotificationCompat;
 import android.util.TypedValue;
 
 import org.mattvchandler.progressbars.db.Data;
@@ -47,6 +49,7 @@ public class Notification_handler extends BroadcastReceiver
     private static final String BASE_STARTED_ACTION_NAME = "org.mattvchandler.progressbars.STARTED_ROWID_";
     private static final String BASE_COMPLETED_ACTION_NAME = "org.mattvchandler.progressbars.COMPLETED_ROWID_";
     private static final String EXTRA_ROWID = "EXTRA_ROWID";
+    private static final String CHANNEL_ID = "org.mattvchandler.progressbars.notification_channel";
 
     @Override
     public void onReceive(Context context, Intent intent)
@@ -98,38 +101,43 @@ public class Notification_handler extends BroadcastReceiver
 
                 if(do_notify)
                 {
-                    // get the primary color from the theme
-                    context.setTheme(PreferenceManager.getDefaultSharedPreferences(context).getBoolean("dark_theme", false) ? R.style.Theme_progress_bars_dark : R.style.Theme_progress_bars);
-                    TypedValue color_tv = new TypedValue();
-                    context.getTheme().resolveAttribute(R.attr.colorPrimary, color_tv, true);
-
-                    // build the notification
-                    NotificationCompat.Builder not_builder = (NotificationCompat.Builder) new NotificationCompat.Builder(context)
-                            .setSmallIcon(R.mipmap.progress_bar_notification_icon)
-                            .setContentTitle(title)
-                            .setContentText(content)
-                            .setPriority(NotificationCompat.PRIORITY_HIGH)
-                            .setAutoCancel(true)
-                            .setDefaults(NotificationCompat.DEFAULT_ALL)
-                            .setWhen(when * 1000)
-                            .setColor(color_tv.data);
-
-                    // create an intent for clicking the notification to take us to the main activity
-                    Intent i = new Intent(context, Progress_bars.class);
-                    i.putExtra(Progress_bars.EXTRA_SCROLL_TO_ROWID, data.rowid);
-
-                    // create an artificial back-stack
-                    TaskStackBuilder stack = TaskStackBuilder.create(context);
-                    stack.addParentStack(Progress_bars.class);
-                    stack.addNextIntent(i);
-
-                    // package intent into a pending intent for the notification
-                    PendingIntent pi = stack.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
-                    not_builder.setContentIntent(pi);
-
-                    // send the notification. rowid will be used as the notification's ID
                     NotificationManager nm = (NotificationManager)context.getSystemService(Context.NOTIFICATION_SERVICE);
-                    nm.notify((int)data.rowid, not_builder.build());
+                    if(nm != null)
+                    {
+                        setup_notification_channel(context);
+
+                        // get the primary color from the theme
+                        context.setTheme(PreferenceManager.getDefaultSharedPreferences(context).getBoolean("dark_theme", false) ? R.style.Theme_progress_bars_dark : R.style.Theme_progress_bars);
+                        TypedValue color_tv = new TypedValue();
+                        context.getTheme().resolveAttribute(R.attr.colorPrimary, color_tv, true);
+
+                        // build the notification
+                        NotificationCompat.Builder not_builder = (NotificationCompat.Builder) new NotificationCompat.Builder(context, CHANNEL_ID)
+                                .setSmallIcon(R.mipmap.progress_bar_notification_icon)
+                                .setContentTitle(title)
+                                .setContentText(content)
+                                .setPriority(NotificationCompat.PRIORITY_HIGH)
+                                .setAutoCancel(true)
+                                .setDefaults(NotificationCompat.DEFAULT_ALL)
+                                .setWhen(when * 1000)
+                                .setColor(color_tv.data);
+
+                        // create an intent for clicking the notification to take us to the main activity
+                        Intent i = new Intent(context, Progress_bars.class);
+                        i.putExtra(Progress_bars.EXTRA_SCROLL_TO_ROWID, data.rowid);
+
+                        // create an artificial back-stack
+                        TaskStackBuilder stack = TaskStackBuilder.create(context);
+                        stack.addParentStack(Progress_bars.class);
+                        stack.addNextIntent(i);
+
+                        // package intent into a pending intent for the notification
+                        PendingIntent pi = stack.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
+                        not_builder.setContentIntent(pi);
+
+                        // send the notification. rowid will be used as the notification's ID
+                        nm.notify((int) data.rowid, not_builder.build());
+                    }
                 }
             }
 
@@ -137,6 +145,24 @@ public class Notification_handler extends BroadcastReceiver
             if(data.repeats && data.end_time >= System.currentTimeMillis() / 1000)
             {
                 data.update(context);
+            }
+        }
+    }
+
+    public static void setup_notification_channel(Context context)
+    {
+        // Set up notification channel (API 26+)
+        NotificationManager nm = (NotificationManager)context.getSystemService(Context.NOTIFICATION_SERVICE);
+        if(Build.VERSION.SDK_INT >= 26 && nm != null)
+        {
+            NotificationChannel channel = nm.getNotificationChannel(CHANNEL_ID);
+            if(channel == null)
+            {
+                channel = new NotificationChannel(CHANNEL_ID,
+                        context.getResources().getString(R.string.notification_channel_name),
+                        NotificationManager.IMPORTANCE_HIGH);
+                channel.setDescription(context.getResources().getString(R.string.notification_channel_desc));
+                nm.createNotificationChannel(channel);
             }
         }
     }

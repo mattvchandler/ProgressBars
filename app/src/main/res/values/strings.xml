@@ -67,6 +67,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
     <string name="notification_start_title">%1$s started</string>
     <string name="notification_end_title">%1$s completed</string>
+    <string name="notification_channel_name">Timer start / end</string>
+    <string name="notification_channel_desc">Notifications for when a timer starts or completes</string>
 
     <string name="time_format_24">HH:mm:ss</string>
     <string name="time_format_12">h:mm:ss a</string>
