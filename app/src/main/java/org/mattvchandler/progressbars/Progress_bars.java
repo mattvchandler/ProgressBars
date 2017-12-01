@@ -15,6 +15,7 @@ import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toast;
 
 import org.mattvchandler.progressbars.db.Data;
 import org.mattvchandler.progressbars.db.DB;
@@ -118,8 +119,11 @@ public class Progress_bars extends Dynamic_theme_activity
             catch(NoSuchElementException ignored) {}
         }
 
-        if(getIntent().getAction() != null && getIntent().getAction().equals("org.mattvchandler.progressbars.ACTION_ADD_SHORTCUT"))
+        if(savedInstanceState == null && getIntent().getAction() != null && getIntent().getAction().equals("org.mattvchandler.progressbars.ACTION_ADD_SHORTCUT"))
+        {
+            Toast.makeText(this, "Processed intent", Toast.LENGTH_LONG).show();
             startActivityForResult(new Intent(this, Settings.class), UPDATE_REQUEST);
+        }
 
         // start running each second
         new update().run();
