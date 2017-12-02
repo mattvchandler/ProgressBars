@@ -125,7 +125,6 @@ public class Progress_bars extends Dynamic_theme_activity
 
         if(savedInstanceState == null && getIntent().getAction() != null && getIntent().getAction().equals("org.mattvchandler.progressbars.ACTION_ADD_SHORTCUT"))
         {
-            Toast.makeText(this, "Processed intent", Toast.LENGTH_LONG).show();
             startActivityForResult(new Intent(this, Settings.class), UPDATE_REQUEST);
         }
 
