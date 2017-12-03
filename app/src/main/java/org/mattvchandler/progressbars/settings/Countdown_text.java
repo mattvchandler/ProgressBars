@@ -74,6 +74,7 @@ public class Countdown_text extends Dynamic_theme_activity
     @Override
     protected void onSaveInstanceState(Bundle out)
     {
+        super.onSaveInstanceState(out);
         // save all data to be restored
         save();
         out.putSerializable(EXTRA_DATA, data);

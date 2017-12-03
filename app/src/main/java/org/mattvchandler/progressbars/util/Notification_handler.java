@@ -239,6 +239,7 @@ public class Notification_handler extends BroadcastReceiver
         AlarmManager am = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
 
         // cancel both start and completion alarms
+        assert am != null;
         am.cancel(get_intent(context, data, BASE_STARTED_ACTION_NAME));
         am.cancel(get_intent(context, data, BASE_COMPLETED_ACTION_NAME));
     }

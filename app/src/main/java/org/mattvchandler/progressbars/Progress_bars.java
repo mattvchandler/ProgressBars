@@ -1,6 +1,5 @@
 package org.mattvchandler.progressbars;
 
-import android.app.NotificationChannel;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
@@ -16,7 +15,6 @@ import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Toast;
 
 import org.mattvchandler.progressbars.db.Data;
 import org.mattvchandler.progressbars.db.DB;

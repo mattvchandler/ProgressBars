@@ -584,14 +584,14 @@ public class Settings extends Dynamic_theme_activity implements DatePickerDialog
     private static String get_days_of_week_abbr(Context context, int days_of_week)
     {
         // set days of week for weekly repeat (ex: MWF)
-        String days_of_week_str = "";
+        StringBuilder days_of_week_str = new StringBuilder();
         for(Table.Days_of_week day : Table.Days_of_week.values())
         {
             if((days_of_week & day.mask) != 0)
-                days_of_week_str += context.getResources().getStringArray(R.array.day_of_week_abbr)[day.index];
+                days_of_week_str.append(context.getResources().getStringArray(R.array.day_of_week_abbr)[day.index]);
         }
 
-        return days_of_week_str;
+        return days_of_week_str.toString();
     }
 
     // Button pressed callbacks

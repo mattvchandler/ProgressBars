@@ -86,15 +86,15 @@ public final class View_data extends Data // contains all DB data from inherited
     private void calc_percentage(long total_interval, long elapsed)
     {
         // convert and round percentage to the specified precision
-        String dec_format = "0";
+        StringBuilder dec_format = new StringBuilder("0");
 
         if(precision > 0)
-            dec_format += ".";
+            dec_format.append(".");
 
         for(int i = 0; i < precision; ++i)
-            dec_format += "0";
+            dec_format.append("0");
 
-        dec_format += "%";
+        dec_format.append("%");
 
         // if start and end are the same time, set to 100%
         if(total_interval != 0 )
@@ -104,12 +104,12 @@ public final class View_data extends Data // contains all DB data from inherited
             if(terminate)
                 percentage_fraction = min(percentage_fraction, 1.0);
 
-            percentage_disp.set(new DecimalFormat(dec_format).format(percentage_fraction));
+            percentage_disp.set(new DecimalFormat(dec_format.toString()).format(percentage_fraction));
             progress_disp.set((int)(percentage_fraction * 100.0));
         }
         else
         {
-            percentage_disp.set(new DecimalFormat(dec_format).format(1.0));
+            percentage_disp.set(new DecimalFormat(dec_format.toString()).format(1.0));
             progress_disp.set(100);
         }
     }
