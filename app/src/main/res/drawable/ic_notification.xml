@@ -1,0 +1,31 @@
+<!--
+Copyright (C) 2017 Matthew Chandler
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of
+this software and associated documentation files (the "Software"), to deal in
+the Software without restriction, including without limitation the rights to
+use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
+the Software, and to permit persons to whom the Software is furnished to do so,
+subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
+FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
+COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
+IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+-->
+
+<vector android:height="48dp" android:width="48dp"
+        android:viewportHeight="48.0" android:viewportWidth="48.0"
+        xmlns:android="http://schemas.android.com/apk/res/android">
+    <path android:name="p-stem"
+          android:fillColor="#FFFFFF"
+          android:pathData="m10 4v40h6v-40z"/>
+    <path android:name="p-loop"
+          android:fillColor="#FFFFFF"
+          android:pathData="m16 4h6a16 15 0 1 1 0 30h-6v-6h6a9 9 0 1 0 0 -18h-6z"/>
+</vector>

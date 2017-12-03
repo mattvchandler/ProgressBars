@@ -47,7 +47,7 @@ public class About_dialog_frag extends DialogFragment
         builder.setView(binding.getRoot());
 
         // can't set mipmap resources from XML, so set it here
-        binding.logo.setImageResource(R.mipmap.progress_bar_launcher_icon);
+        binding.logo.setImageResource(R.mipmap.ic_launcher);
 
         // also can't get version number set it here
         binding.version.setText(getActivity().getResources().getString(R.string.app_version, BuildConfig.VERSION_NAME));

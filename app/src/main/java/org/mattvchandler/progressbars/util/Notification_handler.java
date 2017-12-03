@@ -112,8 +112,8 @@ public class Notification_handler extends BroadcastReceiver
                         context.getTheme().resolveAttribute(R.attr.colorPrimary, color_tv, true);
 
                         // build the notification
-                        NotificationCompat.Builder not_builder = (NotificationCompat.Builder) new NotificationCompat.Builder(context, CHANNEL_ID)
-                                .setSmallIcon(R.mipmap.progress_bar_notification_icon)
+                        NotificationCompat.Builder not_builder = new NotificationCompat.Builder(context, CHANNEL_ID)
+                                .setSmallIcon(R.drawable.ic_notification)
                                 .setContentTitle(title)
                                 .setContentText(content)
                                 .setPriority(NotificationCompat.PRIORITY_HIGH)

@@ -3,7 +3,7 @@
     <shortcut
         android:shortcutId="add"
         android:enabled="true"
-        android:icon="@mipmap/new_progress_bar_shortcut_icon"
+        android:icon="@mipmap/ic_add_shortcut"
         android:shortcutShortLabel="@string/add_title_short"
         android:shortcutLongLabel="@string/add_title"
     >
