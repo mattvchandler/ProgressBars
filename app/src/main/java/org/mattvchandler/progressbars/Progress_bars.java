@@ -51,6 +51,8 @@ IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
+// TODO: new 1 row table containing undo data. find someway to poll the table from here and only create snackbars from the one place. delete data and put into snackbar
+
 // main activity. display each timer in a list
 public class Progress_bars extends Dynamic_theme_activity
 {
@@ -120,12 +122,6 @@ public class Progress_bars extends Dynamic_theme_activity
             }
             catch(NoSuchElementException ignored) {}
         }
-
-        if(savedInstanceState == null && getIntent().getAction() != null && getIntent().getAction().equals("org.mattvchandler.progressbars.ACTION_ADD_SHORTCUT"))
-        {
-            startActivityForResult(new Intent(this, Settings.class), UPDATE_REQUEST);
-        }
-
         // start running each second
         new update().run();
     }
