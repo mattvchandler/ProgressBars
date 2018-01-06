@@ -191,14 +191,20 @@ public class Notification_handler extends BroadcastReceiver
         // if notifications are enabled and the start time is in the future, set an alarm
         // (will overwrite any existing alarm with the same action and target)
         if(now < data.start_time)
-            am.setExact(AlarmManager.RTC_WAKEUP, data.start_time * 1000, start_pi);
+            if(Build.VERSION.SDK_INT >= 23)
+                am.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, data.start_time * 1000, start_pi);
+            else
+                am.setExact(AlarmManager.RTC_WAKEUP, data.start_time * 1000, start_pi);
             // otherwise cancel any existing alarm
         else
             am.cancel(start_pi);
 
         // same as above for completion alarms
         if(now < data.end_time)
-            am.setExact(AlarmManager.RTC_WAKEUP, data.end_time * 1000, complete_pi);
+            if(Build.VERSION.SDK_INT >= 23)
+                am.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, data.end_time * 1000, complete_pi);
+            else
+                am.setExact(AlarmManager.RTC_WAKEUP, data.end_time * 1000, complete_pi);
         else
             am.cancel(complete_pi);
     }
