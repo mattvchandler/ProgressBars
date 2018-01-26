@@ -142,7 +142,7 @@ public class Notification_handler extends BroadcastReceiver
             }
 
             // update row to get new repeat time, if needed
-            if(data.repeats && data.end_time >= System.currentTimeMillis() / 1000)
+            if(data.repeats && data.end_time <= System.currentTimeMillis() / 1000)
             {
                 data.update(context);
             }
