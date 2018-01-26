@@ -79,6 +79,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:inputType="textCapSentences"
+                            android:selectAllOnFocus="true"
                             />
                     </android.support.design.widget.TextInputLayout>
 
@@ -95,6 +96,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:inputType="textCapSentences"
+                            android:selectAllOnFocus="true"
                             />
                     </android.support.design.widget.TextInputLayout>
 
@@ -111,6 +113,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:inputType="textCapSentences"
+                            android:selectAllOnFocus="true"
                             />
                     </android.support.design.widget.TextInputLayout>
 
@@ -127,6 +130,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:inputType="textCapSentences"
+                            android:selectAllOnFocus="true"
                             />
                     </android.support.design.widget.TextInputLayout>
 
@@ -143,6 +147,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:inputType="textCapSentences"
+                            android:selectAllOnFocus="true"
                             />
                     </android.support.design.widget.TextInputLayout>
                 </LinearLayout>

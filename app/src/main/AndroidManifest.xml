@@ -33,7 +33,6 @@
             android:launchMode="singleTop"
             android:label="@string/edit_title"
             android:parentActivityName=".Progress_bars"
-            android:windowSoftInputMode="stateHidden"
             >
             <meta-data
                 android:name="android.support.parent_activity"
@@ -44,7 +43,6 @@
         <activity
             android:name=".settings.Countdown_text"
             android:label="@string/countdown_text_header"
-            android:windowSoftInputMode="stateHidden"
             />
 
         <activity
