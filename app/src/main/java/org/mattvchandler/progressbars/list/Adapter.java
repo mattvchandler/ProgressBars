@@ -108,7 +108,7 @@ public class Adapter extends RecyclerView.Adapter<Adapter.Progress_bar_row_view_
             row_binding.progressRow.setBackgroundColor(tv.data);
 
             int moved_to_pos = getAdapterPosition();
-            if(moved_to_pos != moved_from_pos)
+            if(moved_to_pos != RecyclerView.NO_POSITION && moved_to_pos != moved_from_pos)
                 data.reorder(context, moved_from_pos, moved_to_pos);
         }
     }

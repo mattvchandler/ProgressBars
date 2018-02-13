@@ -3,7 +3,9 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/ProgressBars.iml" filepath="$PROJECT_DIR$/ProgressBars.iml" />
+      <module fileurl="file://C:\Users\mvchandler\StudioProjects\ProgressBars\ProgressBars.iml" filepath="C:\Users\mvchandler\StudioProjects\ProgressBars\ProgressBars.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://C:\Users\mvchandler\StudioProjects\ProgressBars\app\app.iml" filepath="C:\Users\mvchandler\StudioProjects\ProgressBars\app\app.iml" />
     </modules>
   </component>
 </project>
