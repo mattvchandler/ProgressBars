@@ -322,6 +322,52 @@ public class Data implements Serializable
         rowid = -1; // unset rowid
     }
 
+    private static long shift_row(int i, long to_order, Cursor cursor, SQLiteDatabase db)
+    {
+        cursor.moveToPosition(i);
+        long from_order = cursor.getLong(cursor.getColumnIndexOrThrow(Table.ORDER_COL));
+        long i_rowid = cursor.getLong(cursor.getColumnIndexOrThrow(Table._ID));
+
+        ContentValues values = new ContentValues();
+        values.put(Table.ORDER_COL, to_order);
+        db.update(Table.TABLE_NAME, values, Table._ID + " = ?", new String[] {String.valueOf(i_rowid)});
+
+        return from_order;
+    }
+    public void reorder(Context context, int from_pos, int to_pos)
+    {
+        if(from_pos == to_pos)
+            return;
+        SQLiteDatabase db = new DB(context).getWritableDatabase();
+        Cursor cursor = db.rawQuery(Table.SELECT_ALL_ROWS, null);
+
+        long to_order = -1;
+
+        if(from_pos < to_pos)
+        {
+            for(int i = from_pos; i <= to_pos; ++i)
+                to_order = shift_row(i, to_order, cursor, db);
+
+        }
+        else if(from_pos > to_pos)
+        {
+            for(int i = from_pos + 1; i-- > to_pos; )
+                to_order = shift_row(i, to_order, cursor, db);
+        }
+
+        ContentValues values = new ContentValues();
+        values.put(Table.ORDER_COL, to_order);
+        db.update(Table.TABLE_NAME, values, Table._ID + " = ?", new String[] {String.valueOf(rowid)});
+        order = to_order;
+
+        cursor.close();
+        db.close();
+
+        Intent intent = new Intent(DB_CHANGED_EVENT);
+        intent.putExtra(DB_CHANGED_TYPE, "move");
+        LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
+    }
+
     // if repeat is set, update start and end times as needed
     private void apply_repeat()
     {

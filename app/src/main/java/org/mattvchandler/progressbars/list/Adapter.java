@@ -1,7 +1,6 @@
 package org.mattvchandler.progressbars.list;
 
 import android.content.BroadcastReceiver;
-import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -58,6 +57,7 @@ public class Adapter extends RecyclerView.Adapter<Adapter.Progress_bar_row_view_
     {
         final ProgressBarRowBinding row_binding;
         View_data data;
+        int moved_from_pos = 0;
 
         public Progress_bar_row_view_holder(View v)
         {
@@ -95,6 +95,8 @@ public class Adapter extends RecyclerView.Adapter<Adapter.Progress_bar_row_view_
             context.getTheme().resolveAttribute(android.R.attr.colorBackground, tv, true);
             // make it darker and-semi transparent
             row_binding.progressRow.setBackgroundColor(min(tv.data - 0x40202020, 0));
+
+            moved_from_pos = getAdapterPosition();
         }
 
         // called when a row is released from reordering
@@ -104,6 +106,10 @@ public class Adapter extends RecyclerView.Adapter<Adapter.Progress_bar_row_view_
             TypedValue tv = new TypedValue();
             context.getTheme().resolveAttribute(android.R.attr.colorBackground, tv, true);
             row_binding.progressRow.setBackgroundColor(tv.data);
+
+            int moved_to_pos = getAdapterPosition();
+            if(moved_to_pos != moved_from_pos)
+                data.reorder(context, moved_from_pos, moved_to_pos);
         }
     }
 
@@ -141,6 +147,9 @@ public class Adapter extends RecyclerView.Adapter<Adapter.Progress_bar_row_view_
                     Adapter.this.notifyItemRemoved(find_by_rowid(rowid));
                     reset_cursor();
                     break;
+                case "move":
+                    // Notification of moves occurs in Touch_helper_callback.onMove
+                    reset_cursor();
                 default:
                 }
             }
@@ -197,47 +206,6 @@ public class Adapter extends RecyclerView.Adapter<Adapter.Progress_bar_row_view_
         }
 
         throw new NoSuchElementException("rowid: " + String.valueOf(rowid) + " not found in cursor");
-    }
-
-    // called when two rows need to switch places
-    public void on_item_move(int from_pos, int to_pos)
-    {
-        // get current order # and rowids
-        cursor.moveToPosition(from_pos);
-        String from_rowid = cursor.getString(cursor.getColumnIndexOrThrow(Table._ID));
-        String from_order = cursor.getString(cursor.getColumnIndexOrThrow(Table.ORDER_COL));
-
-        cursor.moveToPosition(to_pos);
-        String to_rowid = cursor.getString(cursor.getColumnIndexOrThrow(Table._ID));
-        String to_order = cursor.getString(cursor.getColumnIndexOrThrow(Table.ORDER_COL));
-
-        ContentValues values = new ContentValues();
-
-        // swap orders
-        // NOTE: we are not calling Data.update when updating the orders, for performance
-
-        // put 'from' at order #-1
-        values.put(Table.ORDER_COL, -1);
-        db.update(Table.TABLE_NAME, values,
-                Table._ID + " = ?", new String[] {from_rowid});
-
-        // put 'to' at 'from's old old position
-        values.clear();
-        values.put(Table.ORDER_COL, from_order);
-        db.update(Table.TABLE_NAME, values,
-                Table._ID + " = ?", new String[] {to_rowid});
-
-        // put 'from' at 'to's old old position
-        values.clear();
-        values.put(Table.ORDER_COL, to_order);
-        db.update(Table.TABLE_NAME, values,
-                Table._ID + " = ?", new String[] {from_rowid});
-
-        // get new data, since we won't get a message about these DB changes
-        reset_cursor();
-
-        // swap items in GUI
-        notifyItemMoved(to_pos, from_pos);
     }
 
     // called when a row is deleted

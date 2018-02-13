@@ -38,7 +38,7 @@ public class Touch_helper_callback extends ItemTouchHelper.Callback
     @Override
     public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder source, RecyclerView.ViewHolder target)
     {
-        adapter.on_item_move(source.getAdapterPosition(), target.getAdapterPosition());
+        adapter.notifyItemMoved(source.getAdapterPosition(), target.getAdapterPosition());
         return true;
     }
 
