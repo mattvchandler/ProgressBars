@@ -25,6 +25,7 @@ import org.mattvchandler.progressbars.databinding.ProgressBarRowBinding;
 
 import java.util.NoSuchElementException;
 
+import static java.lang.Math.abs;
 import static java.lang.Math.min;
 
 /*
@@ -130,10 +131,11 @@ public class Adapter extends RecyclerView.Adapter<Adapter.Progress_bar_row_view_
             public void onReceive(Context context, Intent intent)
             {
                 long rowid = intent.getLongExtra(Data.DB_CHANGED_ROWID, -1);
-                if(rowid == -1)
+                String change_type = intent.getStringExtra(Data.DB_CHANGED_TYPE);
+                if(rowid == -1 && !change_type.equals("move"))
                     return;
 
-                switch(intent.getStringExtra(Data.DB_CHANGED_TYPE))
+                switch(change_type)
                 {
                 case "insert":
                     reset_cursor();
@@ -148,8 +150,13 @@ public class Adapter extends RecyclerView.Adapter<Adapter.Progress_bar_row_view_
                     reset_cursor();
                     break;
                 case "move":
-                    // Notification of moves occurs in Touch_helper_callback.onMove
                     reset_cursor();
+                    int from_pos = intent.getIntExtra(Data.DB_CHANGED_FROM_POS, -1);
+                    int to_pos = intent.getIntExtra(Data.DB_CHANGED_FROM_POS, -1);
+                    if(from_pos == -1 || to_pos == -1)
+                        return;
+
+                    Adapter.this.notifyItemRangeChanged(min(from_pos, to_pos), abs(from_pos - to_pos) + 1);
                 default:
                 }
             }

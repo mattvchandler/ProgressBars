@@ -38,9 +38,11 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 // struct w/ copy of all DB columns. Serializable so we can store the whole thing
 public class Data implements Serializable
 {
-    public static final String DB_CHANGED_EVENT = "Data.DB_CHANGED_EVENT";
-    public static final String DB_CHANGED_TYPE  = "Data.DB_CHANGED_TYPE";
-    public static final String DB_CHANGED_ROWID = "Data.DB_CHANGED_ROWID";
+    public static final String DB_CHANGED_EVENT    = "Data.DB_CHANGED_EVENT";
+    public static final String DB_CHANGED_TYPE     = "Data.DB_CHANGED_TYPE";
+    public static final String DB_CHANGED_ROWID    = "Data.DB_CHANGED_ROWID";
+    public static final String DB_CHANGED_FROM_POS = "Data.DB_CHANGED_FROM_POS";
+    public static final String DB_CHANGED_TO_POS   = "Data.DB_CHANGED_TO_POS";
 
     public long rowid; // is -1 when not set, ie. the data doesn't exist in the DB
 
@@ -246,6 +248,7 @@ public class Data implements Serializable
 
         return values;
     }
+
     // insert data into the DB. rowid must not be set
     // if order is not set, it will be placed at the bottom
     public void insert(Context context)
@@ -354,18 +357,21 @@ public class Data implements Serializable
             for(int i = from_pos + 1; i-- > to_pos; )
                 to_order = shift_row(i, to_order, cursor, db);
         }
+        cursor.close();
 
         ContentValues values = new ContentValues();
         values.put(Table.ORDER_COL, to_order);
         db.update(Table.TABLE_NAME, values, Table._ID + " = ?", new String[] {String.valueOf(rowid)});
-        order = to_order;
 
-        cursor.close();
         db.close();
 
         Intent intent = new Intent(DB_CHANGED_EVENT);
         intent.putExtra(DB_CHANGED_TYPE, "move");
+        intent.putExtra(DB_CHANGED_FROM_POS, from_pos);
+        intent.putExtra(DB_CHANGED_TO_POS, to_pos);
         LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
+
+        order = to_order;
     }
 
     // if repeat is set, update start and end times as needed
