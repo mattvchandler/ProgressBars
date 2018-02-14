@@ -27,7 +27,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 >
     <item
         android:id="@+id/save_butt"
-        android:icon="@android:drawable/ic_menu_save"
+        android:icon="?attr/themed_ic_save"
         android:title="@string/save_butt_title"
         app:showAsAction="ifRoom"/>
     <item

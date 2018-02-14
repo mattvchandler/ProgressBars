@@ -22,13 +22,23 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 -->
 
 <menu
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:android="http://schemas.android.com/apk/res/android"
->
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    >
     <item
         android:id="@+id/add_butt"
-        android:icon="@android:drawable/ic_menu_add"
+        android:icon="?attr/themed_ic_add"
         android:title="@string/add_butt_title"
+        app:showAsAction="ifRoom"/>
+    <item
+        android:id="@+id/undo"
+        android:icon="?attr/themed_ic_undo"
+        android:title="@string/undo"
+        app:showAsAction="ifRoom"/>
+    <item
+        android:id="@+id/redo"
+        android:icon="?attr/themed_ic_redo"
+        android:title="@string/redo"
         app:showAsAction="ifRoom"/>
     <item
         android:id="@+id/settings"

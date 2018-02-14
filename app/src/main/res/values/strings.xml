@@ -20,6 +20,7 @@ COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
 IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
     -->
+    <!-- TODO: update copyright years -->
 
     <string name="app_name">Progress Bars</string>
     <string name="app_version">v.%1$s</string>
@@ -89,6 +90,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
     <string name="deleted">"%1$s deleted"</string>
     <string name="saved">"Saved timer: %1$s"</string>
     <string name="undo">Undo</string>
+    <string name="redo">Redo</string>
 
     <string name="timer_title">Timer title</string>
     <string name="pre_text">Pre-start text</string>
