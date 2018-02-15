@@ -84,31 +84,6 @@ public class Progress_bars extends Dynamic_theme_activity
         date_format = prefs.getString("date_format", getResources().getString(R.string.pref_date_format_default));
         hour_24 = prefs.getBoolean("hour_24", true);
 
-        // on first run, create a new progress bar if DB is empty
-        if(savedInstanceState == null)
-        {
-            SQLiteDatabase db = new DB(this).getReadableDatabase();
-            Cursor cursor = db.rawQuery(Table.SELECT_ALL_ROWS, null);
-            if(cursor.getCount() == 0)
-            {
-                new Data(this).insert(this);
-            }
-            else
-            {
-                // clean up existing orders. make them sequential
-                Table.cleanup_order(this);
-            }
-            cursor.close();
-            db.close();
-
-            // update repeat times and alarms
-            Data.apply_all_repeats(this);
-            Notification_handler.reset_all_alarms(this);
-
-            // register notification handler
-            Notification_handler.setup_notification_channel(this);
-        }
-
         // set up row Adapter
         adapter = new Adapter(this);
 
