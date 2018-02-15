@@ -189,4 +189,23 @@ public class Undo extends Table
 
         db.close();
     }
+
+    private static boolean can_apply(Context context, String undo_redo)
+    {
+        SQLiteDatabase db = new DB(context).getWritableDatabase();
+        Cursor cursor = db.rawQuery(SELECT_NEXT, new String[]{undo_redo, undo_redo});
+        int count = cursor.getCount();
+        cursor.close();
+        db.close();
+
+        return count != 0;
+    }
+    public static boolean can_undo(Context context)
+    {
+        return can_apply(context, UNDO);
+    }
+    static public boolean can_redo(Context context)
+    {
+        return can_apply(context, REDO);
+    }
 }

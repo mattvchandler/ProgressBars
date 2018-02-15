@@ -1,6 +1,9 @@
 package org.mattvchandler.progressbars;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -9,6 +12,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.support.design.widget.Snackbar;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.helper.ItemTouchHelper;
@@ -19,6 +23,7 @@ import android.view.View;
 import org.mattvchandler.progressbars.db.Data;
 import org.mattvchandler.progressbars.db.DB;
 import org.mattvchandler.progressbars.db.Table;
+import org.mattvchandler.progressbars.db.Undo;
 import org.mattvchandler.progressbars.list.Adapter;
 import org.mattvchandler.progressbars.list.Touch_helper_callback;
 import org.mattvchandler.progressbars.util.Notification_handler;
@@ -124,6 +129,16 @@ public class Progress_bars extends Dynamic_theme_activity
         }
         // start running each second
         new update().run();
+
+        // register to receive notifications of DB changes
+        LocalBroadcastManager.getInstance(this).registerReceiver(on_db_change, new IntentFilter(Data.DB_CHANGED_EVENT));
+    }
+
+    @Override
+    protected void onDestroy()
+    {
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(on_db_change);
+        super.onDestroy();
     }
 
     @Override
@@ -142,12 +157,52 @@ public class Progress_bars extends Dynamic_theme_activity
         }
     }
 
+    private BroadcastReceiver on_db_change = new BroadcastReceiver()
+    {
+        @Override
+        public void onReceive(Context context, Intent intent)
+        {
+            invalidateOptionsMenu();
+        }
+    };
     @Override
     public boolean onCreateOptionsMenu(Menu menu)
     {
         // set toolbar menu
         super.onCreateOptionsMenu(menu);
         getMenuInflater().inflate(R.menu.progress_bar_action_bar, menu);
+        return true;
+    }
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu)
+    {
+        // dis/enable undo-redo buttons as needed
+        super.onPrepareOptionsMenu(menu);
+
+        MenuItem undo_butt = menu.findItem(R.id.undo);
+        MenuItem redo_butt = menu.findItem(R.id.redo);
+
+        if(Undo.can_undo(this))
+        {
+            undo_butt.setEnabled(true);
+            undo_butt.getIcon().setAlpha(255);
+        }
+        else
+        {
+            undo_butt.setEnabled(false);
+            undo_butt.getIcon().setAlpha(255 / 3);
+        }
+        if(Undo.can_redo(this))
+        {
+            redo_butt.setEnabled(true);
+            redo_butt.getIcon().setAlpha(255);
+        }
+        else
+        {
+            redo_butt.setEnabled(false);
+            redo_butt.getIcon().setAlpha(255 / 3);
+        }
+
         return true;
     }
 
@@ -159,7 +214,16 @@ public class Progress_bars extends Dynamic_theme_activity
         {
         case R.id.add_butt:
             // open editor with no rowid set
+            // TODO: don't need result
             startActivityForResult(new Intent(this, Settings.class), UPDATE_REQUEST);
+            return true;
+
+        case R.id.undo:
+            Undo.apply(this, Undo.UNDO);
+            return true;
+
+        case R.id.redo:
+            Undo.apply(this, Undo.REDO);
             return true;
 
         case R.id.settings:
