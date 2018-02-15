@@ -77,9 +77,9 @@ public class Table implements BaseColumns // TODO: rename
             "CREATE TABLE IF NOT EXISTS " + TABLE_NAME + " (" +
             _ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
             ORDER_COL + " INTEGER UNIQUE NOT NULL, " +
-            START_TIME_COL + " INTEGER NOT_NULL, " +
+            START_TIME_COL + " INTEGER NOT NULL, " +
             START_TZ_COL + " TEXT NOT NULL, " +
-            END_TIME_COL + " INTEGER NOT_NULL, " +
+            END_TIME_COL + " INTEGER NOT NULL, " +
             END_TZ_COL + " TEXT NOT NULL, " +
 
             REPEATS_COL + " INTEGER NOT NULL, " +
@@ -94,21 +94,21 @@ public class Table implements BaseColumns // TODO: rename
             COMPLETE_TEXT_COL + " TEXT, " +
             POST_TEXT_COL + " TEXT, " +
 
-            PRECISION_COL + " INTEGER NOT_NULL, " +
+            PRECISION_COL + " INTEGER NOT NULL, " +
 
-            SHOW_START_COL + " INTEGER NOT_NULL, " +
-            SHOW_END_COL + " INTEGER NOT_NULL, " +
-            SHOW_PROGRESS_COL + " INTEGER NOT_NULL, " +
+            SHOW_START_COL + " INTEGER NOT NULL, " +
+            SHOW_END_COL + " INTEGER NOT NULL, " +
+            SHOW_PROGRESS_COL + " INTEGER NOT NULL, " +
 
-            SHOW_YEARS_COL + " INTEGER NOT_NULL, " +
-            SHOW_MONTHS_COL + " INTEGER NOT_NULL, " +
-            SHOW_WEEKS_COL + " INTEGER NOT_NULL, " +
-            SHOW_DAYS_COL + " INTEGER NOT_NULL, " +
-            SHOW_HOURS_COL + " INTEGER NOT_NULL, " +
-            SHOW_MINUTES_COL + " INTEGER NOT_NULL, " +
-            SHOW_SECONDS_COL + " INTEGER NOT_NULL, " +
+            SHOW_YEARS_COL + " INTEGER NOT NULL, " +
+            SHOW_MONTHS_COL + " INTEGER NOT NULL, " +
+            SHOW_WEEKS_COL + " INTEGER NOT NULL, " +
+            SHOW_DAYS_COL + " INTEGER NOT NULL, " +
+            SHOW_HOURS_COL + " INTEGER NOT NULL, " +
+            SHOW_MINUTES_COL + " INTEGER NOT NULL, " +
+            SHOW_SECONDS_COL + " INTEGER NOT NULL, " +
 
-            TERMINATE_COL + " INTEGER NOT_NULL, " +
+            TERMINATE_COL + " INTEGER NOT NULL, " +
             NOTIFY_START_COL + " INTEGER NOT NULL, " +
             NOTIFY_END_COL + " INTEGER NOT NULL)";
 
