@@ -204,8 +204,21 @@ public class Undo extends Table
     {
         return can_apply(context, UNDO);
     }
-    static public boolean can_redo(Context context)
+    public static boolean can_redo(Context context)
     {
         return can_apply(context, REDO);
+    }
+
+    public static void delete_undo_history(Context context)
+    {
+        SQLiteDatabase db = new DB(context).getWritableDatabase();
+        db.delete(Undo.TABLE_NAME, Undo.UNDO_REDO_COL + " = ?", new String[]{Undo.UNDO});
+        db.close();
+    }
+    public static void delete_redo_history(Context context)
+    {
+        SQLiteDatabase db = new DB(context).getWritableDatabase();
+        db.delete(Undo.TABLE_NAME, Undo.UNDO_REDO_COL + " = ?", new String[]{Undo.REDO});
+        db.close();
     }
 }

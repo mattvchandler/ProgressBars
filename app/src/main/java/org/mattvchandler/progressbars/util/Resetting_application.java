@@ -37,12 +37,12 @@ public class Resetting_application extends Application
     {
         super.onCreate();
 
-        SQLiteDatabase db = new DB(this).getReadableDatabase();
-
         // reset undo / redos
-        db.delete(Undo.TABLE_NAME, null, null);
+        Undo.delete_undo_history(this);
+        Undo.delete_redo_history(this);
 
         // insert a new row when no others exist
+        SQLiteDatabase db = new DB(this).getReadableDatabase();
         Cursor cursor = db.rawQuery(Table.SELECT_ALL_ROWS, null);
         if(cursor.getCount() == 0)
         {

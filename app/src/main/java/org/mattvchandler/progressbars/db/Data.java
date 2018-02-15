@@ -319,19 +319,12 @@ public class Data implements Serializable
         return values;
     }
 
-    private void delete_redo_history(Context context)
-    {
-        SQLiteDatabase db = new DB(context).getWritableDatabase();
-        db.delete(Undo.TABLE_NAME, Undo.UNDO_REDO_COL + " = ?", new String[]{Undo.REDO});
-        db.close();
-    }
-
     // insert data into the DB. rowid must not be set
     // if order is not set, it will be placed at the bottom
     public void insert(Context context)
     {
         insert(context, Undo.UNDO);
-        delete_redo_history(context);
+        Undo.delete_redo_history(context);
     }
     public void insert(Context context, String undo_redo)
     {
@@ -374,7 +367,7 @@ public class Data implements Serializable
     public void update(Context context)
     {
         update(context, Undo.UNDO);
-        delete_redo_history(context);
+        Undo.delete_redo_history(context);
     }
     public void update(Context context, String undo_redo)
     {
@@ -408,7 +401,7 @@ public class Data implements Serializable
     public void delete(Context context)
     {
         delete(context, Undo.UNDO);
-        delete_redo_history(context);
+        Undo.delete_redo_history(context);
     }
     public void delete(Context context, String undo_redo)
     {
@@ -453,7 +446,7 @@ public class Data implements Serializable
     public void reorder(Context context, int from_pos, int to_pos)
     {
         reorder(context, from_pos, to_pos, Undo.UNDO);
-        delete_redo_history(context);
+        Undo.delete_redo_history(context);
     }
     public void reorder(Context context, int from_pos, int to_pos, String undo_redo)
     {
