@@ -28,7 +28,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 // DB container
 public class DB extends SQLiteOpenHelper
 {
-    private static final int DB_VERSION = 2;
+    private static final int DB_VERSION = 3;
     private static final String DB_NAME = "progress_bar_db";
 
     public DB(Context context)
@@ -41,6 +41,7 @@ public class DB extends SQLiteOpenHelper
     public void onCreate(SQLiteDatabase sqLiteDatabase)
     {
         sqLiteDatabase.execSQL(Table.CREATE_TABLE);
+        sqLiteDatabase.execSQL(Undo.CREATE_TABLE);
     }
 
     // if DB schema changes, put logic to migrate data here
@@ -51,5 +52,6 @@ public class DB extends SQLiteOpenHelper
             throw new IllegalStateException("DB version mismatch");
 
         Table.upgrade(db, old_version);
+        Undo.upgrade(db, old_version);
     }
 }

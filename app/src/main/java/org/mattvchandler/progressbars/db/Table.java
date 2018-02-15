@@ -28,7 +28,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 // DB Table schema
-final public class Table implements BaseColumns
+public class Table implements BaseColumns // TODO: rename
 {
     public static final String TABLE_NAME = "progress_bar";
 
