@@ -477,6 +477,7 @@ public class Data implements Serializable
         ContentValues undo_columns = new ContentValues();
         undo_columns.put(Undo.ACTION_COL, MOVE);
         undo_columns.put(Undo.UNDO_REDO_COL, undo_redo);
+        undo_columns.put(Undo.TABLE_ROWID_COL, rowid);
         undo_columns.put(Undo.SWAP_FROM_POS_COL, from_pos);
         undo_columns.put(Undo.SWAP_TO_POS_COL, to_pos);
         db.insert(Undo.TABLE_NAME, null, undo_columns);

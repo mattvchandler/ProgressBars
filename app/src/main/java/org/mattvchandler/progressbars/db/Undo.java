@@ -156,7 +156,6 @@ public class Undo extends Progress_bars_table
         {
             case Data.INSERT:
             {
-                rowid = cursor.getLong(cursor.getColumnIndexOrThrow(TABLE_ROWID_COL));
                 Data data = new Data(context, rowid);
                 data.delete(context, inverse_undo_redo);
                 break;
@@ -177,6 +176,11 @@ public class Undo extends Progress_bars_table
             }
             case Data.MOVE:
             {
+                Data data = data_from_cursor(cursor);
+                data.rowid = rowid;
+                int from_pos = cursor.getInt(cursor.getColumnIndexOrThrow(SWAP_FROM_POS_COL));
+                int to_pos   = cursor.getInt(cursor.getColumnIndexOrThrow(SWAP_TO_POS_COL));
+                data.reorder(context, to_pos, from_pos, inverse_undo_redo);
                 break;
             }
             default:
