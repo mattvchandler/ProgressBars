@@ -36,6 +36,9 @@ public class Undo extends Table
     public static final String SWAP_FROM_POS_COL = "swap_from_pos";
     public static final String SWAP_TO_POS_COL = "swap_to_pos";
 
+    public static final String UNDO = "undo";
+    public static final String REDO = "redo";
+
     // Select stmt to get all columns, all rows, ordered by order #
     public static final String SELECT_ALL_ROWS =
             "SELECT * FROM " + TABLE_NAME + " ORDER BY " + Table.ORDER_COL;
@@ -96,4 +99,94 @@ public class Undo extends Table
         db.execSQL(CREATE_TABLE);
     }
 
+    public static Data data_from_cursor(Cursor cursor)
+    {
+        Data data = new Data(
+                cursor.getLong(cursor.getColumnIndexOrThrow(Table.ORDER_COL)),
+                cursor.getLong(cursor.getColumnIndexOrThrow(Table.START_TIME_COL)),
+                cursor.getLong(cursor.getColumnIndexOrThrow(Table.END_TIME_COL)),
+                cursor.getString(cursor.getColumnIndexOrThrow(Table.START_TZ_COL)),
+                cursor.getString(cursor.getColumnIndexOrThrow(Table.END_TZ_COL)),
+                cursor.getInt(cursor.getColumnIndexOrThrow(Table.REPEATS_COL)) > 0,
+                cursor.getInt(cursor.getColumnIndexOrThrow(Table.REPEAT_COUNT_COL)),
+                cursor.getInt(cursor.getColumnIndexOrThrow(Table.REPEAT_UNIT_COL)),
+                cursor.getInt(cursor.getColumnIndexOrThrow(Table.REPEAT_DAYS_OF_WEEK_COL)),
+                cursor.getString(cursor.getColumnIndexOrThrow(Table.TITLE_COL)),
+                cursor.getString(cursor.getColumnIndexOrThrow(Table.PRE_TEXT_COL)),
+                cursor.getString(cursor.getColumnIndexOrThrow(Table.START_TEXT_COL)),
+                cursor.getString(cursor.getColumnIndexOrThrow(Table.COUNTDOWN_TEXT_COL)),
+                cursor.getString(cursor.getColumnIndexOrThrow(Table.COMPLETE_TEXT_COL)),
+                cursor.getString(cursor.getColumnIndexOrThrow(Table.POST_TEXT_COL)),
+                cursor.getInt(cursor.getColumnIndexOrThrow(Table.PRECISION_COL)),
+                cursor.getInt(cursor.getColumnIndexOrThrow(Table.SHOW_PROGRESS_COL)) > 0,
+                cursor.getInt(cursor.getColumnIndexOrThrow(Table.SHOW_START_COL)) > 0,
+                cursor.getInt(cursor.getColumnIndexOrThrow(Table.SHOW_END_COL)) > 0,
+                cursor.getInt(cursor.getColumnIndexOrThrow(Table.SHOW_YEARS_COL)) > 0,
+                cursor.getInt(cursor.getColumnIndexOrThrow(Table.SHOW_MONTHS_COL)) > 0,
+                cursor.getInt(cursor.getColumnIndexOrThrow(Table.SHOW_WEEKS_COL)) > 0,
+                cursor.getInt(cursor.getColumnIndexOrThrow(Table.SHOW_DAYS_COL)) > 0,
+                cursor.getInt(cursor.getColumnIndexOrThrow(Table.SHOW_HOURS_COL)) > 0,
+                cursor.getInt(cursor.getColumnIndexOrThrow(Table.SHOW_MINUTES_COL)) > 0,
+                cursor.getInt(cursor.getColumnIndexOrThrow(Table.SHOW_SECONDS_COL)) > 0,
+                cursor.getInt(cursor.getColumnIndexOrThrow(Table.TERMINATE_COL)) > 0,
+                cursor.getInt(cursor.getColumnIndexOrThrow(Table.NOTIFY_START_COL)) > 0,
+                cursor.getInt(cursor.getColumnIndexOrThrow(Table.NOTIFY_END_COL)) > 0
+        );
+        return data;
+    }
+
+    public static void apply(Context context, String undo_redo)
+    {
+        if(!undo_redo.equals(UNDO) && !undo_redo.equals(REDO))
+            throw new IllegalArgumentException("undo_redo must be " + UNDO + " or " + REDO);
+
+        String inverse_undo_redo = undo_redo.equals(UNDO) ? REDO : UNDO;
+
+        SQLiteDatabase db = new DB(context).getWritableDatabase();
+
+        Cursor cursor = db.rawQuery(SELECT_NEXT, new String[]{undo_redo, undo_redo});
+        if(cursor.getCount() == 0)
+            return;
+        cursor.moveToFirst();
+
+        String action = cursor.getString(cursor.getColumnIndexOrThrow(ACTION_COL));
+        long rowid = cursor.getLong(cursor.getColumnIndexOrThrow(TABLE_ROWID_COL));
+
+        switch(action)
+        {
+            case Data.INSERT:
+            {
+                rowid = cursor.getLong(cursor.getColumnIndexOrThrow(TABLE_ROWID_COL));
+                Data data = new Data(context, rowid);
+                data.delete(context, inverse_undo_redo);
+                break;
+            }
+            case Data.UPDATE:
+            {
+                Data data = data_from_cursor(cursor);
+                data.rowid = rowid;
+                data.update(context, inverse_undo_redo);
+                break;
+            }
+            case Data.DELETE:
+            {
+                Data data = data_from_cursor(cursor);
+                data.rowid = rowid;
+                data.insert(context, inverse_undo_redo);
+                break;
+            }
+            case Data.MOVE:
+            {
+                break;
+            }
+            default:
+        }
+
+        String undo_rowid = cursor.getString(cursor.getColumnIndexOrThrow(_ID));
+        cursor.close();
+
+        db.delete(TABLE_NAME, _ID + " = ?", new String[]{undo_rowid});
+
+        db.close();
+    }
 }

@@ -44,6 +44,12 @@ public class Data implements Serializable
     public static final String DB_CHANGED_FROM_POS = "Data.DB_CHANGED_FROM_POS";
     public static final String DB_CHANGED_TO_POS   = "Data.DB_CHANGED_TO_POS";
 
+    public static final String INSERT = "insert";
+    public static final String UPDATE = "update";
+    public static final String DELETE = "delete";
+    public static final String MOVE   = "move";
+
+
     public long rowid; // is -1 when not set, ie. the data doesn't exist in the DB
 
     @SuppressWarnings("WeakerAccess")
@@ -177,6 +183,70 @@ public class Data implements Serializable
         db.close();
     }
 
+    // verbose ctor
+    public Data(
+            long order,
+            long start_time,
+            long end_time,
+            String start_tz,
+            String end_tz,
+            boolean repeats,
+            int repeat_count,
+            int repeat_unit,
+            int repeat_days_of_week,
+            String title,
+            String pre_text,
+            String start_text,
+            String countdown_text,
+            String complete_text,
+            String post_text,
+            int precision,
+            boolean show_progress,
+            boolean show_start,
+            boolean show_end,
+            boolean show_years,
+            boolean show_months,
+            boolean show_weeks,
+            boolean show_days,
+            boolean show_hours,
+            boolean show_minutes,
+            boolean show_seconds,
+            boolean terminate,
+            boolean notify_start,
+            boolean notify_end)
+    {
+        this.rowid = -1;
+        this.order = order;
+        this.start_time = start_time;
+        this.end_time = end_time;
+        this.start_tz = start_tz;
+        this.end_tz = end_tz;
+        this.repeats = repeats;
+        this.repeat_count = repeat_count;
+        this.repeat_unit = repeat_unit;
+        this.repeat_days_of_week = repeat_days_of_week;
+        this.title = title;
+        this.pre_text = pre_text;
+        this.start_text = start_text;
+        this.countdown_text = countdown_text;
+        this.complete_text = complete_text;
+        this.post_text = post_text;
+        this.precision = precision;
+        this.show_progress = show_progress;
+        this.show_start = show_start;
+        this.show_end = show_end;
+        this.show_years = show_years;
+        this.show_months = show_months;
+        this.show_weeks = show_weeks;
+        this.show_days = show_days;
+        this.show_hours = show_hours;
+        this.show_minutes = show_minutes;
+        this.show_seconds = show_seconds;
+        this.terminate = terminate;
+        this.notify_start = notify_start;
+        this.notify_end = notify_end;
+    }
+
     // trivial copy ctor. Because Java apparently can't figure this out on its own
     public Data(Data b)
     {
@@ -249,13 +319,22 @@ public class Data implements Serializable
         return values;
     }
 
+    private void delete_redo_history(Context context)
+    {
+        SQLiteDatabase db = new DB(context).getWritableDatabase();
+        db.delete(Undo.TABLE_NAME, Undo.UNDO_REDO_COL + " = ?", new String[]{Undo.REDO});
+        db.close();
+    }
+
     // insert data into the DB. rowid must not be set
     // if order is not set, it will be placed at the bottom
     public void insert(Context context)
     {
-        if(rowid >= 0)
-            throw new IllegalStateException("Tried to insert when rowid already set");
-
+        insert(context, Undo.UNDO);
+        delete_redo_history(context);
+    }
+    public void insert(Context context, String undo_redo)
+    {
         apply_repeat();
 
         SQLiteDatabase db = new DB(context).getWritableDatabase();
@@ -269,13 +348,23 @@ public class Data implements Serializable
             cursor.close();
         }
 
-        rowid = db.insert(Table.TABLE_NAME, null, build_ContentValues());
+        ContentValues values = build_ContentValues();
+        if(rowid > 0)
+            values.put(Table._ID, rowid);
+        rowid = db.insert(Table.TABLE_NAME, null, values);
+
+        ContentValues undo_columns = new ContentValues();
+        undo_columns.put(Undo.ACTION_COL, INSERT);
+        undo_columns.put(Undo.UNDO_REDO_COL, undo_redo);
+        undo_columns.put(Undo.TABLE_ROWID_COL, rowid);
+        db.insert(Undo.TABLE_NAME, null, undo_columns);
+
         db.close();
 
         Notification_handler.reset_alarm(context, this);
 
         Intent intent = new Intent(DB_CHANGED_EVENT);
-        intent.putExtra(DB_CHANGED_TYPE, "insert");
+        intent.putExtra(DB_CHANGED_TYPE, INSERT);
         intent.putExtra(DB_CHANGED_ROWID, rowid);
         LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
     }
@@ -284,19 +373,32 @@ public class Data implements Serializable
     // rowid must be set
     public void update(Context context)
     {
+        update(context, Undo.UNDO);
+        delete_redo_history(context);
+    }
+    public void update(Context context, String undo_redo)
+    {
         if(rowid < 0)
             throw new IllegalStateException("Tried to update when rowid isn't set");
 
         apply_repeat();
 
         SQLiteDatabase db = new DB(context).getWritableDatabase();
+
+        Data old_data = new Data(context, rowid);
+        ContentValues undo_columns = old_data.build_ContentValues();
+        undo_columns.put(Undo.ACTION_COL, UPDATE);
+        undo_columns.put(Undo.UNDO_REDO_COL, undo_redo);
+        undo_columns.put(Undo.TABLE_ROWID_COL, rowid);
+        db.insert(Undo.TABLE_NAME, null, undo_columns);
+
         db.update(Table.TABLE_NAME, build_ContentValues(), Table._ID + " = ?", new String[]{String.valueOf(rowid)});
         db.close();
 
         Notification_handler.reset_alarm(context, this);
 
         Intent intent = new Intent(DB_CHANGED_EVENT);
-        intent.putExtra(DB_CHANGED_TYPE, "update");
+        intent.putExtra(DB_CHANGED_TYPE, UPDATE);
         intent.putExtra(DB_CHANGED_ROWID, rowid);
         LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
     }
@@ -305,6 +407,11 @@ public class Data implements Serializable
     // rowid must be set, and will be unset after deletion
     public void delete(Context context)
     {
+        delete(context, Undo.UNDO);
+        delete_redo_history(context);
+    }
+    public void delete(Context context, String undo_redo)
+    {
         if(rowid < 0)
             throw new IllegalStateException("Tried to delete when rowid isn't set");
 
@@ -312,13 +419,19 @@ public class Data implements Serializable
 
         SQLiteDatabase db = new DB(context).getWritableDatabase();
 
+        ContentValues undo_columns = build_ContentValues();
+        undo_columns.put(Undo.ACTION_COL, DELETE);
+        undo_columns.put(Undo.UNDO_REDO_COL, undo_redo);
+        undo_columns.put(Undo.TABLE_ROWID_COL, rowid);
+        db.insert(Undo.TABLE_NAME, null, undo_columns);
+
         db.delete(Table.TABLE_NAME,
                 Table._ID + " = ?",
                 new String[] {String.valueOf(rowid)});
         db.close();
 
         Intent intent = new Intent(DB_CHANGED_EVENT);
-        intent.putExtra(DB_CHANGED_TYPE, "delete");
+        intent.putExtra(DB_CHANGED_TYPE, DELETE);
         intent.putExtra(DB_CHANGED_ROWID, rowid);
         LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
 
@@ -338,6 +451,11 @@ public class Data implements Serializable
         return from_order;
     }
     public void reorder(Context context, int from_pos, int to_pos)
+    {
+        reorder(context, from_pos, to_pos, Undo.UNDO);
+        delete_redo_history(context);
+    }
+    public void reorder(Context context, int from_pos, int to_pos, String undo_redo)
     {
         if(from_pos == to_pos)
             return;
@@ -363,10 +481,16 @@ public class Data implements Serializable
         values.put(Table.ORDER_COL, to_order);
         db.update(Table.TABLE_NAME, values, Table._ID + " = ?", new String[] {String.valueOf(rowid)});
 
+        ContentValues undo_columns = new ContentValues();
+        undo_columns.put(Undo.ACTION_COL, MOVE);
+        undo_columns.put(Undo.UNDO_REDO_COL, undo_redo);
+        undo_columns.put(Undo.SWAP_FROM_POS_COL, from_pos);
+        undo_columns.put(Undo.SWAP_TO_POS_COL, to_pos);
+        db.insert(Undo.TABLE_NAME, null, undo_columns);
         db.close();
 
         Intent intent = new Intent(DB_CHANGED_EVENT);
-        intent.putExtra(DB_CHANGED_TYPE, "move");
+        intent.putExtra(DB_CHANGED_TYPE, MOVE);
         intent.putExtra(DB_CHANGED_FROM_POS, from_pos);
         intent.putExtra(DB_CHANGED_TO_POS, to_pos);
         LocalBroadcastManager.getInstance(context).sendBroadcast(intent);

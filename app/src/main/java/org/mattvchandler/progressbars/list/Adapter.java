@@ -137,26 +137,27 @@ public class Adapter extends RecyclerView.Adapter<Adapter.Progress_bar_row_view_
 
                 switch(change_type)
                 {
-                case "insert":
+                case Data.INSERT:
                     reset_cursor();
                     Adapter.this.notifyItemInserted(find_by_rowid(rowid));
                     break;
-                case "update":
+                case Data.UPDATE:
                     Adapter.this.notifyItemChanged(find_by_rowid(rowid));
                     reset_cursor();
                     break;
-                case "delete":
+                case Data.DELETE:
                     Adapter.this.notifyItemRemoved(find_by_rowid(rowid));
                     reset_cursor();
                     break;
-                case "move":
+                case Data.MOVE:
                     reset_cursor();
                     int from_pos = intent.getIntExtra(Data.DB_CHANGED_FROM_POS, -1);
-                    int to_pos = intent.getIntExtra(Data.DB_CHANGED_FROM_POS, -1);
+                    int to_pos = intent.getIntExtra(Data.DB_CHANGED_TO_POS, -1);
                     if(from_pos == -1 || to_pos == -1)
                         return;
 
                     Adapter.this.notifyItemRangeChanged(min(from_pos, to_pos), abs(from_pos - to_pos) + 1);
+                    break;
                 default:
                 }
             }
