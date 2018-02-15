@@ -19,7 +19,7 @@ import android.widget.TimePicker;
 import android.widget.Toast;
 
 import org.mattvchandler.progressbars.db.Data;
-import org.mattvchandler.progressbars.db.Table;
+import org.mattvchandler.progressbars.db.Progress_bars_table;
 import org.mattvchandler.progressbars.util.Dynamic_theme_activity;
 import org.mattvchandler.progressbars.util.Preferences;
 import org.mattvchandler.progressbars.R;
@@ -183,7 +183,7 @@ public class Settings extends Dynamic_theme_activity implements DatePickerDialog
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l)
             {
-                boolean week_selected = i == Table.Unit.WEEK.index;
+                boolean week_selected = i == Progress_bars_table.Unit.WEEK.index;
                 binding.repeatOn.setVisibility(week_selected ? View.VISIBLE : View.GONE);
                 binding.repeatDaysOfWeek.setVisibility(week_selected ? View.VISIBLE : View.GONE);
 
@@ -277,7 +277,7 @@ public class Settings extends Dynamic_theme_activity implements DatePickerDialog
         binding.repeatUnits.setSelection(data.repeat_unit);
         binding.repeatDaysOfWeek.setText(get_days_of_week_abbr(this, data.repeat_days_of_week));
 
-        boolean week_selected = data.repeat_unit == Table.Unit.WEEK.index;
+        boolean week_selected = data.repeat_unit == Progress_bars_table.Unit.WEEK.index;
         binding.repeatOn.setVisibility(week_selected ? View.VISIBLE : View.GONE);
         binding.repeatDaysOfWeek.setVisibility(week_selected ? View.VISIBLE : View.GONE);
     }
@@ -585,7 +585,7 @@ public class Settings extends Dynamic_theme_activity implements DatePickerDialog
     {
         // set days of week for weekly repeat (ex: MWF)
         StringBuilder days_of_week_str = new StringBuilder();
-        for(Table.Days_of_week day : Table.Days_of_week.values())
+        for(Progress_bars_table.Days_of_week day : Progress_bars_table.Days_of_week.values())
         {
             if((days_of_week & day.mask) != 0)
                 days_of_week_str.append(context.getResources().getStringArray(R.array.day_of_week_abbr)[day.index]);
@@ -670,8 +670,8 @@ public class Settings extends Dynamic_theme_activity implements DatePickerDialog
     @SuppressWarnings("UnusedParameters")
     public void on_days_of_week_butt(View view)
     {
-        boolean selected[] = new boolean[Table.Days_of_week.values().length];
-        for(Table.Days_of_week day : Table.Days_of_week.values())
+        boolean selected[] = new boolean[Progress_bars_table.Days_of_week.values().length];
+        for(Progress_bars_table.Days_of_week day : Progress_bars_table.Days_of_week.values())
         {
             selected[day.index] = (data.repeat_days_of_week & day.mask) != 0;
         }

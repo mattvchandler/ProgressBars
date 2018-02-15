@@ -17,7 +17,7 @@ import android.view.ViewGroup;
 
 import org.mattvchandler.progressbars.db.DB;
 import org.mattvchandler.progressbars.db.Data;
-import org.mattvchandler.progressbars.db.Table;
+import org.mattvchandler.progressbars.db.Progress_bars_table;
 import org.mattvchandler.progressbars.Progress_bars;
 import org.mattvchandler.progressbars.R;
 import org.mattvchandler.progressbars.settings.Settings;
@@ -123,7 +123,7 @@ public class Adapter extends RecyclerView.Adapter<Adapter.Progress_bar_row_view_
         // store the data we'll need for the lifetime of this object
         this.context = context;
         db = new DB(context).getWritableDatabase();
-        cursor = db.rawQuery(Table.SELECT_ALL_ROWS, null);
+        cursor = db.rawQuery(Progress_bars_table.SELECT_ALL_ROWS, null);
 
         BroadcastReceiver db_change_receiver = new BroadcastReceiver()
         {
@@ -173,7 +173,7 @@ public class Adapter extends RecyclerView.Adapter<Adapter.Progress_bar_row_view_
             cursor.close();
 
         // get new DB data
-        cursor = db.rawQuery(Table.SELECT_ALL_ROWS, null);
+        cursor = db.rawQuery(Progress_bars_table.SELECT_ALL_ROWS, null);
     }
 
     @Override
@@ -207,7 +207,7 @@ public class Adapter extends RecyclerView.Adapter<Adapter.Progress_bar_row_view_
         for(int i = 0; i < getItemCount(); ++i)
         {
             cursor.moveToPosition(i);
-            if(cursor.getLong(cursor.getColumnIndexOrThrow(Table._ID)) == rowid)
+            if(cursor.getLong(cursor.getColumnIndexOrThrow(Progress_bars_table._ID)) == rowid)
             {
                 return i;
             }

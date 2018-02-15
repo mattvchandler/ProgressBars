@@ -18,7 +18,7 @@ import android.util.TypedValue;
 
 import org.mattvchandler.progressbars.db.Data;
 import org.mattvchandler.progressbars.db.DB;
-import org.mattvchandler.progressbars.db.Table;
+import org.mattvchandler.progressbars.db.Progress_bars_table;
 import org.mattvchandler.progressbars.Progress_bars;
 import org.mattvchandler.progressbars.R;
 
@@ -212,7 +212,7 @@ public class Notification_handler extends BroadcastReceiver
     public static void reset_all_alarms(Context context)
     {
         SQLiteDatabase db = new DB(context).getReadableDatabase();
-        Cursor cursor = db.rawQuery(Table.SELECT_ALL_ROWS, null);
+        Cursor cursor = db.rawQuery(Progress_bars_table.SELECT_ALL_ROWS, null);
 
         long now = System.currentTimeMillis() / 1000;
 

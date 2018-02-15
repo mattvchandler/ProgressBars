@@ -25,7 +25,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
-public class Undo extends Table
+public class Undo extends Progress_bars_table
 {
     public static final String TABLE_NAME = "undo";
 
@@ -41,7 +41,7 @@ public class Undo extends Table
 
     // Select stmt to get all columns, all rows, ordered by order #
     public static final String SELECT_ALL_ROWS =
-            "SELECT * FROM " + TABLE_NAME + " ORDER BY " + Table.ORDER_COL;
+            "SELECT * FROM " + TABLE_NAME + " ORDER BY " + Progress_bars_table.ORDER_COL;
 
     private static final String SELECT_NEXT =
             String.format("SELECT * FROM %1$s WHERE %2$s = ? AND %3$s = (SELECT MAX(%3$s) FROM %1$s WHERE %2$s = ?)", TABLE_NAME, UNDO_REDO_COL, _ID);
@@ -57,41 +57,41 @@ public class Undo extends Table
                     SWAP_FROM_POS_COL + " INTEGER, " +
                     SWAP_TO_POS_COL + " INTEGER, " +
 
-                    Table.ORDER_COL + " INTEGER, " +
-                    Table.START_TIME_COL + " INTEGER, " +
-                    Table.START_TZ_COL + " TEXT, " +
-                    Table.END_TIME_COL + " INTEGER, " +
-                    Table.END_TZ_COL + " TEXT, " +
+                    Progress_bars_table.ORDER_COL + " INTEGER, " +
+                    Progress_bars_table.START_TIME_COL + " INTEGER, " +
+                    Progress_bars_table.START_TZ_COL + " TEXT, " +
+                    Progress_bars_table.END_TIME_COL + " INTEGER, " +
+                    Progress_bars_table.END_TZ_COL + " TEXT, " +
 
-                    Table.REPEATS_COL + " INTEGER, " +
-                    Table.REPEAT_COUNT_COL + " INTEGER, " +
-                    Table.REPEAT_UNIT_COL + " INTEGER, " +
-                    Table.REPEAT_DAYS_OF_WEEK_COL + " INTEGER, " +
+                    Progress_bars_table.REPEATS_COL + " INTEGER, " +
+                    Progress_bars_table.REPEAT_COUNT_COL + " INTEGER, " +
+                    Progress_bars_table.REPEAT_UNIT_COL + " INTEGER, " +
+                    Progress_bars_table.REPEAT_DAYS_OF_WEEK_COL + " INTEGER, " +
 
-                    Table.TITLE_COL + " TEXT, " +
-                    Table.PRE_TEXT_COL + " TEXT, " +
-                    Table.START_TEXT_COL + " TEXT, " +
-                    Table.COUNTDOWN_TEXT_COL + " TEXT, " +
-                    Table.COMPLETE_TEXT_COL + " TEXT, " +
-                    Table.POST_TEXT_COL + " TEXT, " +
+                    Progress_bars_table.TITLE_COL + " TEXT, " +
+                    Progress_bars_table.PRE_TEXT_COL + " TEXT, " +
+                    Progress_bars_table.START_TEXT_COL + " TEXT, " +
+                    Progress_bars_table.COUNTDOWN_TEXT_COL + " TEXT, " +
+                    Progress_bars_table.COMPLETE_TEXT_COL + " TEXT, " +
+                    Progress_bars_table.POST_TEXT_COL + " TEXT, " +
 
-                    Table.PRECISION_COL + " INTEGER, " +
+                    Progress_bars_table.PRECISION_COL + " INTEGER, " +
 
-                    Table.SHOW_START_COL + " INTEGER, " +
-                    Table.SHOW_END_COL + " INTEGER, " +
-                    Table.SHOW_PROGRESS_COL + " INTEGER, " +
+                    Progress_bars_table.SHOW_START_COL + " INTEGER, " +
+                    Progress_bars_table.SHOW_END_COL + " INTEGER, " +
+                    Progress_bars_table.SHOW_PROGRESS_COL + " INTEGER, " +
 
-                    Table.SHOW_YEARS_COL + " INTEGER, " +
-                    Table.SHOW_MONTHS_COL + " INTEGER, " +
-                    Table.SHOW_WEEKS_COL + " INTEGER, " +
-                    Table.SHOW_DAYS_COL + " INTEGER, " +
-                    Table.SHOW_HOURS_COL + " INTEGER, " +
-                    Table.SHOW_MINUTES_COL + " INTEGER, " +
-                    Table.SHOW_SECONDS_COL + " INTEGER, " +
+                    Progress_bars_table.SHOW_YEARS_COL + " INTEGER, " +
+                    Progress_bars_table.SHOW_MONTHS_COL + " INTEGER, " +
+                    Progress_bars_table.SHOW_WEEKS_COL + " INTEGER, " +
+                    Progress_bars_table.SHOW_DAYS_COL + " INTEGER, " +
+                    Progress_bars_table.SHOW_HOURS_COL + " INTEGER, " +
+                    Progress_bars_table.SHOW_MINUTES_COL + " INTEGER, " +
+                    Progress_bars_table.SHOW_SECONDS_COL + " INTEGER, " +
 
-                    Table.TERMINATE_COL + " INTEGER, " +
-                    Table.NOTIFY_START_COL + " INTEGER, " +
-                    Table.NOTIFY_END_COL + " INTEGER)";
+                    Progress_bars_table.TERMINATE_COL + " INTEGER, " +
+                    Progress_bars_table.NOTIFY_START_COL + " INTEGER, " +
+                    Progress_bars_table.NOTIFY_END_COL + " INTEGER)";
 
     public static void upgrade(SQLiteDatabase db, int old_version)
     {
@@ -102,35 +102,35 @@ public class Undo extends Table
     public static Data data_from_cursor(Cursor cursor)
     {
         Data data = new Data(
-                cursor.getLong(cursor.getColumnIndexOrThrow(Table.ORDER_COL)),
-                cursor.getLong(cursor.getColumnIndexOrThrow(Table.START_TIME_COL)),
-                cursor.getLong(cursor.getColumnIndexOrThrow(Table.END_TIME_COL)),
-                cursor.getString(cursor.getColumnIndexOrThrow(Table.START_TZ_COL)),
-                cursor.getString(cursor.getColumnIndexOrThrow(Table.END_TZ_COL)),
-                cursor.getInt(cursor.getColumnIndexOrThrow(Table.REPEATS_COL)) > 0,
-                cursor.getInt(cursor.getColumnIndexOrThrow(Table.REPEAT_COUNT_COL)),
-                cursor.getInt(cursor.getColumnIndexOrThrow(Table.REPEAT_UNIT_COL)),
-                cursor.getInt(cursor.getColumnIndexOrThrow(Table.REPEAT_DAYS_OF_WEEK_COL)),
-                cursor.getString(cursor.getColumnIndexOrThrow(Table.TITLE_COL)),
-                cursor.getString(cursor.getColumnIndexOrThrow(Table.PRE_TEXT_COL)),
-                cursor.getString(cursor.getColumnIndexOrThrow(Table.START_TEXT_COL)),
-                cursor.getString(cursor.getColumnIndexOrThrow(Table.COUNTDOWN_TEXT_COL)),
-                cursor.getString(cursor.getColumnIndexOrThrow(Table.COMPLETE_TEXT_COL)),
-                cursor.getString(cursor.getColumnIndexOrThrow(Table.POST_TEXT_COL)),
-                cursor.getInt(cursor.getColumnIndexOrThrow(Table.PRECISION_COL)),
-                cursor.getInt(cursor.getColumnIndexOrThrow(Table.SHOW_PROGRESS_COL)) > 0,
-                cursor.getInt(cursor.getColumnIndexOrThrow(Table.SHOW_START_COL)) > 0,
-                cursor.getInt(cursor.getColumnIndexOrThrow(Table.SHOW_END_COL)) > 0,
-                cursor.getInt(cursor.getColumnIndexOrThrow(Table.SHOW_YEARS_COL)) > 0,
-                cursor.getInt(cursor.getColumnIndexOrThrow(Table.SHOW_MONTHS_COL)) > 0,
-                cursor.getInt(cursor.getColumnIndexOrThrow(Table.SHOW_WEEKS_COL)) > 0,
-                cursor.getInt(cursor.getColumnIndexOrThrow(Table.SHOW_DAYS_COL)) > 0,
-                cursor.getInt(cursor.getColumnIndexOrThrow(Table.SHOW_HOURS_COL)) > 0,
-                cursor.getInt(cursor.getColumnIndexOrThrow(Table.SHOW_MINUTES_COL)) > 0,
-                cursor.getInt(cursor.getColumnIndexOrThrow(Table.SHOW_SECONDS_COL)) > 0,
-                cursor.getInt(cursor.getColumnIndexOrThrow(Table.TERMINATE_COL)) > 0,
-                cursor.getInt(cursor.getColumnIndexOrThrow(Table.NOTIFY_START_COL)) > 0,
-                cursor.getInt(cursor.getColumnIndexOrThrow(Table.NOTIFY_END_COL)) > 0
+                cursor.getLong(cursor.getColumnIndexOrThrow(Progress_bars_table.ORDER_COL)),
+                cursor.getLong(cursor.getColumnIndexOrThrow(Progress_bars_table.START_TIME_COL)),
+                cursor.getLong(cursor.getColumnIndexOrThrow(Progress_bars_table.END_TIME_COL)),
+                cursor.getString(cursor.getColumnIndexOrThrow(Progress_bars_table.START_TZ_COL)),
+                cursor.getString(cursor.getColumnIndexOrThrow(Progress_bars_table.END_TZ_COL)),
+                cursor.getInt(cursor.getColumnIndexOrThrow(Progress_bars_table.REPEATS_COL)) > 0,
+                cursor.getInt(cursor.getColumnIndexOrThrow(Progress_bars_table.REPEAT_COUNT_COL)),
+                cursor.getInt(cursor.getColumnIndexOrThrow(Progress_bars_table.REPEAT_UNIT_COL)),
+                cursor.getInt(cursor.getColumnIndexOrThrow(Progress_bars_table.REPEAT_DAYS_OF_WEEK_COL)),
+                cursor.getString(cursor.getColumnIndexOrThrow(Progress_bars_table.TITLE_COL)),
+                cursor.getString(cursor.getColumnIndexOrThrow(Progress_bars_table.PRE_TEXT_COL)),
+                cursor.getString(cursor.getColumnIndexOrThrow(Progress_bars_table.START_TEXT_COL)),
+                cursor.getString(cursor.getColumnIndexOrThrow(Progress_bars_table.COUNTDOWN_TEXT_COL)),
+                cursor.getString(cursor.getColumnIndexOrThrow(Progress_bars_table.COMPLETE_TEXT_COL)),
+                cursor.getString(cursor.getColumnIndexOrThrow(Progress_bars_table.POST_TEXT_COL)),
+                cursor.getInt(cursor.getColumnIndexOrThrow(Progress_bars_table.PRECISION_COL)),
+                cursor.getInt(cursor.getColumnIndexOrThrow(Progress_bars_table.SHOW_PROGRESS_COL)) > 0,
+                cursor.getInt(cursor.getColumnIndexOrThrow(Progress_bars_table.SHOW_START_COL)) > 0,
+                cursor.getInt(cursor.getColumnIndexOrThrow(Progress_bars_table.SHOW_END_COL)) > 0,
+                cursor.getInt(cursor.getColumnIndexOrThrow(Progress_bars_table.SHOW_YEARS_COL)) > 0,
+                cursor.getInt(cursor.getColumnIndexOrThrow(Progress_bars_table.SHOW_MONTHS_COL)) > 0,
+                cursor.getInt(cursor.getColumnIndexOrThrow(Progress_bars_table.SHOW_WEEKS_COL)) > 0,
+                cursor.getInt(cursor.getColumnIndexOrThrow(Progress_bars_table.SHOW_DAYS_COL)) > 0,
+                cursor.getInt(cursor.getColumnIndexOrThrow(Progress_bars_table.SHOW_HOURS_COL)) > 0,
+                cursor.getInt(cursor.getColumnIndexOrThrow(Progress_bars_table.SHOW_MINUTES_COL)) > 0,
+                cursor.getInt(cursor.getColumnIndexOrThrow(Progress_bars_table.SHOW_SECONDS_COL)) > 0,
+                cursor.getInt(cursor.getColumnIndexOrThrow(Progress_bars_table.TERMINATE_COL)) > 0,
+                cursor.getInt(cursor.getColumnIndexOrThrow(Progress_bars_table.NOTIFY_START_COL)) > 0,
+                cursor.getInt(cursor.getColumnIndexOrThrow(Progress_bars_table.NOTIFY_END_COL)) > 0
         );
         return data;
     }

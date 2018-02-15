@@ -6,7 +6,7 @@ import android.database.sqlite.SQLiteDatabase;
 
 import org.mattvchandler.progressbars.db.DB;
 import org.mattvchandler.progressbars.db.Data;
-import org.mattvchandler.progressbars.db.Table;
+import org.mattvchandler.progressbars.db.Progress_bars_table;
 import org.mattvchandler.progressbars.db.Undo;
 
 /*
@@ -43,7 +43,7 @@ public class Resetting_application extends Application
 
         // insert a new row when no others exist
         SQLiteDatabase db = new DB(this).getReadableDatabase();
-        Cursor cursor = db.rawQuery(Table.SELECT_ALL_ROWS, null);
+        Cursor cursor = db.rawQuery(Progress_bars_table.SELECT_ALL_ROWS, null);
         if(cursor.getCount() == 0)
         {
             new Data(this).insert(this);
@@ -51,7 +51,7 @@ public class Resetting_application extends Application
         else
         {
             // clean up existing orders. make them sequential
-            Table.cleanup_order(this);
+            Progress_bars_table.cleanup_order(this);
         }
         cursor.close();
         db.close();

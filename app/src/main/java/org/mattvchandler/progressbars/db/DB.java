@@ -40,7 +40,7 @@ public class DB extends SQLiteOpenHelper
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase)
     {
-        sqLiteDatabase.execSQL(Table.CREATE_TABLE);
+        sqLiteDatabase.execSQL(Progress_bars_table.CREATE_TABLE);
         sqLiteDatabase.execSQL(Undo.CREATE_TABLE);
     }
 
@@ -51,7 +51,7 @@ public class DB extends SQLiteOpenHelper
         if(new_version != DB_VERSION)
             throw new IllegalStateException("DB version mismatch");
 
-        Table.upgrade(db, old_version);
+        Progress_bars_table.upgrade(db, old_version);
         Undo.upgrade(db, old_version);
     }
 }
