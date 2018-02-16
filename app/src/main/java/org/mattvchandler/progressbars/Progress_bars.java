@@ -127,6 +127,14 @@ public class Progress_bars extends Dynamic_theme_activity
         @Override
         public void onReceive(Context context, Intent intent)
         {
+            String change_type = intent.getStringExtra(Data.DB_CHANGED_TYPE);
+            if(change_type.equals(Data.INSERT) || change_type.equals(Data.UPDATE))
+            {
+                long rowid = intent.getLongExtra(Data.DB_CHANGED_ROWID, -1);
+                if(rowid > 0)
+                    binding.mainList.scrollToPosition(adapter.find_by_rowid(rowid));
+            }
+
             invalidateOptionsMenu();
         }
     };
