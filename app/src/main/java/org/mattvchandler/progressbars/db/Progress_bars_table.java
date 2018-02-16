@@ -159,90 +159,161 @@ public class Progress_bars_table implements BaseColumns
 
     public static void upgrade(SQLiteDatabase db, int old_version)
     {
+        Cursor table_exists = db.query("sqlite_master", new String[] {"name"}, "type = 'table' AND name = ?", new String[] {TABLE_NAME}, null, null, null);
+        if(table_exists.getCount() == 0)
+        {
+            db.execSQL(CREATE_TABLE);
+            return;
+        }
+
         if(old_version == 1)
         {
-            Cursor table_exists = db.query("sqlite_master", new String[] {"name"}, "type = 'table' AND name = ?", new String[] {TABLE_NAME}, null, null, null);
-            if(table_exists.getCount() == 1)
-            {
-                db.execSQL("ALTER TABLE " + TABLE_NAME + " RENAME TO TMP_" + TABLE_NAME);
-                db.execSQL(CREATE_TABLE);
-                db.execSQL("INSERT INTO " + TABLE_NAME +
+            // Added some new columns - copy old data and insert defaults for new columns
+            db.execSQL("ALTER TABLE " + TABLE_NAME + " RENAME TO TMP_" + TABLE_NAME);
+            db.execSQL(CREATE_TABLE);
+            db.execSQL("INSERT INTO " + TABLE_NAME +
+                "(" +
+                    ORDER_COL + ", " +
+                    START_TIME_COL + ", " +
+                    END_TIME_COL + ", " +
+                    START_TZ_COL + ", " +
+                    END_TZ_COL + ", " +
+                    REPEATS_COL + ", " +
+                    REPEAT_COUNT_COL + ", " +
+                    REPEAT_UNIT_COL + ", " +
+                    REPEAT_DAYS_OF_WEEK_COL + ", " +
+                    TITLE_COL + ", " +
+                    PRE_TEXT_COL + ", " +
+                    START_TEXT_COL + ", " +
+                    COUNTDOWN_TEXT_COL + ", " +
+                    COMPLETE_TEXT_COL + ", " +
+                    POST_TEXT_COL + ", " +
+                    PRECISION_COL + ", " +
+                    SHOW_START_COL + ", " +
+                    SHOW_END_COL + ", " +
+                    SHOW_PROGRESS_COL + ", " +
+                    SHOW_YEARS_COL + ", " +
+                    SHOW_MONTHS_COL + ", " +
+                    SHOW_WEEKS_COL + ", " +
+                    SHOW_DAYS_COL + ", " +
+                    SHOW_HOURS_COL + ", " +
+                    SHOW_MINUTES_COL + ", " +
+                    SHOW_SECONDS_COL + ", " +
+                    TERMINATE_COL + ", " +
+                    NOTIFY_START_COL + ", " +
+                    NOTIFY_END_COL +
+                ")" +
+                " SELECT " +
+                    ORDER_COL + ", " +
+                    START_TIME_COL + ", " +
+                    END_TIME_COL + ", " +
+                    START_TZ_COL + ", " +
+                    END_TZ_COL + ", " +
+                    "0, " +
+                    "1, " +
+                    String.valueOf(Unit.DAY.index)+ ", " +
+                    String.valueOf(Days_of_week.all_days_mask()) + ", " +
+                    TITLE_COL + ", " +
+                    PRE_TEXT_COL + ", " +
+                    START_TEXT_COL + ", " +
+                    COUNTDOWN_TEXT_COL + ", " +
+                    COMPLETE_TEXT_COL + ", " +
+                    POST_TEXT_COL + ", " +
+                    PRECISION_COL + ", " +
+                    SHOW_START_COL + ", " +
+                    SHOW_END_COL + ", " +
+                    SHOW_PROGRESS_COL + ", " +
+                    SHOW_YEARS_COL + ", " +
+                    SHOW_MONTHS_COL + ", " +
+                    SHOW_WEEKS_COL + ", " +
+                    SHOW_DAYS_COL + ", " +
+                    SHOW_HOURS_COL + ", " +
+                    SHOW_MINUTES_COL + ", " +
+                    SHOW_SECONDS_COL + ", " +
+                    TERMINATE_COL + ", " +
+                    NOTIFY_START_COL + ", " +
+                    NOTIFY_END_COL + " " +
+                "FROM TMP_" + TABLE_NAME);
+
+            db.execSQL("DROP TABLE TMP_" + TABLE_NAME);
+        }
+        else if(old_version == 2)
+        {
+            // fixed NOT NULL for some columns - copy all data over
+            db.execSQL("ALTER TABLE " + TABLE_NAME + " RENAME TO TMP_" + TABLE_NAME);
+            db.execSQL(CREATE_TABLE);
+            db.execSQL("INSERT INTO " + TABLE_NAME +
                     "(" +
-                        ORDER_COL + ", " +
-                        START_TIME_COL + ", " +
-                        END_TIME_COL + ", " +
-                        START_TZ_COL + ", " +
-                        END_TZ_COL + ", " +
-                        REPEATS_COL + ", " +
-                        REPEAT_COUNT_COL + ", " +
-                        REPEAT_UNIT_COL + ", " +
-                        REPEAT_DAYS_OF_WEEK_COL + ", " +
-                        TITLE_COL + ", " +
-                        PRE_TEXT_COL + ", " +
-                        START_TEXT_COL + ", " +
-                        COUNTDOWN_TEXT_COL + ", " +
-                        COMPLETE_TEXT_COL + ", " +
-                        POST_TEXT_COL + ", " +
-                        PRECISION_COL + ", " +
-                        SHOW_START_COL + ", " +
-                        SHOW_END_COL + ", " +
-                        SHOW_PROGRESS_COL + ", " +
-                        SHOW_YEARS_COL + ", " +
-                        SHOW_MONTHS_COL + ", " +
-                        SHOW_WEEKS_COL + ", " +
-                        SHOW_DAYS_COL + ", " +
-                        SHOW_HOURS_COL + ", " +
-                        SHOW_MINUTES_COL + ", " +
-                        SHOW_SECONDS_COL + ", " +
-                        TERMINATE_COL + ", " +
-                        NOTIFY_START_COL + ", " +
-                        NOTIFY_END_COL +
+                    ORDER_COL + ", " +
+                    START_TIME_COL + ", " +
+                    END_TIME_COL + ", " +
+                    START_TZ_COL + ", " +
+                    END_TZ_COL + ", " +
+                    REPEATS_COL + ", " +
+                    REPEAT_COUNT_COL + ", " +
+                    REPEAT_UNIT_COL + ", " +
+                    REPEAT_DAYS_OF_WEEK_COL + ", " +
+                    TITLE_COL + ", " +
+                    PRE_TEXT_COL + ", " +
+                    START_TEXT_COL + ", " +
+                    COUNTDOWN_TEXT_COL + ", " +
+                    COMPLETE_TEXT_COL + ", " +
+                    POST_TEXT_COL + ", " +
+                    PRECISION_COL + ", " +
+                    SHOW_START_COL + ", " +
+                    SHOW_END_COL + ", " +
+                    SHOW_PROGRESS_COL + ", " +
+                    SHOW_YEARS_COL + ", " +
+                    SHOW_MONTHS_COL + ", " +
+                    SHOW_WEEKS_COL + ", " +
+                    SHOW_DAYS_COL + ", " +
+                    SHOW_HOURS_COL + ", " +
+                    SHOW_MINUTES_COL + ", " +
+                    SHOW_SECONDS_COL + ", " +
+                    TERMINATE_COL + ", " +
+                    NOTIFY_START_COL + ", " +
+                    NOTIFY_END_COL +
                     ")" +
                     " SELECT " +
-                        ORDER_COL + ", " +
-                        START_TIME_COL + ", " +
-                        END_TIME_COL + ", " +
-                        START_TZ_COL + ", " +
-                        END_TZ_COL + ", " +
-                        "0, " +
-                        "1, " +
-                        String.valueOf(Unit.DAY.index)+ ", " +
-                        String.valueOf(Days_of_week.all_days_mask()) + ", " +
-                        TITLE_COL + ", " +
-                        PRE_TEXT_COL + ", " +
-                        START_TEXT_COL + ", " +
-                        COUNTDOWN_TEXT_COL + ", " +
-                        COMPLETE_TEXT_COL + ", " +
-                        POST_TEXT_COL + ", " +
-                        PRECISION_COL + ", " +
-                        SHOW_START_COL + ", " +
-                        SHOW_END_COL + ", " +
-                        SHOW_PROGRESS_COL + ", " +
-                        SHOW_YEARS_COL + ", " +
-                        SHOW_MONTHS_COL + ", " +
-                        SHOW_WEEKS_COL + ", " +
-                        SHOW_DAYS_COL + ", " +
-                        SHOW_HOURS_COL + ", " +
-                        SHOW_MINUTES_COL + ", " +
-                        SHOW_SECONDS_COL + ", " +
-                        TERMINATE_COL + ", " +
-                        NOTIFY_START_COL + ", " +
-                        NOTIFY_END_COL + " " +
+                    ORDER_COL + ", " +
+                    START_TIME_COL + ", " +
+                    END_TIME_COL + ", " +
+                    START_TZ_COL + ", " +
+                    END_TZ_COL + ", " +
+                    REPEATS_COL + ", " +
+                    REPEAT_COUNT_COL + ", " +
+                    REPEAT_UNIT_COL + ", " +
+                    REPEAT_DAYS_OF_WEEK_COL + ", " +
+                    TITLE_COL + ", " +
+                    PRE_TEXT_COL + ", " +
+                    START_TEXT_COL + ", " +
+                    COUNTDOWN_TEXT_COL + ", " +
+                    COMPLETE_TEXT_COL + ", " +
+                    POST_TEXT_COL + ", " +
+                    PRECISION_COL + ", " +
+                    SHOW_START_COL + ", " +
+                    SHOW_END_COL + ", " +
+                    SHOW_PROGRESS_COL + ", " +
+                    SHOW_YEARS_COL + ", " +
+                    SHOW_MONTHS_COL + ", " +
+                    SHOW_WEEKS_COL + ", " +
+                    SHOW_DAYS_COL + ", " +
+                    SHOW_HOURS_COL + ", " +
+                    SHOW_MINUTES_COL + ", " +
+                    SHOW_SECONDS_COL + ", " +
+                    TERMINATE_COL + ", " +
+                    NOTIFY_START_COL + ", " +
+                    NOTIFY_END_COL + " " +
                     "FROM TMP_" + TABLE_NAME);
 
-                db.execSQL("DROP TABLE TMP_" + TABLE_NAME);
-            }
-            else
-            {
-                db.execSQL(CREATE_TABLE);
-            }
-            table_exists.close();
+            db.execSQL("DROP TABLE TMP_" + TABLE_NAME);
         }
         else
         {
             db.execSQL("DROP TABLE IF EXISTS " + TABLE_NAME);
             db.execSQL(CREATE_TABLE);
         }
+        table_exists.close();
     }
     // redo order column to remove gaps, etc. Order #s will be sequential, from 0 to count
     public static void cleanup_order(Context context)

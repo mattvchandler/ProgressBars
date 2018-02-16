@@ -89,10 +89,13 @@ public class Undo extends Progress_bars_table
                     Progress_bars_table.NOTIFY_START_COL + " INTEGER, " +
                     Progress_bars_table.NOTIFY_END_COL + " INTEGER)";
 
-    public static void upgrade(SQLiteDatabase db, @SuppressWarnings("unused") int old_version)
+    public static void upgrade(SQLiteDatabase db, int old_version)
     {
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_NAME);
-        db.execSQL(CREATE_TABLE);
+        if(old_version < 3)
+        {
+            db.execSQL("DROP TABLE IF EXISTS " + TABLE_NAME);
+            db.execSQL(CREATE_TABLE);
+        }
     }
 
     private static Data data_from_cursor(Cursor cursor)
