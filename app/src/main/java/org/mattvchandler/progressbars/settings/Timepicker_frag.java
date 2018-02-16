@@ -54,7 +54,7 @@ public class Timepicker_frag extends DialogFragment
 
         Calendar cal = Calendar.getInstance();
 
-        boolean hour_24 = PreferenceManager.getDefaultSharedPreferences(getContext()).getBoolean("hour_24", true);
+        boolean hour_24 = PreferenceManager.getDefaultSharedPreferences(getContext()).getBoolean("hour_24", getResources().getBoolean(R.bool.pref_hour_24_default));
 
         String time_format = getResources().getString(hour_24 ? R.string.time_format_24 : R.string.time_format_12);
         String time_format_edit = getResources().getString(hour_24 ? R.string.time_format_24 : R.string.time_format_12_edit);

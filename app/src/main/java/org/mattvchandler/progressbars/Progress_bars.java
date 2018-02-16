@@ -72,7 +72,7 @@ public class Progress_bars extends Dynamic_theme_activity
         // save date format to detect when it changes
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         date_format = prefs.getString("date_format", getResources().getString(R.string.pref_date_format_default));
-        hour_24 = prefs.getBoolean("hour_24", true);
+        hour_24 = prefs.getBoolean("hour_24", getResources().getBoolean(R.bool.pref_hour_24_default));
 
         // set up row Adapter
         adapter = new Adapter(this);
@@ -114,7 +114,7 @@ public class Progress_bars extends Dynamic_theme_activity
         // check to see if date format has changed. rebuild activity with new format if it has
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         String new_date_format = prefs.getString("date_format", getResources().getString(R.string.pref_date_format_default));
-        boolean new_hour_24 = prefs.getBoolean("hour_24", true);
+        Boolean new_hour_24 = prefs.getBoolean("hour_24", getResources().getBoolean(R.bool.pref_hour_24_default));
 
         if(!new_date_format.equals(date_format) || new_hour_24 != hour_24)
         {

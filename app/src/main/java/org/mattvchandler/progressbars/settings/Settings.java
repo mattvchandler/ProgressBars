@@ -111,8 +111,7 @@ public class Settings extends Dynamic_theme_activity implements DatePickerDialog
         // we'll reference these a lot, so look them up now
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         date_format = prefs.getString("date_format", getResources().getString(R.string.pref_date_format_default));
-
-        hour_24 = prefs.getBoolean("hour_24", true);
+        hour_24 = prefs.getBoolean("hour_24", getResources().getBoolean(R.bool.pref_hour_24_default));
 
         // time_format is the displayed time, time_format_edit is the time in an edittext box
         // for 24-hour time the format, is the same
@@ -292,8 +291,8 @@ public class Settings extends Dynamic_theme_activity implements DatePickerDialog
 
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         date_format = prefs.getString("date_format", getResources().getString(R.string.pref_date_format_default));
+        hour_24 = prefs.getBoolean("hour_24", getResources().getBoolean(R.bool.pref_hour_24_default));
 
-        hour_24 = prefs.getBoolean("hour_24", true);
         time_format = getResources().getString(hour_24 ? R.string.time_format_24 : R.string.time_format_12);
         time_format_edit = getResources().getString(hour_24 ? R.string.time_format_24 : R.string.time_format_12_edit);
 

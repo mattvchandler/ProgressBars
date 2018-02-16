@@ -489,7 +489,7 @@ public final class View_data extends Data // contains all DB data from inherited
         // only show countdown when there is something to show
         show_time_text_disp.set((show_years || show_months || show_weeks || show_days || show_hours || show_minutes || show_seconds));
 
-        boolean hour_24 = PreferenceManager.getDefaultSharedPreferences(context).getBoolean("hour_24", true);
+        boolean hour_24 = PreferenceManager.getDefaultSharedPreferences(context).getBoolean("hour_24", context.getResources().getBoolean(R.bool.pref_hour_24_default));
 
         // format start and end dates and times
         SimpleDateFormat date_df = new SimpleDateFormat(

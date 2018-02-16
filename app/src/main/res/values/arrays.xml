@@ -38,6 +38,10 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
         <item>dd-MM-yyyy</item>
     </string-array>
 
+    <string name="time_format_24">HH:mm:ss</string>
+    <string name="time_format_12">h:mm:ss a</string>
+    <string name="time_format_12_edit">h:mm:ss</string>
+
     <string-array name="AM_PM">
         <item>@string/AM</item>
         <item>@string/PM</item>
