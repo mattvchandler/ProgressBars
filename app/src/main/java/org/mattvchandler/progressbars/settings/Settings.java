@@ -58,8 +58,6 @@ public class Settings extends Dynamic_theme_activity implements DatePickerDialog
                                                                 TimePickerDialog.OnTimeSetListener
 {
     public static final String EXTRA_EDIT_ROW_ID = "org.mattvchandler.progressbars.EDIT_ROW_ID";
-    public static final String RESULT_NEW_DATA   = "org.mattvchandler.progressbars.RESULT_ROW_ID";
-    public static final String RESULT_OLD_DATA   = "org.mattvchandler.progressbars.RESULT_OLD_DATA";
 
     private static final String STATE_DATA      = "data";
     private static final String STATE_SAVE_DATA = "save_data";

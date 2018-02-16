@@ -37,7 +37,7 @@ public class Resetting_application extends Application
     {
         super.onCreate();
 
-        // reset undo / redos
+        // reset undo / redo table
         Undo.delete_undo_history(this);
         Undo.delete_redo_history(this);
 

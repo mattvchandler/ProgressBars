@@ -45,13 +45,20 @@ public class Checkbox_dialog_frag extends DialogFragment
         super.onCreateDialog(savedInstanceState);
 
         if(savedInstanceState == null)
+        {
+            //noinspection ConstantConditions
             selection = getArguments().getBooleanArray(SELECTION_ARG);
+        }
         else
+        {
+            //noinspection ConstantConditions
             selection = savedInstanceState.getBooleanArray(SELECTION_ARG);
+        }
 
         if(selection == null)
             throw new InvalidParameterException("No selection specified");
 
+        //noinspection ConstantConditions
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setTitle(getArguments().getInt(TITLE_ARG))
                 .setMultiChoiceItems(getArguments().getInt(ENTRIES_ARG), selection,

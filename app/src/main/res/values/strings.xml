@@ -85,9 +85,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
     <string name="add_butt_title">Add new timer</string>
     <string name="save_butt_title">Save timer</string>
-    <string name="added_new">"Added new timer: %1$s"</string>
-    <string name="deleted">"%1$s deleted"</string>
-    <string name="saved">"Saved timer: %1$s"</string>
     <string name="undo">Undo</string>
     <string name="redo">Redo</string>
 

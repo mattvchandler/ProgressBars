@@ -56,6 +56,7 @@ public class Datepicker_frag extends DialogFragment
         String date_format = PreferenceManager.getDefaultSharedPreferences(getActivity())
                 .getString("date_format", getResources().getString(R.string.pref_date_format_default));
 
+        //noinspection ConstantConditions
         String date = getArguments().getString(DATE);
         if(date == null)
             throw new InvalidParameterException("No date argument given");
@@ -80,6 +81,7 @@ public class Datepicker_frag extends DialogFragment
         month = cal.get(Calendar.MONTH);
         day = cal.get(Calendar.DAY_OF_MONTH);
 
+        //noinspection ConstantConditions
         return new DatePickerDialog(getActivity(), (Settings) getActivity(), year, month, day);
     }
 }

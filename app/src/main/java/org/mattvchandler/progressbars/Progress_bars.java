@@ -9,14 +9,12 @@ import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
-import android.support.design.widget.Snackbar;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 
 import org.mattvchandler.progressbars.db.Data;
 import org.mattvchandler.progressbars.db.Undo;
@@ -124,7 +122,7 @@ public class Progress_bars extends Dynamic_theme_activity
         }
     }
 
-    private BroadcastReceiver on_db_change = new BroadcastReceiver()
+    private final BroadcastReceiver on_db_change = new BroadcastReceiver()
     {
         @Override
         public void onReceive(Context context, Intent intent)

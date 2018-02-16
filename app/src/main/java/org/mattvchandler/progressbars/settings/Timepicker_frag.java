@@ -59,6 +59,7 @@ public class Timepicker_frag extends DialogFragment
         String time_format = getResources().getString(hour_24 ? R.string.time_format_24 : R.string.time_format_12);
         String time_format_edit = getResources().getString(hour_24 ? R.string.time_format_24 : R.string.time_format_12_edit);
 
+        //noinspection ConstantConditions
         String time = getArguments().getString(TIME);
         String am_pm = getArguments().getString(AM_PM);
 

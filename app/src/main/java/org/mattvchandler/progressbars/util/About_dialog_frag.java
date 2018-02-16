@@ -40,6 +40,7 @@ public class About_dialog_frag extends DialogFragment
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState)
     {
+        //noinspection ConstantConditions
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 
         AboutDialogBinding binding = DataBindingUtil.inflate(LayoutInflater.from(getContext()), R.layout.about_dialog, null, false);

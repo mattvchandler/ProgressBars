@@ -43,14 +43,21 @@ public class Precision_dialog_frag extends DialogFragment
     public Dialog onCreateDialog(Bundle savedInstanceState)
     {
         super.onCreateDialog(savedInstanceState);
+        //noinspection ConstantConditions
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 
         // unpack and set the starting value
         int precision;
         if(savedInstanceState == null)
+        {
+            //noinspection ConstantConditions
             precision = getArguments().getInt(PRECISION_ARG);
+        }
         else
+        {
+            //noinspection ConstantConditions
             precision = savedInstanceState.getInt(PRECISION_ARG);
+        }
 
         // build a number picker with range 0-10
         np = new NumberPicker(builder.getContext());
