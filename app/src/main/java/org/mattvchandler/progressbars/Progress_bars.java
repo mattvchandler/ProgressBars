@@ -51,15 +51,12 @@ IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-// TODO: new 1 row table containing undo data. find someway to poll the table from here and only create snackbars from the one place. delete data and put into snackbar
-
 // main activity. display each timer in a list
 public class Progress_bars extends Dynamic_theme_activity
 {
     private ActivityProgressBarsBinding binding;
     private Adapter adapter;
 
-    public static final int UPDATE_REQUEST = 1;
     public static final String EXTRA_SCROLL_TO_ROWID = "org.mattvchandler.progressbars.SCROLL_TO_ROWID";
 
     private String date_format;
@@ -184,8 +181,7 @@ public class Progress_bars extends Dynamic_theme_activity
         {
         case R.id.add_butt:
             // open editor with no rowid set
-            // TODO: don't need result
-            startActivityForResult(new Intent(this, Settings.class), UPDATE_REQUEST);
+            startActivity(new Intent(this, Settings.class));
             return true;
 
         case R.id.undo:
@@ -207,48 +203,6 @@ public class Progress_bars extends Dynamic_theme_activity
             return  true;
         }
         return false;
-    }
-
-    // catch return from adding or editing a row
-    @Override
-    protected void onActivityResult(int request_code, int result_code, Intent data)
-    {
-        if(request_code == UPDATE_REQUEST && result_code == RESULT_OK)
-        {
-            // get new data and keep a backup of old
-            final Data new_data = (Data)data.getSerializableExtra(Settings.RESULT_NEW_DATA);
-            final Data old_data = (Data)data.getSerializableExtra(Settings.RESULT_OLD_DATA);
-
-            // was a row added?
-            if(old_data == null)
-            {
-                // show message and offer undo action
-                Snackbar.make(binding.mainList, getResources().getString(R.string.added_new,  new_data.title), Snackbar.LENGTH_LONG)
-                        .setAction(R.string.undo, new View.OnClickListener()
-                        {
-                            @Override
-                            public void onClick(View v)
-                            {
-                                // delete the new row
-                                new_data.delete(Progress_bars.this);
-                            }
-                        }).show();
-            }
-            else // an existing row was changed
-            {
-                // show message and offer undo action
-                Snackbar.make(binding.mainList, getResources().getString(R.string.saved, new_data.title), Snackbar.LENGTH_LONG)
-                        .setAction(R.string.undo, new View.OnClickListener()
-                        {
-                            @Override
-                            public void onClick(View v)
-                            {
-                                // update DB with old info
-                                old_data.update(Progress_bars.this);
-                            }
-                        }).show();
-            }
-        }
     }
 
     private class update implements Runnable

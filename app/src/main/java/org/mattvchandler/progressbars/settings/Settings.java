@@ -432,23 +432,11 @@ public class Settings extends Dynamic_theme_activity implements DatePickerDialog
                 }
 
                 // insert new or update existing row
-                Intent intent = new Intent();
                 if(data.rowid < 0)
-                {
                     data.insert(this);
-                    // don't send old data so caller knows that we added a new row
-                }
                 else
-                {
                     data.update(this);
-                    // send back old data
-                    intent.putExtra(RESULT_OLD_DATA, save_data);
-                }
 
-                // send back new data
-                intent.putExtra(RESULT_NEW_DATA, data);
-
-                setResult(RESULT_OK, intent);
                 finish();
                 return true;
 

@@ -85,7 +85,7 @@ public class Adapter extends RecyclerView.Adapter<Adapter.Progress_bar_row_view_
             // create and launch an intent to launch the editor, and pass the rowid
             Intent intent = new Intent(v.getContext(), Settings.class);
             intent.putExtra(Settings.EXTRA_EDIT_ROW_ID, data.rowid);
-            context.startActivityForResult(intent, Progress_bars.UPDATE_REQUEST);
+            context.startActivity(intent);
         }
 
         // called when a row is dragged for deletion or reordering
@@ -221,22 +221,7 @@ public class Adapter extends RecyclerView.Adapter<Adapter.Progress_bar_row_view_
     {
         cursor.moveToPosition(pos);
 
-        // get a copy of the data before we delete it
-        final Data save_data = new Data(cursor);
-
         // delete from DB
-        save_data.delete(context);
-
-        // show deletion message with undo option
-        Snackbar.make(context.findViewById(R.id.mainList), context.getResources().getString(R.string.deleted, save_data.title), Snackbar.LENGTH_LONG)
-                .setAction(R.string.undo, new View.OnClickListener()
-                {
-                    @Override
-                    public void onClick(View v)
-                    {
-                        // re-insert the deleted row
-                        save_data.insert(context);
-                    }
-                }).show();
+        new Data(cursor).delete(context);
     }
 }
