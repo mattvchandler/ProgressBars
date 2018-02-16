@@ -29,7 +29,7 @@ import static java.lang.Math.abs;
 import static java.lang.Math.min;
 
 /*
-Copyright (C) 2017 Matthew Chandler
+Copyright (C) 2018 Matthew Chandler
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of
 this software and associated documentation files (the "Software"), to deal in

@@ -10,7 +10,7 @@ import org.mattvchandler.progressbars.db.Progress_bars_table;
 import org.mattvchandler.progressbars.db.Undo;
 
 /*
-Copyright (C) 2017 Matthew Chandler
+Copyright (C) 2018 Matthew Chandler
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of
 this software and associated documentation files (the "Software"), to deal in
