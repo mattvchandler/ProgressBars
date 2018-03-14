@@ -23,6 +23,7 @@ import org.mattvchandler.progressbars.list.Touch_helper_callback;
 import org.mattvchandler.progressbars.settings.Settings;
 import org.mattvchandler.progressbars.util.About_dialog_frag;
 import org.mattvchandler.progressbars.util.Dynamic_theme_activity;
+import org.mattvchandler.progressbars.util.Notification_handler;
 import org.mattvchandler.progressbars.util.Preferences;
 import org.mattvchandler.progressbars.databinding.ActivityProgressBarsBinding;
 
@@ -82,6 +83,10 @@ public class Progress_bars extends Dynamic_theme_activity
 
         ItemTouchHelper touch_helper = new ItemTouchHelper(new Touch_helper_callback(adapter));
         touch_helper.attachToRecyclerView(binding.mainList);
+
+        // update repeat times and alarms
+        Data.apply_all_repeats(this);
+        Notification_handler.reset_all_alarms(this);
 
         long scroll_to_rowid = getIntent().getLongExtra(EXTRA_SCROLL_TO_ROWID, -1);
         if(scroll_to_rowid >= 0)

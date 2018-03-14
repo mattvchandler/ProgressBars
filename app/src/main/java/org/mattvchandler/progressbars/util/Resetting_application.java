@@ -56,10 +56,6 @@ public class Resetting_application extends Application
         cursor.close();
         db.close();
 
-        // update repeat times and alarms
-        Data.apply_all_repeats(this);
-        Notification_handler.reset_all_alarms(this);
-
         // register notification handler
         Notification_handler.setup_notification_channel(this);
     }

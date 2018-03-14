@@ -8,8 +8,8 @@ android {
         applicationId "org.mattvchandler.progressbars"
         minSdkVersion 19
         targetSdkVersion 27
-        versionCode 16
-        versionName "1.4.1"
+        versionCode 17
+        versionName "1.4.2"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
