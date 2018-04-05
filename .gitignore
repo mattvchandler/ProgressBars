@@ -9,3 +9,5 @@
 /captures
 .externalNativeBuild
 app/release
+.idea/caches
+.idea/codeStyles
