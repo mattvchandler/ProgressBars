@@ -50,6 +50,10 @@ IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
+// TODO: proper night mode support (https://medium.com/@chrisbanes/appcompat-v23-2-daynight-d10f90c83e94)
+// TODO: plural strings
+// TODO: add bkg for elevation & shadow to prg bar view
+
 // main activity. display each timer in a list
 public class Progress_bars extends Dynamic_theme_activity
 {
