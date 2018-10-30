@@ -21,7 +21,7 @@ import org.mattvchandler.progressbars.db.Undo;
 import org.mattvchandler.progressbars.list.Adapter;
 import org.mattvchandler.progressbars.list.Touch_helper_callback;
 import org.mattvchandler.progressbars.settings.Settings;
-import org.mattvchandler.progressbars.util.About_dialog_frag;
+import org.mattvchandler.progressbars.util.About_dialog;
 import org.mattvchandler.progressbars.util.Dynamic_theme_activity;
 import org.mattvchandler.progressbars.util.Notification_handler;
 import org.mattvchandler.progressbars.util.Preferences;
@@ -53,6 +53,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 // TODO: proper night mode support (https://medium.com/@chrisbanes/appcompat-v23-2-daynight-d10f90c83e94)
 // TODO: plural strings
 // TODO: add bkg for elevation & shadow to prg bar view
+// TODO: convert to Kotlin
+// TODO: choose notification priority
 
 // main activity. display each timer in a list
 public class Progress_bars extends Dynamic_theme_activity
@@ -214,7 +216,7 @@ public class Progress_bars extends Dynamic_theme_activity
 
         case R.id.about:
             // show about dialog
-            new About_dialog_frag().show(getSupportFragmentManager(), "about");
+            new About_dialog().show(getSupportFragmentManager(), "about");
             return  true;
         }
         return false;

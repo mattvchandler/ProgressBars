@@ -32,7 +32,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_margin="24dp"
-            >
+        >
             <android.support.v7.widget.AppCompatImageView
                 android:id="@+id/logo"
                 app:srcCompat="@drawable/ic_launcher_foreground"
@@ -40,11 +40,9 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toTopOf="@id/name"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintVertical_chainStyle="packed"
-                />
+            />
 
             <TextView
                 android:id="@+id/name"
@@ -53,33 +51,32 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
                 android:textAppearance="?android:textAppearanceLarge"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:layout_constraintTop_toBottomOf="@id/logo"
+                app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toTopOf="@id/copyright"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintLeft_toRightOf="@id/logo"
                 android:layout_marginTop="@dimen/margin_size"
-                />
+                android:layout_marginStart="@dimen/margin_size"
+            />
 
             <TextView
                 android:id="@+id/version"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:layout_constraintTop_toBottomOf="@id/name"
-                app:layout_constraintBottom_toTopOf="@id/copyright"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintBaseline_toBaselineOf="@id/name"
+                app:layout_constraintLeft_toRightOf="@id/name"
+                android:layout_marginStart="@dimen/margin_size"
                 android:layout_marginTop="@dimen/margin_size"
-                />
+            />
 
             <TextView
                 android:id="@+id/copyright"
                 android:text="@string/app_copyright"
                 app:layout_constraintTop_toBottomOf="@id/version"
-                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintLeft_toLeftOf="@id/name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/margin_size"
-                />
+            />
 
             <TextView
                 android:id="@+id/license"
@@ -88,19 +85,20 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 app:layout_constraintTop_toBottomOf="@id/copyright"
-                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintLeft_toLeftOf="@id/name"
                 android:layout_marginTop="@dimen/margin_size"
-                />
+            />
 
             <TextView
                 android:id="@+id/website"
                 android:text="@string/app_website"
                 app:layout_constraintTop_toBottomOf="@id/license"
-                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintLeft_toLeftOf="@id/name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/margin_size"
-                />
+            />
 
         </android.support.constraint.ConstraintLayout>
     </FrameLayout>
