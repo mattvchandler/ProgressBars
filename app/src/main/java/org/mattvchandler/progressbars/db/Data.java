@@ -14,6 +14,9 @@ import java.io.Serializable;
 import java.util.Calendar;
 import java.util.TimeZone;
 
+import static org.mattvchandler.progressbars.util.Notification_handlerKt.cancel_alarm;
+import static org.mattvchandler.progressbars.util.Notification_handlerKt.reset_alarm;
+
 /*
 Copyright (C) 2018 Matthew Chandler
 
@@ -354,7 +357,7 @@ public class Data implements Serializable
 
         db.close();
 
-        Notification_handler.reset_alarm(context, this);
+        reset_alarm(context, this);
 
         Intent intent = new Intent(DB_CHANGED_EVENT);
         intent.putExtra(DB_CHANGED_TYPE, INSERT);
@@ -388,7 +391,7 @@ public class Data implements Serializable
         db.update(Progress_bars_table.TABLE_NAME, build_ContentValues(), Progress_bars_table._ID + " = ?", new String[]{String.valueOf(rowid)});
         db.close();
 
-        Notification_handler.reset_alarm(context, this);
+        reset_alarm(context, this);
 
         Intent intent = new Intent(DB_CHANGED_EVENT);
         intent.putExtra(DB_CHANGED_TYPE, UPDATE);
@@ -408,7 +411,7 @@ public class Data implements Serializable
         if(rowid < 0)
             throw new IllegalStateException("Tried to delete when rowid isn't set");
 
-        Notification_handler.cancel_alarm(context, this);
+        cancel_alarm(context, this);
 
         SQLiteDatabase db = new DB(context).getWritableDatabase();
 

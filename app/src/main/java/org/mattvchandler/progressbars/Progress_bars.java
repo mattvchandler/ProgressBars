@@ -29,6 +29,8 @@ import org.mattvchandler.progressbars.databinding.ActivityProgressBarsBinding;
 
 import java.util.NoSuchElementException;
 
+import static org.mattvchandler.progressbars.util.Notification_handlerKt.reset_all_alarms;
+
 /*
 Copyright (C) 2018 Matthew Chandler
 
@@ -92,7 +94,7 @@ public class Progress_bars extends Dynamic_theme_activity
 
         // update repeat times and alarms
         Data.apply_all_repeats(this);
-        Notification_handler.reset_all_alarms(this);
+        reset_all_alarms(this);
 
         long scroll_to_rowid = getIntent().getLongExtra(EXTRA_SCROLL_TO_ROWID, -1);
         if(scroll_to_rowid >= 0)
