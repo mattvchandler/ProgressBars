@@ -25,6 +25,8 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
+import org.mattvchandler.progressbars.db.DataKt;
+
 public class Undo extends Progress_bars_table
 {
     public static final String TABLE_NAME = "undo";
@@ -152,30 +154,30 @@ public class Undo extends Progress_bars_table
 
         switch(action)
         {
-            case Data.INSERT:
+            case DataKt.INSERT:
             {
                 Data data = new Data(context, rowid);
                 data.delete(context, inverse_undo_redo);
                 break;
             }
-            case Data.UPDATE:
+            case DataKt.UPDATE:
             {
                 Data data = data_from_cursor(cursor);
-                data.rowid = rowid;
+                data.setRowid(rowid);
                 data.update(context, inverse_undo_redo);
                 break;
             }
-            case Data.DELETE:
+            case DataKt.DELETE:
             {
                 Data data = data_from_cursor(cursor);
-                data.rowid = rowid;
+                data.setRowid(rowid);
                 data.insert(context, inverse_undo_redo);
                 break;
             }
-            case Data.MOVE:
+            case DataKt.MOVE:
             {
                 Data data = data_from_cursor(cursor);
-                data.rowid = rowid;
+                data.setRowid(rowid);
                 int from_pos = cursor.getInt(cursor.getColumnIndexOrThrow(SWAP_FROM_POS_COL));
                 int to_pos   = cursor.getInt(cursor.getColumnIndexOrThrow(SWAP_TO_POS_COL));
                 data.reorder(context, to_pos, from_pos, inverse_undo_redo);

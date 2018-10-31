@@ -156,7 +156,7 @@ public class Settings extends Dynamic_theme_activity implements DatePickerDialog
             save_data = (Data)savedInstanceState.getSerializable(STATE_SAVE_DATA);
             date_time_dialog_target = savedInstanceState.getInt(STATE_TARGET);
 
-            if(data.rowid < 0)
+            if(data.getRowid() < 0)
             {
                 setTitle(R.string.add_title);
             }
@@ -184,7 +184,7 @@ public class Settings extends Dynamic_theme_activity implements DatePickerDialog
                 binding.repeatOn.setVisibility(week_selected ? View.VISIBLE : View.GONE);
                 binding.repeatDaysOfWeek.setVisibility(week_selected ? View.VISIBLE : View.GONE);
 
-                data.repeat_unit = i;
+                data.setRepeat_unit(i);
             }
 
             @Override
@@ -200,13 +200,13 @@ public class Settings extends Dynamic_theme_activity implements DatePickerDialog
             if(tz_adapter.getItem(i) != null)
             {
                 //noinspection ConstantConditions
-                if(tz_adapter.getItem(i).equals(data.start_tz))
+                if(tz_adapter.getItem(i).equals(data.getStart_tz()))
                 {
                     binding.startTz.setSelection(i);
                     ++found;
                 }
                 //noinspection ConstantConditions
-                if(tz_adapter.getItem(i).equals(data.end_tz))
+                if(tz_adapter.getItem(i).equals(data.getEnd_tz()))
                 {
                     binding.endTz.setSelection(i);
                     ++found;
@@ -220,9 +220,9 @@ public class Settings extends Dynamic_theme_activity implements DatePickerDialog
         SimpleDateFormat df_date = new SimpleDateFormat(date_format, Locale.US);
         SimpleDateFormat df_time = new SimpleDateFormat(time_format_edit, Locale.US);
 
-        Date start_date = new Date(data.start_time * 1000);
-        df_date.setTimeZone(TimeZone.getTimeZone(data.start_tz));
-        df_time.setTimeZone(TimeZone.getTimeZone(data.start_tz));
+        Date start_date = new Date(data.getStart_time() * 1000);
+        df_date.setTimeZone(TimeZone.getTimeZone(data.getStart_tz()));
+        df_time.setTimeZone(TimeZone.getTimeZone(data.getStart_tz()));
         binding.startDateSel.setText(df_date.format(start_date));
         binding.startTimeSel.setText(df_time.format(start_date));
 
@@ -240,7 +240,7 @@ public class Settings extends Dynamic_theme_activity implements DatePickerDialog
         if(!hour_24)
         {
             // get am/pm status
-            Calendar start_cal = Calendar.getInstance(TimeZone.getTimeZone(data.start_tz));
+            Calendar start_cal = Calendar.getInstance(TimeZone.getTimeZone(data.getStart_tz()));
             start_cal.setTime(start_date);
             int am_pm = start_cal.get(Calendar.AM_PM);
 
@@ -250,16 +250,16 @@ public class Settings extends Dynamic_theme_activity implements DatePickerDialog
                 binding.startAmPm.setSelection(array_pm_i);
         }
 
-        Date end_date = new Date(data.end_time * 1000);
-        df_date.setTimeZone(TimeZone.getTimeZone(data.end_tz));
-        df_time.setTimeZone(TimeZone.getTimeZone(data.end_tz));
+        Date end_date = new Date(data.getEnd_time() * 1000);
+        df_date.setTimeZone(TimeZone.getTimeZone(data.getEnd_tz()));
+        df_time.setTimeZone(TimeZone.getTimeZone(data.getEnd_tz()));
         binding.endDateSel.setText(df_date.format(end_date));
         binding.endTimeSel.setText(df_time.format(end_date));
 
         if(!hour_24)
         {
             // get am/pm status
-            Calendar end_cal = Calendar.getInstance(TimeZone.getTimeZone(data.end_tz));
+            Calendar end_cal = Calendar.getInstance(TimeZone.getTimeZone(data.getEnd_tz()));
             end_cal.setTime(end_date);
             int am_pm = end_cal.get(Calendar.AM_PM);
 
@@ -269,12 +269,12 @@ public class Settings extends Dynamic_theme_activity implements DatePickerDialog
                 binding.endAmPm.setSelection(array_pm_i);
         }
 
-        binding.repeatFreq.setVisibility(data.repeats ? View.VISIBLE : View.GONE);
-        binding.repeatCount.setText(String.valueOf(data.repeat_count));
-        binding.repeatUnits.setSelection(data.repeat_unit);
-        binding.repeatDaysOfWeek.setText(get_days_of_week_abbr(this, data.repeat_days_of_week));
+        binding.repeatFreq.setVisibility(data.getRepeats() ? View.VISIBLE : View.GONE);
+        binding.repeatCount.setText(String.valueOf(data.getRepeat_count()));
+        binding.repeatUnits.setSelection(data.getRepeat_unit());
+        binding.repeatDaysOfWeek.setText(get_days_of_week_abbr(this, data.getRepeat_days_of_week()));
 
-        boolean week_selected = data.repeat_unit == Progress_bars_table.Unit.WEEK.index;
+        boolean week_selected = data.getRepeat_unit() == Progress_bars_table.Unit.WEEK.index;
         binding.repeatOn.setVisibility(week_selected ? View.VISIBLE : View.GONE);
         binding.repeatDaysOfWeek.setVisibility(week_selected ? View.VISIBLE : View.GONE);
     }
@@ -422,14 +422,14 @@ public class Settings extends Dynamic_theme_activity implements DatePickerDialog
                     return true;
 
                 // check to make sure start time is before end
-                if(data.end_time < data.start_time)
+                if(data.getEnd_time() < data.getStart_time())
                 {
                     Toast.makeText(this, R.string.end_before_start_err, Toast.LENGTH_LONG).show();
                     return true;
                 }
 
                 // insert new or update existing row
-                if(data.rowid < 0)
+                if(data.getRowid() < 0)
                     data.insert(this);
                 else
                     data.update(this);
@@ -449,16 +449,16 @@ public class Settings extends Dynamic_theme_activity implements DatePickerDialog
     {
         boolean errors = false;
         // precision data has been stored through its callback already
-        data.start_tz = binding.startTz.getSelectedItem().toString();
-        data.end_tz = binding.endTz.getSelectedItem().toString();
+        data.setStart_tz(binding.startTz.getSelectedItem().toString());
+        data.setEnd_tz(binding.endTz.getSelectedItem().toString());
 
         SimpleDateFormat datetime_df = new SimpleDateFormat(date_format + " " + time_format, Locale.US);
         SimpleDateFormat date_df = new SimpleDateFormat(date_format, Locale.US);
         SimpleDateFormat time_df = new SimpleDateFormat(time_format_edit, Locale.US);
 
-        datetime_df.setTimeZone(TimeZone.getTimeZone(data.start_tz));
-        date_df.setTimeZone(TimeZone.getTimeZone(data.start_tz));
-        time_df.setTimeZone(TimeZone.getTimeZone(data.start_tz));
+        datetime_df.setTimeZone(TimeZone.getTimeZone(data.getStart_tz()));
+        date_df.setTimeZone(TimeZone.getTimeZone(data.getStart_tz()));
+        time_df.setTimeZone(TimeZone.getTimeZone(data.getStart_tz()));
 
         Date start_date = date_df.parse(binding.startDateSel.getText().toString(), new ParsePosition((0)));
         Date start_time = time_df.parse(binding.startTimeSel.getText().toString(), new ParsePosition((0)));
@@ -486,22 +486,22 @@ public class Settings extends Dynamic_theme_activity implements DatePickerDialog
         {
             if(hour_24)
             {
-                data.start_time = datetime_df.parse(binding.startDateSel.getText().toString() + " " +
+                data.setStart_time(datetime_df.parse(binding.startDateSel.getText().toString() + " " +
                                 binding.startTimeSel.getText().toString(),
-                        new ParsePosition((0))).getTime() / 1000;
+                        new ParsePosition((0))).getTime() / 1000);
             }
             else
             {
-                data.start_time = datetime_df.parse(binding.startDateSel.getText().toString() + " " +
-                                                    binding.startTimeSel.getText().toString() + " " +
-                                                    binding.startAmPm.getSelectedItem().toString(),
-                        new ParsePosition((0))).getTime() / 1000;
+                data.setStart_time(datetime_df.parse(binding.startDateSel.getText().toString() + " " +
+                                binding.startTimeSel.getText().toString() + " " +
+                                binding.startAmPm.getSelectedItem().toString(),
+                        new ParsePosition((0))).getTime() / 1000);
             }
         }
 
-        datetime_df.setTimeZone(TimeZone.getTimeZone(data.end_tz));
-        date_df.setTimeZone(TimeZone.getTimeZone(data.end_tz));
-        time_df.setTimeZone(TimeZone.getTimeZone(data.end_tz));
+        datetime_df.setTimeZone(TimeZone.getTimeZone(data.getEnd_tz()));
+        date_df.setTimeZone(TimeZone.getTimeZone(data.getEnd_tz()));
+        time_df.setTimeZone(TimeZone.getTimeZone(data.getEnd_tz()));
 
         Date end_date = date_df.parse(binding.endDateSel.getText().toString(), new ParsePosition((0)));
         Date end_time = time_df.parse(binding.endTimeSel.getText().toString(), new ParsePosition((0)));
@@ -529,16 +529,16 @@ public class Settings extends Dynamic_theme_activity implements DatePickerDialog
         {
             if(hour_24)
             {
-                data.end_time = datetime_df.parse(binding.endDateSel.getText().toString() + " " +
+                data.setEnd_time(datetime_df.parse(binding.endDateSel.getText().toString() + " " +
                                 binding.endTimeSel.getText().toString(),
-                        new ParsePosition((0))).getTime() / 1000;
+                        new ParsePosition((0))).getTime() / 1000);
             }
             else
             {
-                data.end_time = datetime_df.parse(binding.endDateSel.getText().toString() + " " +
+                data.setEnd_time(datetime_df.parse(binding.endDateSel.getText().toString() + " " +
                                 binding.endTimeSel.getText().toString() + " " +
                                 binding.endAmPm.getSelectedItem().toString(),
-                        new ParsePosition((0))).getTime() / 1000;
+                        new ParsePosition((0))).getTime() / 1000);
             }
         }
 
@@ -557,11 +557,11 @@ public class Settings extends Dynamic_theme_activity implements DatePickerDialog
         }
         else
         {
-            data.repeat_count = repeat_count;
+            data.setRepeat_count(repeat_count);
         }
 
         // get all 'easy' data
-        data.title = binding.title.getText().toString();
+        data.setTitle(binding.title.getText().toString());
 
         return !errors;
     }
@@ -589,7 +589,7 @@ public class Settings extends Dynamic_theme_activity implements DatePickerDialog
         Datepicker_frag frag = new Datepicker_frag();
         Bundle args = new Bundle();
         args.putString(Datepicker_frag.DATE, binding.startDateSel.getText().toString());
-        args.putLong(Datepicker_frag.STORE_DATE, data.start_time);
+        args.putLong(Datepicker_frag.STORE_DATE, data.getStart_time());
         frag.setArguments(args);
         frag.show(getSupportFragmentManager(), "start_date_picker");
     }
@@ -602,7 +602,7 @@ public class Settings extends Dynamic_theme_activity implements DatePickerDialog
         Timepicker_frag frag = new Timepicker_frag();
         Bundle args = new Bundle();
         args.putString(Timepicker_frag.TIME, binding.startTimeSel.getText().toString());
-        args.putLong(Timepicker_frag.STORE_TIME, data.start_time);
+        args.putLong(Timepicker_frag.STORE_TIME, data.getStart_time());
         args.putString(Timepicker_frag.AM_PM, binding.startAmPm.getSelectedItem().toString());
         frag.setArguments(args);
         frag.show(getSupportFragmentManager(), "start_time_picker");
@@ -616,7 +616,7 @@ public class Settings extends Dynamic_theme_activity implements DatePickerDialog
         Datepicker_frag frag = new Datepicker_frag();
         Bundle args = new Bundle();
         args.putString(Datepicker_frag.DATE, binding.endDateSel.getText().toString());
-        args.putLong(Datepicker_frag.STORE_DATE, data.end_time);
+        args.putLong(Datepicker_frag.STORE_DATE, data.getEnd_time());
         frag.setArguments(args);
         frag.show(getSupportFragmentManager(), "end_date_picker");
     }
@@ -629,7 +629,7 @@ public class Settings extends Dynamic_theme_activity implements DatePickerDialog
         Timepicker_frag frag = new Timepicker_frag();
         Bundle args = new Bundle();
         args.putString(Timepicker_frag.TIME, binding.endTimeSel.getText().toString());
-        args.putLong(Timepicker_frag.STORE_TIME, data.end_time);
+        args.putLong(Timepicker_frag.STORE_TIME, data.getEnd_time());
         args.putString(Timepicker_frag.AM_PM, binding.endAmPm.getSelectedItem().toString());
         frag.setArguments(args);
         frag.show(getSupportFragmentManager(), "end_time_picker");
@@ -638,8 +638,8 @@ public class Settings extends Dynamic_theme_activity implements DatePickerDialog
     @SuppressWarnings("UnusedParameters")
     public void on_repeat_butt(View view)
     {
-        data.repeats = binding.repeatSw.isChecked();
-        binding.repeatFreq.setVisibility(data.repeats ? View.VISIBLE : View.GONE);
+        data.setRepeats(binding.repeatSw.isChecked());
+        binding.repeatFreq.setVisibility(data.getRepeats() ? View.VISIBLE : View.GONE);
     }
 
     @SuppressWarnings("UnusedParameters")
@@ -647,7 +647,7 @@ public class Settings extends Dynamic_theme_activity implements DatePickerDialog
     {
         Precision_dialog_frag d = new Precision_dialog_frag();
         Bundle args = new Bundle();
-        args.putInt(Precision_dialog_frag.PRECISION_ARG, data.precision);
+        args.putInt(Precision_dialog_frag.PRECISION_ARG, data.getPrecision());
         d.setArguments(args);
         d.show(getSupportFragmentManager(), "precision");
     }
@@ -658,7 +658,7 @@ public class Settings extends Dynamic_theme_activity implements DatePickerDialog
         boolean selected[] = new boolean[Progress_bars_table.Days_of_week.values().length];
         for(Progress_bars_table.Days_of_week day : Progress_bars_table.Days_of_week.values())
         {
-            selected[day.index] = (data.repeat_days_of_week & day.mask) != 0;
+            selected[day.index] = (data.getRepeat_days_of_week() & day.mask) != 0;
         }
 
         Checkbox_dialog_frag frag = new Checkbox_dialog_frag();
@@ -676,9 +676,9 @@ public class Settings extends Dynamic_theme_activity implements DatePickerDialog
     public void on_show_elements_butt(View view)
     {
         boolean selected[] = new boolean[3];
-        selected[SHOW_PROGRESS_CHECKBOX] = data.show_progress;
-        selected[SHOW_START_CHECKBOX]    = data.show_start;
-        selected[SHOW_END_CHECKBOX]      = data.show_end;
+        selected[SHOW_PROGRESS_CHECKBOX] = data.getShow_progress();
+        selected[SHOW_START_CHECKBOX]    = data.getShow_start();
+        selected[SHOW_END_CHECKBOX]      = data.getShow_end();
 
         Checkbox_dialog_frag frag = new Checkbox_dialog_frag();
 
@@ -695,13 +695,13 @@ public class Settings extends Dynamic_theme_activity implements DatePickerDialog
     public void on_show_units_butt(View view)
     {
         boolean selected[] = new boolean[7];
-        selected[SHOW_SECONDS_CHECKBOX] = data.show_seconds;
-        selected[SHOW_MINUTES_CHECKBOX] = data.show_minutes;
-        selected[SHOW_HOURS_CHECKBOX]   = data.show_hours;
-        selected[SHOW_DAYS_CHECKBOX]    = data.show_days;
-        selected[SHOW_WEEKS_CHECKBOX]   = data.show_weeks;
-        selected[SHOW_MONTHS_CHECKBOX]  = data.show_months;
-        selected[SHOW_YEARS_CHECKBOX]   = data.show_years;
+        selected[SHOW_SECONDS_CHECKBOX] = data.getShow_seconds();
+        selected[SHOW_MINUTES_CHECKBOX] = data.getShow_minutes();
+        selected[SHOW_HOURS_CHECKBOX]   = data.getShow_hours();
+        selected[SHOW_DAYS_CHECKBOX]    = data.getShow_days();
+        selected[SHOW_WEEKS_CHECKBOX]   = data.getShow_weeks();
+        selected[SHOW_MONTHS_CHECKBOX]  = data.getShow_months();
+        selected[SHOW_YEARS_CHECKBOX]   = data.getShow_years();
 
         Checkbox_dialog_frag frag = new Checkbox_dialog_frag();
 
@@ -718,9 +718,9 @@ public class Settings extends Dynamic_theme_activity implements DatePickerDialog
     public void on_timer_opts_butt(View view)
     {
         boolean selected[] = new boolean[3];
-        selected[TERMINATE_CHECKBOX]    = data.terminate;
-        selected[NOTIFY_START_CHECKBOX] = data.notify_start;
-        selected[NOTIFY_END_CHECKBOX]   = data.notify_end;
+        selected[TERMINATE_CHECKBOX]    = data.getTerminate();
+        selected[NOTIFY_START_CHECKBOX] = data.getNotify_start();
+        selected[NOTIFY_END_CHECKBOX]   = data.getNotify_end();
 
         Checkbox_dialog_frag frag = new Checkbox_dialog_frag();
 
@@ -782,8 +782,8 @@ public class Settings extends Dynamic_theme_activity implements DatePickerDialog
     public void on_precision_set(int precision)
     {
         // get and store the data
-        data.precision = precision;
-        binding.precision.setText(String.valueOf(data.precision));
+        data.setPrecision(precision);
+        binding.precision.setText(String.valueOf(data.getPrecision()));
     }
 
     // called when OK pressed on checkbox dialogs
@@ -804,31 +804,31 @@ public class Settings extends Dynamic_theme_activity implements DatePickerDialog
             }
             else
             {
-                data.repeat_days_of_week = days_of_week;
-                binding.repeatDaysOfWeek.setText(get_days_of_week_abbr(Settings.this, data.repeat_days_of_week));
+                data.setRepeat_days_of_week(days_of_week);
+                binding.repeatDaysOfWeek.setText(get_days_of_week_abbr(Settings.this, data.getRepeat_days_of_week()));
             }
         }
         if(id.equals(SHOW_ELEMENTS_CHECKBOX_DIALOG))
         {
-            data.show_progress = selected[SHOW_PROGRESS_CHECKBOX];
-            data.show_start    = selected[SHOW_START_CHECKBOX];
-            data.show_end      = selected[SHOW_END_CHECKBOX];
+            data.setShow_progress(selected[SHOW_PROGRESS_CHECKBOX]);
+            data.setShow_start(selected[SHOW_START_CHECKBOX]);
+            data.setShow_end(selected[SHOW_END_CHECKBOX]);
         }
         if(id.equals(SHOW_UNITS_CHECKBOX_DIALOG))
         {
-            data.show_seconds = selected[SHOW_SECONDS_CHECKBOX];
-            data.show_minutes = selected[SHOW_MINUTES_CHECKBOX];
-            data.show_hours   = selected[SHOW_HOURS_CHECKBOX];
-            data.show_days    = selected[SHOW_DAYS_CHECKBOX];
-            data.show_weeks   = selected[SHOW_WEEKS_CHECKBOX];
-            data.show_months  = selected[SHOW_MONTHS_CHECKBOX];
-            data.show_years   = selected[SHOW_YEARS_CHECKBOX];
+            data.setShow_seconds(selected[SHOW_SECONDS_CHECKBOX]);
+            data.setShow_minutes(selected[SHOW_MINUTES_CHECKBOX]);
+            data.setShow_hours(selected[SHOW_HOURS_CHECKBOX]);
+            data.setShow_days(selected[SHOW_DAYS_CHECKBOX]);
+            data.setShow_weeks(selected[SHOW_WEEKS_CHECKBOX]);
+            data.setShow_months(selected[SHOW_MONTHS_CHECKBOX]);
+            data.setShow_years(selected[SHOW_YEARS_CHECKBOX]);
         }
         if(id.equals(TIMER_OPTS_CHECKBOX_DIALOG))
         {
-            data.terminate    = selected[TERMINATE_CHECKBOX];
-            data.notify_start = selected[NOTIFY_START_CHECKBOX];
-            data.notify_end   = selected[NOTIFY_END_CHECKBOX];
+            data.setTerminate(selected[TERMINATE_CHECKBOX]);
+            data.setNotify_start(selected[NOTIFY_START_CHECKBOX]);
+            data.setNotify_end(selected[NOTIFY_END_CHECKBOX]);
         }
     }
 

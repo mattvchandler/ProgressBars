@@ -64,11 +64,11 @@ public class Countdown_text extends Dynamic_theme_activity
 
     private void save()
     {
-        data.pre_text       = binding.preText.getText().toString();
-        data.start_text     = binding.startText.getText().toString();
-        data.countdown_text = binding.countdownText.getText().toString();
-        data.complete_text  = binding.completeText.getText().toString();
-        data.post_text      = binding.postText.getText().toString();
+        data.setPre_text(binding.preText.getText().toString());
+        data.setStart_text(binding.startText.getText().toString());
+        data.setCountdown_text(binding.countdownText.getText().toString());
+        data.setComplete_text(binding.completeText.getText().toString());
+        data.setPost_text(binding.postText.getText().toString());
     }
 
     @Override

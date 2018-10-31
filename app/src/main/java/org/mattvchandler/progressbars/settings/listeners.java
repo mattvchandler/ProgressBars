@@ -66,13 +66,13 @@ class Date_listener implements View.OnFocusChangeListener
                 // replace with old value, so field contains valid data
                 if(v.getId() == R.id.start_date_sel)
                 {
-                    df.setTimeZone(TimeZone.getTimeZone(data.start_tz));
-                    ((EditText)v).setText(df.format(new Date(data.start_time * 1000)));
+                    df.setTimeZone(TimeZone.getTimeZone(data.getStart_tz()));
+                    ((EditText)v).setText(df.format(new Date(data.getStart_time() * 1000)));
                 }
                 else if(v.getId() == R.id.end_date_sel)
                 {
-                    df.setTimeZone(TimeZone.getTimeZone(data.end_tz));
-                    ((EditText)v).setText(df.format(new Date(data.end_time * 1000)));
+                    df.setTimeZone(TimeZone.getTimeZone(data.getEnd_tz()));
+                    ((EditText)v).setText(df.format(new Date(data.getEnd_time() * 1000)));
                 }
             }
             else
@@ -118,13 +118,13 @@ class Time_listener implements View.OnFocusChangeListener
                 // replace with old value, so field contains valid data
                 if(v.getId() == R.id.start_time_sel)
                 {
-                    df.setTimeZone(TimeZone.getTimeZone(data.start_tz));
-                    ((EditText) v).setText(df.format(new Date(data.start_time * 1000)));
+                    df.setTimeZone(TimeZone.getTimeZone(data.getStart_tz()));
+                    ((EditText) v).setText(df.format(new Date(data.getStart_time() * 1000)));
                 }
                 else if(v.getId() == R.id.end_time_sel)
                 {
-                    df.setTimeZone(TimeZone.getTimeZone(data.end_tz));
-                    ((EditText) v).setText(df.format(new Date(data.end_time * 1000)));
+                    df.setTimeZone(TimeZone.getTimeZone(data.getEnd_tz()));
+                    ((EditText) v).setText(df.format(new Date(data.getEnd_time() * 1000)));
                 }
             }
             else
@@ -161,7 +161,7 @@ class Repeat_count_listener implements View.OnFocusChangeListener
 
             if(count <= 0)
             {
-                ((EditText)v).setText(String.valueOf(data.repeat_count));
+                ((EditText)v).setText(String.valueOf(data.getRepeat_count()));
                 Toast.makeText(v.getContext(), R.string.invalid_repeat_count, Toast.LENGTH_LONG).show();
             }
         }

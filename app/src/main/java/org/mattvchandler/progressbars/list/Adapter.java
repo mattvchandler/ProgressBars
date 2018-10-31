@@ -16,6 +16,7 @@ import android.view.ViewGroup;
 
 import org.mattvchandler.progressbars.db.DB;
 import org.mattvchandler.progressbars.db.Data;
+import org.mattvchandler.progressbars.db.DataKt;
 import org.mattvchandler.progressbars.db.Progress_bars_table;
 import org.mattvchandler.progressbars.Progress_bars;
 import org.mattvchandler.progressbars.R;
@@ -83,7 +84,7 @@ public class Adapter extends RecyclerView.Adapter<Adapter.Progress_bar_row_view_
         {
             // create and launch an intent to launch the editor, and pass the rowid
             Intent intent = new Intent(v.getContext(), Settings.class);
-            intent.putExtra(Settings.EXTRA_EDIT_ROW_ID, data.rowid);
+            intent.putExtra(Settings.EXTRA_EDIT_ROW_ID, data.getRowid());
             context.startActivity(intent);
         }
 
@@ -129,29 +130,29 @@ public class Adapter extends RecyclerView.Adapter<Adapter.Progress_bar_row_view_
             @Override
             public void onReceive(Context context, Intent intent)
             {
-                long rowid = intent.getLongExtra(Data.DB_CHANGED_ROWID, -1);
-                String change_type = intent.getStringExtra(Data.DB_CHANGED_TYPE);
+                long rowid = intent.getLongExtra(DataKt.DB_CHANGED_ROWID, -1);
+                String change_type = intent.getStringExtra(DataKt.DB_CHANGED_TYPE);
                 if(rowid == -1 && !change_type.equals("move"))
                     return;
 
                 switch(change_type)
                 {
-                case Data.INSERT:
+                case DataKt.INSERT:
                     reset_cursor();
                     Adapter.this.notifyItemInserted(find_by_rowid(rowid));
                     break;
-                case Data.UPDATE:
+                case DataKt.UPDATE:
                     Adapter.this.notifyItemChanged(find_by_rowid(rowid));
                     reset_cursor();
                     break;
-                case Data.DELETE:
+                case DataKt.DELETE:
                     Adapter.this.notifyItemRemoved(find_by_rowid(rowid));
                     reset_cursor();
                     break;
-                case Data.MOVE:
+                case DataKt.MOVE:
                     reset_cursor();
-                    int from_pos = intent.getIntExtra(Data.DB_CHANGED_FROM_POS, -1);
-                    int to_pos = intent.getIntExtra(Data.DB_CHANGED_TO_POS, -1);
+                    int from_pos = intent.getIntExtra(DataKt.DB_CHANGED_FROM_POS, -1);
+                    int to_pos = intent.getIntExtra(DataKt.DB_CHANGED_TO_POS, -1);
                     if(from_pos == -1 || to_pos == -1)
                         return;
 
@@ -162,7 +163,7 @@ public class Adapter extends RecyclerView.Adapter<Adapter.Progress_bar_row_view_
             }
         };
 
-        LocalBroadcastManager.getInstance(context).registerReceiver(db_change_receiver, new IntentFilter(Data.DB_CHANGED_EVENT));
+        LocalBroadcastManager.getInstance(context).registerReceiver(db_change_receiver, new IntentFilter(DataKt.DB_CHANGED_EVENT));
     }
 
     // called when DB info has changed, to let us update the cursor

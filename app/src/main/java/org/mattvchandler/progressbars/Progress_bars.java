@@ -17,6 +17,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import org.mattvchandler.progressbars.db.Data;
+import org.mattvchandler.progressbars.db.DataKt;
 import org.mattvchandler.progressbars.db.Undo;
 import org.mattvchandler.progressbars.list.Adapter;
 import org.mattvchandler.progressbars.list.Touch_helper_callback;
@@ -93,7 +94,7 @@ public class Progress_bars extends Dynamic_theme_activity
         touch_helper.attachToRecyclerView(binding.mainList);
 
         // update repeat times and alarms
-        Data.apply_all_repeats(this);
+        Data.Companion.apply_all_repeats(this);
         reset_all_alarms(this);
 
         long scroll_to_rowid = getIntent().getLongExtra(EXTRA_SCROLL_TO_ROWID, -1);
@@ -109,7 +110,7 @@ public class Progress_bars extends Dynamic_theme_activity
         new update().run();
 
         // register to receive notifications of DB changes
-        LocalBroadcastManager.getInstance(this).registerReceiver(on_db_change, new IntentFilter(Data.DB_CHANGED_EVENT));
+        LocalBroadcastManager.getInstance(this).registerReceiver(on_db_change, new IntentFilter(DataKt.DB_CHANGED_EVENT));
     }
 
     @Override
@@ -140,10 +141,10 @@ public class Progress_bars extends Dynamic_theme_activity
         @Override
         public void onReceive(Context context, Intent intent)
         {
-            String change_type = intent.getStringExtra(Data.DB_CHANGED_TYPE);
-            if(change_type.equals(Data.INSERT) || change_type.equals(Data.UPDATE))
+            String change_type = intent.getStringExtra(DataKt.DB_CHANGED_TYPE);
+            if(change_type.equals(DataKt.INSERT) || change_type.equals(DataKt.UPDATE))
             {
-                long rowid = intent.getLongExtra(Data.DB_CHANGED_ROWID, -1);
+                long rowid = intent.getLongExtra(DataKt.DB_CHANGED_ROWID, -1);
                 if(rowid > 0)
                     binding.mainList.scrollToPosition(adapter.find_by_rowid(rowid));
             }

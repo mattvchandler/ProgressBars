@@ -88,10 +88,10 @@ public final class View_data extends Data // contains all DB data from inherited
         // convert and round percentage to the specified precision
         StringBuilder dec_format = new StringBuilder("0");
 
-        if(precision > 0)
+        if(getPrecision() > 0)
             dec_format.append(".");
 
-        for(int i = 0; i < precision; ++i)
+        for(int i = 0; i < getPrecision(); ++i)
             dec_format.append("0");
 
         dec_format.append("%");
@@ -101,7 +101,7 @@ public final class View_data extends Data // contains all DB data from inherited
         {
             double percentage_fraction = max((double)elapsed / (double)total_interval, 0.0);
 
-            if(terminate)
+            if(getTerminate())
                 percentage_fraction = min(percentage_fraction, 1.0);
 
             percentage_disp.set(new DecimalFormat(dec_format.toString()).format(percentage_fraction));
@@ -124,17 +124,17 @@ public final class View_data extends Data // contains all DB data from inherited
         {
             // now is before start, so count down to start time
             remaining = to_start;
-            remaining_prefix = pre_text;
+            remaining_prefix = getPre_text();
         }
         else if(remaining >= 0)
         {
             // now is between start and end, so count down to end
-            remaining_prefix = countdown_text;
+            remaining_prefix = getCountdown_text();
         }
         else
         {
             // now is after end, so count up from end
-            remaining_prefix = post_text;
+            remaining_prefix = getPost_text();
         }
 
         // get # of each unit
@@ -146,7 +146,7 @@ public final class View_data extends Data // contains all DB data from inherited
 
         // for each unit shown, take its value out of the smaller unit counts
         // ex: if there is 1 minute and 90 seconds, pull 60 seconds out to give 2m 30s
-        if(show_weeks)
+        if(getShow_weeks())
         {
             days %= 7L;
             hours %= (7L * 24L);
@@ -154,20 +154,20 @@ public final class View_data extends Data // contains all DB data from inherited
             seconds %= (7L * 24L * 60L * 60L);
         }
 
-        if(show_days)
+        if(getShow_days())
         {
             hours %= 24L;
             minutes %= (24L * 60L);
             seconds %= (24L * 60L * 60L);
         }
 
-        if(show_hours)
+        if(getShow_hours())
         {
             minutes %= 60L;
             seconds %= (60L * 60L);
         }
 
-        if(show_minutes)
+        if(getShow_minutes())
         {
             seconds %= 60L;
         }
@@ -188,18 +188,18 @@ public final class View_data extends Data // contains all DB data from inherited
         if(to_start >= 0)
         {
             // now is before start, so count down to start time
-            remaining_prefix = pre_text;
+            remaining_prefix = getPre_text();
             cal_end.setTime(start_time_date);
         }
         else if(remaining >= 0)
         {
             // now is between start and end, so count down to end
-            remaining_prefix = countdown_text;
+            remaining_prefix = getCountdown_text();
         }
         else
         {
             // now is after end, so count up from end
-            remaining_prefix = post_text;
+            remaining_prefix = getPost_text();
             cal_end = (Calendar) cal_start.clone();
             cal_start.setTime(end_time_date);
         }
@@ -265,11 +265,11 @@ public final class View_data extends Data // contains all DB data from inherited
         years += cal_end.get(Calendar.YEAR) - cal_start.get(Calendar.YEAR);
 
         // for each unit not shown, add its value to the next smaller unit
-        if(!show_years)
+        if(!getShow_years())
         {
             months += years * 12L;
         }
-        if(!show_months)
+        if(!getShow_months())
         {
             // again, tricky logic for months
             // get a raw number of days, including weeks
@@ -298,19 +298,19 @@ public final class View_data extends Data // contains all DB data from inherited
             weeks = tmp_days / 7L;
             days = tmp_days % 7L;
         }
-        if(!show_weeks)
+        if(!getShow_weeks())
         {
             days += weeks * 7L;
         }
-        if(!show_days)
+        if(!getShow_days())
         {
             hours += days * 24L;
         }
-        if(!show_hours)
+        if(!getShow_hours())
         {
             minutes += hours * 60L;
         }
-        if(!show_minutes)
+        if(!getShow_minutes())
         {
             seconds += minutes * 60L;
         }
@@ -324,13 +324,13 @@ public final class View_data extends Data // contains all DB data from inherited
         String remaining_str = remaining_prefix;
 
         // figure out which units to display, based on user selection and omitting any w/ 0 values
-        boolean seconds_shown = show_seconds;
-        boolean minutes_shown = show_minutes && (minutes > 0 || !seconds_shown);
-        boolean hours_shown = show_hours && (hours > 0 || (!minutes_shown && !seconds_shown));
-        boolean days_shown = show_days && (days > 0 || (!hours_shown && !minutes_shown && !seconds_shown));
-        boolean weeks_shown = show_weeks && (weeks > 0 || (!days_shown && !hours_shown && !minutes_shown && !seconds_shown));
-        boolean months_shown = show_months && (months > 0 || (!weeks_shown && !days_shown && !hours_shown && !minutes_shown && !seconds_shown));
-        boolean years_shown = show_years && (years > 0 || (!months_shown && !weeks_shown && !days_shown && !hours_shown && !minutes_shown && !seconds_shown));
+        boolean seconds_shown = getShow_seconds();
+        boolean minutes_shown = getShow_minutes() && (minutes > 0 || !seconds_shown);
+        boolean hours_shown = getShow_hours() && (hours > 0 || (!minutes_shown && !seconds_shown));
+        boolean days_shown = getShow_days() && (days > 0 || (!hours_shown && !minutes_shown && !seconds_shown));
+        boolean weeks_shown = getShow_weeks() && (weeks > 0 || (!days_shown && !hours_shown && !minutes_shown && !seconds_shown));
+        boolean months_shown = getShow_months() && (months > 0 || (!weeks_shown && !days_shown && !hours_shown && !minutes_shown && !seconds_shown));
+        boolean years_shown = getShow_years() && (years > 0 || (!months_shown && !weeks_shown && !days_shown && !hours_shown && !minutes_shown && !seconds_shown));
 
         String and = res.getString(R.string.and);
 
@@ -427,42 +427,42 @@ public final class View_data extends Data // contains all DB data from inherited
         // get now, start and end times as unix epoch timestamps
         long now_s = System.currentTimeMillis() / 1000L;
 
-        long total_interval = end_time - start_time;
-        long elapsed = now_s - start_time;
+        long total_interval = getEnd_time() - getStart_time();
+        long elapsed = now_s - getStart_time();
 
         // only calculate percentage if is being shown
-        if(show_progress)
+        if(getShow_progress())
         {
             calc_percentage(total_interval, elapsed);
         }
 
         // if we are at the start, show started text
-        if(now_s == start_time)
+        if(now_s == getStart_time())
         {
-            time_text_disp.set(start_text);
+            time_text_disp.set(getStart_text());
         }
         // if we are at the end (or past when terminate is set) show completed text
-        else if(terminate && now_s > end_time || now_s == end_time)
+        else if(getTerminate() && now_s > getEnd_time() || now_s == getEnd_time())
         {
-            time_text_disp.set(complete_text);
+            time_text_disp.set(getComplete_text());
 
             // stop if we are done and terminate is set
-            if(terminate && now_s > end_time)
+            if(getTerminate() && now_s > getEnd_time())
                 return;
         }
 
         // only calculate time remaining if start or complete text shouldn't be shown
-        if(show_time_text_disp.get() || now_s != start_time || now_s != end_time)
+        if(show_time_text_disp.get() || now_s != getStart_time() || now_s != getEnd_time())
         {
             // time from now to end
-            long remaining = end_time - now_s;
+            long remaining = getEnd_time() - now_s;
             // time from now to start
-            long to_start = start_time - now_s;
+            long to_start = getStart_time() - now_s;
 
             String remaining_str;
 
             // if not needing calendar time difference, we can do calculation from the difference in seconds (much easier)
-            if(!show_years && !show_months)
+            if(!getShow_years() && !getShow_months())
             {
                 remaining_str = get_remaining_easy(res, to_start, remaining);
             }
@@ -480,14 +480,14 @@ public final class View_data extends Data // contains all DB data from inherited
         // get the DB data
         super(cursor);
 
-        title_disp.set(title);
+        title_disp.set(getTitle());
 
         // set up visibility
-        show_start_disp.set(show_start);
-        show_end_disp.set(show_end);
-        show_progress_disp.set(show_progress);
+        show_start_disp.set(getShow_start());
+        show_end_disp.set(getShow_end());
+        show_progress_disp.set(getShow_progress());
         // only show countdown when there is something to show
-        show_time_text_disp.set((show_years || show_months || show_weeks || show_days || show_hours || show_minutes || show_seconds));
+        show_time_text_disp.set((getShow_years() || getShow_months() || getShow_weeks() || getShow_days() || getShow_hours() || getShow_minutes() || getShow_seconds()));
 
         boolean hour_24 = PreferenceManager.getDefaultSharedPreferences(context).getBoolean("hour_24", context.getResources().getBoolean(R.bool.pref_hour_24_default));
 
@@ -498,8 +498,8 @@ public final class View_data extends Data // contains all DB data from inherited
                 Locale.US);
         SimpleDateFormat time_df = new SimpleDateFormat(context.getResources().getString(hour_24 ? R.string.time_format_24 : R.string.time_format_12), Locale.US);
 
-        start_time_date.setTime(start_time * 1000L);
-        end_time_date.setTime(end_time * 1000L);
+        start_time_date.setTime(getStart_time() * 1000L);
+        end_time_date.setTime(getEnd_time() * 1000L);
 
         start_date_disp.set(date_df.format(start_time_date));
         start_time_disp.set(time_df.format(start_time_date));
