@@ -348,12 +348,13 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
                         <EditText
                             android:id="@+id/repeat_count"
                             android:inputType="number"
+                            android:importantForAutofill="no"
                             android:textAppearance="?android:textAppearanceListItem"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginEnd="@dimen/margin_size"
                             android:selectAllOnFocus="true"
-                            />
+                            tools:targetApi="o"/>
 
                         <Spinner
                             android:id="@+id/repeat_units"
