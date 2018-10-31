@@ -17,7 +17,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import org.mattvchandler.progressbars.db.Data;
-import org.mattvchandler.progressbars.db.DataKt;
 import org.mattvchandler.progressbars.db.Undo;
 import org.mattvchandler.progressbars.list.Adapter;
 import org.mattvchandler.progressbars.list.Touch_helper_callback;
@@ -29,8 +28,6 @@ import org.mattvchandler.progressbars.util.Preferences;
 import org.mattvchandler.progressbars.databinding.ActivityProgressBarsBinding;
 
 import java.util.NoSuchElementException;
-
-import static org.mattvchandler.progressbars.util.Notification_handlerKt.reset_all_alarms;
 
 /*
 Copyright (C) 2018 Matthew Chandler
@@ -95,7 +92,7 @@ public class Progress_bars extends Dynamic_theme_activity
 
         // update repeat times and alarms
         Data.Companion.apply_all_repeats(this);
-        reset_all_alarms(this);
+        Notification_handler.Companion.reset_all_alarms(this);
 
         long scroll_to_rowid = getIntent().getLongExtra(EXTRA_SCROLL_TO_ROWID, -1);
         if(scroll_to_rowid >= 0)
@@ -110,7 +107,7 @@ public class Progress_bars extends Dynamic_theme_activity
         new update().run();
 
         // register to receive notifications of DB changes
-        LocalBroadcastManager.getInstance(this).registerReceiver(on_db_change, new IntentFilter(DataKt.DB_CHANGED_EVENT));
+        LocalBroadcastManager.getInstance(this).registerReceiver(on_db_change, new IntentFilter(Data.DB_CHANGED_EVENT));
     }
 
     @Override
@@ -141,10 +138,10 @@ public class Progress_bars extends Dynamic_theme_activity
         @Override
         public void onReceive(Context context, Intent intent)
         {
-            String change_type = intent.getStringExtra(DataKt.DB_CHANGED_TYPE);
-            if(change_type.equals(DataKt.INSERT) || change_type.equals(DataKt.UPDATE))
+            String change_type = intent.getStringExtra(Data.DB_CHANGED_TYPE);
+            if(change_type.equals(Data.INSERT) || change_type.equals(Data.UPDATE))
             {
-                long rowid = intent.getLongExtra(DataKt.DB_CHANGED_ROWID, -1);
+                long rowid = intent.getLongExtra(Data.DB_CHANGED_ROWID, -1);
                 if(rowid > 0)
                     binding.mainList.scrollToPosition(adapter.find_by_rowid(rowid));
             }
@@ -169,7 +166,7 @@ public class Progress_bars extends Dynamic_theme_activity
         MenuItem undo_butt = menu.findItem(R.id.undo);
         MenuItem redo_butt = menu.findItem(R.id.redo);
 
-        if(Undo.can_undo(this))
+        if(Undo.Companion.can_undo(this))
         {
             undo_butt.setEnabled(true);
             undo_butt.getIcon().setAlpha(255);
@@ -179,7 +176,7 @@ public class Progress_bars extends Dynamic_theme_activity
             undo_butt.setEnabled(false);
             undo_butt.getIcon().setAlpha(255 / 3);
         }
-        if(Undo.can_redo(this))
+        if(Undo.Companion.can_redo(this))
         {
             redo_butt.setEnabled(true);
             redo_butt.getIcon().setAlpha(255);
@@ -205,11 +202,11 @@ public class Progress_bars extends Dynamic_theme_activity
             return true;
 
         case R.id.undo:
-            Undo.apply(this, Undo.UNDO);
+            Undo.Companion.apply(this, Undo.UNDO);
             return true;
 
         case R.id.redo:
-            Undo.apply(this, Undo.REDO);
+            Undo.Companion.apply(this, Undo.REDO);
             return true;
 
         case R.id.settings:

@@ -26,27 +26,15 @@ import android.content.Context
 import android.content.Intent
 import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
+import android.provider.BaseColumns
 import android.support.v4.content.LocalBroadcastManager
 
 import org.mattvchandler.progressbars.R
+import org.mattvchandler.progressbars.util.Notification_handler
 
 import java.io.Serializable
 import java.util.Calendar
 import java.util.TimeZone
-
-import org.mattvchandler.progressbars.util.cancel_alarm
-import org.mattvchandler.progressbars.util.reset_alarm
-
-const val DB_CHANGED_EVENT    = "Data.DB_CHANGED_EVENT"
-const val DB_CHANGED_TYPE     = "Data.DB_CHANGED_TYPE"
-const val DB_CHANGED_ROWID    = "Data.DB_CHANGED_ROWID"
-const val DB_CHANGED_FROM_POS = "Data.DB_CHANGED_FROM_POS"
-const val DB_CHANGED_TO_POS   = "Data.DB_CHANGED_TO_POS"
-
-const val INSERT = "insert"
-const val UPDATE = "update"
-const val DELETE = "delete"
-const val MOVE   = "move"
 
 // struct w/ copy of all DB columns. Serializable so we can store the whole thing
 open class Data: Serializable
@@ -122,7 +110,7 @@ open class Data: Serializable
     constructor(context: Context, rowid_in: Long)
     {
         val db = DB(context).readableDatabase
-        val cursor = db.rawQuery("SELECT * FROM " + Progress_bars_table.TABLE_NAME + " WHERE " + Progress_bars_table._ID + " = ?", arrayOf(rowid_in.toString()))
+        val cursor = db.rawQuery("SELECT * FROM " + Progress_bars_table.TABLE_NAME + " WHERE " + BaseColumns._ID + " = ?", arrayOf(rowid_in.toString()))
         cursor.moveToFirst()
 
         set_from_cursor(cursor)
@@ -232,7 +220,7 @@ open class Data: Serializable
 
     private fun set_from_cursor(cursor: Cursor)
     {
-        rowid               = cursor.getLong(cursor.getColumnIndexOrThrow(Progress_bars_table._ID))
+        rowid               = cursor.getLong(cursor.getColumnIndexOrThrow(BaseColumns._ID))
         order               = cursor.getLong(cursor.getColumnIndexOrThrow(Progress_bars_table.ORDER_COL))
         start_time          = cursor.getLong(cursor.getColumnIndexOrThrow(Progress_bars_table.START_TIME_COL))
         end_time            = cursor.getLong(cursor.getColumnIndexOrThrow(Progress_bars_table.END_TIME_COL))
@@ -326,7 +314,7 @@ open class Data: Serializable
 
         val values = build_ContentValues()
         if(rowid > 0)
-            values.put(Progress_bars_table._ID, rowid)
+            values.put(BaseColumns._ID, rowid)
         rowid = db.insert(Progress_bars_table.TABLE_NAME, null, values)
 
         val undo_columns = ContentValues()
@@ -337,7 +325,7 @@ open class Data: Serializable
 
         db.close()
 
-        reset_alarm(context, this)
+        Notification_handler.reset_alarm(context, this)
 
         val intent = Intent(DB_CHANGED_EVENT)
         intent.putExtra(DB_CHANGED_TYPE, INSERT)
@@ -369,10 +357,10 @@ open class Data: Serializable
         undo_columns.put(Undo.TABLE_ROWID_COL, rowid)
         db.insert(Undo.TABLE_NAME, null, undo_columns)
 
-        db.update(Progress_bars_table.TABLE_NAME, build_ContentValues(), Progress_bars_table._ID + " = ?", arrayOf(rowid.toString()))
+        db.update(Progress_bars_table.TABLE_NAME, build_ContentValues(), BaseColumns._ID + " = ?", arrayOf(rowid.toString()))
         db.close()
 
-        reset_alarm(context, this)
+        Notification_handler.reset_alarm(context, this)
 
         val intent = Intent(DB_CHANGED_EVENT)
         intent.putExtra(DB_CHANGED_TYPE, UPDATE)
@@ -393,7 +381,7 @@ open class Data: Serializable
         if(rowid < 0)
             throw IllegalStateException("Tried to delete when rowid isn't set")
 
-        cancel_alarm(context, this)
+        Notification_handler.cancel_alarm(context, this)
 
         val db = DB(context).writableDatabase
 
@@ -404,7 +392,7 @@ open class Data: Serializable
         db.insert(Undo.TABLE_NAME, null, undo_columns)
 
         db.delete(Progress_bars_table.TABLE_NAME,
-                Progress_bars_table._ID + " = ?",
+                BaseColumns._ID + " = ?",
                 arrayOf(rowid.toString()))
         db.close()
 
@@ -448,7 +436,7 @@ open class Data: Serializable
 
         val values = ContentValues()
         values.put(Progress_bars_table.ORDER_COL, to_order)
-        db.update(Progress_bars_table.TABLE_NAME, values, Progress_bars_table._ID + " = ?", arrayOf(rowid.toString()))
+        db.update(Progress_bars_table.TABLE_NAME, values, BaseColumns._ID + " = ?", arrayOf(rowid.toString()))
 
         val undo_columns = ContentValues()
         undo_columns.put(Undo.ACTION_COL, MOVE)
@@ -544,6 +532,17 @@ open class Data: Serializable
 
     companion object
     {
+        const val DB_CHANGED_EVENT    = "Data.DB_CHANGED_EVENT"
+        const val DB_CHANGED_TYPE     = "Data.DB_CHANGED_TYPE"
+        const val DB_CHANGED_ROWID    = "Data.DB_CHANGED_ROWID"
+        const val DB_CHANGED_FROM_POS = "Data.DB_CHANGED_FROM_POS"
+        const val DB_CHANGED_TO_POS   = "Data.DB_CHANGED_TO_POS"
+
+        const val INSERT = "insert"
+        const val UPDATE = "update"
+        const val DELETE = "delete"
+        const val MOVE   = "move"
+
         fun apply_all_repeats(context: Context)
         {
             val db = DB(context).readableDatabase
@@ -556,24 +555,24 @@ open class Data: Serializable
                 val data = Data(cursor)
 
                 data.apply_repeat()
-                db.update(Progress_bars_table.TABLE_NAME, data.build_ContentValues(), Progress_bars_table._ID + " = ?", arrayOf(data.rowid.toString()))
+                db.update(Progress_bars_table.TABLE_NAME, data.build_ContentValues(), BaseColumns._ID + " = ?", arrayOf(data.rowid.toString()))
             }
             cursor.close()
             db.close()
         }
     }
-}
 
-private fun shift_row(i: Int, to_order: Long, cursor: Cursor, db: SQLiteDatabase): Long
-{
-    cursor.moveToPosition(i)
-    val from_order = cursor.getLong(cursor.getColumnIndexOrThrow(Progress_bars_table.ORDER_COL))
-    val i_rowid = cursor.getLong(cursor.getColumnIndexOrThrow(Progress_bars_table._ID))
+    private fun shift_row(i: Int, to_order: Long, cursor: Cursor, db: SQLiteDatabase): Long
+    {
+        cursor.moveToPosition(i)
+        val from_order = cursor.getLong(cursor.getColumnIndexOrThrow(Progress_bars_table.ORDER_COL))
+        val i_rowid = cursor.getLong(cursor.getColumnIndexOrThrow(BaseColumns._ID))
 
-    val values = ContentValues()
-    values.put(Progress_bars_table.ORDER_COL, to_order)
-    db.update(Progress_bars_table.TABLE_NAME, values, Progress_bars_table._ID + " = ?", arrayOf(i_rowid.toString()))
+        val values = ContentValues()
+        values.put(Progress_bars_table.ORDER_COL, to_order)
+        db.update(Progress_bars_table.TABLE_NAME, values, BaseColumns._ID + " = ?", arrayOf(i_rowid.toString()))
 
-    return from_order
+        return from_order
+    }
 }
 

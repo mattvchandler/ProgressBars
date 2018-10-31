@@ -1,9 +1,3 @@
-package org.mattvchandler.progressbars.db;
-
-import android.content.Context;
-import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteOpenHelper;
-
 /*
 Copyright (C) 2018 Matthew Chandler
 
@@ -25,33 +19,34 @@ IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
+package org.mattvchandler.progressbars.db
+
+import android.content.Context
+import android.database.sqlite.SQLiteDatabase
+import android.database.sqlite.SQLiteOpenHelper
+
 // DB container
-public class DB extends SQLiteOpenHelper
+class DB(context: Context): SQLiteOpenHelper(context, DB_NAME, null, DB_VERSION)
 {
-    private static final int DB_VERSION = 3;
-    private static final String DB_NAME = "progress_bar_db";
-
-    public DB(Context context)
+    companion object
     {
-        super(context, DB_NAME, null, DB_VERSION);
+        private const val DB_VERSION = 3
+        private const val DB_NAME = "progress_bar_db"
     }
-
     // build the tables / whatever else when new
-    @Override
-    public void onCreate(SQLiteDatabase sqLiteDatabase)
+    override fun onCreate(sqLiteDatabase: SQLiteDatabase)
     {
-        sqLiteDatabase.execSQL(Progress_bars_table.CREATE_TABLE);
-        sqLiteDatabase.execSQL(Undo.CREATE_TABLE);
+        sqLiteDatabase.execSQL(Progress_bars_table.CREATE_TABLE)
+        sqLiteDatabase.execSQL(Undo.CREATE_TABLE)
     }
 
     // if DB schema changes, put logic to migrate data here
-    @Override
-    public void onUpgrade(SQLiteDatabase db, int old_version, int new_version)
+    override fun onUpgrade(db: SQLiteDatabase, old_version: Int, new_version: Int)
     {
         if(new_version != DB_VERSION)
-            throw new IllegalStateException("DB version mismatch");
+            throw IllegalStateException("DB version mismatch")
 
-        Progress_bars_table.upgrade(db, old_version);
-        Undo.upgrade(db, old_version);
+        Progress_bars_table.upgrade(db, old_version)
+        Undo.upgrade(db, old_version)
     }
 }

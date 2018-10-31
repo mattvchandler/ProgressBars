@@ -54,6 +54,6 @@ class Resetting_application: Application()
         db.close()
 
         // register notification handler
-        setup_notification_channel(this)
+        Notification_handler.setup_notification_channel(this)
     }
 }

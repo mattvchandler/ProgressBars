@@ -38,7 +38,7 @@ abstract class Dynamic_theme_activity: AppCompatActivity()
         // get and set the theme from preferences
         dark_theme = PreferenceManager.getDefaultSharedPreferences(this).getBoolean("dark_theme", false)
         setTheme(if(dark_theme) R.style.Theme_progress_bars_dark else R.style.Theme_progress_bars)
-        reset_all_alarms(this)
+        Notification_handler.reset_all_alarms(this)
 
         super.onCreate(savedInstanceState)
     }

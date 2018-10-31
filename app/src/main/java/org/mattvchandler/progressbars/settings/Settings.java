@@ -180,7 +180,7 @@ public class Settings extends Dynamic_theme_activity implements DatePickerDialog
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l)
             {
-                boolean week_selected = i == Progress_bars_table.Unit.WEEK.index;
+                boolean week_selected = i == Progress_bars_table.Unit.WEEK.getIndex();
                 binding.repeatOn.setVisibility(week_selected ? View.VISIBLE : View.GONE);
                 binding.repeatDaysOfWeek.setVisibility(week_selected ? View.VISIBLE : View.GONE);
 
@@ -274,7 +274,7 @@ public class Settings extends Dynamic_theme_activity implements DatePickerDialog
         binding.repeatUnits.setSelection(data.getRepeat_unit());
         binding.repeatDaysOfWeek.setText(get_days_of_week_abbr(this, data.getRepeat_days_of_week()));
 
-        boolean week_selected = data.getRepeat_unit() == Progress_bars_table.Unit.WEEK.index;
+        boolean week_selected = data.getRepeat_unit() == Progress_bars_table.Unit.WEEK.getIndex();
         binding.repeatOn.setVisibility(week_selected ? View.VISIBLE : View.GONE);
         binding.repeatDaysOfWeek.setVisibility(week_selected ? View.VISIBLE : View.GONE);
     }
@@ -572,8 +572,8 @@ public class Settings extends Dynamic_theme_activity implements DatePickerDialog
         StringBuilder days_of_week_str = new StringBuilder();
         for(Progress_bars_table.Days_of_week day : Progress_bars_table.Days_of_week.values())
         {
-            if((days_of_week & day.mask) != 0)
-                days_of_week_str.append(context.getResources().getStringArray(R.array.day_of_week_abbr)[day.index]);
+            if((days_of_week & day.getMask()) != 0)
+                days_of_week_str.append(context.getResources().getStringArray(R.array.day_of_week_abbr)[day.getIndex()]);
         }
 
         return days_of_week_str.toString();
@@ -658,7 +658,7 @@ public class Settings extends Dynamic_theme_activity implements DatePickerDialog
         boolean selected[] = new boolean[Progress_bars_table.Days_of_week.values().length];
         for(Progress_bars_table.Days_of_week day : Progress_bars_table.Days_of_week.values())
         {
-            selected[day.index] = (data.getRepeat_days_of_week() & day.mask) != 0;
+            selected[day.getIndex()] = (data.getRepeat_days_of_week() & day.getMask()) != 0;
         }
 
         Checkbox_dialog_frag frag = new Checkbox_dialog_frag();

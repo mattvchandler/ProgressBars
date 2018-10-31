@@ -62,7 +62,7 @@ class Preferences: Dynamic_theme_activity()
             if(key == "master_notification")
             {
                 // re-enable / disable all notification alarms when master notification setting is toggled
-                activity?.let { reset_all_alarms(it) }
+                activity?.let { Notification_handler.reset_all_alarms(it) }
             }
             else if(key == "dark_theme")
             {

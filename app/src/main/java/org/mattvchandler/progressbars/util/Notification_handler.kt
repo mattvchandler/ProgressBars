@@ -41,11 +41,6 @@ import org.mattvchandler.progressbars.db.Progress_bars_table
 import org.mattvchandler.progressbars.Progress_bars
 import org.mattvchandler.progressbars.R
 
-const val BASE_STARTED_ACTION_NAME = "org.mattvchandler.progressbars.STARTED_ROWID_"
-const val BASE_COMPLETED_ACTION_NAME = "org.mattvchandler.progressbars.COMPLETED_ROWID_"
-const val EXTRA_ROWID = "EXTRA_ROWID"
-const val CHANNEL_ID = "org.mattvchandler.progressbars.notification_channel"
-
 // all notification / alarm handling done here
 class Notification_handler: BroadcastReceiver()
 {
@@ -142,103 +137,111 @@ class Notification_handler: BroadcastReceiver()
             }
         }
     }
-}
 
-fun setup_notification_channel(context: Context)
-{
-    // Set up notification channel (API 26+)
-    val nm = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-    if(Build.VERSION.SDK_INT >= 26)
+    companion object
     {
-        var channel: NotificationChannel? = nm.getNotificationChannel(CHANNEL_ID)
-        if(channel == null)
+        const val BASE_STARTED_ACTION_NAME = "org.mattvchandler.progressbars.STARTED_ROWID_"
+        const val BASE_COMPLETED_ACTION_NAME = "org.mattvchandler.progressbars.COMPLETED_ROWID_"
+        const val EXTRA_ROWID = "EXTRA_ROWID"
+        const val CHANNEL_ID = "org.mattvchandler.progressbars.notification_channel"
+
+        fun setup_notification_channel(context: Context)
         {
-            channel = NotificationChannel(CHANNEL_ID,
-                    context.resources.getString(R.string.notification_channel_name),
-                    NotificationManager.IMPORTANCE_HIGH)
-            channel.description = context.resources.getString(R.string.notification_channel_desc)
-            nm.createNotificationChannel(channel)
+            // Set up notification channel (API 26+)
+            val nm = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+            if(Build.VERSION.SDK_INT >= 26)
+            {
+                var channel: NotificationChannel? = nm.getNotificationChannel(CHANNEL_ID)
+                if(channel == null)
+                {
+                    channel = NotificationChannel(CHANNEL_ID,
+                            context.resources.getString(R.string.notification_channel_name),
+                            NotificationManager.IMPORTANCE_HIGH)
+                    channel.description = context.resources.getString(R.string.notification_channel_desc)
+                    nm.createNotificationChannel(channel)
+                }
+            }
+        }
+
+        // build start or completion intent for a start/end alarms
+        private fun get_intent(context: Context, data: Data, base_action: String): PendingIntent
+        {
+            // set intent to bring us to the notification handler
+            val intent = Intent(context, Notification_handler::class.java)
+            intent.action = base_action + data.rowid.toString()
+
+            // put the rowid in the intent extras
+            val extras = Bundle()
+            extras.putLong(EXTRA_ROWID, data.rowid)
+            intent.putExtras(extras)
+
+            return PendingIntent.getBroadcast(context, 0, intent, 0)
+        }
+
+        private fun reset_alarm_details(context: Context, data: Data, am: AlarmManager, now: Long)
+        {
+            // build start and completion intents
+            val start_pi = get_intent(context, data, BASE_STARTED_ACTION_NAME)
+            val complete_pi = get_intent(context, data, BASE_COMPLETED_ACTION_NAME)
+
+            // if notifications are enabled and the start time is in the future, set an alarm
+            // (will overwrite any existing alarm with the same action and target)
+            if(now < data.start_time)
+                if(Build.VERSION.SDK_INT >= 23)
+                    am.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, data.start_time * 1000, start_pi)
+                else
+                    am.setExact(AlarmManager.RTC_WAKEUP, data.start_time * 1000, start_pi)
+            else
+                am.cancel(start_pi)// otherwise cancel any existing alarm
+
+            // same as above for completion alarms
+            if(now < data.end_time)
+                if(Build.VERSION.SDK_INT >= 23)
+                    am.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, data.end_time * 1000, complete_pi)
+                else
+                    am.setExact(AlarmManager.RTC_WAKEUP, data.end_time * 1000, complete_pi)
+            else
+                am.cancel(complete_pi)
+        }
+
+        fun reset_all_alarms(context: Context)
+        {
+            val db = DB(context).readableDatabase
+            val cursor = db.rawQuery(Progress_bars_table.SELECT_ALL_ROWS, null)
+
+            val now = System.currentTimeMillis() / 1000
+
+            val am = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+
+            // for every timer
+            for(i in 0 until cursor.count)
+            {
+                cursor.moveToPosition(i)
+                val data = Data(cursor)
+
+                reset_alarm_details(context, data, am, now)
+            }
+            cursor.close()
+            db.close()
+        }
+
+        // reset an individual timer's start/end alarms
+        fun reset_alarm(context: Context, data: Data)
+        {
+            val am = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+            val now = System.currentTimeMillis() / 1000
+
+            reset_alarm_details(context, data, am, now)
+        }
+
+        // cancel an alarm
+        fun cancel_alarm(context: Context, data: Data)
+        {
+            val am = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+
+            // cancel both start and completion alarms
+            am.cancel(get_intent(context, data, BASE_STARTED_ACTION_NAME))
+            am.cancel(get_intent(context, data, BASE_COMPLETED_ACTION_NAME))
         }
     }
-}
-
-// build start or completion intent for a start/end alarms
-private fun get_intent(context: Context, data: Data, base_action: String): PendingIntent
-{
-    // set intent to bring us to the notification handler
-    val intent = Intent(context, Notification_handler::class.java)
-    intent.action = base_action + data.rowid.toString()
-
-    // put the rowid in the intent extras
-    val extras = Bundle()
-    extras.putLong(EXTRA_ROWID, data.rowid)
-    intent.putExtras(extras)
-
-    return PendingIntent.getBroadcast(context, 0, intent, 0)
-}
-
-private fun reset_alarm_details(context: Context, data: Data, am: AlarmManager, now: Long)
-{
-    // build start and completion intents
-    val start_pi = get_intent(context, data, BASE_STARTED_ACTION_NAME)
-    val complete_pi = get_intent(context, data, BASE_COMPLETED_ACTION_NAME)
-
-    // if notifications are enabled and the start time is in the future, set an alarm
-    // (will overwrite any existing alarm with the same action and target)
-    if(now < data.start_time)
-        if(Build.VERSION.SDK_INT >= 23)
-            am.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, data.start_time * 1000, start_pi)
-        else
-            am.setExact(AlarmManager.RTC_WAKEUP, data.start_time * 1000, start_pi)
-    else
-        am.cancel(start_pi)// otherwise cancel any existing alarm
-
-    // same as above for completion alarms
-    if(now < data.end_time)
-        if(Build.VERSION.SDK_INT >= 23)
-            am.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, data.end_time * 1000, complete_pi)
-        else
-            am.setExact(AlarmManager.RTC_WAKEUP, data.end_time * 1000, complete_pi)
-    else
-        am.cancel(complete_pi)
-}
-
-fun reset_all_alarms(context: Context)
-{
-    val db = DB(context).readableDatabase
-    val cursor = db.rawQuery(Progress_bars_table.SELECT_ALL_ROWS, null)
-
-    val now = System.currentTimeMillis() / 1000
-
-    val am = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
-
-    // for every timer
-    for(i in 0 until cursor.count)
-    {
-        cursor.moveToPosition(i)
-        val data = Data(cursor)
-
-        reset_alarm_details(context, data, am, now)
-    }
-    cursor.close()
-    db.close()
-}
-
-// reset an individual timer's start/end alarms
-fun reset_alarm(context: Context, data: Data)
-{
-    val am = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
-    val now = System.currentTimeMillis() / 1000
-
-    reset_alarm_details(context, data, am, now)
-}
-
-// cancel an alarm
-fun cancel_alarm(context: Context, data: Data)
-{
-    val am = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
-
-    // cancel both start and completion alarms
-    am.cancel(get_intent(context, data, BASE_STARTED_ACTION_NAME))
-    am.cancel(get_intent(context, data, BASE_COMPLETED_ACTION_NAME))
 }
