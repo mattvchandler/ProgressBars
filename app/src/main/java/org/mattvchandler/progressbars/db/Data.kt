@@ -39,11 +39,11 @@ import java.util.TimeZone
 // struct w/ copy of all DB columns. Serializable so we can store the whole thing
 open class Data: Serializable
 {
-    var rowid: Long = -1 // is -1 when not set, ie. the data doesn't exist in the DB
+    var rowid = -1L // is -1 when not set, ie. the data doesn't exist in the DB
 
-    var order:      Long = -1 // -1 until set
-    var start_time: Long = 0
-    var end_time:   Long = 0
+    var order      = -1L // -1 until set
+    var start_time = 0L
+    var end_time   = 0L
 
     var start_tz = ""
     var end_tz   = ""
@@ -417,7 +417,7 @@ open class Data: Serializable
         val db = DB(context).writableDatabase
         val cursor = db.rawQuery(Progress_bars_table.SELECT_ALL_ROWS, null)
 
-        var to_order: Long = -1
+        var to_order = -1L
 
         if(from_pos < to_pos)
         {
