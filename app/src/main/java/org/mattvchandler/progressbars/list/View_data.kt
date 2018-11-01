@@ -433,7 +433,7 @@ class View_data (context: Context, cursor: Cursor): Data(cursor) // contains all
     }
 
     // run every second. updates percentage and time remaining text
-    private fun update(res: Resources)
+    fun update_display(res: Resources)
     {
         // get now, start and end times as unix epoch timestamps
         val now_s = System.currentTimeMillis() / 1000L
@@ -513,6 +513,6 @@ class View_data (context: Context, cursor: Cursor): Data(cursor) // contains all
         progress_disp.set(0)
 
         // do a run now, to set up remaining display data
-        update(context.resources)
+        update_display(context.resources)
     }
 }

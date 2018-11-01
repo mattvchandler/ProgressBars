@@ -71,7 +71,7 @@ class Adapter(private val context: Progress_bars): RecyclerView.Adapter<Adapter.
 
         fun update()
         {
-            data.update(context)
+            data.update_display(context.resources)
         }
 
         // click the row to edit its data

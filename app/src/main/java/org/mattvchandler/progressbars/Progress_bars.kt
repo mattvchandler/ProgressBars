@@ -53,8 +53,6 @@ import java.util.NoSuchElementException
 // TODO: plural strings
 // TODO: add bkg for elevation & shadow to prg bar view
 // TODO: choose notification priority
-// TODO: undo broken?
-// TODO: can see updates (need to speed up?)
 
 // main activity. display each timer in a list
 class Progress_bars: Dynamic_theme_activity()
