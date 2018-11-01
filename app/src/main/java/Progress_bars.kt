@@ -35,7 +35,7 @@ import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.helper.ItemTouchHelper
 import android.view.Menu
 import android.view.MenuItem
-
+import org.mattvchandler.progressbars.databinding.ActivityProgressBarsBinding
 import org.mattvchandler.progressbars.db.Data
 import org.mattvchandler.progressbars.db.Undo
 import org.mattvchandler.progressbars.list.Adapter
@@ -45,11 +45,8 @@ import org.mattvchandler.progressbars.util.About_dialog
 import org.mattvchandler.progressbars.util.Dynamic_theme_activity
 import org.mattvchandler.progressbars.util.Notification_handler
 import org.mattvchandler.progressbars.util.Preferences
-import org.mattvchandler.progressbars.databinding.ActivityProgressBarsBinding
+import java.util.*
 
-import java.util.NoSuchElementException
-
-// TODO: color for notification icon (see git history on how to)
 // TODO: add bkg for elevation & shadow to prg bar view
 // TODO: choose notification priority
 

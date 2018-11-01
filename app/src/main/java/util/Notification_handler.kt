@@ -21,11 +21,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 package org.mattvchandler.progressbars.util
 
-import android.app.AlarmManager
-import android.app.NotificationChannel
-import android.app.NotificationManager
-import android.app.PendingIntent
-import android.app.TaskStackBuilder
+import android.app.*
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
@@ -34,12 +30,11 @@ import android.os.Bundle
 import android.preference.PreferenceManager
 import android.support.v4.app.NotificationCompat
 import android.util.TypedValue
-
-import org.mattvchandler.progressbars.db.Data
-import org.mattvchandler.progressbars.db.DB
-import org.mattvchandler.progressbars.db.Progress_bars_table
 import org.mattvchandler.progressbars.Progress_bars
 import org.mattvchandler.progressbars.R
+import org.mattvchandler.progressbars.db.DB
+import org.mattvchandler.progressbars.db.Data
+import org.mattvchandler.progressbars.db.Progress_bars_table
 
 // all notification / alarm handling done here
 class Notification_handler: BroadcastReceiver()
@@ -97,6 +92,7 @@ class Notification_handler: BroadcastReceiver()
                     setup_notification_channel(context)
 
                     // get the primary color from the theme
+                    context.setTheme(R.style.Theme_progress_bars)
                     val color_tv = TypedValue()
                     context.theme.resolveAttribute(R.attr.colorPrimary, color_tv, true)
 

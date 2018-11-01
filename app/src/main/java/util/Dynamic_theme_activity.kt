@@ -21,6 +21,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 package org.mattvchandler.progressbars.util
 
+import android.content.Context
 import android.os.Bundle
 import android.preference.PreferenceManager
 import android.support.v7.app.AppCompatActivity
@@ -35,17 +36,9 @@ abstract class Dynamic_theme_activity: AppCompatActivity()
     private lateinit var theme: String
     override fun onCreate(savedInstanceState: Bundle?)
     {
-        theme = PreferenceManager.getDefaultSharedPreferences(this).getString("theme", resources.getString(R.string.theme_values_default))!!
+        val (night_mode, new_theme) = get_current_night_mode(this)
 
-        var night_mode = AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
-
-        when(theme)
-        {
-            resources.getString(R.string.theme_values_system) -> night_mode = AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
-            resources.getString(R.string.theme_values_day)    -> night_mode = AppCompatDelegate.MODE_NIGHT_NO
-            resources.getString(R.string.theme_values_night)  -> night_mode = AppCompatDelegate.MODE_NIGHT_YES
-            resources.getString(R.string.theme_values_auto)   -> night_mode = AppCompatDelegate.MODE_NIGHT_AUTO
-        }
+        theme = new_theme
         AppCompatDelegate.setDefaultNightMode(night_mode)
 
         super.onCreate(savedInstanceState)
@@ -59,5 +52,25 @@ abstract class Dynamic_theme_activity: AppCompatActivity()
         // has the theme changed? recreate this activity
         if(new_theme != theme)
             recreate()
+    }
+
+    companion object
+    {
+        fun get_current_night_mode(context: Context): Pair<Int, String>
+        {
+            val theme = PreferenceManager.getDefaultSharedPreferences(context).getString("theme", context.resources.getString(R.string.theme_values_default))!!
+
+            var night_mode = AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
+
+            when(theme)
+            {
+                context.resources.getString(R.string.theme_values_system) -> night_mode = AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
+                context.resources.getString(R.string.theme_values_day)    -> night_mode = AppCompatDelegate.MODE_NIGHT_NO
+                context.resources.getString(R.string.theme_values_night)  -> night_mode = AppCompatDelegate.MODE_NIGHT_YES
+                context.resources.getString(R.string.theme_values_auto)   -> night_mode = AppCompatDelegate.MODE_NIGHT_AUTO
+            }
+
+            return Pair(night_mode, theme)
+        }
     }
 }
