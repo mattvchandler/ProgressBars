@@ -50,7 +50,6 @@ import org.mattvchandler.progressbars.databinding.ActivityProgressBarsBinding
 import java.util.NoSuchElementException
 
 // TODO: plural strings
-// TODO: move strings (and others?) from arrays.xml
 // TODO: add bkg for elevation & shadow to prg bar view
 // TODO: choose notification priority
 
