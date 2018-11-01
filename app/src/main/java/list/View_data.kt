@@ -349,7 +349,7 @@ class View_data (context: Context, cursor: Cursor): Data(cursor) // contains all
         // figure out plurality and which unit to add 'and' to
         if(years_shown)
         {
-            remaining_str += years.toString() + " " + res.getString(if(years == 1L) R.string.year else R.string.years)
+            remaining_str += res.getQuantityString(R.plurals.year, years.toInt(), years.toInt())
 
             val trailing = (if(months_shown) 1 else 0) +
                     (if(weeks_shown) 1 else 0) +
@@ -365,7 +365,7 @@ class View_data (context: Context, cursor: Cursor): Data(cursor) // contains all
 
         if(months_shown)
         {
-            remaining_str += months.toString() + " " + res.getString(if(months == 1L) R.string.month else R.string.months)
+            remaining_str += res.getQuantityString(R.plurals.month, months.toInt(), months.toInt())
 
             val trailing = (if(weeks_shown) 1 else 0) +
                     (if(days_shown) 1 else 0) +
@@ -380,7 +380,7 @@ class View_data (context: Context, cursor: Cursor): Data(cursor) // contains all
 
         if(weeks_shown)
         {
-            remaining_str += weeks.toString() + " " + res.getString(if(weeks == 1L) R.string.week else R.string.weeks)
+            remaining_str += res.getQuantityString(R.plurals.week, weeks.toInt(), weeks.toInt())
 
             val trailing = (if(days_shown) 1 else 0) +
                     (if(hours_shown) 1 else 0) +
@@ -394,7 +394,7 @@ class View_data (context: Context, cursor: Cursor): Data(cursor) // contains all
 
         if(days_shown)
         {
-            remaining_str += days.toString() + " " + res.getString(if(days == 1L) R.string.day else R.string.days)
+            remaining_str += res.getQuantityString(R.plurals.day, days.toInt(), days.toInt())
 
             val trailing = (if(hours_shown) 1 else 0) +
                     (if(minutes_shown) 1 else 0) +
@@ -407,7 +407,7 @@ class View_data (context: Context, cursor: Cursor): Data(cursor) // contains all
 
         if(hours_shown)
         {
-            remaining_str += hours.toString() + " " + res.getString(if(hours == 1L) R.string.hour else R.string.hours)
+            remaining_str += res.getQuantityString(R.plurals.hour, hours.toInt(), hours.toInt())
 
             val trailing = (if(minutes_shown) 1 else 0) + if(seconds_shown) 1 else 0
             if(trailing > 1)
@@ -418,7 +418,7 @@ class View_data (context: Context, cursor: Cursor): Data(cursor) // contains all
 
         if(minutes_shown)
         {
-            remaining_str += minutes.toString() + " " + res.getString(if(minutes == 1L) R.string.minute else R.string.minutes)
+            remaining_str += res.getQuantityString(R.plurals.minute, minutes.toInt(), minutes.toInt())
 
             if(seconds_shown)
                 remaining_str += ", $and "
@@ -426,7 +426,7 @@ class View_data (context: Context, cursor: Cursor): Data(cursor) // contains all
 
         if(seconds_shown)
         {
-            remaining_str += seconds.toString() + " " + res.getString(if(seconds == 1L) R.string.second else R.string.seconds)
+            remaining_str += res.getQuantityString(R.plurals.second, seconds.toInt(), seconds.toInt())
         }
 
         return remaining_str

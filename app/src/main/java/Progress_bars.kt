@@ -49,7 +49,7 @@ import org.mattvchandler.progressbars.databinding.ActivityProgressBarsBinding
 
 import java.util.NoSuchElementException
 
-// TODO: plural strings
+// TODO: color for notification icon (see git history on how to)
 // TODO: add bkg for elevation & shadow to prg bar view
 // TODO: choose notification priority
 

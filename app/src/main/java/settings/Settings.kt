@@ -647,7 +647,7 @@ class Settings: Dynamic_theme_activity(), DatePickerDialog.OnDateSetListener, Ti
 
         val args = Bundle()
         args.putInt(Checkbox_dialog_frag.TITLE_ARG, R.string.show_units_header)
-        args.putInt(Checkbox_dialog_frag.ENTRIES_ARG, R.array.time_units_capitalized)
+        args.putInt(Checkbox_dialog_frag.ENTRIES_ARG, R.array.time_units)
         args.putBooleanArray(Checkbox_dialog_frag.SELECTION_ARG, selected)
 
         frag.arguments = args

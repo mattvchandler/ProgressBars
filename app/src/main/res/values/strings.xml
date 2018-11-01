@@ -29,33 +29,42 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
     <string name="app_website"><a href="https://www.github.com/mattvchandler/ProgressBars">Progress Bars on Github</a></string>
     <string name="app_logo_desc">Progress Bars logo</string>
 
-    <string name="seconds">seconds</string>
-    <string name="minutes">minutes</string>
-    <string name="hours">hours</string>
-    <string name="days">days</string>
-    <string name="weeks">weeks</string>
-    <string name="months">months</string>
-    <string name="years">years</string>
+    <plurals name="second">
+        <item quantity="one">%d second</item>
+        <item quantity="other">%d seconds</item>
+    </plurals>
 
-    <string name="second">second</string>
-    <string name="minute">minute</string>
-    <string name="hour">hour</string>
-    <string name="day">day</string>
-    <string name="week">week</string>
-    <string name="month">month</string>
-    <string name="year">year</string>
+    <plurals name="minute">
+        <item quantity="one">%d minute</item>
+        <item quantity="other">%d minutes</item>
+    </plurals>
+
+    <plurals name="hour">
+        <item quantity="one">%d hour</item>
+        <item quantity="other">%d hours</item>
+    </plurals>
+
+    <plurals name="day">
+        <item quantity="one">%d day</item>
+        <item quantity="other">%d days</item>
+    </plurals>
+
+    <plurals name="week">
+        <item quantity="one">%d week</item>
+        <item quantity="other">%d weeks</item>
+    </plurals>
+
+    <plurals name="month">
+        <item quantity="one">%d month</item>
+        <item quantity="other">%d months</item>
+    </plurals>
+
+    <plurals name="year">
+        <item quantity="one">%d year</item>
+        <item quantity="other">%d years</item>
+    </plurals>
 
     <string-array name="time_units">
-        <item>@string/seconds</item>
-        <item>@string/minutes</item>
-        <item>@string/hours</item>
-        <item>@string/days</item>
-        <item>@string/weeks</item>
-        <item>@string/months</item>
-        <item>@string/years</item>
-    </string-array>
-
-    <string-array name="time_units_capitalized">
         <item>Seconds</item>
         <item>Minutes</item>
         <item>Hours</item>
