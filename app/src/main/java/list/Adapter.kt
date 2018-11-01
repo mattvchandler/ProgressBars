@@ -28,6 +28,7 @@ import android.content.IntentFilter
 import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
 import android.databinding.DataBindingUtil
+import android.os.Build
 import android.provider.BaseColumns
 import android.support.v4.content.LocalBroadcastManager
 import android.support.v7.widget.RecyclerView
@@ -86,23 +87,12 @@ class Adapter(private val context: Progress_bars): RecyclerView.Adapter<Adapter.
         // called when a row is dragged for deletion or reordering
         fun on_selected()
         {
-            // get the background color
-            val tv = TypedValue()
-            context.theme.resolveAttribute(android.R.attr.colorBackground, tv, true)
-            // make it darker and-semi transparent
-            row_binding.progressRow.setBackgroundColor(min(tv.data - 0x40202020, 0))
-
             moved_from_pos = adapterPosition
         }
 
         // called when a row is released from reordering
         fun on_cleared()
         {
-            // reset the original background color
-            val tv = TypedValue()
-            context.theme.resolveAttribute(android.R.attr.colorBackground, tv, true)
-            row_binding.progressRow.setBackgroundColor(tv.data)
-
             val moved_to_pos = adapterPosition
             if(moved_to_pos != RecyclerView.NO_POSITION && moved_to_pos != moved_from_pos)
                 data.reorder(context, moved_from_pos, moved_to_pos)

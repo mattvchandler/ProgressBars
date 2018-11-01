@@ -21,8 +21,11 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 package org.mattvchandler.progressbars.list
 
+import android.graphics.Canvas
+import android.support.v4.view.ViewCompat
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.helper.ItemTouchHelper
+import org.mattvchandler.progressbars.R
 
 // handle drag gestures for reorder and dismiss in RecyclerView
 class Touch_helper_callback(private val adapter: Adapter): ItemTouchHelper.Callback()
@@ -65,10 +68,18 @@ class Touch_helper_callback(private val adapter: Adapter): ItemTouchHelper.Callb
             (viewHolder as Adapter.Progress_bar_row_view_holder).on_selected()
     }
 
+    override fun onChildDraw(c: Canvas, recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder, dX: Float, dY: Float, actionState: Int, isCurrentlyActive: Boolean)
+    {
+        super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive)
+        if(isCurrentlyActive)
+            ViewCompat.setElevation(viewHolder.itemView, recyclerView.context.resources.getDimension(R.dimen.selected_elevation))
+    }
+
     override fun clearView(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder)
     {
         super.clearView(recyclerView, viewHolder)
         // notify when a row is deselected
         (viewHolder as Adapter.Progress_bar_row_view_holder).on_cleared()
+        ViewCompat.setElevation(viewHolder.itemView, 0.0f)
     }
 }

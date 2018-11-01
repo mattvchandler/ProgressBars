@@ -47,8 +47,9 @@ import org.mattvchandler.progressbars.util.Notification_handler
 import org.mattvchandler.progressbars.util.Preferences
 import java.util.*
 
-// TODO: add bkg for elevation & shadow to prg bar view
 // TODO: choose notification priority
+// TODO: proper way to mark icons as inactive?
+// TODO: frequent crashes on at least Undo and rowid not found in cursor
 
 // main activity. display each timer in a list
 class Progress_bars: Dynamic_theme_activity()
