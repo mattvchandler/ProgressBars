@@ -49,8 +49,8 @@ import org.mattvchandler.progressbars.databinding.ActivityProgressBarsBinding
 
 import java.util.NoSuchElementException
 
-// TODO: proper night mode support (https://medium.com/@chrisbanes/appcompat-v23-2-daynight-d10f90c83e94)
 // TODO: plural strings
+// TODO: move strings (and others?) from arrays.xml
 // TODO: add bkg for elevation & shadow to prg bar view
 // TODO: choose notification priority
 

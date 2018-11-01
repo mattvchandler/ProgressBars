@@ -24,7 +24,5 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 <resources>
     <color name="colorPrimary">#4caf50</color>
     <color name="colorPrimaryDark">#388e3c</color>
-    <color name="colorDarkPrimary">#1b5e20</color>
-    <color name="colorDarkPrimaryDark">#124116</color>
     <color name="colorAccent">#009688</color>
 </resources>

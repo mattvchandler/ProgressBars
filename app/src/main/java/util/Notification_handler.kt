@@ -97,7 +97,6 @@ class Notification_handler: BroadcastReceiver()
                     setup_notification_channel(context)
 
                     // get the primary color from the theme
-                    context.setTheme(if(PreferenceManager.getDefaultSharedPreferences(context).getBoolean("dark_theme", false)) R.style.Theme_progress_bars_dark else R.style.Theme_progress_bars)
                     val color_tv = TypedValue()
                     context.theme.resolveAttribute(R.attr.colorPrimary, color_tv, true)
 

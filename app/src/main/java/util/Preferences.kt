@@ -21,19 +21,30 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 package org.mattvchandler.progressbars.util
 
+import android.Manifest
+import android.app.AlertDialog
+import android.app.Dialog
+import android.content.Context
 import android.content.SharedPreferences
+import android.content.pm.PackageManager
 import android.databinding.DataBindingUtil
-import android.preference.PreferenceManager
 import android.os.Bundle
-import android.view.MenuItem
+import android.preference.PreferenceManager
+import android.support.v4.app.ActivityCompat
+import android.support.v4.app.DialogFragment
+import android.support.v4.content.ContextCompat
 import android.support.v7.preference.PreferenceFragmentCompat
-
+import android.view.MenuItem
 import org.mattvchandler.progressbars.R
 import org.mattvchandler.progressbars.databinding.ActivityPreferencesBinding
 
 // application settings screen
 class Preferences: Dynamic_theme_activity()
 {
+    companion object
+    {
+        private const val LOCATION_PERMISSION_RESPONSE = 1
+    }
     class Progress_bar_prefs_frag: PreferenceFragmentCompat(), SharedPreferences.OnSharedPreferenceChangeListener
     {
         override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?)
@@ -64,8 +75,33 @@ class Preferences: Dynamic_theme_activity()
                 // re-enable / disable all notification alarms when master notification setting is toggled
                 activity?.let { Notification_handler.reset_all_alarms(it) }
             }
-            else if(key == "dark_theme")
+            else if(key == "theme")
             {
+                // request location permission for local sunset / sunrise times
+                if(sharedPreferences.getString("theme", "") == resources.getString(R.string.theme_values_auto))
+                {
+                    if (ContextCompat.checkSelfPermission(activity as Context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED)
+                    {
+                        if(ActivityCompat.shouldShowRequestPermissionRationale(activity!!, Manifest.permission.ACCESS_FINE_LOCATION))
+                        {
+                            class Location_frag: DialogFragment()
+                            {
+                                override fun onCreateDialog(savedInstanceState: Bundle?): Dialog =
+                                        AlertDialog.Builder(activity)
+                                                .setTitle(R.string.loc_perm_title)
+                                                .setMessage(R.string.loc_perm_msg)
+                                                .setPositiveButton(android.R.string.ok) { _, _ -> ActivityCompat.requestPermissions(activity!!, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), LOCATION_PERMISSION_RESPONSE)}
+                                                .setNegativeButton(android.R.string.cancel, null)
+                                                .create()
+                            }
+                            Location_frag().show(activity!!.supportFragmentManager, "location_permission_dialog")
+                        }
+                        else
+                        {
+                            ActivityCompat.requestPermissions(activity!!, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), LOCATION_PERMISSION_RESPONSE)
+                        }
+                    }
+                }
                 // recreate this activity to apply the new theme
                 activity?.recreate()
             }

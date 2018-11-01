@@ -27,17 +27,17 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
     >
     <item
         android:id="@+id/add_butt"
-        android:icon="?attr/themed_ic_add"
+        android:icon="@drawable/ic_add"
         android:title="@string/add_butt_title"
         app:showAsAction="ifRoom"/>
     <item
         android:id="@+id/undo"
-        android:icon="?attr/themed_ic_undo"
+        android:icon="@drawable/ic_undo"
         android:title="@string/undo"
         app:showAsAction="ifRoom"/>
     <item
         android:id="@+id/redo"
-        android:icon="?attr/themed_ic_redo"
+        android:icon="@drawable/ic_redo"
         android:title="@string/redo"
         app:showAsAction="ifRoom"/>
     <item

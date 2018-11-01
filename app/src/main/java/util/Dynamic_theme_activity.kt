@@ -24,21 +24,29 @@ package org.mattvchandler.progressbars.util
 import android.os.Bundle
 import android.preference.PreferenceManager
 import android.support.v7.app.AppCompatActivity
+import android.support.v7.app.AppCompatDelegate
 
 import org.mattvchandler.progressbars.R
 
-// TODO: use AppCompatDelegate Night Mode
 // extend AppCompatActivity to call recreate when the "dark_theme" preference changes
 // and to set the correct theme when create is called
 abstract class Dynamic_theme_activity: AppCompatActivity()
 {
-    private var dark_theme = false
+    private lateinit var theme: String
     override fun onCreate(savedInstanceState: Bundle?)
     {
-        // get and set the theme from preferences
-        dark_theme = PreferenceManager.getDefaultSharedPreferences(this).getBoolean("dark_theme", false)
-        setTheme(if(dark_theme) R.style.Theme_progress_bars_dark else R.style.Theme_progress_bars)
-        Notification_handler.reset_all_alarms(this)
+        theme = PreferenceManager.getDefaultSharedPreferences(this).getString("theme", resources.getString(R.string.theme_values_default))!!
+
+        var night_mode = AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
+
+        when(theme)
+        {
+            resources.getString(R.string.theme_values_system) -> night_mode = AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
+            resources.getString(R.string.theme_values_day)    -> night_mode = AppCompatDelegate.MODE_NIGHT_NO
+            resources.getString(R.string.theme_values_night)  -> night_mode = AppCompatDelegate.MODE_NIGHT_YES
+            resources.getString(R.string.theme_values_auto)   -> night_mode = AppCompatDelegate.MODE_NIGHT_AUTO
+        }
+        AppCompatDelegate.setDefaultNightMode(night_mode)
 
         super.onCreate(savedInstanceState)
     }
@@ -46,11 +54,10 @@ abstract class Dynamic_theme_activity: AppCompatActivity()
     override fun onResume()
     {
         super.onResume()
-        val new_dark_theme = PreferenceManager.getDefaultSharedPreferences(this)
-                .getBoolean("dark_theme", false)
+        val new_theme = PreferenceManager.getDefaultSharedPreferences(this).getString("theme", resources.getString(R.string.theme_values_default))!!
 
         // has the theme changed? recreate this activity
-        if(new_dark_theme != dark_theme)
+        if(new_theme != theme)
             recreate()
     }
 }

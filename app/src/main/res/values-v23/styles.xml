@@ -22,8 +22,10 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 -->
 
 <resources>
-    <attr name="themed_ic_add" format = "reference"/>
-    <attr name="themed_ic_undo" format = "reference"/>
-    <attr name="themed_ic_redo" format = "reference"/>
-    <attr name="themed_ic_save" format = "reference"/>
+    <style name="Theme.progress_bars" parent="Theme.AppCompat.DayNight.NoActionBar">
+        <item name="android:windowLightStatusBar">@bool/is_theme_light</item>
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+    </style>
 </resources>

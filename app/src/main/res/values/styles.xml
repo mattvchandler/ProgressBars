@@ -1,6 +1,4 @@
-<resources>
-
-    <!--
+<!--
 Copyright (C) 2018 Matthew Chandler
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of
@@ -19,8 +17,9 @@ FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
 COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
 IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-    -->
+-->
 
+<resources>
     <style name="Divider">
         <item name="android:background">?android:attr/listDivider</item>
         <item name="android:layout_width">match_parent</item>
@@ -28,22 +27,9 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
         <item name="android:layout_marginBottom">@dimen/margin_size</item>
         <item name="android:layout_marginTop">@dimen/margin_size</item>
     </style>
-    <style name="Theme.progress_bars" parent="Theme.AppCompat.Light.NoActionBar">
+    <style name="Theme.progress_bars" parent="Theme.AppCompat.DayNight.NoActionBar">
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
-        <item name="themed_ic_add">@drawable/ic_add_light_24dp</item>
-        <item name="themed_ic_undo">@drawable/ic_undo_light_24dp</item>
-        <item name="themed_ic_redo">@drawable/ic_redo_light_24dp</item>
-        <item name="themed_ic_save">@drawable/ic_save_light_24dp</item>
-    </style>
-    <style name="Theme.progress_bars_dark" parent="Theme.AppCompat.NoActionBar">
-        <item name="colorPrimary">@color/colorDarkPrimary</item>
-        <item name="colorPrimaryDark">@color/colorDarkPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
-        <item name="themed_ic_add">@drawable/ic_add_dark_24dp</item>
-        <item name="themed_ic_undo">@drawable/ic_undo_dark_24dp</item>
-        <item name="themed_ic_redo">@drawable/ic_redo_dark_24dp</item>
-        <item name="themed_ic_save">@drawable/ic_save_dark_24dp</item>
     </style>
 </resources>

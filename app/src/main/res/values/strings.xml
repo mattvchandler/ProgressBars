@@ -62,7 +62,16 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
     <string name="pref_master_notification">Enable notifications</string>
     <string name="pref_master_notification_summary">Allow individual timers to send notifications</string>
 
-    <string name="pref_dark_theme">Enable dark theme</string>
+    <string name="theme_title">Day / Night Theme</string>
+    <string-array name="theme_settings">
+        <item>Follow System</item>
+        <item>Day</item>
+        <item>Night</item>
+        <item>Auto (location / time based)</item>
+    </string-array>
+    <string name="loc_perm_title">"Allow access to location?"</string>
+    <string name="loc_perm_msg">"You will be asked to allow location access.\n\nIf granted, your location will be used to switch the theme at local sunrise / sunset. Otherwise, hard-coded times will be used instead.\n\nLocation data is not stored or used in any other way."</string>
+
 
     <string name="notification_start_title">%1$s started</string>
     <string name="notification_end_title">%1$s completed</string>
