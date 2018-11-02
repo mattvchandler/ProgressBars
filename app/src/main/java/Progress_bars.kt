@@ -48,8 +48,8 @@ import org.mattvchandler.progressbars.util.Preferences
 import java.util.*
 
 // TODO: choose notification priority
-// TODO: proper way to mark icons as inactive?
-// TODO: frequent crashes on at least Undo and rowid not found in cursor
+// TODO: frequent crashes on at least Undo, redo, and rowid not found in cursor
+// TODO: linting
 
 // main activity. display each timer in a list
 class Progress_bars: Dynamic_theme_activity()
@@ -156,30 +156,8 @@ class Progress_bars: Dynamic_theme_activity()
         // dis/enable undo-redo buttons as needed
         super.onPrepareOptionsMenu(menu)
 
-        val undo_butt = menu.findItem(R.id.undo)
-        val redo_butt = menu.findItem(R.id.redo)
-
-        // TODO: better way to mark buttons disabled?
-        if(Undo.can_undo(this))
-        {
-            undo_butt.isEnabled = true
-            undo_butt.icon.alpha = 255
-        }
-        else
-        {
-            undo_butt.isEnabled = false
-            undo_butt.icon.alpha = 255 / 3
-        }
-        if(Undo.can_redo(this))
-        {
-            redo_butt.isEnabled = true
-            redo_butt.icon.alpha = 255
-        }
-        else
-        {
-            redo_butt.isEnabled = false
-            redo_butt.icon.alpha = 255 / 3
-        }
+        menu.findItem(R.id.undo).isEnabled = Undo.can_undo(this)
+        menu.findItem(R.id.redo).isEnabled = Undo.can_redo(this)
 
         return true
     }
