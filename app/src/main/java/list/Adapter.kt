@@ -28,11 +28,9 @@ import android.content.IntentFilter
 import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
 import android.databinding.DataBindingUtil
-import android.os.Build
 import android.provider.BaseColumns
 import android.support.v4.content.LocalBroadcastManager
 import android.support.v7.widget.RecyclerView
-import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -44,6 +42,7 @@ import org.mattvchandler.progressbars.Progress_bars
 import org.mattvchandler.progressbars.R
 import org.mattvchandler.progressbars.settings.Settings
 import org.mattvchandler.progressbars.databinding.ProgressBarRowBinding
+import org.mattvchandler.progressbars.db.get_nullable_long
 
 import java.util.NoSuchElementException
 
@@ -55,6 +54,47 @@ class Adapter(private val context: Progress_bars): RecyclerView.Adapter<Adapter.
 {
     private val db: SQLiteDatabase = DB(context).writableDatabase
     private var cursor: Cursor = db.rawQuery(Progress_bars_table.SELECT_ALL_ROWS, null)
+    private val db_change_receiver = object: BroadcastReceiver()
+    {
+        // store the data we'll need for the lifetime of this object
+        override fun onReceive(context: Context, intent: Intent)
+        {
+            val rowid = intent.getLongExtra(Data.DB_CHANGED_ROWID, -1L)
+            val change_type = intent.getStringExtra(Data.DB_CHANGED_TYPE)
+
+            if(rowid == -1L && change_type != "move")
+                return
+
+            when(change_type)
+            {
+                Data.INSERT ->
+                {
+                    reset_cursor()
+                    this@Adapter.notifyItemInserted(find_by_rowid(rowid))
+                }
+                Data.UPDATE ->
+                {
+                    this@Adapter.notifyItemChanged(find_by_rowid(rowid))
+                    reset_cursor()
+                }
+                Data.DELETE ->
+                {
+                    this@Adapter.notifyItemRemoved(find_by_rowid(rowid))
+                    reset_cursor()
+                }
+                Data.MOVE ->
+                {
+                    reset_cursor()
+                    val from_pos = intent.getIntExtra(Data.DB_CHANGED_FROM_POS, -1)
+                    val to_pos = intent.getIntExtra(Data.DB_CHANGED_TO_POS, -1)
+                    if(from_pos == -1 || to_pos == -1)
+                        return
+
+                    this@Adapter.notifyItemRangeChanged(min(from_pos, to_pos), abs(from_pos - to_pos) + 1)
+                }
+            }
+        }
+    }
 
     // an individual row object
     inner class Progress_bar_row_view_holder(v: View): RecyclerView.ViewHolder(v), View.OnClickListener
@@ -101,48 +141,14 @@ class Adapter(private val context: Progress_bars): RecyclerView.Adapter<Adapter.
 
     init
     {
-        val db_change_receiver = object: BroadcastReceiver()
-        {
-            // store the data we'll need for the lifetime of this object
-            override fun onReceive(context: Context, intent: Intent)
-            {
-                val rowid = intent.getLongExtra(Data.DB_CHANGED_ROWID, -1L)
-                val change_type = intent.getStringExtra(Data.DB_CHANGED_TYPE)
-                if(rowid == -1L && change_type != "move")
-                    return
-
-                when(change_type)
-                {
-                    Data.INSERT ->
-                    {
-                        reset_cursor()
-                        this@Adapter.notifyItemInserted(find_by_rowid(rowid))
-                    }
-                    Data.UPDATE ->
-                    {
-                        this@Adapter.notifyItemChanged(find_by_rowid(rowid))
-                        reset_cursor()
-                    }
-                    Data.DELETE ->
-                    {
-                        this@Adapter.notifyItemRemoved(find_by_rowid(rowid))
-                        reset_cursor()
-                    }
-                    Data.MOVE ->
-                    {
-                        reset_cursor()
-                        val from_pos = intent.getIntExtra(Data.DB_CHANGED_FROM_POS, -1)
-                        val to_pos = intent.getIntExtra(Data.DB_CHANGED_TO_POS, -1)
-                        if(from_pos == -1 || to_pos == -1)
-                            return
-
-                        this@Adapter.notifyItemRangeChanged(min(from_pos, to_pos), abs(from_pos - to_pos) + 1)
-                    }
-                }
-            }
-        }
-
         LocalBroadcastManager.getInstance(context).registerReceiver(db_change_receiver, IntentFilter(Data.DB_CHANGED_EVENT))
+    }
+
+    fun close()
+    {
+        cursor.close()
+        db.close()
+        LocalBroadcastManager.getInstance(context).unregisterReceiver(db_change_receiver)
     }
 
     // called when DB info has changed, to let us update the cursor
@@ -182,7 +188,7 @@ class Adapter(private val context: Progress_bars): RecyclerView.Adapter<Adapter.
         for(i in 0 until itemCount)
         {
             cursor.moveToPosition(i)
-            if(cursor.getLong(cursor.getColumnIndexOrThrow(BaseColumns._ID)) == rowid)
+            if(cursor.get_nullable_long(BaseColumns._ID)!! == rowid)
             {
                 return i
             }

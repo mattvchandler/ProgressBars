@@ -36,6 +36,7 @@ import android.support.v7.widget.helper.ItemTouchHelper
 import android.view.Menu
 import android.view.MenuItem
 import org.mattvchandler.progressbars.databinding.ActivityProgressBarsBinding
+import org.mattvchandler.progressbars.db.DB
 import org.mattvchandler.progressbars.db.Data
 import org.mattvchandler.progressbars.db.Undo
 import org.mattvchandler.progressbars.list.Adapter
@@ -48,7 +49,8 @@ import org.mattvchandler.progressbars.util.Preferences
 import java.util.*
 
 // TODO: choose notification priority
-// TODO: frequent crashes on at least Undo, redo, and rowid not found in cursor
+// TODO: notification channels?
+// TODO: leaking popup window (probably on rotate) how did we fix this in 2050?
 // TODO: linting
 
 // main activity. display each timer in a list
@@ -127,6 +129,8 @@ class Progress_bars: Dynamic_theme_activity()
     override fun onDestroy()
     {
         LocalBroadcastManager.getInstance(this).unregisterReceiver(on_db_change)
+        binding.mainList.adapter = null
+        adapter.close()
         super.onDestroy()
     }
 

@@ -37,7 +37,7 @@ import java.util.Calendar
 import java.util.TimeZone
 
 // struct w/ copy of all DB columns. Serializable so we can store the whole thing
-open class Data: Serializable
+open class Data(): Serializable
 {
     var rowid = -1L // is -1 when not set, ie. the data doesn't exist in the DB
 
@@ -79,7 +79,7 @@ open class Data: Serializable
     var notify_end   = true
 
     // default ctor
-    constructor(context: Context)
+    constructor(context: Context): this()
     {
         val start_time_cal = Calendar.getInstance()
         val end_time_cal = start_time_cal.clone() as Calendar
@@ -101,16 +101,16 @@ open class Data: Serializable
 
     // set all fields from DB cursor
     // construct from a DB cursor
-    constructor(cursor: Cursor)
+    constructor(cursor: Cursor): this()
     {
         set_from_cursor(cursor)
     }
 
     // get data from DB given rowid
-    constructor(context: Context, rowid_in: Long)
+    constructor(context: Context, rowid_in: Long): this()
     {
         val db = DB(context).readableDatabase
-        val cursor = db.rawQuery("SELECT * FROM " + Progress_bars_table.TABLE_NAME + " WHERE " + BaseColumns._ID + " = ?", arrayOf(rowid_in.toString()))
+        val cursor = db.rawQuery("SELECT * FROM ${Progress_bars_table.TABLE_NAME} WHERE ${BaseColumns._ID} = ?", arrayOf(rowid_in.toString()))
         cursor.moveToFirst()
 
         set_from_cursor(cursor)
@@ -149,7 +149,7 @@ open class Data: Serializable
             show_seconds: Boolean,
             terminate: Boolean,
             notify_start: Boolean,
-            notify_end: Boolean)
+            notify_end: Boolean): this()
     {
         this.rowid               = -1
         this.order               = order
@@ -184,7 +184,7 @@ open class Data: Serializable
     }
 
     // trivial copy ctor. Because, although we could call this a data class and have this auto generated, Kotlin won't let us inherit from it
-    constructor(b: Data)
+    constructor(b: Data): this()
     {
         rowid               = b.rowid
         order               = b.order
@@ -220,36 +220,36 @@ open class Data: Serializable
 
     private fun set_from_cursor(cursor: Cursor)
     {
-        rowid               = cursor.getLong(cursor.getColumnIndexOrThrow(BaseColumns._ID))
-        order               = cursor.getLong(cursor.getColumnIndexOrThrow(Progress_bars_table.ORDER_COL))
-        start_time          = cursor.getLong(cursor.getColumnIndexOrThrow(Progress_bars_table.START_TIME_COL))
-        end_time            = cursor.getLong(cursor.getColumnIndexOrThrow(Progress_bars_table.END_TIME_COL))
-        start_tz            = cursor.getString(cursor.getColumnIndexOrThrow(Progress_bars_table.START_TZ_COL))
-        end_tz              = cursor.getString(cursor.getColumnIndexOrThrow(Progress_bars_table.END_TZ_COL))
-        repeats             = cursor.getInt(cursor.getColumnIndexOrThrow(Progress_bars_table.REPEATS_COL)) > 0
-        repeat_count        = cursor.getInt(cursor.getColumnIndexOrThrow(Progress_bars_table.REPEAT_COUNT_COL))
-        repeat_unit         = cursor.getInt(cursor.getColumnIndexOrThrow(Progress_bars_table.REPEAT_UNIT_COL))
-        repeat_days_of_week = cursor.getInt(cursor.getColumnIndexOrThrow(Progress_bars_table.REPEAT_DAYS_OF_WEEK_COL))
-        title               = cursor.getString(cursor.getColumnIndexOrThrow(Progress_bars_table.TITLE_COL))
-        pre_text            = cursor.getString(cursor.getColumnIndexOrThrow(Progress_bars_table.PRE_TEXT_COL))
-        start_text          = cursor.getString(cursor.getColumnIndexOrThrow(Progress_bars_table.START_TEXT_COL))
-        countdown_text      = cursor.getString(cursor.getColumnIndexOrThrow(Progress_bars_table.COUNTDOWN_TEXT_COL))
-        complete_text       = cursor.getString(cursor.getColumnIndexOrThrow(Progress_bars_table.COMPLETE_TEXT_COL))
-        post_text           = cursor.getString(cursor.getColumnIndexOrThrow(Progress_bars_table.POST_TEXT_COL))
-        precision           = cursor.getInt(cursor.getColumnIndexOrThrow(Progress_bars_table.PRECISION_COL))
-        show_progress       = cursor.getInt(cursor.getColumnIndexOrThrow(Progress_bars_table.SHOW_PROGRESS_COL)) > 0
-        show_start          = cursor.getInt(cursor.getColumnIndexOrThrow(Progress_bars_table.SHOW_START_COL))    > 0
-        show_end            = cursor.getInt(cursor.getColumnIndexOrThrow(Progress_bars_table.SHOW_END_COL))      > 0
-        show_years          = cursor.getInt(cursor.getColumnIndexOrThrow(Progress_bars_table.SHOW_YEARS_COL))    > 0
-        show_months         = cursor.getInt(cursor.getColumnIndexOrThrow(Progress_bars_table.SHOW_MONTHS_COL))   > 0
-        show_weeks          = cursor.getInt(cursor.getColumnIndexOrThrow(Progress_bars_table.SHOW_WEEKS_COL))    > 0
-        show_days           = cursor.getInt(cursor.getColumnIndexOrThrow(Progress_bars_table.SHOW_DAYS_COL))     > 0
-        show_hours          = cursor.getInt(cursor.getColumnIndexOrThrow(Progress_bars_table.SHOW_HOURS_COL))    > 0
-        show_minutes        = cursor.getInt(cursor.getColumnIndexOrThrow(Progress_bars_table.SHOW_MINUTES_COL))  > 0
-        show_seconds        = cursor.getInt(cursor.getColumnIndexOrThrow(Progress_bars_table.SHOW_SECONDS_COL))  > 0
-        terminate           = cursor.getInt(cursor.getColumnIndexOrThrow(Progress_bars_table.TERMINATE_COL))     > 0
-        notify_start        = cursor.getInt(cursor.getColumnIndexOrThrow(Progress_bars_table.NOTIFY_START_COL))  > 0
-        notify_end          = cursor.getInt(cursor.getColumnIndexOrThrow(Progress_bars_table.NOTIFY_END_COL))    > 0
+        rowid               = cursor.get_nullable_long(BaseColumns._ID)!!
+        order               = cursor.get_nullable_long(Progress_bars_table.ORDER_COL)!!
+        start_time          = cursor.get_nullable_long(Progress_bars_table.START_TIME_COL)!!
+        end_time            = cursor.get_nullable_long(Progress_bars_table.END_TIME_COL)!!
+        start_tz            = cursor.get_nullable_string(Progress_bars_table.START_TZ_COL)!!
+        end_tz              = cursor.get_nullable_string(Progress_bars_table.END_TZ_COL)!!
+        repeats             = cursor.get_nullable_bool(Progress_bars_table.REPEATS_COL)!!
+        repeat_count        = cursor.get_nullable_int(Progress_bars_table.REPEAT_COUNT_COL)!!
+        repeat_unit         = cursor.get_nullable_int(Progress_bars_table.REPEAT_UNIT_COL)!!
+        repeat_days_of_week = cursor.get_nullable_int(Progress_bars_table.REPEAT_DAYS_OF_WEEK_COL)!!
+        title               = cursor.get_nullable_string(Progress_bars_table.TITLE_COL)!!
+        pre_text            = cursor.get_nullable_string(Progress_bars_table.PRE_TEXT_COL)!!
+        start_text          = cursor.get_nullable_string(Progress_bars_table.START_TEXT_COL)!!
+        countdown_text      = cursor.get_nullable_string(Progress_bars_table.COUNTDOWN_TEXT_COL)!!
+        complete_text       = cursor.get_nullable_string(Progress_bars_table.COMPLETE_TEXT_COL)!!
+        post_text           = cursor.get_nullable_string(Progress_bars_table.POST_TEXT_COL)!!
+        precision           = cursor.get_nullable_int(Progress_bars_table.PRECISION_COL)!!
+        show_progress       = cursor.get_nullable_bool(Progress_bars_table.SHOW_PROGRESS_COL)!!
+        show_start          = cursor.get_nullable_bool(Progress_bars_table.SHOW_START_COL)!!
+        show_end            = cursor.get_nullable_bool(Progress_bars_table.SHOW_END_COL)!!
+        show_years          = cursor.get_nullable_bool(Progress_bars_table.SHOW_YEARS_COL)!!
+        show_months         = cursor.get_nullable_bool(Progress_bars_table.SHOW_MONTHS_COL)!!
+        show_weeks          = cursor.get_nullable_bool(Progress_bars_table.SHOW_WEEKS_COL)!!
+        show_days           = cursor.get_nullable_bool(Progress_bars_table.SHOW_DAYS_COL)!!
+        show_hours          = cursor.get_nullable_bool(Progress_bars_table.SHOW_HOURS_COL)!!
+        show_minutes        = cursor.get_nullable_bool(Progress_bars_table.SHOW_MINUTES_COL)!!
+        show_seconds        = cursor.get_nullable_bool(Progress_bars_table.SHOW_SECONDS_COL)!!
+        terminate           = cursor.get_nullable_bool(Progress_bars_table.TERMINATE_COL)!!
+        notify_start        = cursor.get_nullable_bool(Progress_bars_table.NOTIFY_START_COL)!!
+        notify_end          = cursor.get_nullable_bool(Progress_bars_table.NOTIFY_END_COL)!!
     }
 
     private fun build_ContentValues(): ContentValues
@@ -306,7 +306,7 @@ open class Data: Serializable
         if(order < 0)
         {
             // get next available order #
-            val cursor = db.rawQuery("SELECT MAX(" + Progress_bars_table.ORDER_COL + ") + 1 FROM " + Progress_bars_table.TABLE_NAME, null)
+            val cursor = db.rawQuery("SELECT MAX(${Progress_bars_table.ORDER_COL}) + 1 FROM ${Progress_bars_table.TABLE_NAME}", null)
             cursor.moveToFirst()
             order = cursor.getLong(0)
             cursor.close()
@@ -322,7 +322,6 @@ open class Data: Serializable
         undo_columns.put(Undo.UNDO_REDO_COL, undo_redo)
         undo_columns.put(Undo.TABLE_ROWID_COL, rowid)
         db.insert(Undo.TABLE_NAME, null, undo_columns)
-
         db.close()
 
         Notification_handler.reset_alarm(context, this)
@@ -391,9 +390,7 @@ open class Data: Serializable
         undo_columns.put(Undo.TABLE_ROWID_COL, rowid)
         db.insert(Undo.TABLE_NAME, null, undo_columns)
 
-        db.delete(Progress_bars_table.TABLE_NAME,
-                BaseColumns._ID + " = ?",
-                arrayOf(rowid.toString()))
+        db.delete(Progress_bars_table.TABLE_NAME, BaseColumns._ID + " = ?", arrayOf(rowid.toString()))
         db.close()
 
         val intent = Intent(DB_CHANGED_EVENT)
@@ -561,18 +558,18 @@ open class Data: Serializable
             db.close()
         }
     }
+}
 
-    private fun shift_row(i: Int, to_order: Long, cursor: Cursor, db: SQLiteDatabase): Long
-    {
-        cursor.moveToPosition(i)
-        val from_order = cursor.getLong(cursor.getColumnIndexOrThrow(Progress_bars_table.ORDER_COL))
-        val i_rowid = cursor.getLong(cursor.getColumnIndexOrThrow(BaseColumns._ID))
+private fun shift_row(i: Int, to_order: Long, cursor: Cursor, db: SQLiteDatabase): Long
+{
+    cursor.moveToPosition(i)
+    val from_order = cursor.get_nullable_long(Progress_bars_table.ORDER_COL)!!
+    val i_rowid = cursor.get_nullable_long(BaseColumns._ID)!!
 
-        val values = ContentValues()
-        values.put(Progress_bars_table.ORDER_COL, to_order)
-        db.update(Progress_bars_table.TABLE_NAME, values, BaseColumns._ID + " = ?", arrayOf(i_rowid.toString()))
+    val values = ContentValues()
+    values.put(Progress_bars_table.ORDER_COL, to_order)
+    db.update(Progress_bars_table.TABLE_NAME, values, BaseColumns._ID + " = ?", arrayOf(i_rowid.toString()))
 
-        return from_order
-    }
+    return from_order
 }
 

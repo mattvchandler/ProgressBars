@@ -101,8 +101,7 @@ open class Progress_bars_table: BaseColumns
         const val NOTIFY_END_COL = "notify_end"
 
         // Select stmt to get all columns, all rows, ordered by order #
-        const val SELECT_ALL_ROWS =
-                "SELECT * FROM $TABLE_NAME ORDER BY $ORDER_COL"
+        const val SELECT_ALL_ROWS = "SELECT * FROM $TABLE_NAME ORDER BY $ORDER_COL"
 
         // table schema
         const val CREATE_TABLE = "CREATE TABLE IF NOT EXISTS " + TABLE_NAME + " (" +
@@ -318,7 +317,7 @@ open class Progress_bars_table: BaseColumns
                 values.clear()
                 values.put(ORDER_COL, i)
                 cursor.moveToPosition(i)
-                db.update(TABLE_NAME, values, BaseColumns._ID + " = ?", arrayOf(cursor.getString(cursor.getColumnIndexOrThrow(BaseColumns._ID))))
+                db.update(TABLE_NAME, values, BaseColumns._ID + " = ?", arrayOf(cursor.get_nullable_string(BaseColumns._ID)!!))
             }
 
             cursor.close()
