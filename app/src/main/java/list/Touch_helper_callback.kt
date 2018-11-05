@@ -22,10 +22,13 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 package org.mattvchandler.progressbars.list
 
 import android.graphics.Canvas
+import android.os.Build
 import android.support.v4.view.ViewCompat
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.helper.ItemTouchHelper
+import android.util.TypedValue
 import org.mattvchandler.progressbars.R
+import kotlin.math.min
 
 // handle drag gestures for reorder and dismiss in RecyclerView
 class Touch_helper_callback(private val adapter: Adapter): ItemTouchHelper.Callback()
@@ -70,10 +73,23 @@ class Touch_helper_callback(private val adapter: Adapter): ItemTouchHelper.Callb
 
     override fun onChildDraw(c: Canvas, recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder, dX: Float, dY: Float, actionState: Int, isCurrentlyActive: Boolean)
     {
-        // TODO: use old graying technique where elevation not supported
         super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive)
         if(isCurrentlyActive)
-            ViewCompat.setElevation(viewHolder.itemView, recyclerView.context.resources.getDimension(R.dimen.selected_elevation))
+        {
+            if(Build.VERSION.SDK_INT >= 21)
+            {
+                // raise the selected row up
+                ViewCompat.setElevation(viewHolder.itemView, recyclerView.context.resources.getDimension(R.dimen.selected_elevation))
+            }
+            else
+            {
+                // get the background color
+                val tv = TypedValue()
+                recyclerView.context.theme.resolveAttribute(android.R.attr.colorBackground, tv, true)
+                // make it darker and-semi transparent
+                viewHolder.itemView.setBackgroundColor(min(tv.data - 0x40202020, 0))
+            }
+        }
     }
 
     override fun clearView(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder)
@@ -81,6 +97,18 @@ class Touch_helper_callback(private val adapter: Adapter): ItemTouchHelper.Callb
         super.clearView(recyclerView, viewHolder)
         // notify when a row is deselected
         (viewHolder as Adapter.Progress_bar_row_view_holder).on_cleared()
-        ViewCompat.setElevation(viewHolder.itemView, 0.0f)
+
+        if(Build.VERSION.SDK_INT >= 21)
+        {
+            // lower selected row
+            ViewCompat.setElevation(viewHolder.itemView, 0.0f)
+        }
+        else
+        {
+            // reset the original background color
+            val tv = TypedValue()
+            recyclerView.context.theme.resolveAttribute(android.R.attr.colorBackground, tv, true)
+            viewHolder.itemView.setBackgroundColor(tv.data)
+        }
     }
 }
