@@ -64,7 +64,7 @@ class Notification_handler: BroadcastReceiver()
             if(PreferenceManager.getDefaultSharedPreferences(context).getBoolean("master_notification", true))
             {
                 // set up start or completion text
-                var title = ""
+                val title = data.title
                 var content = ""
                 var notification_when: Long = 0
                 var do_notify = false
@@ -72,7 +72,6 @@ class Notification_handler: BroadcastReceiver()
                 {
                     do_notify = true
 
-                    title = context.resources.getString(R.string.notification_start_title, data.title)
                     content = data.start_text
                     notification_when = data.start_time
                 }
@@ -80,7 +79,6 @@ class Notification_handler: BroadcastReceiver()
                 {
                     do_notify = true
 
-                    title = context.resources.getString(R.string.notification_end_title, data.title)
                     content = data.complete_text
                     notification_when = data.end_time
 
@@ -88,6 +86,7 @@ class Notification_handler: BroadcastReceiver()
 
                 if(do_notify)
                 {
+                    // TODO: channels?
                     val nm = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
                     setup_notification_channel(context)
 
@@ -98,14 +97,16 @@ class Notification_handler: BroadcastReceiver()
 
                     // build the notification
                     val not_builder = NotificationCompat.Builder(context, CHANNEL_ID)
-                            .setSmallIcon(R.drawable.ic_notification)
                             .setContentTitle(title)
                             .setContentText(content)
-                            .setPriority(NotificationCompat.PRIORITY_HIGH) // TODO: parameterize
+                            .setSmallIcon(R.drawable.ic_notification)
+                            .setColor(color_tv.data)
+                            .setGroup(GROUP)
                             .setAutoCancel(true)
+                            .setPriority(NotificationCompat.PRIORITY_HIGH) // TODO: parameterize
+                            .setCategory(NotificationCompat.CATEGORY_EVENT)
                             .setDefaults(NotificationCompat.DEFAULT_ALL)
                             .setWhen(notification_when * 1000)
-                            .setColor(color_tv.data)
 
                     // create an intent for clicking the notification to take us to the main activity
                     val i = Intent(context, Progress_bars::class.java)
@@ -122,6 +123,22 @@ class Notification_handler: BroadcastReceiver()
 
                     // send the notification. rowid will be used as the notification's ID
                     nm.notify(data.rowid.toInt(), not_builder.build())
+
+                    // build a group summary notification
+                    if(Build.VERSION.SDK_INT >= 24)
+                    {
+                        val summary = NotificationCompat.Builder(context, CHANNEL_ID)
+                            .setSmallIcon(R.drawable.ic_notification)
+                            .setColor(color_tv.data)
+                            .setCategory(NotificationCompat.CATEGORY_EVENT)
+                            .setGroup(GROUP)
+                            .setGroupSummary(true)
+                            .setAutoCancel(true)
+                            .setPriority(NotificationCompat.PRIORITY_HIGH) // TODO: parameterize
+                            .setCategory(NotificationCompat.CATEGORY_EVENT)
+                            .setDefaults(NotificationCompat.DEFAULT_ALL)
+                        nm.notify(GROUP_SUMMARY_ID, summary.build())
+                    }
                 }
             }
 
@@ -139,13 +156,15 @@ class Notification_handler: BroadcastReceiver()
         const val BASE_COMPLETED_ACTION_NAME = "org.mattvchandler.progressbars.COMPLETED_ROWID_"
         const val EXTRA_ROWID = "EXTRA_ROWID"
         const val CHANNEL_ID = "org.mattvchandler.progressbars.notification_channel"
+        const val GROUP_SUMMARY_ID = 0
+        const val GROUP = "org.mattvchandler.progressbars.notification_group"
 
         fun setup_notification_channel(context: Context)
         {
             // Set up notification channel (API 26+)
-            val nm = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-            if(Build.VERSION.SDK_INT >= 26)
+            if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
             {
+                val nm = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
                 var channel: NotificationChannel? = nm.getNotificationChannel(CHANNEL_ID)
                 if(channel == null)
                 {

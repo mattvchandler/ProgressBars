@@ -70,6 +70,7 @@ class Touch_helper_callback(private val adapter: Adapter): ItemTouchHelper.Callb
 
     override fun onChildDraw(c: Canvas, recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder, dX: Float, dY: Float, actionState: Int, isCurrentlyActive: Boolean)
     {
+        // TODO: use old graying technique where elevation not supported
         super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive)
         if(isCurrentlyActive)
             ViewCompat.setElevation(viewHolder.itemView, recyclerView.context.resources.getDimension(R.dimen.selected_elevation))

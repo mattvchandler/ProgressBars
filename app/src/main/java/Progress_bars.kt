@@ -36,7 +36,6 @@ import android.support.v7.widget.helper.ItemTouchHelper
 import android.view.Menu
 import android.view.MenuItem
 import org.mattvchandler.progressbars.databinding.ActivityProgressBarsBinding
-import org.mattvchandler.progressbars.db.DB
 import org.mattvchandler.progressbars.db.Data
 import org.mattvchandler.progressbars.db.Undo
 import org.mattvchandler.progressbars.list.Adapter
@@ -50,8 +49,8 @@ import java.util.*
 
 // TODO: choose notification priority
 // TODO: notification channels?
-// TODO: leaking popup window (probably on rotate) how did we fix this in 2050?
 // TODO: linting
+// TODO: not handling DST
 
 // main activity. display each timer in a list
 class Progress_bars: Dynamic_theme_activity()
