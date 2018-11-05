@@ -23,11 +23,8 @@ package org.mattvchandler.progressbars.db
 
 import android.content.Context
 import android.database.Cursor
-import android.database.DatabaseUtils
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
-import android.util.Log
-import org.mattvchandler.progressbars.Progress_bars
 
 // helper functions for getting data from a cursor
 fun Cursor.get_nullable_string(column_name: String): String?
@@ -58,27 +55,6 @@ class DB(context: Context): SQLiteOpenHelper(context, DB_NAME, null, DB_VERSION)
     {
         private const val DB_VERSION = 3
         private const val DB_NAME = "progress_bar_db"
-        fun dump_contents(context: Context)
-        {
-            Log.d("(My)DB Dump", "Begin DB dump")
-            val db = DB(context).readableDatabase
-            var cursor = db.rawQuery("SELECT * FROM ${Progress_bars_table.TABLE_NAME}", null)
-            Log.d("(My)DB Dump", Progress_bars_table.TABLE_NAME)
-            Log.d("(My)DB Dump",DatabaseUtils.dumpCursorToString(cursor))
-            cursor.close()
-            cursor = db.rawQuery("SELECT * FROM ${Undo.TABLE_NAME}", null)
-            Log.d("(My)DB Dump", Undo.TABLE_NAME)
-            Log.d("(My)DB Dump",DatabaseUtils.dumpCursorToString(cursor))
-            cursor.close()
-            db.close()
-            Log.d("(My)DB Dump", "End DB dump")
-        }
-        fun dump_cursor(cursor: Cursor)
-        {
-            Log.d("(My)cursor dump", "Begin cursor dump")
-            Log.d("(My)cursor dump",DatabaseUtils.dumpCursorToString(cursor))
-            Log.d("(My)cursor dump", "End cursor dump")
-        }
     }
     // build the tables / whatever else when new
     override fun onCreate(sqLiteDatabase: SQLiteDatabase)

@@ -23,7 +23,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
     <string name="app_name">Progress Bars</string>
     <string name="app_version">v.%1$s</string>
-    <string name="app_description">Countdown/up timers for Android</string>
     <string name="app_copyright">© 2018 Matthew Chandler</string>
     <string name="app_license">This program comes with absolutely no warranty.\nSee the <a href="https://opensource.org/licenses/mit-license.php">MIT License (MIT)</a> for details.</string>
     <string name="app_website"><a href="https://www.github.com/mattvchandler/ProgressBars">Progress Bars on Github</a></string>
@@ -101,8 +100,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
     <string name="loc_perm_title">"Allow access to location?"</string>
     <string name="loc_perm_msg">"You will be asked to allow location access.\n\nIf granted, your location will be used to switch the theme at local sunrise / sunset. Otherwise, hard-coded times will be used instead.\n\nLocation data is not stored or used in any other way."</string>
 
-    <string name="notification_start_title">%1$s started</string>
-    <string name="notification_end_title">%1$s completed</string>
     <string name="notification_channel_name">Timer start / end</string>
     <string name="notification_channel_desc">Notifications for when a timer starts or completes</string>
 

@@ -47,11 +47,6 @@ import org.mattvchandler.progressbars.util.Notification_handler
 import org.mattvchandler.progressbars.util.Preferences
 import java.util.*
 
-// TODO: choose notification priority
-// TODO: notification channels?
-// TODO: linting
-// TODO: not handling DST
-
 // main activity. display each timer in a list
 class Progress_bars: Dynamic_theme_activity()
 {

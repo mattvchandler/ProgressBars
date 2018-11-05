@@ -6,15 +6,11 @@ import android.os.Bundle
 import android.preference.PreferenceManager
 import android.support.v4.app.DialogFragment
 import android.widget.Toast
-
 import org.mattvchandler.progressbars.R
-
 import java.security.InvalidParameterException
 import java.text.ParsePosition
 import java.text.SimpleDateFormat
-import java.util.Calendar
-import java.util.Date
-import java.util.Locale
+import java.util.*
 
 /*
 Copyright (C) 2018 Matthew Chandler
@@ -89,8 +85,8 @@ class Timepicker_frag: DialogFragment()
 
     companion object
     {
-        val STORE_TIME = "STORE_TIME"
-        val TIME = "TIME"
-        val AM_PM = "AM_PM"
+        const val STORE_TIME = "STORE_TIME"
+        const val TIME = "TIME"
+        const val AM_PM = "AM_PM"
     }
 }

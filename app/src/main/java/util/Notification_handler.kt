@@ -64,7 +64,6 @@ class Notification_handler: BroadcastReceiver()
             if(PreferenceManager.getDefaultSharedPreferences(context).getBoolean("master_notification", true))
             {
                 // set up start or completion text
-                val title = data.title
                 var content = ""
                 var notification_when: Long = 0
                 var do_notify = false
@@ -86,7 +85,6 @@ class Notification_handler: BroadcastReceiver()
 
                 if(do_notify)
                 {
-                    // TODO: channels?
                     val nm = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
                     setup_notification_channel(context)
 
@@ -97,13 +95,13 @@ class Notification_handler: BroadcastReceiver()
 
                     // build the notification
                     val not_builder = NotificationCompat.Builder(context, CHANNEL_ID)
-                            .setContentTitle(title)
+                            .setContentTitle(data.title)
                             .setContentText(content)
                             .setSmallIcon(R.drawable.ic_notification)
                             .setColor(color_tv.data)
                             .setGroup(GROUP)
                             .setAutoCancel(true)
-                            .setPriority(NotificationCompat.PRIORITY_HIGH) // TODO: parameterize
+                            .setPriority(NotificationCompat.PRIORITY_HIGH)
                             .setCategory(NotificationCompat.CATEGORY_EVENT)
                             .setDefaults(NotificationCompat.DEFAULT_ALL)
                             .setWhen(notification_when * 1000)
@@ -134,7 +132,7 @@ class Notification_handler: BroadcastReceiver()
                             .setGroup(GROUP)
                             .setGroupSummary(true)
                             .setAutoCancel(true)
-                            .setPriority(NotificationCompat.PRIORITY_HIGH) // TODO: parameterize
+                            .setPriority(NotificationCompat.PRIORITY_HIGH)
                             .setCategory(NotificationCompat.CATEGORY_EVENT)
                             .setDefaults(NotificationCompat.DEFAULT_ALL)
                         nm.notify(GROUP_SUMMARY_ID, summary.build())
