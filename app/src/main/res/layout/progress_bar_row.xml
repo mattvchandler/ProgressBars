@@ -48,12 +48,19 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toTopOf="@+id/percentage"
+            app:layout_constraintBottom_toTopOf="@+id/top_barrier"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintVertical_chainStyle="packed"
             android:layout_margin="@dimen/margin_size"
             app:layout_goneMarginBottom="0dp"
+            />
+
+        <android.support.constraint.Barrier
+            android:id="@+id/top_barrier"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:barrierDirection="top"
+            app:constraint_referenced_ids="start_time_label,end_time_label,percentage"
             />
 
         <TextView
@@ -67,6 +74,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
             app:layout_constraintBottom_toTopOf="@+id/progress_bar"
             app:layout_constraintLeft_toLeftOf="@+id/progress_bar"
             app:layout_constraintRight_toRightOf="@+id/progress_bar"
+            app:layout_constraintVertical_chainStyle="packed"
             />
 
         <ProgressBar
@@ -80,12 +88,19 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
             android:layout_height="wrap_content"
             app:layout_constraintTop_toBottomOf="@+id/percentage"
             app:layout_constraintBottom_toTopOf="@+id/time_text"
-            app:layout_constraintLeft_toRightOf="@+id/start_time_date"
-            app:layout_constraintRight_toLeftOf="@+id/end_time_date"
+            app:layout_constraintLeft_toRightOf="@+id/left_barrier"
+            app:layout_constraintRight_toLeftOf="@+id/right_barrier"
             android:layout_marginStart="@dimen/margin_size"
             android:layout_marginEnd="@dimen/margin_size"
             />
 
+        <android.support.constraint.Barrier
+            android:id="@+id/left_barrier"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:barrierDirection="end"
+            app:constraint_referenced_ids="start_time_label,start_time_date,start_time_time"
+            />
         <TextView
             android:id="@+id/start_time_label"
             android:text="@string/start_time"
@@ -95,8 +110,11 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
             android:layout_height="wrap_content"
             app:layout_constraintTop_toBottomOf="@+id/title"
             app:layout_constraintBottom_toTopOf="@+id/start_time_date"
-            app:layout_constraintRight_toRightOf="@+id/start_time_date"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="@id/left_barrier"
+            app:layout_constraintHorizontal_bias="1.0"
             android:layout_marginTop="@dimen/margin_size"
+            android:layout_marginStart="@dimen/margin_size"
             />
         <TextView
             android:id="@+id/start_time_date"
@@ -108,7 +126,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
             app:layout_constraintTop_toBottomOf="@+id/start_time_label"
             app:layout_constraintBottom_toTopOf="@+id/start_time_time"
             app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintHorizontal_weight="0"
+            app:layout_constraintRight_toRightOf="@id/left_barrier"
+            app:layout_constraintHorizontal_bias="1.0"
             android:layout_marginStart="@dimen/margin_size"
             />
         <TextView
@@ -120,10 +139,20 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
             android:layout_height="wrap_content"
             app:layout_constraintTop_toBottomOf="@+id/start_time_date"
             app:layout_constraintBottom_toTopOf="@+id/time_text"
-            app:layout_constraintRight_toRightOf="@+id/start_time_date"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="@id/left_barrier"
             android:layout_marginBottom="@dimen/margin_size"
+            app:layout_constraintHorizontal_bias="1.0"
+            android:layout_marginStart="@dimen/margin_size"
             />
 
+        <android.support.constraint.Barrier
+            android:id="@+id/right_barrier"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:barrierDirection="start"
+            app:constraint_referenced_ids="end_time_label,end_time_date,end_time_time"
+            />
         <TextView
             android:id="@+id/end_time_label"
             android:text="@string/end_time"
@@ -133,9 +162,11 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
             android:layout_height="wrap_content"
             app:layout_constraintTop_toBottomOf="@+id/title"
             app:layout_constraintBottom_toTopOf="@+id/end_time_date"
-            app:layout_constraintLeft_toLeftOf="@+id/end_time_date"
-            app:layout_constraintHorizontal_weight="0"
+            app:layout_constraintLeft_toLeftOf="@id/right_barrier"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
             android:layout_marginTop="@dimen/margin_size"
+            android:layout_marginEnd="@dimen/margin_size"
             />
         <TextView
             android:id="@+id/end_time_date"
@@ -146,7 +177,9 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
             android:layout_height="wrap_content"
             app:layout_constraintTop_toBottomOf="@+id/end_time_label"
             app:layout_constraintBottom_toTopOf="@+id/end_time_time"
+            app:layout_constraintLeft_toLeftOf="@id/right_barrier"
             app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
             android:layout_marginEnd="@dimen/margin_size"
             />
         <TextView
@@ -158,8 +191,19 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
             android:layout_height="wrap_content"
             app:layout_constraintTop_toBottomOf="@+id/end_time_date"
             app:layout_constraintBottom_toTopOf="@+id/time_text"
-            app:layout_constraintLeft_toLeftOf="@+id/end_time_date"
+            app:layout_constraintLeft_toLeftOf="@id/right_barrier"
+            app:layout_constraintRight_toRightOf="parent"
             android:layout_marginBottom="@dimen/margin_size"
+            app:layout_constraintHorizontal_bias="0.0"
+            android:layout_marginEnd="@dimen/margin_size"
+            />
+
+        <android.support.constraint.Barrier
+            android:id="@+id/bottom_barrier"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:barrierDirection="bottom"
+            app:constraint_referenced_ids="start_time_time,end_time_time,progress_bar"
             />
 
         <TextView
@@ -169,7 +213,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
             android:visibility="@{data.show_time_text_disp ? View.VISIBLE: View.GONE}"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            app:layout_constraintTop_toBottomOf="@+id/progress_bar"
+            app:layout_constraintTop_toBottomOf="@+id/bottom_barrier"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
