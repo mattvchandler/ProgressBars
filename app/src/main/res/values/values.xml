@@ -27,12 +27,20 @@ SOFTWARE.
     <string name="theme_values_night">night</string>
     <string name="theme_values_auto">auto</string>
 
-    <string name="theme_values_default">@string/theme_values_system</string>
-
     <string-array name="theme_values">
         <item>@string/theme_values_system</item>
         <item>@string/theme_values_day</item>
         <item>@string/theme_values_night</item>
         <item>@string/theme_values_auto</item>
     </string-array>
+
+    <string name="theme_values_default">@string/theme_values_system</string>
+
+    <!-- date format strings to pass to SimpleDateFormat.applyLocalizedPattern -->
+    <string-array name="date_formats_java">
+        <item>locale</item>
+        <item>yyyy-MM-dd</item>
+    </string-array>
+
+    <item name="pref_date_format_default" type="string">locale</item>
 </resources>

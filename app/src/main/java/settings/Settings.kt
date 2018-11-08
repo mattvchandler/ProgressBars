@@ -26,9 +26,11 @@ import android.app.DatePickerDialog
 import android.app.TimePickerDialog
 import android.content.Context
 import android.content.Intent
+import android.database.ContentObserver
 import android.databinding.DataBindingUtil
 import android.preference.PreferenceManager
 import android.os.Bundle
+import android.os.Handler
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -47,10 +49,7 @@ import org.mattvchandler.progressbars.databinding.ActivitySettingsBinding
 
 import java.text.ParsePosition
 import java.text.SimpleDateFormat
-import java.util.Calendar
-import java.util.Date
-import java.util.Locale
-import java.util.TimeZone
+import java.util.*
 
 // Settings for each timer
 class Settings: Dynamic_theme_activity(), DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener
@@ -63,11 +62,19 @@ class Settings: Dynamic_theme_activity(), DatePickerDialog.OnDateSetListener, Ti
 
     private lateinit var date_format: String
     private lateinit var time_format: String
-    private lateinit var time_format_edit: String
-    private var hour_24: Boolean = false
+    private lateinit var locale: Locale
 
     private var array_am_i: Int = 0
     private var array_pm_i: Int = 0
+
+    private val on_24_hour_change = object: ContentObserver(Handler())
+    {
+        override fun onChange(selfChange: Boolean)
+        {
+            super.onChange(selfChange)
+            recreate()
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?)
     {
@@ -76,21 +83,6 @@ class Settings: Dynamic_theme_activity(), DatePickerDialog.OnDateSetListener, Ti
         binding = DataBindingUtil.setContentView(this, R.layout.activity_settings)
         setSupportActionBar(binding.toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-
-        // we'll reference these a lot, so look them up now
-        val prefs = PreferenceManager.getDefaultSharedPreferences(this)
-        date_format = prefs.getString("date_format", resources.getString(R.string.pref_date_format_default))!!
-        hour_24 = prefs.getBoolean("hour_24", resources.getBoolean(R.bool.pref_hour_24_default))
-
-        // time_format is the displayed time, time_format_edit is the time in an edittext box
-        // for 24-hour time the format, is the same
-        // for 12-hour time, the am/pm is dropped from the edit format, and is set with a spinner instead
-        time_format = resources.getString(if(hour_24) R.string.time_format_24 else R.string.time_format_12)
-        time_format_edit = resources.getString(if(hour_24) R.string.time_format_24 else R.string.time_format_12_edit)
-
-        // show or hide the AM/PM dropdowns as needed
-        binding.startAmPm.visibility = if(hour_24) View.GONE else View.VISIBLE
-        binding.endAmPm.visibility = if(hour_24) View.GONE else View.VISIBLE
 
         // set up timezone spinners
         val tz_adapter = ArrayAdapter(this, R.layout.right_aligned_spinner, TimeZone.getAvailableIDs())
@@ -117,6 +109,10 @@ class Settings: Dynamic_theme_activity(), DatePickerDialog.OnDateSetListener, Ti
                 Data(this, rowid)
             }
             save_data = Data(data)
+
+            date_format = PreferenceManager.getDefaultSharedPreferences(this).getString("date_format", resources.getString(R.string.pref_date_format_default))!!
+            time_format = (SimpleDateFormat.getTimeInstance(SimpleDateFormat.MEDIUM) as SimpleDateFormat).toLocalizedPattern()
+            locale = Locale.getDefault()
         }
         else
         {
@@ -125,6 +121,10 @@ class Settings: Dynamic_theme_activity(), DatePickerDialog.OnDateSetListener, Ti
             save_data = savedInstanceState.getSerializable(STATE_SAVE_DATA) as Data
             date_time_dialog_target = savedInstanceState.getInt(STATE_TARGET)
 
+            date_format = savedInstanceState.getString(STATE_DATE_FORMAT)!!
+            time_format = savedInstanceState.getString(STATE_TIME_FORMAT)!!
+            locale = savedInstanceState.getSerializable(STATE_LOCALE) as Locale
+
             if(data.rowid < 0)
                 setTitle(R.string.add_title)
             else
@@ -132,8 +132,8 @@ class Settings: Dynamic_theme_activity(), DatePickerDialog.OnDateSetListener, Ti
         }
 
         // set listeners on time and date fields
-        binding.startTimeSel.onFocusChangeListener = Time_listener(time_format_edit, data)
-        binding.endTimeSel.onFocusChangeListener = Time_listener(time_format_edit, data)
+        binding.startTimeSel.onFocusChangeListener = Time_listener(data)
+        binding.endTimeSel.onFocusChangeListener = Time_listener(data)
 
         binding.startDateSel.onFocusChangeListener = Date_listener(date_format, data)
         binding.endDateSel.onFocusChangeListener = Date_listener(date_format, data)
@@ -153,6 +153,8 @@ class Settings: Dynamic_theme_activity(), DatePickerDialog.OnDateSetListener, Ti
 
             override fun onNothingSelected(adapterView: AdapterView<*>) {}
         }
+
+        contentResolver.registerContentObserver(android.provider.Settings.System.getUriFor(android.provider.Settings.System.TIME_12_24), false, on_24_hour_change)
 
         // populate timezones and set selected values
         binding.data = data
@@ -179,57 +181,23 @@ class Settings: Dynamic_theme_activity(), DatePickerDialog.OnDateSetListener, Ti
         }
 
         // populate date/time widget values
-        val df_date = SimpleDateFormat(date_format, Locale.US)
-        val df_time = SimpleDateFormat(time_format_edit, Locale.US)
+        val date_df = SimpleDateFormat.getDateInstance(SimpleDateFormat.SHORT) as SimpleDateFormat
+        val time_df = SimpleDateFormat.getTimeInstance(SimpleDateFormat.MEDIUM) as SimpleDateFormat
+
+        if(date_format != "locale")
+            date_df.applyPattern(date_format)
 
         val start_date = Date(data.start_time * 1000)
-        df_date.timeZone = TimeZone.getTimeZone(data.start_tz)
-        df_time.timeZone = TimeZone.getTimeZone(data.start_tz)
-        binding.startDateSel.setText(df_date.format(start_date))
-        binding.startTimeSel.setText(df_time.format(start_date))
-
-        // find which index in the spinner is am and which is PM
-        for(i in 0 until binding.startAmPm.adapter.count)
-        {
-            val item = binding.startAmPm.adapter.getItem(i) as CharSequence
-
-            if(item == resources.getString(R.string.AM))
-                array_am_i = i
-            else if(item == resources.getString(R.string.PM))
-                array_pm_i = i
-        }
-
-        if(!hour_24)
-        {
-            // get am/pm status
-            val start_cal = Calendar.getInstance(TimeZone.getTimeZone(data.start_tz))
-            start_cal.time = start_date
-            val am_pm = start_cal.get(Calendar.AM_PM)
-
-            if(am_pm == Calendar.AM)
-                binding.startAmPm.setSelection(array_am_i)
-            else
-                binding.startAmPm.setSelection(array_pm_i)
-        }
+        date_df.timeZone = TimeZone.getTimeZone(data.start_tz)
+        time_df.timeZone = TimeZone.getTimeZone(data.start_tz)
+        binding.startDateSel.setText(date_df.format(start_date))
+        binding.startTimeSel.setText(time_df.format(start_date))
 
         val end_date = Date(data.end_time * 1000)
-        df_date.timeZone = TimeZone.getTimeZone(data.end_tz)
-        df_time.timeZone = TimeZone.getTimeZone(data.end_tz)
-        binding.endDateSel.setText(df_date.format(end_date))
-        binding.endTimeSel.setText(df_time.format(end_date))
-
-        if(!hour_24)
-        {
-            // get am/pm status
-            val end_cal = Calendar.getInstance(TimeZone.getTimeZone(data.end_tz))
-            end_cal.time = end_date
-            val am_pm = end_cal.get(Calendar.AM_PM)
-
-            if(am_pm == Calendar.AM)
-                binding.endAmPm.setSelection(array_am_i)
-            else
-                binding.endAmPm.setSelection(array_pm_i)
-        }
+        date_df.timeZone = TimeZone.getTimeZone(data.end_tz)
+        time_df.timeZone = TimeZone.getTimeZone(data.end_tz)
+        binding.endDateSel.setText(date_df.format(end_date))
+        binding.endTimeSel.setText(time_df.format(end_date))
 
         binding.repeatFreq.visibility = if(data.repeats) View.VISIBLE else View.GONE
         binding.repeatCount.setText(data.repeat_count.toString())
@@ -248,20 +216,23 @@ class Settings: Dynamic_theme_activity(), DatePickerDialog.OnDateSetListener, Ti
         // check for date format change
         val old_date_format = date_format
         val old_time_format = time_format
-        val old_hour_24 = hour_24
+        val old_locale = locale
 
         val prefs = PreferenceManager.getDefaultSharedPreferences(this)
         date_format = prefs.getString("date_format", resources.getString(R.string.pref_date_format_default))!!
-        hour_24 = prefs.getBoolean("hour_24", resources.getBoolean(R.bool.pref_hour_24_default))
+        time_format = (SimpleDateFormat.getTimeInstance(SimpleDateFormat.MEDIUM) as SimpleDateFormat).toLocalizedPattern()
+        locale = Locale.getDefault()
 
-        time_format = resources.getString(if(hour_24) R.string.time_format_24 else R.string.time_format_12)
-        time_format_edit = resources.getString(if(hour_24) R.string.time_format_24 else R.string.time_format_12_edit)
-
-        if(old_date_format != date_format)
+        if(old_date_format != date_format || old_locale != locale)
         {
             // date format has changed. get formatter for old and new formats
-            val new_df = SimpleDateFormat(date_format, Locale.US)
-            val old_df = SimpleDateFormat(old_date_format, Locale.US)
+            val new_df = SimpleDateFormat.getDateInstance(SimpleDateFormat.SHORT) as SimpleDateFormat
+            val old_df = SimpleDateFormat.getDateInstance(SimpleDateFormat.SHORT, old_locale) as SimpleDateFormat
+            if(date_format != "locale")
+                new_df.applyLocalizedPattern(date_format)
+            if(old_date_format != "locale")
+                old_df.applyLocalizedPattern(old_date_format)
+            old_df.isLenient = true
 
             var date: String
             var date_obj: Date?
@@ -283,66 +254,46 @@ class Settings: Dynamic_theme_activity(), DatePickerDialog.OnDateSetListener, Ti
                 binding.endDateSel.setText(date)
             }
         }
-
-        if(old_hour_24 != hour_24)
+        if(old_time_format != time_format)
         {
-            // time format has changed. get formatter for old and new formats
-            // NOTE: get disp format for old, edit for new
-            val new_df = SimpleDateFormat(time_format_edit, Locale.US)
-            val old_df = SimpleDateFormat(old_time_format, Locale.US)
+            val new_df = SimpleDateFormat.getTimeInstance(SimpleDateFormat.MEDIUM) as SimpleDateFormat
+            val old_df = SimpleDateFormat.getTimeInstance(SimpleDateFormat.MEDIUM, old_locale) as SimpleDateFormat
+            old_df.applyLocalizedPattern(old_time_format)
+            old_df.isLenient = true
 
             var time: String
-            var time_obj: Date?
+            var date_obj: Date?
 
-            // parse date as old format, replace w/ new
             time = binding.startTimeSel.text.toString()
-            // add am/pm (as text) if needed
-            if(!old_hour_24)
-                time += " " + binding.startAmPm.selectedItem.toString()
-
-            // attempt to parse
-            time_obj = old_df.parse(time, ParsePosition(0))
-            if(time_obj != null)
+            date_obj = old_df.parse(time, ParsePosition(0))
+            if(date_obj != null)
             {
-                time = new_df.format(time_obj)
+                time = new_df.format(date_obj)
                 binding.startTimeSel.setText(time)
-
-                // get am/pm and set spinner if needed
-                if(!hour_24)
-                {
-                    val cal = Calendar.getInstance()
-                    cal.time = time_obj
-                    val am_pm = cal.get(Calendar.AM_PM)
-                    binding.startAmPm.setSelection(if(am_pm == Calendar.AM) array_am_i else array_pm_i)
-                }
             }
 
             time = binding.endTimeSel.text.toString()
-            // add am/pm if needed
-            if(!old_hour_24)
-                time += " " + binding.endAmPm.selectedItem.toString()
-
-            // attempt to parse
-            time_obj = old_df.parse(time, ParsePosition(0))
-            if(time_obj != null)
+            date_obj = old_df.parse(time, ParsePosition(0))
+            if(date_obj != null)
             {
-                time = new_df.format(time_obj)
-
-                // get am/pm and set spinner if needed
+                time = new_df.format(date_obj)
                 binding.endTimeSel.setText(time)
-                if(!hour_24)
-                {
-                    val cal = Calendar.getInstance()
-                    cal.time = time_obj
-                    val am_pm = cal.get(Calendar.AM_PM)
-                    binding.endAmPm.setSelection(if(am_pm == Calendar.AM) array_am_i else array_pm_i)
-                }
             }
-
-            // reset am/pm spinner visibility
-            binding.startAmPm.visibility = if(hour_24) View.GONE else View.VISIBLE
-            binding.endAmPm.visibility = if(hour_24) View.GONE else View.VISIBLE
         }
+    }
+
+    override fun onDestroy()
+    {
+        // clear listeners
+        contentResolver.unregisterContentObserver(on_24_hour_change)
+
+        binding.startTimeSel.onFocusChangeListener = null
+        binding.endTimeSel.onFocusChangeListener = null
+        binding.startDateSel.onFocusChangeListener = null
+        binding.endDateSel.onFocusChangeListener = null
+        binding.repeatCount.onFocusChangeListener = null
+        binding.repeatUnits.onItemSelectedListener = null
+        super.onDestroy()
     }
 
     override fun onSaveInstanceState(out: Bundle)
@@ -354,14 +305,9 @@ class Settings: Dynamic_theme_activity(), DatePickerDialog.OnDateSetListener, Ti
         out.putSerializable(STATE_DATA, data)
         out.putSerializable(STATE_SAVE_DATA, save_data)
         out.putInt(STATE_TARGET, date_time_dialog_target)
-
-        // clear listeners
-        binding.startTimeSel.onFocusChangeListener = null
-        binding.endTimeSel.onFocusChangeListener = null
-        binding.startDateSel.onFocusChangeListener = null
-        binding.endDateSel.onFocusChangeListener = null
-        binding.repeatCount.onFocusChangeListener = null
-        binding.repeatUnits.onItemSelectedListener = null
+        out.putString(STATE_DATE_FORMAT, date_format)
+        out.putString(STATE_TIME_FORMAT, time_format)
+        out.putSerializable(STATE_LOCALE, locale)
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean
@@ -414,13 +360,16 @@ class Settings: Dynamic_theme_activity(), DatePickerDialog.OnDateSetListener, Ti
         data.start_tz = binding.startTz.selectedItem.toString()
         data.end_tz = binding.endTz.selectedItem.toString()
 
-        val datetime_df = SimpleDateFormat("$date_format $time_format", Locale.US)
-        val date_df = SimpleDateFormat(date_format, Locale.US)
-        val time_df = SimpleDateFormat(time_format_edit, Locale.US)
+        val date_df = SimpleDateFormat.getDateInstance(SimpleDateFormat.SHORT) as SimpleDateFormat
+        val time_df = SimpleDateFormat.getTimeInstance(SimpleDateFormat.MEDIUM) as SimpleDateFormat
+        if(date_format != "locale")
+            date_df.applyPattern(date_format)
 
-        datetime_df.timeZone = TimeZone.getTimeZone(data.start_tz)
         date_df.timeZone = TimeZone.getTimeZone(data.start_tz)
         time_df.timeZone = TimeZone.getTimeZone(data.start_tz)
+
+        date_df.isLenient = true
+        time_df.isLenient = true
 
         val start_date = date_df.parse(binding.startDateSel.text.toString(), ParsePosition(0))
         val start_time = time_df.parse(binding.startTimeSel.text.toString(), ParsePosition(0))
@@ -429,7 +378,7 @@ class Settings: Dynamic_theme_activity(), DatePickerDialog.OnDateSetListener, Ti
         if(start_date == null)
         {
             Toast.makeText(this@Settings, resources.getString(R.string.invalid_date,
-                    binding.startDateSel.text, date_format),
+                    binding.startDateSel.text, if(date_format != "locale") date_format else date_df.toLocalizedPattern()),
                     Toast.LENGTH_LONG).show()
 
             errors = true
@@ -437,31 +386,15 @@ class Settings: Dynamic_theme_activity(), DatePickerDialog.OnDateSetListener, Ti
         if(start_time == null)
         {
             Toast.makeText(this@Settings, resources.getString(R.string.invalid_time,
-                    binding.startTimeSel.text, time_format_edit),
+                    binding.startTimeSel.text, time_df.toLocalizedPattern()),
                     Toast.LENGTH_LONG).show()
 
             errors = true
         }
 
-        // parse full date-time string
         if(start_date != null && start_time != null)
-        {
-            if(hour_24)
-            {
-                data.start_time = datetime_df.parse(binding.startDateSel.text.toString() + " " +
-                        binding.startTimeSel.text.toString(),
-                        ParsePosition(0)).time / 1000
-            }
-            else
-            {
-                data.start_time = datetime_df.parse(binding.startDateSel.text.toString() + " " +
-                        binding.startTimeSel.text.toString() + " " +
-                        binding.startAmPm.selectedItem.toString(),
-                        ParsePosition(0)).time / 1000
-            }
-        }
+            data.start_time = combine_date_and_time(start_date, start_time)
 
-        datetime_df.timeZone = TimeZone.getTimeZone(data.end_tz)
         date_df.timeZone = TimeZone.getTimeZone(data.end_tz)
         time_df.timeZone = TimeZone.getTimeZone(data.end_tz)
 
@@ -480,29 +413,14 @@ class Settings: Dynamic_theme_activity(), DatePickerDialog.OnDateSetListener, Ti
         if(end_time == null)
         {
             Toast.makeText(this@Settings, resources.getString(R.string.invalid_time,
-                    binding.endTimeSel.text, time_format_edit),
+                    binding.endTimeSel.text, time_df.toLocalizedPattern()),
                     Toast.LENGTH_LONG).show()
 
             errors = true
         }
 
-        // parse full date-time string
         if(end_date != null && end_time != null)
-        {
-            if(hour_24)
-            {
-                data.end_time = datetime_df.parse(binding.endDateSel.text.toString() + " " +
-                        binding.endTimeSel.text.toString(),
-                        ParsePosition(0)).time / 1000
-            }
-            else
-            {
-                data.end_time = datetime_df.parse(binding.endDateSel.text.toString() + " " +
-                        binding.endTimeSel.text.toString() + " " +
-                        binding.endAmPm.selectedItem.toString(),
-                        ParsePosition(0)).time / 1000
-            }
-        }
+            data.end_time = combine_date_and_time(end_date, end_time)
 
         // other repeat data stored in callbacks
         var repeat_count = 0
@@ -550,7 +468,6 @@ class Settings: Dynamic_theme_activity(), DatePickerDialog.OnDateSetListener, Ti
         val args = Bundle()
         args.putString(Timepicker_frag.TIME, binding.startTimeSel.text.toString())
         args.putLong(Timepicker_frag.STORE_TIME, data.start_time)
-        args.putString(Timepicker_frag.AM_PM, binding.startAmPm.selectedItem.toString())
         frag.arguments = args
         frag.show(supportFragmentManager, "start_time_picker")
     }
@@ -575,7 +492,6 @@ class Settings: Dynamic_theme_activity(), DatePickerDialog.OnDateSetListener, Ti
         val args = Bundle()
         args.putString(Timepicker_frag.TIME, binding.endTimeSel.text.toString())
         args.putLong(Timepicker_frag.STORE_TIME, data.end_time)
-        args.putString(Timepicker_frag.AM_PM, binding.endAmPm.selectedItem.toString())
         frag.arguments = args
         frag.show(supportFragmentManager, "end_time_picker")
     }
@@ -690,8 +606,11 @@ class Settings: Dynamic_theme_activity(), DatePickerDialog.OnDateSetListener, Ti
         cal.set(Calendar.MONTH, month)
         cal.set(Calendar.DAY_OF_MONTH, day)
 
-        val df = SimpleDateFormat(date_format, Locale.US)
-        (findViewById<View>(date_time_dialog_target) as android.support.design.widget.TextInputEditText).setText(df.format(cal.time))
+        val date_df = SimpleDateFormat.getDateInstance(SimpleDateFormat.SHORT) as SimpleDateFormat
+        if(date_format != "locale")
+            date_df.applyPattern(date_format)
+
+        (findViewById<View>(date_time_dialog_target) as android.support.design.widget.TextInputEditText).setText(date_df.format(cal.time))
     }
 
     override fun onTimeSet(view: TimePicker, hour: Int, minute: Int)
@@ -702,16 +621,8 @@ class Settings: Dynamic_theme_activity(), DatePickerDialog.OnDateSetListener, Ti
         cal.set(Calendar.MINUTE, minute)
         cal.set(Calendar.SECOND, 0)
 
-        val df = SimpleDateFormat(time_format_edit, Locale.US)
+        val df = SimpleDateFormat.getTimeInstance(SimpleDateFormat.MEDIUM) as SimpleDateFormat
         (findViewById<View>(date_time_dialog_target) as android.support.design.widget.TextInputEditText).setText(df.format(cal.time))
-
-        // set AM/PM spinner if needed
-        if(!hour_24)
-        {
-            val spin_target = if(date_time_dialog_target == R.id.start_date_sel) binding.startAmPm else binding.endAmPm
-            val am_pm = cal.get(Calendar.AM_PM)
-            spin_target.setSelection(if(am_pm == Calendar.AM) array_am_i else array_pm_i)
-        }
     }
 
     // called when OK pressed on precision dialog
@@ -785,6 +696,9 @@ class Settings: Dynamic_theme_activity(), DatePickerDialog.OnDateSetListener, Ti
         private const val STATE_DATA = "data"
         private const val STATE_SAVE_DATA = "save_data"
         private const val STATE_TARGET = "target"
+        private const val STATE_DATE_FORMAT = "date_format"
+        private const val STATE_TIME_FORMAT = "time_format"
+        private const val STATE_LOCALE = "locale"
 
         private const val DAYS_OF_WEEK_CHECKBOX_DIALOG = "DAYS_OF_WEEK"
         private const val SHOW_ELEMENTS_CHECKBOX_DIALOG = "SHOW_ELEMENTS"
@@ -818,6 +732,18 @@ class Settings: Dynamic_theme_activity(), DatePickerDialog.OnDateSetListener, Ti
             }
 
             return days_of_week_str.toString()
+        }
+
+        private fun combine_date_and_time(date: Date, time: Date): Long
+        {
+            val date_cal = Calendar.getInstance()
+            date_cal.time = date
+            val time_cal = Calendar.getInstance()
+            time_cal.time = time
+            date_cal.set(Calendar.HOUR_OF_DAY, time_cal.get(Calendar.HOUR_OF_DAY))
+            date_cal.set(Calendar.MINUTE, time_cal.get(Calendar.MINUTE))
+            date_cal.set(Calendar.SECOND, time_cal.get(Calendar.SECOND))
+            return date_cal.timeInMillis / 1000
         }
     }
 }

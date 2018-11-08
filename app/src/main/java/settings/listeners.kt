@@ -31,7 +31,6 @@ import org.mattvchandler.progressbars.R
 import java.text.ParsePosition
 import java.text.SimpleDateFormat
 import java.util.Date
-import java.util.Locale
 import java.util.TimeZone
 
 // listen for changes to date text
@@ -44,14 +43,17 @@ internal class Date_listener(private val date_format: String, private val data: 
         {
             // attempt to parse current text
             var new_date = (v as EditText).text.toString()
-            val df = SimpleDateFormat(date_format, Locale.US)
+            val df = SimpleDateFormat.getDateInstance(SimpleDateFormat.SHORT) as SimpleDateFormat
+            if(date_format != "locale")
+                df.applyLocalizedPattern(date_format)
+            df.isLenient = true
 
             val date = df.parse(new_date, ParsePosition(0))
             if(date == null)
             {
                 // couldn't parse, show message
                 Toast.makeText(v.getContext(), v.getContext().resources.getString(R.string.invalid_date,
-                        new_date, date_format), Toast.LENGTH_LONG).show()
+                        new_date, if(date_format != "locale") date_format else df.toLocalizedPattern()), Toast.LENGTH_LONG).show()
 
                 // replace with old value, so field contains valid data
                 if(v.getId() == R.id.start_date_sel)
@@ -76,7 +78,7 @@ internal class Date_listener(private val date_format: String, private val data: 
 }
 
 // listen for changes to time text
-internal class Time_listener(private val time_format_edit: String, private val data: Data): View.OnFocusChangeListener
+internal class Time_listener(private val data: Data): View.OnFocusChangeListener
 {
     override fun onFocusChange(v: View, hasFocus: Boolean)
     {
@@ -85,14 +87,15 @@ internal class Time_listener(private val time_format_edit: String, private val d
         {
             // attempt to parse current text
             var new_time = (v as EditText).text.toString()
-            val df = SimpleDateFormat(time_format_edit, Locale.US)
+            val df = SimpleDateFormat.getTimeInstance(SimpleDateFormat.MEDIUM) as SimpleDateFormat
+            df.isLenient = true
 
             val time = df.parse(new_time, ParsePosition(0))
             if(time == null)
             {
                 // couldn't parse, show message
                 Toast.makeText(v.getContext(), v.getContext().resources.getString(R.string.invalid_time,
-                        new_time, time_format_edit),
+                        new_time, df.toLocalizedPattern()),
                         Toast.LENGTH_LONG).show()
 
                 // replace with old value, so field contains valid data

@@ -3,7 +3,6 @@ package org.mattvchandler.progressbars.settings
 import android.app.Dialog
 import android.app.TimePickerDialog
 import android.os.Bundle
-import android.preference.PreferenceManager
 import android.support.v4.app.DialogFragment
 import android.widget.Toast
 import org.mattvchandler.progressbars.R
@@ -45,29 +44,14 @@ class Timepicker_frag: DialogFragment()
 
         val cal = Calendar.getInstance()
 
-        val hour_24 = PreferenceManager.getDefaultSharedPreferences(context).getBoolean("hour_24", resources.getBoolean(R.bool.pref_hour_24_default))
+        val time = arguments!!.getString(TIME) ?: throw InvalidParameterException("No time argument given")
 
-        val time_format = resources.getString(if(hour_24) R.string.time_format_24 else R.string.time_format_12)
-        val time_format_edit = resources.getString(if(hour_24) R.string.time_format_24 else R.string.time_format_12_edit)
-
-        var time = arguments!!.getString(TIME)
-        val am_pm = arguments!!.getString(AM_PM)
-
-        if(time == null)
-            throw InvalidParameterException("No time argument given")
-        if(am_pm == null)
-            throw InvalidParameterException("No am/pm argument given")
-
-        if(!hour_24)
-            time += " $am_pm"
-
-        val df = SimpleDateFormat(time_format, Locale.US)
+        val df = SimpleDateFormat.getTimeInstance(SimpleDateFormat.MEDIUM) as SimpleDateFormat
         val date_obj = df.parse(time, ParsePosition(0))
         if(date_obj == null)
         {
             // couldn't parse
-            Toast.makeText(activity, resources.getString(R.string.invalid_time, time, time_format_edit),
-                    Toast.LENGTH_LONG).show()
+            Toast.makeText(activity, resources.getString(R.string.invalid_time, time, df.toLocalizedPattern()), Toast.LENGTH_LONG).show()
 
             // set to stored date
             cal.timeInMillis = arguments!!.getLong(STORE_TIME, 0) * 1000
@@ -80,7 +64,7 @@ class Timepicker_frag: DialogFragment()
         hour = cal.get(Calendar.HOUR_OF_DAY)
         minute = cal.get(Calendar.MINUTE)
 
-        return TimePickerDialog(activity, activity as Settings?, hour, minute, hour_24)
+        return TimePickerDialog(activity, activity as Settings?, hour, minute, android.text.format.DateFormat.is24HourFormat(activity))
     }
 
     companion object

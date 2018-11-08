@@ -25,6 +25,7 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.database.ContentObserver
 import android.databinding.DataBindingUtil
 import android.os.Bundle
 import android.os.Handler
@@ -59,7 +60,6 @@ class Progress_bars: Dynamic_theme_activity()
     private lateinit var adapter: Adapter
 
     private lateinit var date_format: String
-    private var hour_24: Boolean = false
 
     private val on_db_change = object: BroadcastReceiver()
     {
@@ -77,6 +77,15 @@ class Progress_bars: Dynamic_theme_activity()
         }
     }
 
+    private val on_24_hour_change = object: ContentObserver(Handler())
+    {
+        override fun onChange(selfChange: Boolean)
+        {
+            super.onChange(selfChange)
+            recreate()
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?)
     {
         super.onCreate(savedInstanceState)
@@ -88,7 +97,6 @@ class Progress_bars: Dynamic_theme_activity()
         // save date format to detect when it changes
         val prefs = PreferenceManager.getDefaultSharedPreferences(this)
         date_format = prefs.getString("date_format", resources.getString(R.string.pref_date_format_default))!!
-        hour_24 = prefs.getBoolean("hour_24", resources.getBoolean(R.bool.pref_hour_24_default))
 
         // set up row Adapter
         adapter = Adapter(this)
@@ -118,11 +126,14 @@ class Progress_bars: Dynamic_theme_activity()
 
         // register to receive notifications of DB changes
         LocalBroadcastManager.getInstance(this).registerReceiver(on_db_change, IntentFilter(Data.DB_CHANGED_EVENT))
+        contentResolver.registerContentObserver(android.provider.Settings.System.getUriFor(android.provider.Settings.System.TIME_12_24), false, on_24_hour_change)
     }
 
     override fun onDestroy()
     {
         LocalBroadcastManager.getInstance(this).unregisterReceiver(on_db_change)
+        contentResolver.unregisterContentObserver(on_24_hour_change)
+
         binding.mainList.adapter = null
         adapter.close()
         super.onDestroy()
@@ -135,9 +146,8 @@ class Progress_bars: Dynamic_theme_activity()
         // check to see if date format has changed. rebuild activity with new format if it has
         val prefs = PreferenceManager.getDefaultSharedPreferences(this)
         val new_date_format = prefs.getString("date_format", resources.getString(R.string.pref_date_format_default))
-        val new_hour_24 = prefs.getBoolean("hour_24", resources.getBoolean(R.bool.pref_hour_24_default))
 
-        if(new_date_format != date_format || new_hour_24 != hour_24)
+        if(new_date_format != date_format)
             recreate()
     }
 

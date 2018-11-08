@@ -36,7 +36,6 @@ import java.text.DecimalFormat
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
-import java.util.Locale
 
 import java.lang.Math.abs
 import java.lang.Math.max
@@ -52,7 +51,6 @@ private fun is_leap_year(year: Int): Boolean
         year % 400 != 0 -> false
         else            -> true
     }
-
 }
 
 // number of days in each month. assumes non-leap year for Feb.
@@ -492,14 +490,13 @@ class View_data (context: Context, cursor: Cursor): Data(cursor) // contains all
         // only show countdown when there is something to show
         show_time_text_disp.set(show_years || show_months || show_weeks || show_days || show_hours || show_minutes || show_seconds)
 
-        val hour_24 = PreferenceManager.getDefaultSharedPreferences(context).getBoolean("hour_24", context.resources.getBoolean(R.bool.pref_hour_24_default))
-
         // format start and end dates and times
-        val date_df = SimpleDateFormat(
-                PreferenceManager.getDefaultSharedPreferences(context)
-                        .getString("date_format", context.resources.getString(R.string.pref_date_format_default))!!,
-                Locale.US)
-        val time_df = SimpleDateFormat(context.resources.getString(if(hour_24) R.string.time_format_24 else R.string.time_format_12), Locale.US)
+        val date_df = SimpleDateFormat.getDateInstance(SimpleDateFormat.SHORT) as SimpleDateFormat
+        val time_df = SimpleDateFormat.getTimeInstance() as SimpleDateFormat
+
+        val date_format_pattern = PreferenceManager.getDefaultSharedPreferences(context).getString("date_format", "locale")
+        if(date_format_pattern != "locale")
+            date_df.applyPattern(date_format_pattern)
 
         start_time_date.time = start_time * 1000L
         end_time_date.time = end_time * 1000L

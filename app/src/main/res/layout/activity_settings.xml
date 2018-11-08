@@ -151,20 +151,10 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
                                 android:id="@+id/start_time_sel"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:inputType="time"
+                                android:inputType="text"
                                 android:selectAllOnFocus="true"
                                 />
                         </android.support.design.widget.TextInputLayout>
-
-                        <Spinner
-                            android:id="@+id/start_am_pm"
-                            android:entries="@array/AM_PM"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginBottom="@dimen/margin_size"
-                            android:layout_marginEnd="@dimen/margin_size"
-                            android:layout_marginTop="@dimen/margin_size"
-                            />
 
                         <ImageButton
                             android:id="@+id/start_time_butt"
@@ -260,20 +250,10 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
                                 android:id="@+id/end_time_sel"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:inputType="time"
+                                android:inputType="text"
                                 android:selectAllOnFocus="true"
                                 />
                         </android.support.design.widget.TextInputLayout>
-
-                        <Spinner
-                            android:id="@+id/end_am_pm"
-                            android:entries="@array/AM_PM"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="@dimen/margin_size"
-                            android:layout_marginBottom="@dimen/margin_size"
-                            android:layout_marginEnd="@dimen/margin_size"
-                            />
 
                         <ImageButton
                             android:id="@+id/end_time_butt"
