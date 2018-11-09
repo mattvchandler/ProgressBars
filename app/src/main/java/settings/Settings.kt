@@ -61,11 +61,9 @@ class Settings: Dynamic_theme_activity(), DatePickerDialog.OnDateSetListener, Ti
     private var date_time_dialog_target: Int = 0
 
     private lateinit var date_format: String
-    private lateinit var time_format: String
-    private lateinit var locale: Locale
 
-    private var array_am_i: Int = 0
-    private var array_pm_i: Int = 0
+    private var date_df = SimpleDateFormat.getDateInstance(SimpleDateFormat.SHORT) as SimpleDateFormat
+    private var time_df = SimpleDateFormat.getTimeInstance(SimpleDateFormat.MEDIUM) as SimpleDateFormat
 
     private val on_24_hour_change = object: ContentObserver(Handler())
     {
@@ -111,8 +109,6 @@ class Settings: Dynamic_theme_activity(), DatePickerDialog.OnDateSetListener, Ti
             save_data = Data(data)
 
             date_format = PreferenceManager.getDefaultSharedPreferences(this).getString("date_format", resources.getString(R.string.pref_date_format_default))!!
-            time_format = (SimpleDateFormat.getTimeInstance(SimpleDateFormat.MEDIUM) as SimpleDateFormat).toLocalizedPattern()
-            locale = Locale.getDefault()
         }
         else
         {
@@ -122,39 +118,21 @@ class Settings: Dynamic_theme_activity(), DatePickerDialog.OnDateSetListener, Ti
             date_time_dialog_target = savedInstanceState.getInt(STATE_TARGET)
 
             date_format = savedInstanceState.getString(STATE_DATE_FORMAT)!!
-            time_format = savedInstanceState.getString(STATE_TIME_FORMAT)!!
-            locale = savedInstanceState.getSerializable(STATE_LOCALE) as Locale
+            date_df = savedInstanceState.getSerializable(STATE_DATE_DF) as SimpleDateFormat
+            time_df = savedInstanceState.getSerializable(STATE_TIME_DF) as SimpleDateFormat
+
+            // populate date/time widget values
+            if(date_format != "locale")
+                date_df.applyPattern(date_format)
+
+            date_df.isLenient = true
+            time_df.isLenient = true
 
             if(data.rowid < 0)
                 setTitle(R.string.add_title)
             else
                 setTitle(R.string.edit_title)
         }
-
-        // set listeners on time and date fields
-        binding.startTimeSel.onFocusChangeListener = Time_listener(data)
-        binding.endTimeSel.onFocusChangeListener = Time_listener(data)
-
-        binding.startDateSel.onFocusChangeListener = Date_listener(date_format, data)
-        binding.endDateSel.onFocusChangeListener = Date_listener(date_format, data)
-
-        binding.repeatCount.onFocusChangeListener = Repeat_count_listener(data)
-
-        binding.repeatUnits.onItemSelectedListener = object: AdapterView.OnItemSelectedListener
-        {
-            override fun onItemSelected(adapterView: AdapterView<*>, view: View, i: Int, l: Long)
-            {
-                val week_selected = i == Progress_bars_table.Unit.WEEK.index
-                binding.repeatOn.visibility = if(week_selected) View.VISIBLE else View.GONE
-                binding.repeatDaysOfWeek.visibility = if(week_selected) View.VISIBLE else View.GONE
-
-                data.repeat_unit = i
-            }
-
-            override fun onNothingSelected(adapterView: AdapterView<*>) {}
-        }
-
-        contentResolver.registerContentObserver(android.provider.Settings.System.getUriFor(android.provider.Settings.System.TIME_12_24), false, on_24_hour_change)
 
         // populate timezones and set selected values
         binding.data = data
@@ -180,12 +158,8 @@ class Settings: Dynamic_theme_activity(), DatePickerDialog.OnDateSetListener, Ti
             }
         }
 
-        // populate date/time widget values
-        val date_df = SimpleDateFormat.getDateInstance(SimpleDateFormat.SHORT) as SimpleDateFormat
-        val time_df = SimpleDateFormat.getTimeInstance(SimpleDateFormat.MEDIUM) as SimpleDateFormat
-
-        if(date_format != "locale")
-            date_df.applyPattern(date_format)
+        date_df.isLenient = true
+        time_df.isLenient = true
 
         val start_date = Date(data.start_time * 1000)
         date_df.timeZone = TimeZone.getTimeZone(data.start_tz)
@@ -214,86 +188,97 @@ class Settings: Dynamic_theme_activity(), DatePickerDialog.OnDateSetListener, Ti
         super.onResume()
 
         // check for date format change
-        val old_date_format = date_format
-        val old_time_format = time_format
-        val old_locale = locale
+        val old_date_df = date_df
+        val old_time_df = time_df
 
-        val prefs = PreferenceManager.getDefaultSharedPreferences(this)
-        date_format = prefs.getString("date_format", resources.getString(R.string.pref_date_format_default))!!
-        time_format = (SimpleDateFormat.getTimeInstance(SimpleDateFormat.MEDIUM) as SimpleDateFormat).toLocalizedPattern()
-        locale = Locale.getDefault()
+        date_format = PreferenceManager.getDefaultSharedPreferences(this).getString("date_format", resources.getString(R.string.pref_date_format_default))!!
+        date_df = SimpleDateFormat.getDateInstance(SimpleDateFormat.SHORT) as SimpleDateFormat
+        time_df = SimpleDateFormat.getTimeInstance(SimpleDateFormat.MEDIUM) as SimpleDateFormat
+        if(date_format != "locale")
+            date_df.applyLocalizedPattern(date_format)
 
-        if(old_date_format != date_format || old_locale != locale)
+        date_df.isLenient = true
+        time_df.isLenient = true
+
+        if(old_date_df.toLocalizedPattern() != date_df.toLocalizedPattern())
         {
             // date format has changed. get formatter for old and new formats
-            val new_df = SimpleDateFormat.getDateInstance(SimpleDateFormat.SHORT) as SimpleDateFormat
-            val old_df = SimpleDateFormat.getDateInstance(SimpleDateFormat.SHORT, old_locale) as SimpleDateFormat
-            if(date_format != "locale")
-                new_df.applyLocalizedPattern(date_format)
-            if(old_date_format != "locale")
-                old_df.applyLocalizedPattern(old_date_format)
-            old_df.isLenient = true
-
-            var date: String
-            var date_obj: Date?
 
             // parse date as old format, replace w/ new
-            date = binding.startDateSel.text.toString()
-            date_obj = old_df.parse(date, ParsePosition(0))
+            var date = binding.startDateSel.text.toString()
+            var date_obj = old_date_df.parse(date, ParsePosition(0))
             if(date_obj != null)
             {
-                date = new_df.format(date_obj)
+                date = date_df.format(date_obj)
                 binding.startDateSel.setText(date)
             }
 
             date = binding.endDateSel.text.toString()
-            date_obj = old_df.parse(date, ParsePosition(0))
+            date_obj = old_date_df.parse(date, ParsePosition(0))
             if(date_obj != null)
             {
-                date = new_df.format(date_obj)
+                date = date_df.format(date_obj)
                 binding.endDateSel.setText(date)
             }
         }
-        if(old_time_format != time_format)
+        if(old_time_df.toLocalizedPattern() != time_df.toLocalizedPattern())
         {
-            val new_df = SimpleDateFormat.getTimeInstance(SimpleDateFormat.MEDIUM) as SimpleDateFormat
-            val old_df = SimpleDateFormat.getTimeInstance(SimpleDateFormat.MEDIUM, old_locale) as SimpleDateFormat
-            old_df.applyLocalizedPattern(old_time_format)
-            old_df.isLenient = true
-
-            var time: String
-            var date_obj: Date?
-
-            time = binding.startTimeSel.text.toString()
-            date_obj = old_df.parse(time, ParsePosition(0))
+            var time = binding.startTimeSel.text.toString()
+            var date_obj = old_time_df.parse(time, ParsePosition(0))
             if(date_obj != null)
             {
-                time = new_df.format(date_obj)
+                time = time_df.format(date_obj)
                 binding.startTimeSel.setText(time)
             }
 
             time = binding.endTimeSel.text.toString()
-            date_obj = old_df.parse(time, ParsePosition(0))
+            date_obj = old_time_df.parse(time, ParsePosition(0))
             if(date_obj != null)
             {
-                time = new_df.format(date_obj)
+                time = time_df.format(date_obj)
                 binding.endTimeSel.setText(time)
             }
         }
+
+        // set listeners on time and date fields
+        binding.startTimeSel.onFocusChangeListener = Time_listener(data)
+        binding.endTimeSel.onFocusChangeListener = Time_listener(data)
+
+        binding.startDateSel.onFocusChangeListener = Date_listener(date_format, data)
+        binding.endDateSel.onFocusChangeListener = Date_listener(date_format, data)
+
+        binding.repeatCount.onFocusChangeListener = Repeat_count_listener(data)
+
+        binding.repeatUnits.onItemSelectedListener = object: AdapterView.OnItemSelectedListener
+        {
+            override fun onItemSelected(adapterView: AdapterView<*>, view: View?, i: Int, l: Long)
+            {
+                val week_selected = i == Progress_bars_table.Unit.WEEK.index
+                binding.repeatOn.visibility = if(week_selected) View.VISIBLE else View.GONE
+                binding.repeatDaysOfWeek.visibility = if(week_selected) View.VISIBLE else View.GONE
+
+                data.repeat_unit = i
+            }
+
+            override fun onNothingSelected(adapterView: AdapterView<*>) {}
+        }
+
+        contentResolver.registerContentObserver(android.provider.Settings.System.getUriFor(android.provider.Settings.System.TIME_12_24), false, on_24_hour_change)
     }
 
-    override fun onDestroy()
+    override fun onPause()
     {
         // clear listeners
-        contentResolver.unregisterContentObserver(on_24_hour_change)
-
         binding.startTimeSel.onFocusChangeListener = null
         binding.endTimeSel.onFocusChangeListener = null
         binding.startDateSel.onFocusChangeListener = null
         binding.endDateSel.onFocusChangeListener = null
         binding.repeatCount.onFocusChangeListener = null
         binding.repeatUnits.onItemSelectedListener = null
-        super.onDestroy()
+
+        contentResolver.unregisterContentObserver(on_24_hour_change)
+
+        super.onPause()
     }
 
     override fun onSaveInstanceState(out: Bundle)
@@ -306,8 +291,8 @@ class Settings: Dynamic_theme_activity(), DatePickerDialog.OnDateSetListener, Ti
         out.putSerializable(STATE_SAVE_DATA, save_data)
         out.putInt(STATE_TARGET, date_time_dialog_target)
         out.putString(STATE_DATE_FORMAT, date_format)
-        out.putString(STATE_TIME_FORMAT, time_format)
-        out.putSerializable(STATE_LOCALE, locale)
+        out.putSerializable(STATE_DATE_DF, date_df)
+        out.putSerializable(STATE_TIME_DF, time_df)
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean
@@ -360,16 +345,8 @@ class Settings: Dynamic_theme_activity(), DatePickerDialog.OnDateSetListener, Ti
         data.start_tz = binding.startTz.selectedItem.toString()
         data.end_tz = binding.endTz.selectedItem.toString()
 
-        val date_df = SimpleDateFormat.getDateInstance(SimpleDateFormat.SHORT) as SimpleDateFormat
-        val time_df = SimpleDateFormat.getTimeInstance(SimpleDateFormat.MEDIUM) as SimpleDateFormat
-        if(date_format != "locale")
-            date_df.applyPattern(date_format)
-
         date_df.timeZone = TimeZone.getTimeZone(data.start_tz)
         time_df.timeZone = TimeZone.getTimeZone(data.start_tz)
-
-        date_df.isLenient = true
-        time_df.isLenient = true
 
         val start_date = date_df.parse(binding.startDateSel.text.toString(), ParsePosition(0))
         val start_time = time_df.parse(binding.startTimeSel.text.toString(), ParsePosition(0))
@@ -697,8 +674,8 @@ class Settings: Dynamic_theme_activity(), DatePickerDialog.OnDateSetListener, Ti
         private const val STATE_SAVE_DATA = "save_data"
         private const val STATE_TARGET = "target"
         private const val STATE_DATE_FORMAT = "date_format"
-        private const val STATE_TIME_FORMAT = "time_format"
-        private const val STATE_LOCALE = "locale"
+        private const val STATE_DATE_DF = "date_df"
+        private const val STATE_TIME_DF = "time_df"
 
         private const val DAYS_OF_WEEK_CHECKBOX_DIALOG = "DAYS_OF_WEEK"
         private const val SHOW_ELEMENTS_CHECKBOX_DIALOG = "SHOW_ELEMENTS"
