@@ -61,7 +61,7 @@ class Settings: Dynamic_theme_activity(), DatePickerDialog.OnDateSetListener, Ti
     private var date_time_dialog_target: Int = 0
 
     private lateinit var date_format: String
-
+    private var locale = Locale.getDefault()
     private var date_df = SimpleDateFormat.getDateInstance(SimpleDateFormat.SHORT) as SimpleDateFormat
     private var time_df = SimpleDateFormat.getTimeInstance(SimpleDateFormat.MEDIUM) as SimpleDateFormat
 
@@ -109,6 +109,9 @@ class Settings: Dynamic_theme_activity(), DatePickerDialog.OnDateSetListener, Ti
             save_data = Data(data)
 
             date_format = PreferenceManager.getDefaultSharedPreferences(this).getString("date_format", resources.getString(R.string.pref_date_format_default))!!
+
+            date_df.isLenient = true
+            time_df.isLenient = true
         }
         else
         {
@@ -120,6 +123,7 @@ class Settings: Dynamic_theme_activity(), DatePickerDialog.OnDateSetListener, Ti
             date_format = savedInstanceState.getString(STATE_DATE_FORMAT)!!
             date_df = savedInstanceState.getSerializable(STATE_DATE_DF) as SimpleDateFormat
             time_df = savedInstanceState.getSerializable(STATE_TIME_DF) as SimpleDateFormat
+            locale = savedInstanceState.getSerializable(STATE_LOCALE) as Locale
 
             // populate date/time widget values
             if(date_format != "locale")
@@ -158,9 +162,6 @@ class Settings: Dynamic_theme_activity(), DatePickerDialog.OnDateSetListener, Ti
             }
         }
 
-        date_df.isLenient = true
-        time_df.isLenient = true
-
         val start_date = Date(data.start_time * 1000)
         date_df.timeZone = TimeZone.getTimeZone(data.start_tz)
         time_df.timeZone = TimeZone.getTimeZone(data.start_tz)
@@ -190,17 +191,19 @@ class Settings: Dynamic_theme_activity(), DatePickerDialog.OnDateSetListener, Ti
         // check for date format change
         val old_date_df = date_df
         val old_time_df = time_df
+        val old_locale = locale
 
         date_format = PreferenceManager.getDefaultSharedPreferences(this).getString("date_format", resources.getString(R.string.pref_date_format_default))!!
         date_df = SimpleDateFormat.getDateInstance(SimpleDateFormat.SHORT) as SimpleDateFormat
         time_df = SimpleDateFormat.getTimeInstance(SimpleDateFormat.MEDIUM) as SimpleDateFormat
         if(date_format != "locale")
             date_df.applyLocalizedPattern(date_format)
+        locale = Locale.getDefault()
 
         date_df.isLenient = true
         time_df.isLenient = true
 
-        if(old_date_df.toLocalizedPattern() != date_df.toLocalizedPattern())
+        if(old_date_df.toLocalizedPattern() != date_df.toLocalizedPattern() || locale != old_locale)
         {
             // date format has changed. get formatter for old and new formats
 
@@ -221,7 +224,7 @@ class Settings: Dynamic_theme_activity(), DatePickerDialog.OnDateSetListener, Ti
                 binding.endDateSel.setText(date)
             }
         }
-        if(old_time_df.toLocalizedPattern() != time_df.toLocalizedPattern())
+        if(old_time_df.toLocalizedPattern() != time_df.toLocalizedPattern() || locale != old_locale)
         {
             var time = binding.startTimeSel.text.toString()
             var date_obj = old_time_df.parse(time, ParsePosition(0))
@@ -293,6 +296,7 @@ class Settings: Dynamic_theme_activity(), DatePickerDialog.OnDateSetListener, Ti
         out.putString(STATE_DATE_FORMAT, date_format)
         out.putSerializable(STATE_DATE_DF, date_df)
         out.putSerializable(STATE_TIME_DF, time_df)
+        out.putSerializable(STATE_LOCALE, locale)
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean
@@ -676,6 +680,7 @@ class Settings: Dynamic_theme_activity(), DatePickerDialog.OnDateSetListener, Ti
         private const val STATE_DATE_FORMAT = "date_format"
         private const val STATE_DATE_DF = "date_df"
         private const val STATE_TIME_DF = "time_df"
+        private const val STATE_LOCALE = "locale"
 
         private const val DAYS_OF_WEEK_CHECKBOX_DIALOG = "DAYS_OF_WEEK"
         private const val SHOW_ELEMENTS_CHECKBOX_DIALOG = "SHOW_ELEMENTS"
