@@ -97,10 +97,7 @@ class View_data (context: Context, cursor: Cursor): Data(cursor) // contains all
         // if start and end are the same time, set to 100%
         if(total_interval != 0L)
         {
-            var percentage_fraction = max(elapsed.toDouble() / total_interval.toDouble(), 0.0)
-
-            if(terminate)
-                percentage_fraction = min(percentage_fraction, 1.0)
+            val percentage_fraction = min(max(elapsed.toDouble() / total_interval.toDouble(), 0.0), 1.0)
 
             percentage_disp.set(DecimalFormat(dec_format).format(percentage_fraction))
             progress_disp.set((percentage_fraction * 100.0).toInt())
@@ -113,7 +110,7 @@ class View_data (context: Context, cursor: Cursor): Data(cursor) // contains all
     }
 
     // get remaining time - time based (easy)
-    private fun get_remaining_easy(res: Resources, remaining: Long, to_start: Long): String
+    private fun get_remaining_easy(res: Resources, to_start: Long, remaining: Long): String
     {
         // get and format remaining time
         var revised_remaining = remaining // work around for lack of pass by copy
