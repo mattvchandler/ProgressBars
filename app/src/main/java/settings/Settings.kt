@@ -52,6 +52,7 @@ import java.text.ParsePosition
 import java.text.SimpleDateFormat
 import java.util.*
 
+// TODO: search on time-zone / better picker
 // Settings for each timer
 class Settings: Dynamic_theme_activity(), DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener
 {
@@ -354,56 +355,59 @@ class Settings: Dynamic_theme_activity(), DatePickerDialog.OnDateSetListener, Ti
         date_df.timeZone = TimeZone.getTimeZone(data.start_tz)
         time_df.timeZone = TimeZone.getTimeZone(data.start_tz)
 
-        val start_date = date_df.parse(binding.startDateSel.text.toString(), ParsePosition(0))
-        val start_time = time_df.parse(binding.startTimeSel.text.toString(), ParsePosition(0))
+        val start_date_txt = binding.startDateSel.text.toString()
+        val start_time_txt = binding.startTimeSel.text.toString()
+
+        val start_date = date_df.parse(start_date_txt, ParsePosition(0))
+        val start_time = time_df.parse(start_time_txt, ParsePosition(0))
 
         // validate date and time
         if(start_date == null)
         {
-            Toast.makeText(this@Settings, resources.getString(R.string.invalid_date,
-                    binding.startDateSel.text, if(date_format != "locale") date_format else date_df.toLocalizedPattern()),
+            Toast.makeText(this, resources.getString(R.string.invalid_date,
+                    start_date_txt, if(date_format != "locale") date_format else date_df.toLocalizedPattern()),
                     Toast.LENGTH_LONG).show()
 
             errors = true
         }
         if(start_time == null)
         {
-            Toast.makeText(this@Settings, resources.getString(R.string.invalid_time,
-                    binding.startTimeSel.text, time_df.toLocalizedPattern()),
-                    Toast.LENGTH_LONG).show()
+            Toast.makeText(this, resources.getString(R.string.invalid_time,
+                    start_time_txt, time_df.toLocalizedPattern()), Toast.LENGTH_LONG).show()
 
             errors = true
         }
 
         if(start_date != null && start_time != null)
-            data.start_time = combine_date_and_time(start_date, start_time)
+            data.start_time = parse_date_and_time(start_date_txt, start_time_txt, data.start_tz)
 
         date_df.timeZone = TimeZone.getTimeZone(data.end_tz)
         time_df.timeZone = TimeZone.getTimeZone(data.end_tz)
 
-        val end_date = date_df.parse(binding.endDateSel.text.toString(), ParsePosition(0))
-        val end_time = time_df.parse(binding.endTimeSel.text.toString(), ParsePosition(0))
+        val end_date_txt = binding.endDateSel.text.toString()
+        val end_time_txt = binding.endTimeSel.text.toString()
+        val end_date = date_df.parse(end_date_txt, ParsePosition(0))
+        val end_time = time_df.parse(end_time_txt, ParsePosition(0))
 
         // validate date and time
         if(end_date == null)
         {
-            Toast.makeText(this@Settings, resources.getString(R.string.invalid_date,
-                    binding.endDateSel.text, date_format),
+            Toast.makeText(this, resources.getString(R.string.invalid_date,
+                    end_date_txt, if(date_format != "locale") date_format else date_df.toLocalizedPattern()),
                     Toast.LENGTH_LONG).show()
 
             errors = true
         }
         if(end_time == null)
         {
-            Toast.makeText(this@Settings, resources.getString(R.string.invalid_time,
-                    binding.endTimeSel.text, time_df.toLocalizedPattern()),
-                    Toast.LENGTH_LONG).show()
+            Toast.makeText(this, resources.getString(R.string.invalid_time,
+                    end_time_txt, time_df.toLocalizedPattern()), Toast.LENGTH_LONG).show()
 
             errors = true
         }
 
         if(end_date != null && end_time != null)
-            data.end_time = combine_date_and_time(end_date, end_time)
+            data.end_time = parse_date_and_time(end_date_txt, end_time_txt, data.end_tz)
 
         // other repeat data stored in callbacks
         var repeat_count = 0
@@ -428,6 +432,14 @@ class Settings: Dynamic_theme_activity(), DatePickerDialog.OnDateSetListener, Ti
         data.title = binding.title.text.toString()
 
         return !errors
+    }
+
+    private fun parse_date_and_time(date: String, time: String, timezone: String): Long
+    {
+        val datetime_df = SimpleDateFormat.getInstance() as SimpleDateFormat
+        datetime_df.applyLocalizedPattern("${date_df.toLocalizedPattern()} ${time_df.toLocalizedPattern()}")
+        datetime_df.timeZone = TimeZone.getTimeZone(timezone)
+        return datetime_df.parse("$date $time").time / 1000
     }
 
     // Button pressed callbacks
@@ -716,18 +728,6 @@ class Settings: Dynamic_theme_activity(), DatePickerDialog.OnDateSetListener, Ti
             }
 
             return days_of_week_str.toString()
-        }
-
-        private fun combine_date_and_time(date: Date, time: Date): Long
-        {
-            val date_cal = Calendar.getInstance()
-            date_cal.time = date
-            val time_cal = Calendar.getInstance()
-            time_cal.time = time
-            date_cal.set(Calendar.HOUR_OF_DAY, time_cal.get(Calendar.HOUR_OF_DAY))
-            date_cal.set(Calendar.MINUTE, time_cal.get(Calendar.MINUTE))
-            date_cal.set(Calendar.SECOND, time_cal.get(Calendar.SECOND))
-            return date_cal.timeInMillis / 1000
         }
     }
 }
