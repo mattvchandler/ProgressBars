@@ -52,7 +52,6 @@ import java.text.ParsePosition
 import java.text.SimpleDateFormat
 import java.util.*
 
-// TODO: search on time-zone / better picker
 // Settings for each timer
 class Settings: Dynamic_theme_activity(), DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener
 {
@@ -85,7 +84,7 @@ class Settings: Dynamic_theme_activity(), DatePickerDialog.OnDateSetListener, Ti
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         // set up timezone spinners
-        val tz_adapter = ArrayAdapter(this, R.layout.right_aligned_spinner, TimeZone.getAvailableIDs())
+        val tz_adapter = ArrayAdapter(this, R.layout.right_aligned_spinner, TimeZone_disp.get_timezone_list())
         tz_adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
 
         binding.startTz.adapter = tz_adapter
@@ -148,13 +147,13 @@ class Settings: Dynamic_theme_activity(), DatePickerDialog.OnDateSetListener, Ti
             val tz = tz_adapter.getItem(i)
             if(tz != null)
             {
-                if(tz == data.start_tz)
+                if(tz.id == data.start_tz)
                 {
                     binding.startTz.setSelection(i)
                     ++found
                 }
 
-                if(tz == data.end_tz)
+                if(tz.id == data.end_tz)
                 {
                     binding.endTz.setSelection(i)
                     ++found
