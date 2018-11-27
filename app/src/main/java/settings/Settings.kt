@@ -226,7 +226,7 @@ class Settings: Dynamic_theme_activity(), DatePickerDialog.OnDateSetListener, Ti
             date_obj = old_date_df.parse(date, ParsePosition(0))
             if(date_obj != null)
             {
-                old_date_df.timeZone = TimeZone.getTimeZone(data.end_tz)
+                date_df.timeZone = TimeZone.getTimeZone(data.end_tz)
                 date = date_df.format(date_obj)
                 binding.endDateSel.setText(date)
             }
