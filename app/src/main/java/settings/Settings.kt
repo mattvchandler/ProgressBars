@@ -113,8 +113,9 @@ class Settings: Dynamic_theme_activity(), DatePickerDialog.OnDateSetListener, Ti
 
             date_format = PreferenceManager.getDefaultSharedPreferences(this).getString("date_format", resources.getString(R.string.pref_date_format_default))!!
 
-            date_df.isLenient = true
-            time_df.isLenient = true
+            if(date_format != "locale")
+                date_df.applyPattern(date_format)
+
         }
         else
         {
@@ -129,17 +130,14 @@ class Settings: Dynamic_theme_activity(), DatePickerDialog.OnDateSetListener, Ti
             locale = savedInstanceState.getSerializable(STATE_LOCALE) as Locale
 
             // populate date/time widget values
-            if(date_format != "locale")
-                date_df.applyPattern(date_format)
-
-            date_df.isLenient = true
-            time_df.isLenient = true
-
             if(data.rowid < 0)
                 setTitle(R.string.add_title)
             else
                 setTitle(R.string.edit_title)
         }
+
+        date_df.isLenient = true
+        time_df.isLenient = true
 
         // populate timezones and set selected values
         binding.data = data
@@ -147,15 +145,16 @@ class Settings: Dynamic_theme_activity(), DatePickerDialog.OnDateSetListener, Ti
         var found = 0
         for(i in 0 until tz_adapter.count)
         {
-            if(tz_adapter.getItem(i) != null)
+            val tz = tz_adapter.getItem(i)
+            if(tz != null)
             {
-                if(tz_adapter.getItem(i) == data.start_tz)
+                if(tz == data.start_tz)
                 {
                     binding.startTz.setSelection(i)
                     ++found
                 }
 
-                if(tz_adapter.getItem(i) == data.end_tz)
+                if(tz == data.end_tz)
                 {
                     binding.endTz.setSelection(i)
                     ++found
@@ -212,17 +211,23 @@ class Settings: Dynamic_theme_activity(), DatePickerDialog.OnDateSetListener, Ti
 
             // parse date as old format, replace w/ new
             var date = binding.startDateSel.text.toString()
+
+            old_date_df.timeZone = TimeZone.getTimeZone(data.start_tz)
             var date_obj = old_date_df.parse(date, ParsePosition(0))
             if(date_obj != null)
             {
+                date_df.timeZone = TimeZone.getTimeZone(data.start_tz)
                 date = date_df.format(date_obj)
                 binding.startDateSel.setText(date)
             }
 
             date = binding.endDateSel.text.toString()
+
+            old_date_df.timeZone = TimeZone.getTimeZone(data.end_tz)
             date_obj = old_date_df.parse(date, ParsePosition(0))
             if(date_obj != null)
             {
+                old_date_df.timeZone = TimeZone.getTimeZone(data.end_tz)
                 date = date_df.format(date_obj)
                 binding.endDateSel.setText(date)
             }
@@ -230,17 +235,23 @@ class Settings: Dynamic_theme_activity(), DatePickerDialog.OnDateSetListener, Ti
         if(old_time_df.toLocalizedPattern() != time_df.toLocalizedPattern() || locale != old_locale)
         {
             var time = binding.startTimeSel.text.toString()
+
+            old_time_df.timeZone = TimeZone.getTimeZone(data.start_tz)
             var date_obj = old_time_df.parse(time, ParsePosition(0))
             if(date_obj != null)
             {
+                time_df.timeZone = TimeZone.getTimeZone(data.start_tz)
                 time = time_df.format(date_obj)
                 binding.startTimeSel.setText(time)
             }
 
             time = binding.endTimeSel.text.toString()
+
+            old_time_df.timeZone = TimeZone.getTimeZone(data.end_tz)
             date_obj = old_time_df.parse(time, ParsePosition(0))
             if(date_obj != null)
             {
+                time_df.timeZone = TimeZone.getTimeZone(data.end_tz)
                 time = time_df.format(date_obj)
                 binding.endTimeSel.setText(time)
             }

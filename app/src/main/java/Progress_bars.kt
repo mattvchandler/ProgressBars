@@ -48,6 +48,7 @@ import org.mattvchandler.progressbars.util.Notification_handler
 import org.mattvchandler.progressbars.util.Preferences
 import java.util.*
 
+// TODO: this screen doesn't work in RTL locales
 // main activity. display each timer in a list
 class Progress_bars: Dynamic_theme_activity()
 {
