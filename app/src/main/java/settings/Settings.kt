@@ -113,10 +113,7 @@ class Settings: Dynamic_theme_activity(), DatePickerDialog.OnDateSetListener, Ti
             save_data = Data(data)
 
             date_format = PreferenceManager.getDefaultSharedPreferences(this).getString("date_format", resources.getString(R.string.pref_date_format_default))!!
-
-            if(date_format != "locale")
-                date_df.applyPattern(date_format)
-
+            set_date_format(date_df, date_format)
         }
         else
         {
@@ -199,8 +196,7 @@ class Settings: Dynamic_theme_activity(), DatePickerDialog.OnDateSetListener, Ti
         date_format = PreferenceManager.getDefaultSharedPreferences(this).getString("date_format", resources.getString(R.string.pref_date_format_default))!!
         date_df = SimpleDateFormat.getDateInstance(SimpleDateFormat.SHORT) as SimpleDateFormat
         time_df = SimpleDateFormat.getTimeInstance(SimpleDateFormat.MEDIUM) as SimpleDateFormat
-        if(date_format != "locale")
-            date_df.applyLocalizedPattern(date_format)
+        set_date_format(date_df, date_format)
         locale = Locale.getDefault()
 
         date_df.isLenient = true
@@ -614,8 +610,7 @@ class Settings: Dynamic_theme_activity(), DatePickerDialog.OnDateSetListener, Ti
         cal.set(Calendar.DAY_OF_MONTH, day)
 
         val date_df = SimpleDateFormat.getDateInstance(SimpleDateFormat.SHORT) as SimpleDateFormat
-        if(date_format != "locale")
-            date_df.applyPattern(date_format)
+        set_date_format(date_df, date_format)
 
         (findViewById<View>(date_time_dialog_target) as android.support.design.widget.TextInputEditText).setText(date_df.format(cal.time))
     }
@@ -740,6 +735,20 @@ class Settings: Dynamic_theme_activity(), DatePickerDialog.OnDateSetListener, Ti
             }
 
             return days_of_week_str.toString()
+        }
+
+        private fun set_date_format(date_df: SimpleDateFormat, date_format: String)
+        {
+            if(date_format != "locale")
+            {
+                date_df.applyPattern(date_format)
+            }
+            else
+            {
+                // force 4-digit year regardless of what the locale default is
+                val new_pattern = date_df.toLocalizedPattern().replace("y+".toRegex(), "yyyy")
+                date_df.applyLocalizedPattern(new_pattern)
+            }
         }
     }
 }

@@ -494,6 +494,12 @@ class View_data (context: Context, cursor: Cursor): Data(cursor) // contains all
         val date_format_pattern = PreferenceManager.getDefaultSharedPreferences(context).getString("date_format", "locale")
         if(date_format_pattern != "locale")
             date_df.applyPattern(date_format_pattern)
+        else
+        {
+            // force 4-digit year regardless of what the locale default is
+            val new_pattern = date_df.toLocalizedPattern().replace("y+".toRegex(), "yyyy")
+            date_df.applyLocalizedPattern(new_pattern)
+        }
 
         start_time_date.time = start_time * 1000L
         end_time_date.time = end_time * 1000L
