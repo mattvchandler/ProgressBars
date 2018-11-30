@@ -52,6 +52,8 @@ import java.text.ParsePosition
 import java.text.SimpleDateFormat
 import java.util.*
 
+// TODO: force 4-digit year format
+
 // Settings for each timer
 class Settings: Dynamic_theme_activity(), DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener
 {
@@ -359,8 +361,8 @@ class Settings: Dynamic_theme_activity(), DatePickerDialog.OnDateSetListener, Ti
     {
         var errors = false
         // precision data has been stored through its callback already
-        data.start_tz = binding.startTz.selectedItem.toString()
-        data.end_tz = binding.endTz.selectedItem.toString()
+        data.start_tz = (binding.startTz.selectedItem as TimeZone_disp).id
+        data.end_tz = (binding.endTz.selectedItem as TimeZone_disp).id
 
         date_df.timeZone = TimeZone.getTimeZone(data.start_tz)
         time_df.timeZone = TimeZone.getTimeZone(data.start_tz)
