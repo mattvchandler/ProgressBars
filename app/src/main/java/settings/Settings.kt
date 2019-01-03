@@ -52,8 +52,6 @@ import java.text.ParsePosition
 import java.text.SimpleDateFormat
 import java.util.*
 
-// TODO: force 4-digit year format
-
 // Settings for each timer
 class Settings: Dynamic_theme_activity(), DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener
 {

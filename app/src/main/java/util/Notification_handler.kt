@@ -163,13 +163,16 @@ class Notification_handler: BroadcastReceiver()
             if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
             {
                 val nm = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-                var channel: NotificationChannel? = nm.getNotificationChannel(CHANNEL_ID)
-                if(channel == null)
+                if(nm.getNotificationChannel(CHANNEL_ID) == null)
                 {
-                    channel = NotificationChannel(CHANNEL_ID,
+                    val channel = NotificationChannel(CHANNEL_ID,
                             context.resources.getString(R.string.notification_channel_name),
                             NotificationManager.IMPORTANCE_HIGH)
                     channel.description = context.resources.getString(R.string.notification_channel_desc)
+                    channel.enableVibration(true)
+                    channel.enableLights(true)
+                    channel.setShowBadge(true)
+
                     nm.createNotificationChannel(channel)
                 }
             }
