@@ -81,7 +81,7 @@ class View_data (context: Context, cursor: Cursor): Data(cursor) // contains all
     private val start_time_date = Date()
     private val end_time_date = Date()
 
-    private fun calc_percentage(total_interval: Long, elapsed: Long)
+    private fun calc_percentage(total_interval: Long, elapsed: Long, now_s: Long)
     {
         // convert and round percentage to the specified precision
         var dec_format = "0"
@@ -94,18 +94,26 @@ class View_data (context: Context, cursor: Cursor): Data(cursor) // contains all
 
         dec_format += "%"
 
-        // if start and end are the same time, set to 100%
-        if(total_interval != 0L)
+        // if start and end are the same time, set to 100 if in the past, 0 if in the future
+        when
         {
-            val percentage_fraction = min(max(elapsed.toDouble() / total_interval.toDouble(), 0.0), 1.0)
+            total_interval != 0L ->
+            {
+                val percentage_fraction = min(max(elapsed.toDouble() / total_interval.toDouble(), 0.0), 1.0)
 
-            percentage_disp.set(DecimalFormat(dec_format).format(percentage_fraction))
-            progress_disp.set((percentage_fraction * 100.0).toInt())
-        }
-        else
-        {
-            percentage_disp.set(DecimalFormat(dec_format).format(1.0))
-            progress_disp.set(100)
+                percentage_disp.set(DecimalFormat(dec_format).format(percentage_fraction))
+                progress_disp.set((percentage_fraction * 100.0).toInt())
+            }
+            now_s >= end_time ->
+            {
+                percentage_disp.set(DecimalFormat(dec_format).format(1.0))
+                progress_disp.set(100)
+            }
+            else ->
+            {
+                percentage_disp.set(DecimalFormat(dec_format).format(0.0))
+                progress_disp.set(0)
+            }
         }
     }
 
@@ -438,16 +446,14 @@ class View_data (context: Context, cursor: Cursor): Data(cursor) // contains all
 
         // only calculate percentage if is being shown
         if(show_progress)
-        {
-            calc_percentage(total_interval, elapsed)
-        }
+            calc_percentage(total_interval, elapsed, now_s)
 
         // if we are at the start, show started text
         if(now_s == start_time)
         {
             time_text_disp.set(start_text)
         }
-        else if(terminate && now_s > end_time || now_s == end_time)
+        else if((terminate && now_s > end_time) || now_s == end_time)
         {
             time_text_disp.set(complete_text)
 
