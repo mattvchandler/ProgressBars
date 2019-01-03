@@ -35,6 +35,7 @@ import org.mattvchandler.progressbars.R
 import org.mattvchandler.progressbars.db.DB
 import org.mattvchandler.progressbars.db.Data
 import org.mattvchandler.progressbars.db.Progress_bars_table
+import kotlin.math.min
 
 // all notification / alarm handling done here
 class Notification_handler: BroadcastReceiver()
@@ -67,14 +68,15 @@ class Notification_handler: BroadcastReceiver()
                 var content = ""
                 var notification_when: Long = 0
                 var do_notify = false
-                if(data.notify_start && intent.action!!.substring(0, BASE_STARTED_ACTION_NAME.length) == BASE_STARTED_ACTION_NAME)
+                val action = intent.action!!
+                if(data.notify_start && action.substring(0, min(BASE_STARTED_ACTION_NAME.length, action.length)) == BASE_STARTED_ACTION_NAME)
                 {
                     do_notify = true
 
                     content = data.start_text
                     notification_when = data.start_time
                 }
-                else if(data.notify_end && intent.action!!.substring(0, BASE_COMPLETED_ACTION_NAME.length) == BASE_COMPLETED_ACTION_NAME)
+                else if(data.notify_end && intent.action!!.substring(0, min(BASE_COMPLETED_ACTION_NAME.length, action.length)) == BASE_COMPLETED_ACTION_NAME)
                 {
                     do_notify = true
 
