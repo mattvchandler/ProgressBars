@@ -735,7 +735,7 @@ class Settings: Dynamic_theme_activity(), DatePickerDialog.OnDateSetListener, Ti
             return days_of_week_str.toString()
         }
 
-        private fun set_date_format(date_df: SimpleDateFormat, date_format: String)
+        fun set_date_format(date_df: SimpleDateFormat, date_format: String)
         {
             if(date_format != "locale")
             {

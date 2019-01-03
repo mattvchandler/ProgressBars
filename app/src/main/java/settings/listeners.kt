@@ -27,6 +27,7 @@ import android.widget.Toast
 
 import org.mattvchandler.progressbars.db.Data
 import org.mattvchandler.progressbars.R
+import org.mattvchandler.progressbars.settings.Settings.Companion.set_date_format
 
 import java.text.ParsePosition
 import java.text.SimpleDateFormat
@@ -44,8 +45,7 @@ internal class Date_listener(private val date_format: String, private val data: 
             // attempt to parse current text
             var new_date = (v as EditText).text.toString()
             val df = SimpleDateFormat.getDateInstance(SimpleDateFormat.SHORT) as SimpleDateFormat
-            if(date_format != "locale")
-                df.applyLocalizedPattern(date_format)
+            set_date_format(df, date_format)
             df.isLenient = true
 
             val date = df.parse(new_date, ParsePosition(0))
