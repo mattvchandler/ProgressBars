@@ -45,15 +45,19 @@ class Notification_handler: BroadcastReceiver()
         if(intent.action == null)
             return
 
+        val action = intent.action!!
+        val start_action = action.substring(0, min(BASE_STARTED_ACTION_NAME.length, action.length)) == BASE_STARTED_ACTION_NAME
+        val completion_action = action.substring(0, min(BASE_COMPLETED_ACTION_NAME.length, action.length)) == BASE_COMPLETED_ACTION_NAME
+
         // we're set up to receive the system's bootup broadcast, so use it to reset the alarms
-        if(intent.action == "android.intent.action.BOOT_COMPLETED")
+        if(action == "android.intent.action.BOOT_COMPLETED")
         {
             // get new start/end times first
             Data.apply_all_repeats(context)
             reset_all_alarms(context)
         }
         // one of the alarms went off - send a notification
-        else if(intent.action!!.substring(0, BASE_STARTED_ACTION_NAME.length) == BASE_STARTED_ACTION_NAME || intent.action!!.substring(0, BASE_COMPLETED_ACTION_NAME.length) == BASE_COMPLETED_ACTION_NAME)
+        else if(start_action || completion_action)
         {
             // get the data for the alarm that went off
             val rowid = intent.getLongExtra(EXTRA_ROWID, -1)
@@ -69,17 +73,16 @@ class Notification_handler: BroadcastReceiver()
                 var notification_when: Long = 0
                 var do_notify = false
 
-                val action = intent.action!!
-                if((data.notify_start && action.substring(0, min(BASE_STARTED_ACTION_NAME.length, action.length)) == BASE_STARTED_ACTION_NAME) ||
+                if((data.notify_start && start_action) ||
                         // special case - when start and end times are the same, only the completed alarm is fired. if only the start notification is enabled, we still need to send it!
-                        (data.notify_start && !data.notify_end && data.start_time == data.end_time && action.substring(0, min(BASE_COMPLETED_ACTION_NAME.length, action.length)) == BASE_COMPLETED_ACTION_NAME))
+                        (data.notify_start && !data.notify_end && data.start_time == data.end_time && completion_action))
                 {
                     do_notify = true
 
                     content = data.start_text
                     notification_when = data.start_time
                 }
-                else if(data.notify_end && action.substring(0, min(BASE_COMPLETED_ACTION_NAME.length, action.length)) == BASE_COMPLETED_ACTION_NAME)
+                else if(data.notify_end && completion_action)
                 {
                     do_notify = true
 
