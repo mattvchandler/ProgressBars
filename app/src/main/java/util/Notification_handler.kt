@@ -68,21 +68,23 @@ class Notification_handler: BroadcastReceiver()
                 var content = ""
                 var notification_when: Long = 0
                 var do_notify = false
+
                 val action = intent.action!!
-                if(data.notify_start && action.substring(0, min(BASE_STARTED_ACTION_NAME.length, action.length)) == BASE_STARTED_ACTION_NAME)
+                if((data.notify_start && action.substring(0, min(BASE_STARTED_ACTION_NAME.length, action.length)) == BASE_STARTED_ACTION_NAME) ||
+                        // special case - when start and end times are the same, only the completed alarm is fired. if only the start notification is enabled, we still need to send it!
+                        (data.notify_start && !data.notify_end && data.start_time == data.end_time && action.substring(0, min(BASE_COMPLETED_ACTION_NAME.length, action.length)) == BASE_COMPLETED_ACTION_NAME))
                 {
                     do_notify = true
 
                     content = data.start_text
                     notification_when = data.start_time
                 }
-                else if(data.notify_end && intent.action!!.substring(0, min(BASE_COMPLETED_ACTION_NAME.length, action.length)) == BASE_COMPLETED_ACTION_NAME)
+                else if(data.notify_end && action.substring(0, min(BASE_COMPLETED_ACTION_NAME.length, action.length)) == BASE_COMPLETED_ACTION_NAME)
                 {
                     do_notify = true
 
                     content = data.complete_text
                     notification_when = data.end_time
-
                 }
 
                 if(do_notify)
@@ -201,9 +203,10 @@ class Notification_handler: BroadcastReceiver()
             val start_pi = get_intent(context, data, BASE_STARTED_ACTION_NAME)
             val complete_pi = get_intent(context, data, BASE_COMPLETED_ACTION_NAME)
 
-            // if notifications are enabled and the start time is in the future, set an alarm
+            // if start time is in the future, set an alarm
+            // if start and end times are the same only set the completion alarm
             // (will overwrite any existing alarm with the same action and target)
-            if(now < data.start_time)
+            if(now < data.start_time && data.start_time != data.end_time)
                 if(Build.VERSION.SDK_INT >= 23)
                     am.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, data.start_time * 1000, start_pi)
                 else
