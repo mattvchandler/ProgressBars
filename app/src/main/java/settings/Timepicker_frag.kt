@@ -6,9 +6,9 @@ import android.os.Bundle
 import android.support.v4.app.DialogFragment
 import android.widget.Toast
 import org.mattvchandler.progressbars.R
+import org.mattvchandler.progressbars.settings.Settings.Companion.get_time_format
 import java.security.InvalidParameterException
 import java.text.ParsePosition
-import java.text.SimpleDateFormat
 import java.util.*
 
 /*
@@ -46,7 +46,7 @@ class Timepicker_frag: DialogFragment()
 
         val time = arguments!!.getString(TIME) ?: throw InvalidParameterException("No time argument given")
 
-        val df = SimpleDateFormat.getTimeInstance(SimpleDateFormat.MEDIUM) as SimpleDateFormat
+        val df = get_time_format()
         val date_obj = df.parse(time, ParsePosition(0))
         if(date_obj == null)
         {

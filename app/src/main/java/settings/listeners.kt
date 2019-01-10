@@ -27,15 +27,15 @@ import android.widget.Toast
 
 import org.mattvchandler.progressbars.db.Data
 import org.mattvchandler.progressbars.R
-import org.mattvchandler.progressbars.settings.Settings.Companion.set_date_format
+import org.mattvchandler.progressbars.settings.Settings.Companion.get_date_format
+import org.mattvchandler.progressbars.settings.Settings.Companion.get_time_format
 
 import java.text.ParsePosition
-import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.TimeZone
 
 // listen for changes to date text
-internal class Date_listener(private val date_format: String, private val data: Data): View.OnFocusChangeListener
+internal class Date_listener(private val data: Data): View.OnFocusChangeListener
 {
     override fun onFocusChange(v: View, hasFocus: Boolean)
     {
@@ -44,24 +44,22 @@ internal class Date_listener(private val date_format: String, private val data: 
         {
             // attempt to parse current text
             var new_date = (v as EditText).text.toString()
-            val df = SimpleDateFormat.getDateInstance(SimpleDateFormat.SHORT) as SimpleDateFormat
-            set_date_format(df, date_format)
-            df.isLenient = true
+            val df = get_date_format(v.context)
 
             val date = df.parse(new_date, ParsePosition(0))
             if(date == null)
             {
                 // couldn't parse, show message
-                Toast.makeText(v.getContext(), v.getContext().resources.getString(R.string.invalid_date,
-                        new_date, if(date_format != "locale") date_format else df.toLocalizedPattern()), Toast.LENGTH_LONG).show()
+                Toast.makeText(v.context, v.getContext().resources.getString(R.string.invalid_date,
+                        new_date, df.toLocalizedPattern()), Toast.LENGTH_LONG).show()
 
                 // replace with old value, so field contains valid data
-                if(v.getId() == R.id.start_date_sel)
+                if(v.id == R.id.start_date_sel)
                 {
                     df.timeZone = TimeZone.getTimeZone(data.start_tz)
                     v.setText(df.format(Date(data.start_time * 1000)))
                 }
-                else if(v.getId() == R.id.end_date_sel)
+                else if(v.id == R.id.end_date_sel)
                 {
                     df.timeZone = TimeZone.getTimeZone(data.end_tz)
                     v.setText(df.format(Date(data.end_time * 1000)))
@@ -87,8 +85,7 @@ internal class Time_listener(private val data: Data): View.OnFocusChangeListener
         {
             // attempt to parse current text
             var new_time = (v as EditText).text.toString()
-            val df = SimpleDateFormat.getTimeInstance(SimpleDateFormat.MEDIUM) as SimpleDateFormat
-            df.isLenient = true
+            val df = get_time_format()
 
             val time = df.parse(new_time, ParsePosition(0))
             if(time == null)
@@ -99,12 +96,12 @@ internal class Time_listener(private val data: Data): View.OnFocusChangeListener
                         Toast.LENGTH_LONG).show()
 
                 // replace with old value, so field contains valid data
-                if(v.getId() == R.id.start_time_sel)
+                if(v.id == R.id.start_time_sel)
                 {
                     df.timeZone = TimeZone.getTimeZone(data.start_tz)
                     v.setText(df.format(Date(data.start_time * 1000)))
                 }
-                else if(v.getId() == R.id.end_time_sel)
+                else if(v.id == R.id.end_time_sel)
                 {
                     df.timeZone = TimeZone.getTimeZone(data.end_tz)
                     v.setText(df.format(Date(data.end_time * 1000)))

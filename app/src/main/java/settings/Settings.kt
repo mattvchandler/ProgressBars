@@ -61,10 +61,9 @@ class Settings: Dynamic_theme_activity(), DatePickerDialog.OnDateSetListener, Ti
 
     private var date_time_dialog_target: Int = 0
 
-    private lateinit var date_format: String
     private var locale = Locale.getDefault()
-    private var date_df = SimpleDateFormat.getDateInstance(SimpleDateFormat.SHORT) as SimpleDateFormat
-    private var time_df = SimpleDateFormat.getTimeInstance(SimpleDateFormat.MEDIUM) as SimpleDateFormat
+    private var date_df = SimpleDateFormat.getDateInstance() as SimpleDateFormat
+    private var time_df = SimpleDateFormat.getTimeInstance() as SimpleDateFormat
 
     private val on_24_hour_change = object: ContentObserver(Handler())
     {
@@ -110,8 +109,8 @@ class Settings: Dynamic_theme_activity(), DatePickerDialog.OnDateSetListener, Ti
             }
             save_data = Data(data)
 
-            date_format = PreferenceManager.getDefaultSharedPreferences(this).getString("date_format", resources.getString(R.string.pref_date_format_default))!!
-            set_date_format(date_df, date_format)
+            date_df = get_date_format(this)
+            time_df = get_time_format()
         }
         else
         {
@@ -120,7 +119,6 @@ class Settings: Dynamic_theme_activity(), DatePickerDialog.OnDateSetListener, Ti
             save_data = savedInstanceState.getSerializable(STATE_SAVE_DATA) as Data
             date_time_dialog_target = savedInstanceState.getInt(STATE_TARGET)
 
-            date_format = savedInstanceState.getString(STATE_DATE_FORMAT)!!
             date_df = savedInstanceState.getSerializable(STATE_DATE_DF) as SimpleDateFormat
             time_df = savedInstanceState.getSerializable(STATE_TIME_DF) as SimpleDateFormat
             locale = savedInstanceState.getSerializable(STATE_LOCALE) as Locale
@@ -131,9 +129,6 @@ class Settings: Dynamic_theme_activity(), DatePickerDialog.OnDateSetListener, Ti
             else
                 setTitle(R.string.edit_title)
         }
-
-        date_df.isLenient = true
-        time_df.isLenient = true
 
         // populate timezones and set selected values
         binding.data = data
@@ -191,14 +186,10 @@ class Settings: Dynamic_theme_activity(), DatePickerDialog.OnDateSetListener, Ti
         val old_time_df = time_df
         val old_locale = locale
 
-        date_format = PreferenceManager.getDefaultSharedPreferences(this).getString("date_format", resources.getString(R.string.pref_date_format_default))!!
-        date_df = SimpleDateFormat.getDateInstance(SimpleDateFormat.SHORT) as SimpleDateFormat
-        time_df = SimpleDateFormat.getTimeInstance(SimpleDateFormat.MEDIUM) as SimpleDateFormat
-        set_date_format(date_df, date_format)
-        locale = Locale.getDefault()
+        date_df = get_date_format(this)
+        time_df = get_time_format()
 
-        date_df.isLenient = true
-        time_df.isLenient = true
+        locale = Locale.getDefault()
 
         if(old_date_df.toLocalizedPattern() != date_df.toLocalizedPattern() || locale != old_locale)
         {
@@ -256,8 +247,8 @@ class Settings: Dynamic_theme_activity(), DatePickerDialog.OnDateSetListener, Ti
         binding.startTimeSel.onFocusChangeListener = Time_listener(data)
         binding.endTimeSel.onFocusChangeListener = Time_listener(data)
 
-        binding.startDateSel.onFocusChangeListener = Date_listener(date_format, data)
-        binding.endDateSel.onFocusChangeListener = Date_listener(date_format, data)
+        binding.startDateSel.onFocusChangeListener = Date_listener(data)
+        binding.endDateSel.onFocusChangeListener = Date_listener(data)
 
         binding.repeatCount.onFocusChangeListener = Repeat_count_listener(data)
 
@@ -302,7 +293,6 @@ class Settings: Dynamic_theme_activity(), DatePickerDialog.OnDateSetListener, Ti
         out.putSerializable(STATE_DATA, data)
         out.putSerializable(STATE_SAVE_DATA, save_data)
         out.putInt(STATE_TARGET, date_time_dialog_target)
-        out.putString(STATE_DATE_FORMAT, date_format)
         out.putSerializable(STATE_DATE_DF, date_df)
         out.putSerializable(STATE_TIME_DF, time_df)
         out.putSerializable(STATE_LOCALE, locale)
@@ -371,7 +361,7 @@ class Settings: Dynamic_theme_activity(), DatePickerDialog.OnDateSetListener, Ti
         if(start_date == null)
         {
             Toast.makeText(this, resources.getString(R.string.invalid_date,
-                    start_date_txt, if(date_format != "locale") date_format else date_df.toLocalizedPattern()),
+                    start_date_txt, date_df.toLocalizedPattern()),
                     Toast.LENGTH_LONG).show()
 
             errors = true
@@ -399,7 +389,7 @@ class Settings: Dynamic_theme_activity(), DatePickerDialog.OnDateSetListener, Ti
         if(end_date == null)
         {
             Toast.makeText(this, resources.getString(R.string.invalid_date,
-                    end_date_txt, if(date_format != "locale") date_format else date_df.toLocalizedPattern()),
+                    end_date_txt, date_df.toLocalizedPattern()),
                     Toast.LENGTH_LONG).show()
 
             errors = true
@@ -445,6 +435,7 @@ class Settings: Dynamic_theme_activity(), DatePickerDialog.OnDateSetListener, Ti
         val datetime_df = SimpleDateFormat.getInstance() as SimpleDateFormat
         datetime_df.applyLocalizedPattern("${date_df.toLocalizedPattern()} ${time_df.toLocalizedPattern()}")
         datetime_df.timeZone = TimeZone.getTimeZone(timezone)
+        datetime_df.isLenient = true
         return datetime_df.parse("$date $time").time / 1000
     }
 
@@ -607,9 +598,6 @@ class Settings: Dynamic_theme_activity(), DatePickerDialog.OnDateSetListener, Ti
         cal.set(Calendar.MONTH, month)
         cal.set(Calendar.DAY_OF_MONTH, day)
 
-        val date_df = SimpleDateFormat.getDateInstance(SimpleDateFormat.SHORT) as SimpleDateFormat
-        set_date_format(date_df, date_format)
-
         (findViewById<View>(date_time_dialog_target) as android.support.design.widget.TextInputEditText).setText(date_df.format(cal.time))
     }
 
@@ -621,8 +609,7 @@ class Settings: Dynamic_theme_activity(), DatePickerDialog.OnDateSetListener, Ti
         cal.set(Calendar.MINUTE, minute)
         cal.set(Calendar.SECOND, 0)
 
-        val df = SimpleDateFormat.getTimeInstance(SimpleDateFormat.MEDIUM) as SimpleDateFormat
-        (findViewById<View>(date_time_dialog_target) as android.support.design.widget.TextInputEditText).setText(df.format(cal.time))
+        (findViewById<View>(date_time_dialog_target) as android.support.design.widget.TextInputEditText).setText(time_df.format(cal.time))
     }
 
     // called when OK pressed on precision dialog
@@ -735,8 +722,11 @@ class Settings: Dynamic_theme_activity(), DatePickerDialog.OnDateSetListener, Ti
             return days_of_week_str.toString()
         }
 
-        fun set_date_format(date_df: SimpleDateFormat, date_format: String)
+        fun get_date_format(context: Context): SimpleDateFormat
         {
+            val date_format = PreferenceManager.getDefaultSharedPreferences(context).getString("date_format", context.resources.getString(R.string.pref_date_format_default))!!
+            val date_df = SimpleDateFormat.getDateInstance(SimpleDateFormat.SHORT) as SimpleDateFormat
+
             if(date_format != "locale")
             {
                 date_df.applyPattern(date_format)
@@ -747,6 +737,18 @@ class Settings: Dynamic_theme_activity(), DatePickerDialog.OnDateSetListener, Ti
                 val new_pattern = date_df.toLocalizedPattern().replace("y+".toRegex(), "yyyy")
                 date_df.applyLocalizedPattern(new_pattern)
             }
+
+            date_df.isLenient = true
+
+            return date_df
+        }
+
+        fun get_time_format(): SimpleDateFormat
+        {
+            val time_df = SimpleDateFormat.getTimeInstance(SimpleDateFormat.MEDIUM) as SimpleDateFormat
+            time_df.isLenient = true
+
+            return time_df
         }
     }
 }

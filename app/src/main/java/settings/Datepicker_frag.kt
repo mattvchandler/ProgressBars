@@ -29,10 +29,10 @@ import android.support.v4.app.DialogFragment
 import android.widget.Toast
 
 import org.mattvchandler.progressbars.R
+import org.mattvchandler.progressbars.settings.Settings.Companion.get_date_format
 
 import java.security.InvalidParameterException
 import java.text.ParsePosition
-import java.text.SimpleDateFormat
 import java.util.Calendar
 
 // date picker dialog
@@ -52,10 +52,7 @@ class Datepicker_frag: DialogFragment()
 
         val date = arguments!!.getString(DATE) ?: throw InvalidParameterException("No date argument given")
 
-        val df = SimpleDateFormat.getDateInstance(SimpleDateFormat.SHORT) as SimpleDateFormat
-        if(date_format != "locale")
-            df.applyLocalizedPattern(date_format)
-        df.isLenient = true
+        val df = get_date_format(activity!!)
 
         val date_obj = df.parse(date, ParsePosition(0))
         if(date_obj == null)

@@ -27,13 +27,13 @@ import android.database.Cursor
 import android.databinding.ObservableBoolean
 import android.databinding.ObservableField
 import android.databinding.ObservableInt
-import android.preference.PreferenceManager
 
 import org.mattvchandler.progressbars.db.Data
 import org.mattvchandler.progressbars.R
+import org.mattvchandler.progressbars.settings.Settings.Companion.get_date_format
+import org.mattvchandler.progressbars.settings.Settings.Companion.get_time_format
 
 import java.text.DecimalFormat
-import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
 
@@ -494,18 +494,8 @@ class View_data (context: Context, cursor: Cursor): Data(cursor) // contains all
         show_time_text_disp.set(show_years || show_months || show_weeks || show_days || show_hours || show_minutes || show_seconds)
 
         // format start and end dates and times
-        val date_df = SimpleDateFormat.getDateInstance(SimpleDateFormat.SHORT) as SimpleDateFormat
-        val time_df = SimpleDateFormat.getTimeInstance() as SimpleDateFormat
-
-        val date_format_pattern = PreferenceManager.getDefaultSharedPreferences(context).getString("date_format", "locale")
-        if(date_format_pattern != "locale")
-            date_df.applyPattern(date_format_pattern)
-        else
-        {
-            // force 4-digit year regardless of what the locale default is
-            val new_pattern = date_df.toLocalizedPattern().replace("y+".toRegex(), "yyyy")
-            date_df.applyLocalizedPattern(new_pattern)
-        }
+        val date_df = get_date_format(context)
+        val time_df = get_time_format()
 
         start_time_date.time = start_time * 1000L
         end_time_date.time = end_time * 1000L
