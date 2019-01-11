@@ -12,7 +12,7 @@ import java.text.ParsePosition
 import java.util.*
 
 /*
-Copyright (C) 2018 Matthew Chandler
+Copyright (C) 2019 Matthew Chandler
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of
 this software and associated documentation files (the "Software"), to deal in

@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2018 Matthew Chandler
+Copyright (C) 2019 Matthew Chandler
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of
 this software and associated documentation files (the "Software"), to deal in
@@ -51,6 +51,9 @@ import org.mattvchandler.progressbars.databinding.ActivitySettingsBinding
 import java.text.ParsePosition
 import java.text.SimpleDateFormat
 import java.util.*
+
+// TODO: functionality for 0-length events. shouldn't require much (if any) DB changes. either a flag, or just having the starttime = endtime
+// hide the 2nd date/time entry area when checked
 
 // Settings for each timer
 class Settings: Dynamic_theme_activity(), DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener
