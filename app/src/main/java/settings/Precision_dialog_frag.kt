@@ -25,11 +25,13 @@ import android.app.Dialog
 import android.os.Bundle
 import android.support.v4.app.DialogFragment
 import android.support.v7.app.AlertDialog
+import android.view.Gravity
+import android.view.ViewGroup
+import android.widget.FrameLayout
 import android.widget.NumberPicker
 
 import org.mattvchandler.progressbars.R
 
-// TODO: margins
 // a number_picker fragment for precision setting
 class Precision_dialog_frag: DialogFragment()
 {
@@ -50,9 +52,18 @@ class Precision_dialog_frag: DialogFragment()
         np.maxValue = 10
         np.value = precision
 
+        val margin_size = builder.context.resources.getDimensionPixelSize(R.dimen.margin_size)
+        val layout_params = FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+        layout_params.setMargins(margin_size, margin_size, margin_size, margin_size)
+        layout_params.gravity = Gravity.CENTER
+        np.layoutParams = layout_params
+
+        val layout = FrameLayout(builder.context)
+        layout.addView(np)
+
         // create a dialog containing the number picker, w/ OK and CANCEL buttons
         builder.setTitle(R.string.precision)
-                .setView(np)
+                .setView(layout)
                 .setPositiveButton(android.R.string.ok) { _, _ ->
                     // ON OK, set the value one last time, and call the listener
                     (activity as Settings).on_precision_set(np.value)
