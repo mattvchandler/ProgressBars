@@ -173,24 +173,28 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:gravity="center_vertical"
-                        android:layout_margin="@dimen/margin_size"
+                        android:orientation="vertical"
+                        android:layout_gravity="center_vertical"
+                        android:onClick="on_start_tz_butt"
+                        android:clickable="true"
+                        android:focusable="true"
                         >
                         <TextView
                             android:text="@string/start_tz_prompt"
                             android:textAppearance="?android:textAppearanceListItem"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginEnd="@dimen/margin_size"
-                        />
-                        <Spinner
+                            android:layout_margin="@dimen/margin_size"
+                            />
+
+                        <TextView
                             android:id="@+id/start_tz"
-                            android:prompt="@string/start_tz_prompt"
-                            android:layout_width="0dp"
+                            android:textAppearance="?android:textAppearanceSmall"
+                            android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_weight="10"
-                            android:spinnerMode="dialog"
+                            android:layout_marginBottom="@dimen/margin_size"
+                            android:layout_marginStart="@dimen/margin_size"
+                            android:layout_marginEnd="@dimen/margin_size"
                             />
                     </LinearLayout>
 
@@ -272,26 +276,31 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:gravity="center_vertical"
-                        android:layout_margin="@dimen/margin_size"
+                        android:orientation="vertical"
+                        android:layout_gravity="center_vertical"
+                        android:onClick="on_end_tz_butt"
+                        android:clickable="true"
+                        android:focusable="true"
                         >
                         <TextView
                             android:text="@string/end_tz_prompt"
                             android:textAppearance="?android:textAppearanceListItem"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:layout_margin="@dimen/margin_size"
+                            />
+
+                        <TextView
+                            android:id="@+id/end_tz"
+                            android:textAppearance="?android:textAppearanceSmall"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="@dimen/margin_size"
+                            android:layout_marginStart="@dimen/margin_size"
                             android:layout_marginEnd="@dimen/margin_size"
                             />
-                        <Spinner
-                            android:id="@+id/end_tz"
-                            android:prompt="@string/start_tz_prompt"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="10"
-                            android:spinnerMode="dialog"
-                            />
                     </LinearLayout>
+
 
                     <View style="@style/Divider"/>
 
@@ -372,8 +381,9 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
                         android:layout_height="wrap_content"
                         android:orientation="vertical"
                         android:layout_gravity="center_vertical"
-                        android:layout_margin="@dimen/margin_size"
                         android:onClick="on_precision_butt"
+                        android:clickable="true"
+                        android:focusable="true"
                         >
 
                         <TextView
@@ -382,7 +392,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
                             android:textAppearance="?android:textAppearanceListItem"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginBottom="@dimen/margin_size"
+                            android:layout_margin="@dimen/margin_size"
                             />
 
                         <TextView
@@ -391,6 +401,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
                             android:textAppearance="?android:textAppearanceSmall"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:layout_marginBottom="@dimen/margin_size"
+                            android:layout_marginStart="@dimen/margin_size"
                             android:layout_marginEnd="@dimen/margin_size"
                             />
                     </LinearLayout>
@@ -404,6 +416,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
                         android:layout_height="wrap_content"
                         android:layout_margin="@dimen/margin_size"
                         android:onClick="on_show_elements_butt"
+                        android:clickable="true"
+                        android:focusable="true"
                     />
 
                     <View style="@style/Divider"/>
@@ -415,6 +429,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
                         android:layout_height="wrap_content"
                         android:layout_margin="@dimen/margin_size"
                         android:onClick="on_show_units_butt"
+                        android:clickable="true"
+                        android:focusable="true"
                         />
 
                     <View style="@style/Divider"/>
@@ -426,6 +442,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
                         android:layout_height="wrap_content"
                         android:layout_margin="@dimen/margin_size"
                         android:onClick="on_countdown_text_butt"
+                        android:clickable="true"
+                        android:focusable="true"
                         />
 
                     <View style="@style/Divider"/>
@@ -437,6 +455,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
                         android:layout_height="wrap_content"
                         android:layout_margin="@dimen/margin_size"
                         android:onClick="on_timer_opts_butt"
+                        android:clickable="true"
+                        android:focusable="true"
                     />
 
                 </LinearLayout>

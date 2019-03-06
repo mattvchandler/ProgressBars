@@ -38,7 +38,6 @@ import android.view.MenuItem
 import android.view.View
 import android.view.WindowManager
 import android.widget.AdapterView
-import android.widget.ArrayAdapter
 import android.widget.DatePicker
 import android.widget.TimePicker
 import android.widget.Toast
@@ -87,13 +86,6 @@ class Settings: Dynamic_theme_activity(), DatePickerDialog.OnDateSetListener, Ti
         setSupportActionBar(binding.toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-        // set up timezone spinners
-        val tz_adapter = ArrayAdapter(this, R.layout.right_aligned_spinner, TimeZone_disp.get_timezone_list())
-        tz_adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-
-        binding.startTz.adapter = tz_adapter
-        binding.endTz.adapter = tz_adapter
-
         // only run this on 1st creation
         if(savedInstanceState == null)
         {
@@ -135,30 +127,11 @@ class Settings: Dynamic_theme_activity(), DatePickerDialog.OnDateSetListener, Ti
                 setTitle(R.string.edit_title)
         }
 
-        // populate timezones and set selected values
+        // set selected values
         binding.data = data
 
-        var found = 0
-        for(i in 0 until tz_adapter.count)
-        {
-            val tz = tz_adapter.getItem(i)
-            if(tz != null)
-            {
-                if(tz.id == data.start_tz)
-                {
-                    binding.startTz.setSelection(i)
-                    ++found
-                }
-
-                if(tz.id == data.end_tz)
-                {
-                    binding.endTz.setSelection(i)
-                    ++found
-                }
-                if(found == 2)
-                    break
-            }
-        }
+        binding.startTz.text = TimeZone_disp(data.start_tz, null).name
+        binding.endTz.text   = TimeZone_disp(data.end_tz,   null).name
 
         val start_date = Date(data.start_time * 1000)
         date_df.timeZone = TimeZone.getTimeZone(data.start_tz)
@@ -471,6 +444,33 @@ class Settings: Dynamic_theme_activity(), DatePickerDialog.OnDateSetListener, Ti
         frag.show(supportFragmentManager, "end_time_picker")
     }
 
+    fun on_start_tz_butt(@Suppress("UNUSED_PARAMETER") view:View)
+    {
+        val start_time = parse_date_and_time(binding.startDateSel.text.toString(), binding.startTimeSel.text.toString(),  data.start_tz) ?: return
+
+        val frag = TimeZone_frag()
+
+        val args = Bundle()
+        args.putSerializable("date", Date(start_time * 1000))
+        frag.arguments = args
+
+        frag.show(supportFragmentManager, "start_tz_picker")
+    }
+
+    fun on_end_tz_butt(@Suppress("UNUSED_PARAMETER") view:View)
+    {
+        val end_time = parse_date_and_time(binding.endDateSel.text.toString(), binding.endTimeSel.text.toString(),  data.end_tz) ?: return
+
+        val frag = TimeZone_frag()
+
+        val args = Bundle()
+        args.putSerializable("date", Date(end_time * 1000))
+        args.putString("current", data.end_tz)
+        frag.arguments = args
+
+        frag.show(supportFragmentManager, "end_tz_picker")
+    }
+
     fun on_repeat_butt(@Suppress("UNUSED_PARAMETER") view: View)
     {
         data.repeats = binding.repeatSw.isChecked
@@ -593,6 +593,16 @@ class Settings: Dynamic_theme_activity(), DatePickerDialog.OnDateSetListener, Ti
         cal.set(Calendar.SECOND, 0)
 
         findViewById<TextInputEditText>(date_time_dialog_target).setText(time_df.format(cal.time))
+    }
+
+    fun on_tz_set(tz: TimeZone_disp, tag: String)
+    {
+        when(tag)
+        {
+            "start_tz_picker" -> { data.start_tz = tz.id; binding.startTz.text = tz.name }
+            "end_tz_picker"   -> { data.end_tz   = tz.id; binding.endTz.text   = tz.name }
+            else -> Log.w("Settings:on_tz_set", "unknown tag: $tag")
+        }
     }
 
     // called when OK pressed on precision dialog

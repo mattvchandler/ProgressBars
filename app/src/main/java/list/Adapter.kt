@@ -194,7 +194,7 @@ class Adapter(private val context: Progress_bars): RecyclerView.Adapter<Adapter.
             }
         }
 
-        throw NoSuchElementException("rowid: " + rowid.toString() + " not found in cursor")
+        throw NoSuchElementException("rowid: $rowid not found in cursor")
     }
 
     // called when a row is deleted

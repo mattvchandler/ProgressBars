@@ -152,6 +152,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
     <string name="start_tz_prompt">Start time zone</string>
     <string name="end_tz_prompt">End time zone</string>
+    <string name="choose_tz">Choose a Time Zone</string>
+    <string name="tz_list_subtitle">%1$s (%2$s)</string>
 
     <string name="repeat">Repeat</string>
     <string name="repeat_every">every</string>
