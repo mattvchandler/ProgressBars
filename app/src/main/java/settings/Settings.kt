@@ -31,6 +31,8 @@ import android.databinding.DataBindingUtil
 import android.preference.PreferenceManager
 import android.os.Bundle
 import android.os.Handler
+import android.support.design.widget.TextInputEditText
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -346,67 +348,21 @@ class Settings: Dynamic_theme_activity(), DatePickerDialog.OnDateSetListener, Ti
     // dump all widget data into data obj
     private fun store_widgets_to_data(): Boolean
     {
+        // most data has been stored through callbacks already
+
         var errors = false
-        // precision data has been stored through its callback already
-        data.start_tz = (binding.startTz.selectedItem as TimeZone_disp).id
-        data.end_tz = (binding.endTz.selectedItem as TimeZone_disp).id
 
-        date_df.timeZone = TimeZone.getTimeZone(data.start_tz)
-        time_df.timeZone = TimeZone.getTimeZone(data.start_tz)
-
-        val start_date_txt = binding.startDateSel.text.toString()
-        val start_time_txt = binding.startTimeSel.text.toString()
-
-        val start_date = date_df.parse(start_date_txt, ParsePosition(0))
-        val start_time = time_df.parse(start_time_txt, ParsePosition(0))
-
-        // validate date and time
-        if(start_date == null)
-        {
-            Toast.makeText(this, resources.getString(R.string.invalid_date,
-                    start_date_txt, date_df.toLocalizedPattern()),
-                    Toast.LENGTH_LONG).show()
-
-            errors = true
-        }
+        val start_time = parse_date_and_time(binding.startDateSel.text.toString(), binding.startTimeSel.text.toString(),  data.start_tz)
         if(start_time == null)
-        {
-            Toast.makeText(this, resources.getString(R.string.invalid_time,
-                    start_time_txt, time_df.toLocalizedPattern()), Toast.LENGTH_LONG).show()
-
             errors = true
-        }
+        else
+            data.start_time = start_time
 
-        if(start_date != null && start_time != null)
-            data.start_time = parse_date_and_time(start_date_txt, start_time_txt, data.start_tz)
-
-        date_df.timeZone = TimeZone.getTimeZone(data.end_tz)
-        time_df.timeZone = TimeZone.getTimeZone(data.end_tz)
-
-        val end_date_txt = binding.endDateSel.text.toString()
-        val end_time_txt = binding.endTimeSel.text.toString()
-        val end_date = date_df.parse(end_date_txt, ParsePosition(0))
-        val end_time = time_df.parse(end_time_txt, ParsePosition(0))
-
-        // validate date and time
-        if(end_date == null)
-        {
-            Toast.makeText(this, resources.getString(R.string.invalid_date,
-                    end_date_txt, date_df.toLocalizedPattern()),
-                    Toast.LENGTH_LONG).show()
-
-            errors = true
-        }
+        val end_time = parse_date_and_time(binding.endDateSel.text.toString(), binding.endTimeSel.text.toString(),  data.end_tz)
         if(end_time == null)
-        {
-            Toast.makeText(this, resources.getString(R.string.invalid_time,
-                    end_time_txt, time_df.toLocalizedPattern()), Toast.LENGTH_LONG).show()
-
             errors = true
-        }
-
-        if(end_date != null && end_time != null)
-            data.end_time = parse_date_and_time(end_date_txt, end_time_txt, data.end_tz)
+        else
+            data.end_time = end_time
 
         // other repeat data stored in callbacks
         var repeat_count = 0
@@ -414,9 +370,7 @@ class Settings: Dynamic_theme_activity(), DatePickerDialog.OnDateSetListener, Ti
         {
             repeat_count = Integer.parseInt(binding.repeatCount.text.toString())
         }
-        catch(ignored: NumberFormatException)
-        {
-        }
+        catch(ignored: NumberFormatException) {}
 
         if(repeat_count <= 0)
         {
@@ -433,13 +387,39 @@ class Settings: Dynamic_theme_activity(), DatePickerDialog.OnDateSetListener, Ti
         return !errors
     }
 
-    private fun parse_date_and_time(date: String, time: String, timezone: String): Long
+    private fun parse_date_and_time(date_txt: String, time_txt: String, timezone: String): Long?
     {
+        date_df.timeZone = TimeZone.getTimeZone(timezone)
+        time_df.timeZone = TimeZone.getTimeZone(timezone)
+
+        val date = date_df.parse(date_txt, ParsePosition(0))
+        val time = time_df.parse(time_txt, ParsePosition(0))
+
+        // validate date and time
+        if(date == null)
+        {
+            Toast.makeText(this, resources.getString(R.string.invalid_date,
+                    date_txt, date_df.toLocalizedPattern()),
+                    Toast.LENGTH_LONG).show()
+
+            return null
+        }
+        if(time == null)
+        {
+            Toast.makeText(this, resources.getString(R.string.invalid_time,
+                    time_txt, time_df.toLocalizedPattern()), Toast.LENGTH_LONG).show()
+
+            return null
+        }
+
         val datetime_df = SimpleDateFormat.getInstance() as SimpleDateFormat
         datetime_df.applyLocalizedPattern("${date_df.toLocalizedPattern()} ${time_df.toLocalizedPattern()}")
         datetime_df.timeZone = TimeZone.getTimeZone(timezone)
         datetime_df.isLenient = true
-        return datetime_df.parse("$date $time").time / 1000
+
+        val datetime = datetime_df.parse("$date_txt $time_txt", ParsePosition(0))
+
+        return if(datetime == null) null else datetime.time / 1000
     }
 
     // Button pressed callbacks
@@ -601,7 +581,7 @@ class Settings: Dynamic_theme_activity(), DatePickerDialog.OnDateSetListener, Ti
         cal.set(Calendar.MONTH, month)
         cal.set(Calendar.DAY_OF_MONTH, day)
 
-        (findViewById<View>(date_time_dialog_target) as android.support.design.widget.TextInputEditText).setText(date_df.format(cal.time))
+        findViewById<TextInputEditText>(date_time_dialog_target).setText(date_df.format(cal.time))
     }
 
     override fun onTimeSet(view: TimePicker, hour: Int, minute: Int)
@@ -612,7 +592,7 @@ class Settings: Dynamic_theme_activity(), DatePickerDialog.OnDateSetListener, Ti
         cal.set(Calendar.MINUTE, minute)
         cal.set(Calendar.SECOND, 0)
 
-        (findViewById<View>(date_time_dialog_target) as android.support.design.widget.TextInputEditText).setText(time_df.format(cal.time))
+        findViewById<TextInputEditText>(date_time_dialog_target).setText(time_df.format(cal.time))
     }
 
     // called when OK pressed on precision dialog

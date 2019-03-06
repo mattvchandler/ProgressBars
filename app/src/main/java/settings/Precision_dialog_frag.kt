@@ -29,6 +29,7 @@ import android.widget.NumberPicker
 
 import org.mattvchandler.progressbars.R
 
+// TODO: margins
 // a number_picker fragment for precision setting
 class Precision_dialog_frag: DialogFragment()
 {
