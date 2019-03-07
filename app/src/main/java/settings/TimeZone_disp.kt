@@ -26,16 +26,14 @@ import android.content.Context
 import android.content.Intent
 import android.databinding.DataBindingUtil
 import android.os.Bundle
+import android.support.v7.util.SortedList
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.SearchView
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.Menu
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Filter
-import android.widget.Filterable
 import org.mattvchandler.progressbars.R
 import org.mattvchandler.progressbars.databinding.ActivityTimezoneBinding
 import org.mattvchandler.progressbars.databinding.TimezoneItemBinding
@@ -64,41 +62,26 @@ class TimeZone_disp(val id: String, context: Context?, date: Date?): Serializabl
     }
 
     override fun toString() = name
-}
-
-private fun get_timezone_list(date: Date, context: Context): List<TimeZone_disp>
-{
-    val ids = TimeZone.getAvailableIDs()
-    return List(ids.size)
+    override fun equals(other: Any?): Boolean
     {
-        TimeZone_disp(ids[it], context, date)
+        if(this === other) return true
+        if(javaClass != other?.javaClass) return false
+
+        other as TimeZone_disp
+
+        if(id != other.id) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int
+    {
+        return id.hashCode()
     }
 }
 
-private class TimeZone_adapter(private val activity: TimeZone_activity, private val date: Date): RecyclerView.Adapter<TimeZone_adapter.Holder>(), Filterable
+private class TimeZone_adapter(private val activity: TimeZone_activity, private val date: Date): RecyclerView.Adapter<TimeZone_adapter.Holder>()
 {
-    private var timezones = get_timezone_list(date, activity)
-    private val inflater = LayoutInflater.from(activity)
-
-    override fun getItemCount(): Int
-    {
-        return timezones.size
-    }
-
-    override fun onCreateViewHolder(parent_in: ViewGroup, viewType: Int): Holder
-    {
-        val binding = TimezoneItemBinding.inflate(inflater, parent_in, false)
-        val holder = Holder(binding, binding.root)
-        binding.root.setOnClickListener(holder)
-        return holder
-    }
-
-    override fun onBindViewHolder(holder: Holder, position: Int)
-    {
-        holder.set()
-    }
-
-
     inner class Holder(private val binding: TimezoneItemBinding, view: View): RecyclerView.ViewHolder(view), View.OnClickListener
     {
         lateinit var tz: TimeZone_disp
@@ -121,39 +104,66 @@ private class TimeZone_adapter(private val activity: TimeZone_activity, private 
         }
     }
 
-    inner class TimeZone_filter: Filter()
+    private var timezones = SortedList(TimeZone_disp::class.java, object: SortedList.Callback<TimeZone_disp>()
     {
-        override fun performFiltering(constraint: CharSequence?): FilterResults
-        {
-            val results = FilterResults()
+        override fun onMoved(from_pos: Int, to_pos: Int) { notifyItemMoved(from_pos, to_pos) }
+        override fun onChanged(pos: Int, count: Int) { notifyItemRangeChanged(pos, count) }
+        override fun onInserted(pos: Int, count: Int) { notifyItemRangeInserted(pos, count) }
+        override fun onRemoved(pos: Int, count: Int) { notifyItemRangeRemoved(pos, count) }
 
-            val timezones = if(constraint != null)
-                get_timezone_list(date, activity).filter{ tz -> tz.search_kwds.any{it.contains(constraint.toString().toLowerCase())} }
-            else
-                get_timezone_list(date, activity)
+        override fun compare(a: TimeZone_disp, b: TimeZone_disp) = compareBy<TimeZone_disp>{ it.id }.compare(a, b)
+        override fun areItemsTheSame(a: TimeZone_disp, b: TimeZone_disp) = a == b
+        override fun areContentsTheSame(a: TimeZone_disp, b: TimeZone_disp) = a == b
+    })
 
-            Log.d("MyFilter", "$constraint: ${timezones.size}")
+    private val inflater = LayoutInflater.from(activity)
 
-            results.values = timezones
-            results.count = timezones.size
-            return results
-        }
-
-        override fun publishResults(constraint: CharSequence?, results: FilterResults?)
-        {
-            if(results != null)
-            {
-                @Suppress("UNCHECKED_CAST")
-                timezones = results.values as List<TimeZone_disp>
-            }
-            notifyDataSetChanged()
-        }
+    init
+    {
+        filter("")
     }
 
-    private val filter = TimeZone_filter()
-    override fun getFilter(): Filter
+    fun filter(search: String)
     {
-        return filter
+        val all_tzs = TimeZone.getAvailableIDs().map{ TimeZone_disp(it, activity, date) }
+        if(search == "")
+            replace_all(all_tzs)
+        else
+            replace_all(all_tzs.filter{ tz -> tz.search_kwds.any{it.contains(search.toLowerCase())} })
+    }
+
+    fun replace_all(tzs: List<TimeZone_disp>)
+    {
+        timezones.beginBatchedUpdates()
+
+        for(i in timezones.size() - 1 downTo 0)
+        {
+            val tz = timezones.get(i)
+            if(tz !in tzs)
+                timezones.remove(tz)
+        }
+
+        timezones.addAll(tzs)
+
+        timezones.endBatchedUpdates()
+    }
+
+    override fun getItemCount(): Int
+    {
+        return timezones.size()
+    }
+
+    override fun onCreateViewHolder(parent_in: ViewGroup, viewType: Int): Holder
+    {
+        val binding = TimezoneItemBinding.inflate(inflater, parent_in, false)
+        val holder = Holder(binding, binding.root)
+        binding.root.setOnClickListener(holder)
+        return holder
+    }
+
+    override fun onBindViewHolder(holder: Holder, position: Int)
+    {
+        holder.set()
     }
 }
 
@@ -161,12 +171,13 @@ class TimeZone_activity: Dynamic_theme_activity()
 {
     private lateinit var adapter: TimeZone_adapter
     private var saved_search: String? = null
+    private lateinit var binding: ActivityTimezoneBinding
 
     override fun onCreate(savedInstanceState: Bundle?)
     {
         super.onCreate(savedInstanceState)
 
-        val binding = DataBindingUtil.setContentView<ActivityTimezoneBinding>(this, R.layout.activity_timezone)
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_timezone)
         setSupportActionBar(binding.toolbar)
 
         if(supportActionBar != null)
@@ -207,7 +218,8 @@ class TimeZone_activity: Dynamic_theme_activity()
             override fun onQueryTextChange(newText: String?): Boolean
             {
                 saved_search = newText
-                adapter.filter.filter(newText)
+                adapter.filter(newText?: "")
+                binding.timezoneList.scrollToPosition(0)
                 return true
             }
         })
