@@ -108,6 +108,5 @@ class Countdown_text: Dynamic_theme_activity()
     companion object
     {
         const val EXTRA_DATA = "org.mattvchandler.progressbars.EXTRA_DATA"
-        const val RESULT_COUNTDOWN_TEXT = 1
     }
 }

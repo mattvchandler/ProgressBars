@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.SearchView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+
+    app:searchIcon="@null"
+    app:iconifiedByDefault="false"
+    app:queryHint="@string/choose_tz"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    />

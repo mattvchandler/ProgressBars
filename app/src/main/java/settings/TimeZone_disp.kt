@@ -21,21 +21,28 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 package org.mattvchandler.progressbars.settings
 
-import android.content.Context
-import android.content.DialogInterface
+import android.app.Activity
+import android.content.Intent
+import android.databinding.DataBindingUtil
 import android.os.Bundle
-import android.support.v4.app.DialogFragment
-import android.support.v7.widget.AppCompatEditText
-import android.text.Editable
-import android.text.TextWatcher
+import android.support.v7.widget.LinearLayoutManager
+import android.support.v7.widget.RecyclerView
+import android.support.v7.widget.SearchView
+import android.util.Log
 import android.view.LayoutInflater
+import android.view.Menu
 import android.view.View
 import android.view.ViewGroup
-import android.widget.*
+import android.widget.Filter
+import android.widget.Filterable
+import android.widget.TextView
 import org.mattvchandler.progressbars.R
+import org.mattvchandler.progressbars.databinding.ActivityTimezoneBinding
+import org.mattvchandler.progressbars.util.Dynamic_theme_activity
+import java.io.Serializable
 import java.util.*
 
-class TimeZone_disp(val id: String, date: Date?)
+class TimeZone_disp(val id: String, date: Date?): Serializable
 {
     val name = id.replace('_', ' ')
     val disp_name: String
@@ -66,33 +73,50 @@ private fun get_timezone_list(date: Date): List<TimeZone_disp>
     }
 }
 
-private class TimeZone_adapter(private val context: Context, private val date: Date): BaseAdapter(), Filterable
+private class TimeZone_adapter(private val activity: TimeZone_activity, private val date: Date): RecyclerView.Adapter<TimeZone_adapter.Holder>(), Filterable
 {
     private var timezones = get_timezone_list(date)
 
-    override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View
-    {
-        val view = convertView ?: LayoutInflater.from(context).inflate(R.layout.timezone_item, parent, false)
-
-        view.findViewById<TextView>(R.id.time_zone_title).text = timezones[position].name
-        view.findViewById<TextView>(R.id.time_zone_subtitle).text = context.resources.getString(R.string.tz_list_subtitle, timezones[position].disp_name, timezones[position].short_name)
-
-        return view
-    }
-
-    override fun getItem(position: Int): TimeZone_disp
-    {
-        return timezones[position]
-    }
-
-    override fun getItemId(position: Int): Long
-    {
-        return position.toLong()
-    }
-
-    override fun getCount(): Int
+    override fun getItemCount(): Int
     {
         return timezones.size
+    }
+
+    override fun onCreateViewHolder(parent_in: ViewGroup, viewType: Int): Holder
+    {
+        val v = LayoutInflater.from(parent_in.context).inflate(R.layout.timezone_item, parent_in, false)
+        val holder = Holder(v)
+        v.setOnClickListener(holder)
+        return holder
+    }
+
+    override fun onBindViewHolder(holder: Holder, position: Int)
+    {
+        holder.set()
+    }
+
+
+    inner class Holder(private val view: View): RecyclerView.ViewHolder(view), View.OnClickListener
+    {
+        lateinit var tz: TimeZone_disp
+        fun set()
+        {
+            val position = adapterPosition
+            if(position == RecyclerView.NO_POSITION)
+                return
+
+            tz = timezones[position]
+            view.findViewById<TextView>(R.id.timezone_title).text = tz.name
+            view.findViewById<TextView>(R.id.timezone_subtitle).text = activity.resources.getString(R.string.tz_list_subtitle, tz.disp_name, tz.short_name)
+        }
+        override fun onClick(v: View?)
+        {
+            val intent = Intent()
+
+            intent.putExtra(TimeZone_activity.EXTRA_SELECTED_TZ, tz)
+            activity.setResult(Activity.RESULT_OK, intent)
+            activity.finish()
+        }
     }
 
     inner class TimeZone_filter: Filter()
@@ -106,6 +130,8 @@ private class TimeZone_adapter(private val context: Context, private val date: D
             else
                 get_timezone_list(date)
 
+            Log.d("MyFilter", "$constraint: ${timezones.size}")
+
             results.values = timezones
             results.count = timezones.size
             return results
@@ -113,14 +139,12 @@ private class TimeZone_adapter(private val context: Context, private val date: D
 
         override fun publishResults(constraint: CharSequence?, results: FilterResults?)
         {
-            if(results == null)
-                notifyDataSetInvalidated()
-            else
+            if(results != null)
             {
                 @Suppress("UNCHECKED_CAST")
                 timezones = results.values as List<TimeZone_disp>
-                notifyDataSetChanged()
             }
+            notifyDataSetChanged()
         }
     }
 
@@ -131,42 +155,75 @@ private class TimeZone_adapter(private val context: Context, private val date: D
     }
 }
 
-class TimeZone_frag: DialogFragment()
+class TimeZone_activity: Dynamic_theme_activity()
 {
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View?
+    private lateinit var adapter: TimeZone_adapter
+    private var saved_search: String? = null
+
+    override fun onCreate(savedInstanceState: Bundle?)
     {
-        super.onCreateView(inflater, container, savedInstanceState)
+        super.onCreate(savedInstanceState)
 
-        val view = inflater.inflate(R.layout.frag_timezone, container)
+        val binding = DataBindingUtil.setContentView<ActivityTimezoneBinding>(this, R.layout.activity_timezone)
+        setSupportActionBar(binding.toolbar)
 
-        val search = view.findViewById(R.id.time_zone_search) as AppCompatEditText
-        val list = view.findViewById(R.id.time_zone_list) as ListView
+        if(supportActionBar != null)
+            supportActionBar!!.setDisplayHomeAsUpEnabled(true)
 
-        val adapter = TimeZone_adapter(context!!, arguments!!.getSerializable("date")!! as Date)
-        list.adapter = adapter
+        val date = intent.getSerializableExtra(EXTRA_DATE) as Date
 
-        search.addTextChangedListener(object: TextWatcher
-        {
-            override fun afterTextChanged(s: Editable?)
-            {
-                adapter.filter.filter(s)
-            }
+        adapter = TimeZone_adapter(this, date)
+        binding.timezoneList.adapter = adapter
+        binding.timezoneList.layoutManager = LinearLayoutManager(this)
 
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
-        })
-
-        list.onItemClickListener = AdapterView.OnItemClickListener { _, _, position, _ ->
-            (activity as Settings).on_tz_set(adapter.getItem(position), tag!!)
-            dismiss()
-        }
-
-        return view
+        if(savedInstanceState != null)
+            saved_search = savedInstanceState.getString(SAVE_SEARCH)
     }
 
-    override fun onCancel(dialog: DialogInterface?)
+    override fun onSaveInstanceState(outState: Bundle)
     {
-        super.onCancel(dialog)
-        dismiss()
+        super.onSaveInstanceState(outState)
+        outState.putString(SAVE_SEARCH, saved_search)
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean
+    {
+        menuInflater.inflate(R.menu.timezone_action_bar, menu)
+        val search_item = menu?.findItem(R.id.timezone_search)!!
+        val search = search_item.actionView as SearchView
+
+        search.maxWidth = Int.MAX_VALUE
+
+        search.setOnQueryTextListener(object: SearchView.OnQueryTextListener
+        {
+            override fun onQueryTextSubmit(query: String?): Boolean
+            {
+                search.clearFocus()
+                return true
+            }
+
+            override fun onQueryTextChange(newText: String?): Boolean
+            {
+                saved_search = newText
+                adapter.filter.filter(newText)
+                return true
+            }
+        })
+
+        if(saved_search != null)
+        {
+            search.setQuery(saved_search, true)
+            search.clearFocus()
+        }
+
+        return super.onCreateOptionsMenu(menu)
+    }
+
+    companion object
+    {
+        const val EXTRA_DATE = "org.mattvchandler.progressbars.EXTRA_DATE"
+        const val EXTRA_SELECTED_TZ = "org.mattvchandler.progressbars.EXTRA_SELECTED_ID"
+
+        private const val SAVE_SEARCH = "search"
     }
 }

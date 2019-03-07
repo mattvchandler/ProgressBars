@@ -32,7 +32,6 @@ import android.preference.PreferenceManager
 import android.os.Bundle
 import android.os.Handler
 import android.support.design.widget.TextInputEditText
-import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -448,27 +447,18 @@ class Settings: Dynamic_theme_activity(), DatePickerDialog.OnDateSetListener, Ti
     {
         val start_time = parse_date_and_time(binding.startDateSel.text.toString(), binding.startTimeSel.text.toString(),  data.start_tz) ?: return
 
-        val frag = TimeZone_frag()
-
-        val args = Bundle()
-        args.putSerializable("date", Date(start_time * 1000))
-        frag.arguments = args
-
-        frag.show(supportFragmentManager, "start_tz_picker")
+        val intent = Intent(this, TimeZone_activity::class.java)
+        intent.putExtra(TimeZone_activity.EXTRA_DATE, Date(start_time * 1000))
+        startActivityForResult(intent, RESULT_TIMEZONE_START)
     }
 
     fun on_end_tz_butt(@Suppress("UNUSED_PARAMETER") view:View)
     {
         val end_time = parse_date_and_time(binding.endDateSel.text.toString(), binding.endTimeSel.text.toString(),  data.end_tz) ?: return
 
-        val frag = TimeZone_frag()
-
-        val args = Bundle()
-        args.putSerializable("date", Date(end_time * 1000))
-        args.putString("current", data.end_tz)
-        frag.arguments = args
-
-        frag.show(supportFragmentManager, "end_tz_picker")
+        val intent = Intent(this, TimeZone_activity::class.java)
+        intent.putExtra(TimeZone_activity.EXTRA_DATE, Date(end_time * 1000))
+        startActivityForResult(intent, RESULT_TIMEZONE_END)
     }
 
     fun on_repeat_butt(@Suppress("UNUSED_PARAMETER") view: View)
@@ -568,7 +558,7 @@ class Settings: Dynamic_theme_activity(), DatePickerDialog.OnDateSetListener, Ti
         // Launch screen to enter countdown text
         val intent = Intent(this, Countdown_text::class.java)
         intent.putExtra(Countdown_text.EXTRA_DATA, data)
-        startActivityForResult(intent, Countdown_text.RESULT_COUNTDOWN_TEXT)
+        startActivityForResult(intent, RESULT_COUNTDOWN_TEXT)
     }
 
     // Dialog return callbacks
@@ -593,16 +583,6 @@ class Settings: Dynamic_theme_activity(), DatePickerDialog.OnDateSetListener, Ti
         cal.set(Calendar.SECOND, 0)
 
         findViewById<TextInputEditText>(date_time_dialog_target).setText(time_df.format(cal.time))
-    }
-
-    fun on_tz_set(tz: TimeZone_disp, tag: String)
-    {
-        when(tag)
-        {
-            "start_tz_picker" -> { data.start_tz = tz.id; binding.startTz.text = tz.name }
-            "end_tz_picker"   -> { data.end_tz   = tz.id; binding.endTz.text   = tz.name }
-            else -> Log.w("Settings:on_tz_set", "unknown tag: $tag")
-        }
     }
 
     // called when OK pressed on precision dialog
@@ -659,13 +639,25 @@ class Settings: Dynamic_theme_activity(), DatePickerDialog.OnDateSetListener, Ti
         }
     }
 
-    // get data back from Countdown_text
     override fun onActivityResult(request_code: Int, result_code: Int, intent: Intent?)
     {
-        if(request_code == Countdown_text.RESULT_COUNTDOWN_TEXT && result_code == Activity.RESULT_OK)
+        // get data back from Countdown_text
+        if(result_code == Activity.RESULT_OK)
         {
-            // get changed data
-            data = intent?.getSerializableExtra(Countdown_text.EXTRA_DATA) as Data
+            when(request_code)
+            {
+                RESULT_COUNTDOWN_TEXT -> data = intent?.getSerializableExtra(Countdown_text.EXTRA_DATA) as Data
+                RESULT_TIMEZONE_START -> {
+                    val tz = intent?.getSerializableExtra(TimeZone_activity.EXTRA_SELECTED_TZ) as TimeZone_disp
+                    data.start_tz = tz.id
+                    binding.startTz.text = tz.name
+                }
+                RESULT_TIMEZONE_END -> {
+                    val tz = intent?.getSerializableExtra(TimeZone_activity.EXTRA_SELECTED_TZ) as TimeZone_disp
+                    data.end_tz = tz.id
+                    binding.endTz.text = tz.name
+                }
+            }
         }
     }
 
@@ -701,6 +693,10 @@ class Settings: Dynamic_theme_activity(), DatePickerDialog.OnDateSetListener, Ti
         private const val TERMINATE_CHECKBOX = 0
         private const val NOTIFY_START_CHECKBOX = 1
         private const val NOTIFY_END_CHECKBOX = 2
+
+        private const val RESULT_TIMEZONE_START = 0
+        private const val RESULT_TIMEZONE_END = 1
+        private const val RESULT_COUNTDOWN_TEXT = 2
 
         private fun get_days_of_week_abbr(context: Context, days_of_week: Int): String
         {

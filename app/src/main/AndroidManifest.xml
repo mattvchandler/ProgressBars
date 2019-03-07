@@ -45,6 +45,12 @@
         <activity
             android:name=".settings.Countdown_text"
             android:label="@string/countdown_text_header"
+            android:parentActivityName=".settings.Settings"
+            />
+        <activity
+            android:name=".settings.TimeZone_activity"
+            android:label="@string/choose_tz"
+            android:parentActivityName=".settings.Settings"
             />
 
         <activity

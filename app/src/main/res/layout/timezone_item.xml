@@ -24,11 +24,12 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:orientation="vertical"
+    android:background="?android:attr/selectableItemBackground"
     >
     <TextView
-        android:id="@+id/time_zone_title"
+        android:id="@+id/timezone_title"
         android:textAppearance="?android:textAppearanceMedium"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -38,7 +39,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
         />
     <TextView
         android:textAppearance="?android:textAppearanceSmall"
-        android:id="@+id/time_zone_subtitle"
+        android:id="@+id/timezone_subtitle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/margin_size"

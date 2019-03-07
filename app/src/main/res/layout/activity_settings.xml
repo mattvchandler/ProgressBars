@@ -36,12 +36,11 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
     <android.support.design.widget.CoordinatorLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context="org.mattvchandler.progressbars.Progress_bars"
+        tools:context="org.mattvchandler.progressbars.settings.Settings"
         >
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            tools:context="org.mattvchandler.progressbars.settings.Settings"
             android:orientation="vertical"
         >
 
