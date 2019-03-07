@@ -176,6 +176,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
                         android:layout_gravity="center_vertical"
                         android:onClick="on_start_tz_butt"
                         android:background="?android:attr/selectableItemBackground"
+                        android:clickable="true"
+                        android:focusable="true"
                         >
                         <TextView
                             android:text="@string/start_tz_prompt"
@@ -278,6 +280,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
                         android:layout_gravity="center_vertical"
                         android:onClick="on_end_tz_butt"
                         android:background="?android:attr/selectableItemBackground"
+                        android:clickable="true"
+                        android:focusable="true"
                         >
                         <TextView
                             android:text="@string/end_tz_prompt"
@@ -380,6 +384,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
                         android:layout_gravity="center_vertical"
                         android:onClick="on_precision_butt"
                         android:background="?android:attr/selectableItemBackground"
+                        android:clickable="true"
+                        android:focusable="true"
                         >
 
                         <TextView
@@ -413,6 +419,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
                         android:layout_margin="@dimen/margin_size"
                         android:onClick="on_show_elements_butt"
                         android:background="?android:attr/selectableItemBackground"
+                        android:clickable="true"
+                        android:focusable="true"
                     />
 
                     <View style="@style/Divider"/>
@@ -425,6 +433,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
                         android:layout_margin="@dimen/margin_size"
                         android:onClick="on_show_units_butt"
                         android:background="?android:attr/selectableItemBackground"
+                        android:clickable="true"
+                        android:focusable="true"
                         />
 
                     <View style="@style/Divider"/>
@@ -437,6 +447,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
                         android:layout_margin="@dimen/margin_size"
                         android:onClick="on_countdown_text_butt"
                         android:background="?android:attr/selectableItemBackground"
+                        android:clickable="true"
+                        android:focusable="true"
                         />
 
                     <View style="@style/Divider"/>
@@ -449,6 +461,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
                         android:layout_margin="@dimen/margin_size"
                         android:onClick="on_timer_opts_butt"
                         android:background="?android:attr/selectableItemBackground"
+                        android:clickable="true"
+                        android:focusable="true"
                     />
 
                 </LinearLayout>

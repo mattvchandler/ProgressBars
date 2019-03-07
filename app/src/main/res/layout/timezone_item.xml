@@ -33,6 +33,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:background="?android:attr/selectableItemBackground"
+        android:clickable="true"
+        android:focusable="true"
         >
         <TextView
             android:id="@+id/timezone_title"

@@ -40,6 +40,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
         android:background="?android:colorBackground"
         tools:ignore="UnusedAttribute"
         android:foreground="?android:selectableItemBackground"
+        android:clickable="true"
+        android:focusable="true"
         >
 
         <TextView
