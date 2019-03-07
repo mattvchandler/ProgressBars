@@ -129,8 +129,8 @@ class Settings: Dynamic_theme_activity(), DatePickerDialog.OnDateSetListener, Ti
         // set selected values
         binding.data = data
 
-        binding.startTz.text = TimeZone_disp(data.start_tz, null).name
-        binding.endTz.text   = TimeZone_disp(data.end_tz,   null).name
+        binding.startTz.text = data.start_tz.replace('_', ' ')
+        binding.endTz.text   = data.end_tz.replace('_', ' ')
 
         val start_date = Date(data.start_time * 1000)
         date_df.timeZone = TimeZone.getTimeZone(data.start_tz)

@@ -22,6 +22,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 package org.mattvchandler.progressbars.settings
 
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.databinding.DataBindingUtil
 import android.os.Bundle
@@ -35,18 +36,17 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Filter
 import android.widget.Filterable
-import android.widget.TextView
 import org.mattvchandler.progressbars.R
 import org.mattvchandler.progressbars.databinding.ActivityTimezoneBinding
+import org.mattvchandler.progressbars.databinding.TimezoneItemBinding
 import org.mattvchandler.progressbars.util.Dynamic_theme_activity
 import java.io.Serializable
 import java.util.*
 
-class TimeZone_disp(val id: String, date: Date?): Serializable
+class TimeZone_disp(val id: String, context: Context?, date: Date?): Serializable
 {
     val name = id.replace('_', ' ')
-    val disp_name: String
-    val short_name: String
+    val subtitle:String?
     val search_kwds: List<String>
 
     init
@@ -55,8 +55,10 @@ class TimeZone_disp(val id: String, date: Date?): Serializable
 
         val is_daylight = if(date != null) tz.inDaylightTime(date) else false
 
-        disp_name = tz.getDisplayName(is_daylight, TimeZone.LONG)
-        short_name = tz.getDisplayName(is_daylight, TimeZone.SHORT)
+        val disp_name = tz.getDisplayName(is_daylight, TimeZone.LONG)
+        val short_name = tz.getDisplayName(is_daylight, TimeZone.SHORT)
+
+        subtitle = context?.resources?.getString(R.string.tz_list_subtitle, disp_name, short_name)
 
         search_kwds = listOf(name, id, disp_name, short_name).map{ it.toLowerCase() }.distinct()
     }
@@ -64,18 +66,19 @@ class TimeZone_disp(val id: String, date: Date?): Serializable
     override fun toString() = name
 }
 
-private fun get_timezone_list(date: Date): List<TimeZone_disp>
+private fun get_timezone_list(date: Date, context: Context): List<TimeZone_disp>
 {
     val ids = TimeZone.getAvailableIDs()
     return List(ids.size)
     {
-        TimeZone_disp(ids[it], date)
+        TimeZone_disp(ids[it], context, date)
     }
 }
 
 private class TimeZone_adapter(private val activity: TimeZone_activity, private val date: Date): RecyclerView.Adapter<TimeZone_adapter.Holder>(), Filterable
 {
-    private var timezones = get_timezone_list(date)
+    private var timezones = get_timezone_list(date, activity)
+    private val inflater = LayoutInflater.from(activity)
 
     override fun getItemCount(): Int
     {
@@ -84,9 +87,9 @@ private class TimeZone_adapter(private val activity: TimeZone_activity, private 
 
     override fun onCreateViewHolder(parent_in: ViewGroup, viewType: Int): Holder
     {
-        val v = LayoutInflater.from(parent_in.context).inflate(R.layout.timezone_item, parent_in, false)
-        val holder = Holder(v)
-        v.setOnClickListener(holder)
+        val binding = TimezoneItemBinding.inflate(inflater, parent_in, false)
+        val holder = Holder(binding, binding.root)
+        binding.root.setOnClickListener(holder)
         return holder
     }
 
@@ -96,7 +99,7 @@ private class TimeZone_adapter(private val activity: TimeZone_activity, private 
     }
 
 
-    inner class Holder(private val view: View): RecyclerView.ViewHolder(view), View.OnClickListener
+    inner class Holder(private val binding: TimezoneItemBinding, view: View): RecyclerView.ViewHolder(view), View.OnClickListener
     {
         lateinit var tz: TimeZone_disp
         fun set()
@@ -106,8 +109,7 @@ private class TimeZone_adapter(private val activity: TimeZone_activity, private 
                 return
 
             tz = timezones[position]
-            view.findViewById<TextView>(R.id.timezone_title).text = tz.name
-            view.findViewById<TextView>(R.id.timezone_subtitle).text = activity.resources.getString(R.string.tz_list_subtitle, tz.disp_name, tz.short_name)
+            binding.tz = tz
         }
         override fun onClick(v: View?)
         {
@@ -126,9 +128,9 @@ private class TimeZone_adapter(private val activity: TimeZone_activity, private 
             val results = FilterResults()
 
             val timezones = if(constraint != null)
-                get_timezone_list(date).filter{ tz -> tz.search_kwds.any{it.contains(constraint.toString().toLowerCase())} }
+                get_timezone_list(date, activity).filter{ tz -> tz.search_kwds.any{it.contains(constraint.toString().toLowerCase())} }
             else
-                get_timezone_list(date)
+                get_timezone_list(date, activity)
 
             Log.d("MyFilter", "$constraint: ${timezones.size}")
 

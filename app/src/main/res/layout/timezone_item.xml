@@ -20,30 +20,39 @@ COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
 IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 -->
-
-<LinearLayout
+<layout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="vertical"
-    android:background="?android:attr/selectableItemBackground"
     >
-    <TextView
-        android:id="@+id/timezone_title"
-        android:textAppearance="?android:textAppearanceMedium"
+
+    <data>
+        <import type="org.mattvchandler.progressbars.settings.TimeZone_disp"/>
+        <variable name="tz" type="TimeZone_disp"/>
+    </data>
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/margin_size"
-        android:layout_marginStart="@dimen/margin_size"
-        android:layout_marginEnd="@dimen/margin_size"
-        />
-    <TextView
-        android:textAppearance="?android:textAppearanceSmall"
-        android:id="@+id/timezone_subtitle"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/margin_size"
-        android:layout_marginStart="@dimen/margin_size"
-        android:layout_marginEnd="@dimen/margin_size"
-        />
-</LinearLayout>
+        android:orientation="vertical"
+        android:background="?android:attr/selectableItemBackground"
+        >
+        <TextView
+            android:id="@+id/timezone_title"
+            android:text="@{tz.name}"
+            android:textAppearance="?android:textAppearanceMedium"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin_size"
+            android:layout_marginStart="@dimen/margin_size"
+            android:layout_marginEnd="@dimen/margin_size"
+            />
+        <TextView
+            android:textAppearance="?android:textAppearanceSmall"
+            android:text="@{tz.subtitle}"
+            android:id="@+id/timezone_subtitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/margin_size"
+            android:layout_marginStart="@dimen/margin_size"
+            android:layout_marginEnd="@dimen/margin_size"
+            />
+    </LinearLayout>
+</layout>
