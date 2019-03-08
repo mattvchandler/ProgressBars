@@ -54,12 +54,15 @@ open class Data(): Serializable
     var repeat_unit         = Progress_bars_table.Unit.DAY.index
     var repeat_days_of_week = Progress_bars_table.Days_of_week.all_days_mask()
 
-    var title          = ""
-    var pre_text       = ""
-    var start_text     = ""
-    var countdown_text = ""
-    var complete_text  = ""
-    var post_text      = ""
+    var title                 = ""
+    var pre_text              = ""
+    var start_text            = ""
+    var countdown_text        = ""
+    var complete_text         = ""
+    var post_text             = ""
+    var single_pre_text       = ""
+    var single_complete_text  = ""
+    var single_post_text      = ""
 
     var precision = 2
 
@@ -86,17 +89,20 @@ open class Data(): Serializable
         val end_time_cal = start_time_cal.clone() as Calendar
         end_time_cal.add(Calendar.MINUTE, 1)
 
-        start_time          = start_time_cal.timeInMillis / 1000L
-        end_time            = end_time_cal.timeInMillis / 1000L
-        start_tz            = start_time_cal.timeZone.id
-        end_tz              = end_time_cal.timeZone.id
+        start_time = start_time_cal.timeInMillis / 1000L
+        end_time   = end_time_cal.timeInMillis / 1000L
+        start_tz   = start_time_cal.timeZone.id
+        end_tz     = end_time_cal.timeZone.id
 
-        title          = context.resources.getString(R.string.default_title)
-        pre_text       = context.resources.getString(R.string.default_pre_text)
-        start_text     = context.resources.getString(R.string.default_start_text)
-        countdown_text = context.resources.getString(R.string.default_countdown_text)
-        complete_text  = context.resources.getString(R.string.default_complete_text)
-        post_text      = context.resources.getString(R.string.default_post_text)
+        title                = context.resources.getString(R.string.default_title)
+        pre_text             = context.resources.getString(R.string.default_pre_text)
+        start_text           = context.resources.getString(R.string.default_start_text)
+        countdown_text       = context.resources.getString(R.string.default_countdown_text)
+        complete_text        = context.resources.getString(R.string.default_complete_text)
+        post_text            = context.resources.getString(R.string.default_post_text)
+        single_pre_text      = context.resources.getString(R.string.default_single_pre_text)
+        single_complete_text = context.resources.getString(R.string.default_single_complete_text)
+        single_post_text     = context.resources.getString(R.string.default_single_post_text)
 
     }
 
@@ -120,141 +126,81 @@ open class Data(): Serializable
         db.close()
     }
 
-    // verbose ctor
-    constructor(
-            order: Long,
-            separate_time: Boolean,
-            start_time: Long,
-            end_time: Long,
-            start_tz: String,
-            end_tz: String,
-            repeats: Boolean,
-            repeat_count: Int,
-            repeat_unit: Int,
-            repeat_days_of_week: Int,
-            title: String,
-            pre_text: String,
-            start_text: String,
-            countdown_text: String,
-            complete_text: String,
-            post_text: String,
-            precision: Int,
-            show_progress: Boolean,
-            show_start: Boolean,
-            show_end: Boolean,
-            show_years: Boolean,
-            show_months: Boolean,
-            show_weeks: Boolean,
-            show_days: Boolean,
-            show_hours: Boolean,
-            show_minutes: Boolean,
-            show_seconds: Boolean,
-            terminate: Boolean,
-            notify_start: Boolean,
-            notify_end: Boolean): this()
-    {
-        this.rowid               = -1
-        this.order               = order
-        this.separate_time       = separate_time
-        this.start_time          = start_time
-        this.end_time            = end_time
-        this.start_tz            = start_tz
-        this.end_tz              = end_tz
-        this.repeats             = repeats
-        this.repeat_count        = repeat_count
-        this.repeat_unit         = repeat_unit
-        this.repeat_days_of_week = repeat_days_of_week
-        this.title               = title
-        this.pre_text            = pre_text
-        this.start_text          = start_text
-        this.countdown_text      = countdown_text
-        this.complete_text       = complete_text
-        this.post_text           = post_text
-        this.precision           = precision
-        this.show_progress       = show_progress
-        this.show_start          = show_start
-        this.show_end            = show_end
-        this.show_years          = show_years
-        this.show_months         = show_months
-        this.show_weeks          = show_weeks
-        this.show_days           = show_days
-        this.show_hours          = show_hours
-        this.show_minutes        = show_minutes
-        this.show_seconds        = show_seconds
-        this.terminate           = terminate
-        this.notify_start        = notify_start
-        this.notify_end          = notify_end
-    }
-
     // trivial copy ctor. Because, although we could call this a data class and have this auto generated, Kotlin won't let us inherit from it
     constructor(b: Data): this()
     {
-        rowid               = b.rowid
-        order               = b.order
-        separate_time       = b.separate_time
-        start_time          = b.start_time
-        end_time            = b.end_time
-        start_tz            = b.start_tz
-        end_tz              = b.end_tz
-        repeats             = b.repeats
-        repeat_count        = b.repeat_count
-        repeat_unit         = b.repeat_unit
-        repeat_days_of_week = b.repeat_days_of_week
-        title               = b.title
-        pre_text            = b.pre_text
-        start_text          = b.start_text
-        countdown_text      = b.countdown_text
-        complete_text       = b.complete_text
-        post_text           = b.post_text
-        precision           = b.precision
-        show_progress       = b.show_progress
-        show_start          = b.show_start
-        show_end            = b.show_end
-        show_years          = b.show_years
-        show_months         = b.show_months
-        show_weeks          = b.show_weeks
-        show_days           = b.show_days
-        show_hours          = b.show_hours
-        show_minutes        = b.show_minutes
-        show_seconds        = b.show_seconds
-        terminate           = b.terminate
-        notify_start        = b.notify_start
-        notify_end          = b.notify_end
+        rowid                = b.rowid
+        order                = b.order
+        separate_time        = b.separate_time
+        start_time           = b.start_time
+        end_time             = b.end_time
+        start_tz             = b.start_tz
+        end_tz               = b.end_tz
+        repeats              = b.repeats
+        repeat_count         = b.repeat_count
+        repeat_unit          = b.repeat_unit
+        repeat_days_of_week  = b.repeat_days_of_week
+        title                = b.title
+        pre_text             = b.pre_text
+        start_text           = b.start_text
+        countdown_text       = b.countdown_text
+        complete_text        = b.complete_text
+        post_text            = b.post_text
+        single_pre_text      = b.single_pre_text
+        single_complete_text = b.single_complete_text
+        single_post_text     = b.single_post_text
+        precision            = b.precision
+        show_progress        = b.show_progress
+        show_start           = b.show_start
+        show_end             = b.show_end
+        show_years           = b.show_years
+        show_months          = b.show_months
+        show_weeks           = b.show_weeks
+        show_days            = b.show_days
+        show_hours           = b.show_hours
+        show_minutes         = b.show_minutes
+        show_seconds         = b.show_seconds
+        terminate            = b.terminate
+        notify_start         = b.notify_start
+        notify_end           = b.notify_end
     }
 
     private fun set_from_cursor(cursor: Cursor)
     {
-        rowid               = cursor.get_nullable_long(BaseColumns._ID)!!
-        order               = cursor.get_nullable_long(Progress_bars_table.ORDER_COL)!!
-        separate_time       = cursor.get_nullable_bool(Progress_bars_table.SEPARATE_TIME_COL)!!
-        start_time          = cursor.get_nullable_long(Progress_bars_table.START_TIME_COL)!!
-        end_time            = cursor.get_nullable_long(Progress_bars_table.END_TIME_COL)!!
-        start_tz            = cursor.get_nullable_string(Progress_bars_table.START_TZ_COL)!!
-        end_tz              = cursor.get_nullable_string(Progress_bars_table.END_TZ_COL)!!
-        repeats             = cursor.get_nullable_bool(Progress_bars_table.REPEATS_COL)!!
-        repeat_count        = cursor.get_nullable_int(Progress_bars_table.REPEAT_COUNT_COL)!!
-        repeat_unit         = cursor.get_nullable_int(Progress_bars_table.REPEAT_UNIT_COL)!!
-        repeat_days_of_week = cursor.get_nullable_int(Progress_bars_table.REPEAT_DAYS_OF_WEEK_COL)!!
-        title               = cursor.get_nullable_string(Progress_bars_table.TITLE_COL)!!
-        pre_text            = cursor.get_nullable_string(Progress_bars_table.PRE_TEXT_COL)!!
-        start_text          = cursor.get_nullable_string(Progress_bars_table.START_TEXT_COL)!!
-        countdown_text      = cursor.get_nullable_string(Progress_bars_table.COUNTDOWN_TEXT_COL)!!
-        complete_text       = cursor.get_nullable_string(Progress_bars_table.COMPLETE_TEXT_COL)!!
-        post_text           = cursor.get_nullable_string(Progress_bars_table.POST_TEXT_COL)!!
-        precision           = cursor.get_nullable_int(Progress_bars_table.PRECISION_COL)!!
-        show_progress       = cursor.get_nullable_bool(Progress_bars_table.SHOW_PROGRESS_COL)!!
-        show_start          = cursor.get_nullable_bool(Progress_bars_table.SHOW_START_COL)!!
-        show_end            = cursor.get_nullable_bool(Progress_bars_table.SHOW_END_COL)!!
-        show_years          = cursor.get_nullable_bool(Progress_bars_table.SHOW_YEARS_COL)!!
-        show_months         = cursor.get_nullable_bool(Progress_bars_table.SHOW_MONTHS_COL)!!
-        show_weeks          = cursor.get_nullable_bool(Progress_bars_table.SHOW_WEEKS_COL)!!
-        show_days           = cursor.get_nullable_bool(Progress_bars_table.SHOW_DAYS_COL)!!
-        show_hours          = cursor.get_nullable_bool(Progress_bars_table.SHOW_HOURS_COL)!!
-        show_minutes        = cursor.get_nullable_bool(Progress_bars_table.SHOW_MINUTES_COL)!!
-        show_seconds        = cursor.get_nullable_bool(Progress_bars_table.SHOW_SECONDS_COL)!!
-        terminate           = cursor.get_nullable_bool(Progress_bars_table.TERMINATE_COL)!!
-        notify_start        = cursor.get_nullable_bool(Progress_bars_table.NOTIFY_START_COL)!!
-        notify_end          = cursor.get_nullable_bool(Progress_bars_table.NOTIFY_END_COL)!!
+        rowid                = cursor.get_nullable_long(BaseColumns._ID)!!
+        order                = cursor.get_nullable_long(Progress_bars_table.ORDER_COL)!!
+        separate_time        = cursor.get_nullable_bool(Progress_bars_table.SEPARATE_TIME_COL)!!
+        start_time           = cursor.get_nullable_long(Progress_bars_table.START_TIME_COL)!!
+        end_time             = cursor.get_nullable_long(Progress_bars_table.END_TIME_COL)!!
+        start_tz             = cursor.get_nullable_string(Progress_bars_table.START_TZ_COL)!!
+        end_tz               = cursor.get_nullable_string(Progress_bars_table.END_TZ_COL)!!
+        repeats              = cursor.get_nullable_bool(Progress_bars_table.REPEATS_COL)!!
+        repeat_count         = cursor.get_nullable_int(Progress_bars_table.REPEAT_COUNT_COL)!!
+        repeat_unit          = cursor.get_nullable_int(Progress_bars_table.REPEAT_UNIT_COL)!!
+        repeat_days_of_week  = cursor.get_nullable_int(Progress_bars_table.REPEAT_DAYS_OF_WEEK_COL)!!
+        title                = cursor.get_nullable_string(Progress_bars_table.TITLE_COL)!!
+        pre_text             = cursor.get_nullable_string(Progress_bars_table.PRE_TEXT_COL)!!
+        start_text           = cursor.get_nullable_string(Progress_bars_table.START_TEXT_COL)!!
+        countdown_text       = cursor.get_nullable_string(Progress_bars_table.COUNTDOWN_TEXT_COL)!!
+        complete_text        = cursor.get_nullable_string(Progress_bars_table.COMPLETE_TEXT_COL)!!
+        post_text            = cursor.get_nullable_string(Progress_bars_table.POST_TEXT_COL)!!
+        single_pre_text      = cursor.get_nullable_string(Progress_bars_table.SINGLE_PRE_TEXT_COL)!!
+        single_complete_text = cursor.get_nullable_string(Progress_bars_table.SINGLE_COMPLETE_TEXT_COL)!!
+        single_post_text     = cursor.get_nullable_string(Progress_bars_table.SINGLE_POST_TEXT_COL)!!
+        precision            = cursor.get_nullable_int(Progress_bars_table.PRECISION_COL)!!
+        show_progress        = cursor.get_nullable_bool(Progress_bars_table.SHOW_PROGRESS_COL)!!
+        show_start           = cursor.get_nullable_bool(Progress_bars_table.SHOW_START_COL)!!
+        show_end             = cursor.get_nullable_bool(Progress_bars_table.SHOW_END_COL)!!
+        show_years           = cursor.get_nullable_bool(Progress_bars_table.SHOW_YEARS_COL)!!
+        show_months          = cursor.get_nullable_bool(Progress_bars_table.SHOW_MONTHS_COL)!!
+        show_weeks           = cursor.get_nullable_bool(Progress_bars_table.SHOW_WEEKS_COL)!!
+        show_days            = cursor.get_nullable_bool(Progress_bars_table.SHOW_DAYS_COL)!!
+        show_hours           = cursor.get_nullable_bool(Progress_bars_table.SHOW_HOURS_COL)!!
+        show_minutes         = cursor.get_nullable_bool(Progress_bars_table.SHOW_MINUTES_COL)!!
+        show_seconds         = cursor.get_nullable_bool(Progress_bars_table.SHOW_SECONDS_COL)!!
+        terminate            = cursor.get_nullable_bool(Progress_bars_table.TERMINATE_COL)!!
+        notify_start         = cursor.get_nullable_bool(Progress_bars_table.NOTIFY_START_COL)!!
+        notify_end           = cursor.get_nullable_bool(Progress_bars_table.NOTIFY_END_COL)!!
     }
 
     private fun build_ContentValues(): ContentValues
@@ -277,6 +223,9 @@ open class Data(): Serializable
         values.put(Progress_bars_table.COUNTDOWN_TEXT_COL, countdown_text)
         values.put(Progress_bars_table.COMPLETE_TEXT_COL, complete_text)
         values.put(Progress_bars_table.POST_TEXT_COL, post_text)
+        values.put(Progress_bars_table.SINGLE_PRE_TEXT_COL, single_pre_text)
+        values.put(Progress_bars_table.SINGLE_COMPLETE_TEXT_COL, single_complete_text)
+        values.put(Progress_bars_table.SINGLE_POST_TEXT_COL, single_post_text)
         values.put(Progress_bars_table.PRECISION_COL, precision)
         values.put(Progress_bars_table.SHOW_START_COL, show_start)
         values.put(Progress_bars_table.SHOW_END_COL, show_end)

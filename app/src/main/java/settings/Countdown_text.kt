@@ -57,13 +57,6 @@ class Countdown_text: Dynamic_theme_activity()
         if(data == null)
             throw InvalidParameterException("No data argument passed")
 
-        if(!data!!.separate_time)
-        {
-            binding.preTextLabel.hint = resources.getString(R.string.pre_single_time_text)
-            binding.completeTextLabel.hint = resources.getString(R.string.complete_single_time_text)
-            binding.postTextLabel.hint = resources.getString(R.string.post_single_time_text)
-        }
-
         binding.data = data
     }
 
@@ -74,6 +67,9 @@ class Countdown_text: Dynamic_theme_activity()
         data!!.countdown_text = binding.countdownText.text!!.toString()
         data!!.complete_text = binding.completeText.text!!.toString()
         data!!.post_text = binding.postText.text!!.toString()
+        data!!.single_pre_text = binding.singlePreText.text!!.toString()
+        data!!.single_complete_text = binding.singleCompleteText.text!!.toString()
+        data!!.single_post_text = binding.singlePostText.text!!.toString()
     }
 
     override fun onSaveInstanceState(out: Bundle)

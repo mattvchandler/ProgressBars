@@ -49,7 +49,7 @@ fun Cursor.get_nullable_bool(column_name: String): Boolean?
 }
 
 // DB container
-class DB(context: Context): SQLiteOpenHelper(context, DB_NAME, null, DB_VERSION)
+class DB(private val context: Context): SQLiteOpenHelper(context, DB_NAME, null, DB_VERSION)
 {
     companion object
     {
@@ -69,7 +69,7 @@ class DB(context: Context): SQLiteOpenHelper(context, DB_NAME, null, DB_VERSION)
         if(new_version != DB_VERSION)
             throw IllegalStateException("DB version mismatch")
 
-        Progress_bars_table.upgrade(db, old_version)
-        Undo.upgrade(db, old_version)
+        Progress_bars_table.upgrade(context, db, old_version)
+        Undo.upgrade(context, db, old_version)
     }
 }

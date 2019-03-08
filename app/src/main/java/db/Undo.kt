@@ -72,6 +72,9 @@ class Undo: Progress_bars_table()
                 Progress_bars_table.COUNTDOWN_TEXT_COL + " TEXT, " +
                 Progress_bars_table.COMPLETE_TEXT_COL + " TEXT, " +
                 Progress_bars_table.POST_TEXT_COL + " TEXT, " +
+                Progress_bars_table.SINGLE_PRE_TEXT_COL + " TEXT, " +
+                Progress_bars_table.SINGLE_COMPLETE_TEXT_COL + " TEXT, " +
+                Progress_bars_table.SINGLE_POST_TEXT_COL + " TEXT, " +
 
                 Progress_bars_table.PRECISION_COL + " INTEGER, " +
 
@@ -91,7 +94,7 @@ class Undo: Progress_bars_table()
                 Progress_bars_table.NOTIFY_START_COL + " INTEGER, " +
                 Progress_bars_table.NOTIFY_END_COL + " INTEGER)"
 
-        fun upgrade(db: SQLiteDatabase, old_version: Int)
+        fun upgrade(context:Context, db: SQLiteDatabase, old_version: Int)
         {
             // This is a non-persistent table, so no need to migrate data
             if(old_version < 4)
@@ -105,36 +108,39 @@ class Undo: Progress_bars_table()
         {
             val data = Data()
 
-            data.order               = cursor.get_nullable_long(Progress_bars_table.ORDER_COL)              ?: data.order
-            data.separate_time       = cursor.get_nullable_bool(Progress_bars_table.SEPARATE_TIME_COL)      ?: data.separate_time
-            data.start_time          = cursor.get_nullable_long(Progress_bars_table.START_TIME_COL)         ?: data.start_time
-            data.end_time            = cursor.get_nullable_long(Progress_bars_table.END_TIME_COL)           ?: data.end_time
-            data.start_tz            = cursor.get_nullable_string(Progress_bars_table.START_TZ_COL)         ?: data.start_tz
-            data.end_tz              = cursor.get_nullable_string(Progress_bars_table.END_TZ_COL)           ?: data.end_tz
-            data.repeats             = cursor.get_nullable_bool(Progress_bars_table.REPEATS_COL)            ?: data.repeats
-            data.repeat_count        = cursor.get_nullable_int(Progress_bars_table.REPEAT_COUNT_COL)        ?: data.repeat_count
-            data.repeat_unit         = cursor.get_nullable_int(Progress_bars_table.REPEAT_UNIT_COL)         ?: data.repeat_unit
-            data.repeat_days_of_week = cursor.get_nullable_int(Progress_bars_table.REPEAT_DAYS_OF_WEEK_COL) ?: data.repeat_days_of_week
-            data.title               = cursor.get_nullable_string(Progress_bars_table.TITLE_COL)            ?: data.title
-            data.pre_text            = cursor.get_nullable_string(Progress_bars_table.PRE_TEXT_COL)         ?: data.pre_text
-            data.start_text          = cursor.get_nullable_string(Progress_bars_table.START_TEXT_COL)       ?: data.start_text
-            data.countdown_text      = cursor.get_nullable_string(Progress_bars_table.COUNTDOWN_TEXT_COL)   ?: data.countdown_text
-            data.complete_text       = cursor.get_nullable_string(Progress_bars_table.COMPLETE_TEXT_COL)    ?: data.complete_text
-            data.post_text           = cursor.get_nullable_string(Progress_bars_table.POST_TEXT_COL)        ?: data.post_text
-            data.precision           = cursor.get_nullable_int(Progress_bars_table.PRECISION_COL)           ?: data.precision
-            data.show_progress       = cursor.get_nullable_bool(Progress_bars_table.SHOW_PROGRESS_COL)      ?: data.show_progress
-            data.show_start          = cursor.get_nullable_bool(Progress_bars_table.SHOW_START_COL)         ?: data.show_start
-            data.show_end            = cursor.get_nullable_bool(Progress_bars_table.SHOW_END_COL)           ?: data.show_end
-            data.show_years          = cursor.get_nullable_bool(Progress_bars_table.SHOW_YEARS_COL)         ?: data.show_years
-            data.show_months         = cursor.get_nullable_bool(Progress_bars_table.SHOW_MONTHS_COL)        ?: data.show_months
-            data.show_weeks          = cursor.get_nullable_bool(Progress_bars_table.SHOW_WEEKS_COL)         ?: data.show_weeks
-            data.show_days           = cursor.get_nullable_bool(Progress_bars_table.SHOW_DAYS_COL)          ?: data.show_days
-            data.show_hours          = cursor.get_nullable_bool(Progress_bars_table.SHOW_HOURS_COL)         ?: data.show_hours
-            data.show_minutes        = cursor.get_nullable_bool(Progress_bars_table.SHOW_MINUTES_COL)       ?: data.show_minutes
-            data.show_seconds        = cursor.get_nullable_bool(Progress_bars_table.SHOW_SECONDS_COL)       ?: data.show_seconds
-            data.terminate           = cursor.get_nullable_bool(Progress_bars_table.TERMINATE_COL)          ?: data.terminate
-            data.notify_start        = cursor.get_nullable_bool(Progress_bars_table.NOTIFY_START_COL)       ?: data.notify_start
-            data.notify_end          = cursor.get_nullable_bool(Progress_bars_table.NOTIFY_END_COL)         ?: data.notify_end
+            data.order                = cursor.get_nullable_long(Progress_bars_table.ORDER_COL)                  ?: data.order
+            data.separate_time        = cursor.get_nullable_bool(Progress_bars_table.SEPARATE_TIME_COL)          ?: data.separate_time
+            data.start_time           = cursor.get_nullable_long(Progress_bars_table.START_TIME_COL)             ?: data.start_time
+            data.end_time             = cursor.get_nullable_long(Progress_bars_table.END_TIME_COL)               ?: data.end_time
+            data.start_tz             = cursor.get_nullable_string(Progress_bars_table.START_TZ_COL)             ?: data.start_tz
+            data.end_tz               = cursor.get_nullable_string(Progress_bars_table.END_TZ_COL)               ?: data.end_tz
+            data.repeats              = cursor.get_nullable_bool(Progress_bars_table.REPEATS_COL)                ?: data.repeats
+            data.repeat_count         = cursor.get_nullable_int(Progress_bars_table.REPEAT_COUNT_COL)            ?: data.repeat_count
+            data.repeat_unit          = cursor.get_nullable_int(Progress_bars_table.REPEAT_UNIT_COL)             ?: data.repeat_unit
+            data.repeat_days_of_week  = cursor.get_nullable_int(Progress_bars_table.REPEAT_DAYS_OF_WEEK_COL)     ?: data.repeat_days_of_week
+            data.title                = cursor.get_nullable_string(Progress_bars_table.TITLE_COL)                ?: data.title
+            data.pre_text             = cursor.get_nullable_string(Progress_bars_table.PRE_TEXT_COL)             ?: data.pre_text
+            data.start_text           = cursor.get_nullable_string(Progress_bars_table.START_TEXT_COL)           ?: data.start_text
+            data.countdown_text       = cursor.get_nullable_string(Progress_bars_table.COUNTDOWN_TEXT_COL)       ?: data.countdown_text
+            data.complete_text        = cursor.get_nullable_string(Progress_bars_table.COMPLETE_TEXT_COL)        ?: data.complete_text
+            data.post_text            = cursor.get_nullable_string(Progress_bars_table.POST_TEXT_COL)            ?: data.post_text
+            data.single_pre_text      = cursor.get_nullable_string(Progress_bars_table.SINGLE_PRE_TEXT_COL)      ?: data.single_pre_text
+            data.single_complete_text = cursor.get_nullable_string(Progress_bars_table.SINGLE_COMPLETE_TEXT_COL) ?: data.single_complete_text
+            data.single_post_text     = cursor.get_nullable_string(Progress_bars_table.SINGLE_POST_TEXT_COL)     ?: data.single_post_text
+            data.precision            = cursor.get_nullable_int(Progress_bars_table.PRECISION_COL)               ?: data.precision
+            data.show_progress        = cursor.get_nullable_bool(Progress_bars_table.SHOW_PROGRESS_COL)          ?: data.show_progress
+            data.show_start           = cursor.get_nullable_bool(Progress_bars_table.SHOW_START_COL)             ?: data.show_start
+            data.show_end             = cursor.get_nullable_bool(Progress_bars_table.SHOW_END_COL)               ?: data.show_end
+            data.show_years           = cursor.get_nullable_bool(Progress_bars_table.SHOW_YEARS_COL)             ?: data.show_years
+            data.show_months          = cursor.get_nullable_bool(Progress_bars_table.SHOW_MONTHS_COL)            ?: data.show_months
+            data.show_weeks           = cursor.get_nullable_bool(Progress_bars_table.SHOW_WEEKS_COL)             ?: data.show_weeks
+            data.show_days            = cursor.get_nullable_bool(Progress_bars_table.SHOW_DAYS_COL)              ?: data.show_days
+            data.show_hours           = cursor.get_nullable_bool(Progress_bars_table.SHOW_HOURS_COL)             ?: data.show_hours
+            data.show_minutes         = cursor.get_nullable_bool(Progress_bars_table.SHOW_MINUTES_COL)           ?: data.show_minutes
+            data.show_seconds         = cursor.get_nullable_bool(Progress_bars_table.SHOW_SECONDS_COL)           ?: data.show_seconds
+            data.terminate            = cursor.get_nullable_bool(Progress_bars_table.TERMINATE_COL)              ?: data.terminate
+            data.notify_start         = cursor.get_nullable_bool(Progress_bars_table.NOTIFY_START_COL)           ?: data.notify_start
+            data.notify_end           = cursor.get_nullable_bool(Progress_bars_table.NOTIFY_END_COL)             ?: data.notify_end
 
             return data
         }

@@ -25,6 +25,7 @@ import android.content.ContentValues
 import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.provider.BaseColumns
+import org.mattvchandler.progressbars.R
 
 // DB Table schema
 open class Progress_bars_table: BaseColumns
@@ -82,6 +83,9 @@ open class Progress_bars_table: BaseColumns
         const val COUNTDOWN_TEXT_COL = "countdown_text"
         const val COMPLETE_TEXT_COL = "complete_text"
         const val POST_TEXT_COL = "post_text"
+        const val SINGLE_PRE_TEXT_COL = "single_pre_text"
+        const val SINGLE_COMPLETE_TEXT_COL = "single_complete_text"
+        const val SINGLE_POST_TEXT_COL = "single_post_text"
 
         const val PRECISION_COL = "precision"
 
@@ -125,6 +129,9 @@ open class Progress_bars_table: BaseColumns
                 COUNTDOWN_TEXT_COL + " TEXT, " +
                 COMPLETE_TEXT_COL + " TEXT, " +
                 POST_TEXT_COL + " TEXT, " +
+                SINGLE_PRE_TEXT_COL + " TEXT, " +
+                SINGLE_COMPLETE_TEXT_COL + " TEXT, " +
+                SINGLE_POST_TEXT_COL + " TEXT, " +
 
                 PRECISION_COL + " INTEGER NOT NULL, " +
 
@@ -144,7 +151,7 @@ open class Progress_bars_table: BaseColumns
                 NOTIFY_START_COL + " INTEGER NOT NULL, " +
                 NOTIFY_END_COL + " INTEGER NOT NULL)"
 
-        fun upgrade(db: SQLiteDatabase, old_version: Int)
+        fun upgrade(context:Context, db: SQLiteDatabase, old_version: Int)
         {
             val table_exists = db.query("sqlite_master", arrayOf("name"), "type = 'table' AND name = ?", arrayOf(TABLE_NAME), null, null, null)
             if(table_exists.count == 0)
@@ -178,6 +185,9 @@ open class Progress_bars_table: BaseColumns
                             COUNTDOWN_TEXT_COL + ", " +
                             COMPLETE_TEXT_COL + ", " +
                             POST_TEXT_COL + ", " +
+                            SINGLE_PRE_TEXT_COL + ", " +
+                            SINGLE_COMPLETE_TEXT_COL + ", " +
+                            SINGLE_POST_TEXT_COL + ", " +
                             PRECISION_COL + ", " +
                             SHOW_START_COL + ", " +
                             SHOW_END_COL + ", " +
@@ -210,6 +220,9 @@ open class Progress_bars_table: BaseColumns
                             COUNTDOWN_TEXT_COL + ", " +
                             COMPLETE_TEXT_COL + ", " +
                             POST_TEXT_COL + ", " +
+                            context.getString(R.string.default_single_pre_text) + ", " +
+                            context.getString(R.string.default_single_complete_text) + ", " +
+                            context.getString(R.string.default_single_post_text) + ", " +
                             PRECISION_COL + ", " +
                             SHOW_START_COL + ", " +
                             SHOW_END_COL + ", " +
@@ -252,6 +265,9 @@ open class Progress_bars_table: BaseColumns
                             COUNTDOWN_TEXT_COL + ", " +
                             COMPLETE_TEXT_COL + ", " +
                             POST_TEXT_COL + ", " +
+                            SINGLE_PRE_TEXT_COL + ", " +
+                            SINGLE_COMPLETE_TEXT_COL + ", " +
+                            SINGLE_POST_TEXT_COL + ", " +
                             PRECISION_COL + ", " +
                             SHOW_START_COL + ", " +
                             SHOW_END_COL + ", " +
@@ -284,6 +300,9 @@ open class Progress_bars_table: BaseColumns
                             COUNTDOWN_TEXT_COL + ", " +
                             COMPLETE_TEXT_COL + ", " +
                             POST_TEXT_COL + ", " +
+                            context.getString(R.string.default_single_pre_text) + ", " +
+                            context.getString(R.string.default_single_complete_text) + ", " +
+                            context.getString(R.string.default_single_post_text) + ", " +
                             PRECISION_COL + ", " +
                             SHOW_START_COL + ", " +
                             SHOW_END_COL + ", " +

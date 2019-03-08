@@ -65,8 +65,6 @@ class Settings: Dynamic_theme_activity(), DatePickerDialog.OnDateSetListener, Ti
     private var date_df = SimpleDateFormat.getDateInstance() as SimpleDateFormat
     private var time_df = SimpleDateFormat.getTimeInstance() as SimpleDateFormat
 
-    private var countdown_text_unseen = true
-
     private val on_24_hour_change = object: ContentObserver(Handler())
     {
         override fun onChange(selfChange: Boolean)
@@ -100,7 +98,6 @@ class Settings: Dynamic_theme_activity(), DatePickerDialog.OnDateSetListener, Ti
                 // get data from row
                 setTitle(R.string.edit_title)
                 window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN)
-                countdown_text_unseen = false
                 Data(this, rowid)
             }
             save_data = Data(data)
@@ -124,8 +121,6 @@ class Settings: Dynamic_theme_activity(), DatePickerDialog.OnDateSetListener, Ti
                 setTitle(R.string.add_title)
             else
                 setTitle(R.string.edit_title)
-
-            countdown_text_unseen = savedInstanceState.getBoolean(STATE_COUNTDOWN_TEXT_UNSEEN)
         }
 
         // set selected values
@@ -279,7 +274,6 @@ class Settings: Dynamic_theme_activity(), DatePickerDialog.OnDateSetListener, Ti
         out.putSerializable(STATE_DATE_DF, date_df)
         out.putSerializable(STATE_TIME_DF, time_df)
         out.putSerializable(STATE_LOCALE, locale)
-        out.putBoolean(STATE_COUNTDOWN_TEXT_UNSEEN, countdown_text_unseen)
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean
@@ -535,7 +529,7 @@ class Settings: Dynamic_theme_activity(), DatePickerDialog.OnDateSetListener, Ti
 
         val args = Bundle()
         args.putInt(Checkbox_dialog_frag.TITLE_ARG, R.string.show_elements_header)
-        args.putInt(Checkbox_dialog_frag.ENTRIES_ARG, if(data.separate_time) R.array.show_elements else R.array.show_elements_single_time)
+        args.putInt(Checkbox_dialog_frag.ENTRIES_ARG, if(data.separate_time) R.array.show_elements else R.array.single_show_elements)
         args.putBooleanArray(Checkbox_dialog_frag.SELECTION_ARG, selected)
 
         frag.arguments = args
@@ -566,19 +560,10 @@ class Settings: Dynamic_theme_activity(), DatePickerDialog.OnDateSetListener, Ti
 
     fun on_countdown_text_butt(@Suppress("UNUSED_PARAMETER") view: View)
     {
-        if(countdown_text_unseen && !data.separate_time)
-        {
-            data.pre_text = resources.getString(R.string.default_pre_single_time_text)
-            data.complete_text = resources.getString(R.string.default_complete_single_time_text)
-            data.post_text = resources.getString(R.string.default_post_single_time_text)
-        }
-
         // Launch screen to enter countdown text
         val intent = Intent(this, Countdown_text::class.java)
         intent.putExtra(Countdown_text.EXTRA_DATA, data)
         startActivityForResult(intent, RESULT_COUNTDOWN_TEXT)
-
-        countdown_text_unseen = false
     }
 
     fun on_timer_opts_butt(@Suppress("UNUSED_PARAMETER") view: View)
@@ -594,7 +579,7 @@ class Settings: Dynamic_theme_activity(), DatePickerDialog.OnDateSetListener, Ti
 
         val args = Bundle()
         args.putInt(Checkbox_dialog_frag.TITLE_ARG, R.string.timer_opts_header)
-        args.putInt(Checkbox_dialog_frag.ENTRIES_ARG, if(data.separate_time) R.array.timer_opts else R.array.timer_opts_single_time)
+        args.putInt(Checkbox_dialog_frag.ENTRIES_ARG, if(data.separate_time) R.array.timer_opts else R.array.single_timer_opts)
         args.putBooleanArray(Checkbox_dialog_frag.SELECTION_ARG, selected)
 
         frag.arguments = args
@@ -719,7 +704,6 @@ class Settings: Dynamic_theme_activity(), DatePickerDialog.OnDateSetListener, Ti
         private const val STATE_DATE_DF = "date_df"
         private const val STATE_TIME_DF = "time_df"
         private const val STATE_LOCALE = "locale"
-        private const val STATE_COUNTDOWN_TEXT_UNSEEN = "countdown_text_unseen"
 
         private const val DAYS_OF_WEEK_CHECKBOX_DIALOG = "DAYS_OF_WEEK"
         private const val SHOW_ELEMENTS_CHECKBOX_DIALOG = "SHOW_ELEMENTS"
