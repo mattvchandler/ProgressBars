@@ -27,6 +27,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
     xmlns:app="http://schemas.android.com/apk/res-auto"
     >
 
+    <!-- TODO: better layout for single time events -->
+
     <data>
         <import type="android.view.View"/>
         <import type="org.mattvchandler.progressbars.list.View_data"/>
@@ -162,7 +164,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
             android:id="@+id/end_time_label"
             android:text="@string/end_time"
             android:textAlignment="textStart"
-            android:visibility="@{data.show_end_disp ? View.VISIBLE: View.GONE}"
+            android:visibility="@{(data.show_end_disp &amp;&amp; !data.single_time) ? View.VISIBLE: View.GONE}"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:layout_constraintTop_toBottomOf="@+id/title"
@@ -177,7 +179,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
             android:id="@+id/end_time_date"
             android:text="@{data.end_date_disp}"
             android:textAlignment="textStart"
-            android:visibility="@{data.show_end_disp ? View.VISIBLE: View.GONE}"
+            android:visibility="@{(data.show_end_disp &amp;&amp; !data.single_time) ? View.VISIBLE: View.GONE}"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:layout_constraintTop_toBottomOf="@+id/end_time_label"
@@ -191,7 +193,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
             android:id="@+id/end_time_time"
             android:text="@{data.end_time_disp}"
             android:textAlignment="textStart"
-            android:visibility="@{data.show_end_disp ? View.VISIBLE: View.GONE}"
+            android:visibility="@{(data.show_end_disp &amp;&amp; !data.single_time) ? View.VISIBLE: View.GONE}"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:layout_constraintTop_toBottomOf="@+id/end_time_date"

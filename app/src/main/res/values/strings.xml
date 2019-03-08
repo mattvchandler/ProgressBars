@@ -145,13 +145,20 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
     <string name="time_date_header">Times and dates</string>
 
-    <string name="start_time_txt">Start time</string>
-    <string name="start_date_txt">Start date</string>
-    <string name="end_time_txt">End time</string>
-    <string name="end_date_txt">End date</string>
+    <!-- TODO: better descriptions -->
+    <string name="single_time">Single time</string>
+    <string name="single_date_txt">Single date</string>
+    <string name="single_time_txt">Single time</string>
+    <string name="single_tz_prompt">Single time zone</string>
 
+    <string name="start_date_txt">Start date</string>
+    <string name="start_time_txt">Start time</string>
     <string name="start_tz_prompt">Start time zone</string>
+
+    <string name="end_date_txt">End date</string>
+    <string name="end_time_txt">End time</string>
     <string name="end_tz_prompt">End time zone</string>
+
     <string name="choose_tz">Choose a Time Zone</string>
     <string name="tz_list_subtitle">%1$s (%2$s)</string>
 

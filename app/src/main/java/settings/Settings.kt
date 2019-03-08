@@ -129,6 +129,10 @@ class Settings: Dynamic_theme_activity(), DatePickerDialog.OnDateSetListener, Ti
         // set selected values
         binding.data = data
 
+        binding.startDateTxt.hint = if(data.single_time) resources.getString(R.string.single_date_txt) else resources.getString(R.string.start_date_txt)
+        binding.startTimeTxt.hint = if(data.single_time) resources.getString(R.string.single_time_txt) else resources.getString(R.string.start_time_txt)
+        binding.startTzTxt.text  = if(data.single_time) resources.getString(R.string.single_tz_prompt) else resources.getString(R.string.start_tz_prompt)
+
         binding.startTz.text = data.start_tz.replace('_', ' ')
         binding.endTz.text   = data.end_tz.replace('_', ' ')
 
@@ -395,6 +399,22 @@ class Settings: Dynamic_theme_activity(), DatePickerDialog.OnDateSetListener, Ti
     }
 
     // Button pressed callbacks
+    fun on_single_time_butt(@Suppress("UNUSED_PARAMETER") view: View)
+    {
+        // TODO: change show_elements, countdown_text, timeropts
+        data.single_time = binding.singleTimeSw.isChecked
+
+        val visibility = if(data.single_time) View.GONE else View.VISIBLE
+        binding.endTimeDivider.visibility = visibility
+        binding.endDateBox.visibility = visibility
+        binding.endTimeBox.visibility = visibility
+        binding.endTzBox.visibility = visibility
+
+        binding.startDateTxt.hint = if(data.single_time) resources.getString(R.string.single_date_txt) else resources.getString(R.string.start_date_txt)
+        binding.startTimeTxt.hint = if(data.single_time) resources.getString(R.string.single_time_txt) else resources.getString(R.string.start_time_txt)
+        binding.startTzTxt.text  = if(data.single_time) resources.getString(R.string.single_tz_prompt) else resources.getString(R.string.start_tz_prompt)
+    }
+
     fun on_start_cal_butt(@Suppress("UNUSED_PARAMETER") view: View)
     {
         // create a calendar dialog, pass current date string
@@ -535,6 +555,14 @@ class Settings: Dynamic_theme_activity(), DatePickerDialog.OnDateSetListener, Ti
         frag.show(supportFragmentManager, SHOW_UNITS_CHECKBOX_DIALOG)
     }
 
+    fun on_countdown_text_butt(@Suppress("UNUSED_PARAMETER") view: View)
+    {
+        // Launch screen to enter countdown text
+        val intent = Intent(this, Countdown_text::class.java)
+        intent.putExtra(Countdown_text.EXTRA_DATA, data)
+        startActivityForResult(intent, RESULT_COUNTDOWN_TEXT)
+    }
+
     fun on_timer_opts_butt(@Suppress("UNUSED_PARAMETER") view: View)
     {
         val selected = BooleanArray(3)
@@ -551,14 +579,6 @@ class Settings: Dynamic_theme_activity(), DatePickerDialog.OnDateSetListener, Ti
 
         frag.arguments = args
         frag.show(supportFragmentManager, TIMER_OPTS_CHECKBOX_DIALOG)
-    }
-
-    fun on_countdown_text_butt(@Suppress("UNUSED_PARAMETER") view: View)
-    {
-        // Launch screen to enter countdown text
-        val intent = Intent(this, Countdown_text::class.java)
-        intent.putExtra(Countdown_text.EXTRA_DATA, data)
-        startActivityForResult(intent, RESULT_COUNTDOWN_TEXT)
     }
 
     // Dialog return callbacks
