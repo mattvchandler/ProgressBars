@@ -20,8 +20,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 -->
 <resources>
     <string name="app_name">Progress Bars</string>
-    <string name="app_version">v.%1$s</string>
-    <string name="app_copyright">© 2019 Matthew Chandler</string>
+    <string name="app_version" translatable="false">v.%1$s</string>
+    <string name="app_copyright" translatable="false">© 2019 Matthew Chandler</string>
     <string name="app_license">This program comes with absolutely no warranty.\nSee the <a href="https://opensource.org/licenses/mit-license.php">MIT License (MIT)</a> for details.</string>
     <string name="app_website"><a href="https://www.github.com/mattvchandler/ProgressBars">Progress Bars on Github</a></string>
     <string name="app_logo_desc">Progress Bars logo</string>
@@ -138,18 +138,20 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
     <string name="timer_title">Timer title</string>
     <string name="pre_text">Pre-start text</string>
+    <string name="pre_single_time_text">Pre-event text</string>
     <string name="start_text">Starting text</string>
     <string name="countdown_text">Countdown_text</string>
     <string name="complete_text">Completion text</string>
+    <string name="complete_single_time_text">Event reached text</string>
     <string name="post_text">Post-end text</string>
+    <string name="post_single_time_text">Post-event text</string>
 
     <string name="time_date_header">Times and dates</string>
 
-    <!-- TODO: better descriptions -->
-    <string name="single_time">Single time</string>
-    <string name="single_date_txt">Single date</string>
-    <string name="single_time_txt">Single time</string>
-    <string name="single_tz_prompt">Single time zone</string>
+    <string name="separate_time">Separate start and end times</string>
+    <string name="single_date_txt">Date</string>
+    <string name="single_time_txt">Time</string>
+    <string name="single_tz_prompt">Time zone</string>
 
     <string name="start_date_txt">Start date</string>
     <string name="start_time_txt">Start time</string>
@@ -198,14 +200,17 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
     </string-array>
 
     <string-array name="timer_opts_single_time">
-        <item>Stop timer when event reached</item>
+        <item>Stop countdown when event reached</item>
         <item>Send notification on event</item>
     </string-array>
 
     <string name="default_title">New timer</string>
     <string name="default_pre_text">"Time until start: "</string>
+    <string name="default_pre_single_time_text">"Time until event: "</string>
     <string name="default_start_text">Started</string>
     <string name="default_countdown_text">"Time remaining: "</string>
     <string name="default_complete_text">Completed</string>
+    <string name="default_complete_single_time_text">Event reached</string>
     <string name="default_post_text">"Time since completion: "</string>
+    <string name="default_post_single_time_text">"Time since event: "</string>
 </resources>

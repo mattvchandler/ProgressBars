@@ -57,6 +57,13 @@ class Countdown_text: Dynamic_theme_activity()
         if(data == null)
             throw InvalidParameterException("No data argument passed")
 
+        if(!data!!.separate_time)
+        {
+            binding.preTextLabel.hint = resources.getString(R.string.pre_single_time_text)
+            binding.completeTextLabel.hint = resources.getString(R.string.complete_single_time_text)
+            binding.postTextLabel.hint = resources.getString(R.string.post_single_time_text)
+        }
+
         binding.data = data
     }
 

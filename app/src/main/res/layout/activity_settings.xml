@@ -99,14 +99,14 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
                         />
 
                     <Switch
-                        android:id="@+id/single_time_sw"
-                        android:text="@string/single_time"
-                        android:checked="@{data.single_time}"
+                        android:id="@+id/separate_time_sw"
+                        android:text="@string/separate_time"
+                        android:checked="@{data.separate_time}"
                         android:textAppearance="?android:textAppearanceListItem"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_margin="@dimen/margin_size"
-                        android:onClick="on_single_time_butt"
+                        android:onClick="on_separate_time_butt"
                         />
 
                     <View style="@style/Divider"/>
@@ -217,7 +217,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
                     <View
                         android:id="@+id/end_time_divider"
                         style="@style/Divider"
-                        android:visibility="@{data.single_time ? View.GONE : View.VISIBLE}"
+                        android:visibility="@{data.separate_time ? View.VISIBLE : View.GONE}"
                         android:animateLayoutChanges="true"
                     />
 
@@ -226,7 +226,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
-                        android:visibility="@{data.single_time ? View.GONE : View.VISIBLE}"
+                        android:visibility="@{data.separate_time ? View.VISIBLE : View.GONE}"
                         android:animateLayoutChanges="true"
                     >
                         <android.support.design.widget.TextInputLayout
@@ -266,7 +266,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
                         android:gravity="center_vertical"
-                        android:visibility="@{data.single_time ? View.GONE : View.VISIBLE}"
+                        android:visibility="@{data.separate_time ? View.VISIBLE : View.GONE}"
                         android:animateLayoutChanges="true"
                         >
                         <android.support.design.widget.TextInputLayout
@@ -308,7 +308,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
                         android:layout_gravity="center_vertical"
                         android:onClick="on_end_tz_butt"
                         android:background="?android:attr/selectableItemBackground"
-                        android:visibility="@{data.single_time ? View.GONE : View.VISIBLE}"
+                        android:visibility="@{data.separate_time ? View.VISIBLE : View.GONE}"
                         android:animateLayoutChanges="true"
                         android:clickable="true"
                         android:focusable="true"

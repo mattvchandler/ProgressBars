@@ -66,6 +66,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
                     android:animateLayoutChanges="true"
                     >
                     <android.support.design.widget.TextInputLayout
+                        android:id="@+id/pre_text_label"
                         android:hint="@string/pre_text"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -83,11 +84,13 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
                     </android.support.design.widget.TextInputLayout>
 
                     <android.support.design.widget.TextInputLayout
+                        android:id="@+id/start_text_label"
                         android:hint="@string/start_text"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="@dimen/margin_size"
                         android:layout_marginEnd="@dimen/margin_size"
+                        android:visibility="@{data.separate_time ? View.VISIBLE : View.GONE}"
                         >
                         <android.support.design.widget.TextInputEditText
                             android:id="@+id/start_text"
@@ -100,11 +103,13 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
                     </android.support.design.widget.TextInputLayout>
 
                     <android.support.design.widget.TextInputLayout
+                        android:id="@+id/countdown_text_label"
                         android:hint="@string/countdown_text"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="@dimen/margin_size"
                         android:layout_marginEnd="@dimen/margin_size"
+                        android:visibility="@{data.separate_time ? View.VISIBLE : View.GONE}"
                         >
                         <android.support.design.widget.TextInputEditText
                             android:id="@+id/countdown_text"
@@ -117,6 +122,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
                     </android.support.design.widget.TextInputLayout>
 
                     <android.support.design.widget.TextInputLayout
+                        android:id="@+id/complete_text_label"
                         android:hint="@string/complete_text"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -134,6 +140,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
                     </android.support.design.widget.TextInputLayout>
 
                     <android.support.design.widget.TextInputLayout
+                        android:id="@+id/post_text_label"
                         android:hint="@string/post_text"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
