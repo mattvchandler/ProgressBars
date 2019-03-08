@@ -55,6 +55,7 @@ class Undo: Progress_bars_table()
                 SWAP_TO_POS_COL + " INTEGER, " +
 
                 Progress_bars_table.ORDER_COL + " INTEGER, " +
+                Progress_bars_table.SINGLE_TIME_COL + " INTEGER, " +
                 Progress_bars_table.START_TIME_COL + " INTEGER, " +
                 Progress_bars_table.START_TZ_COL + " TEXT, " +
                 Progress_bars_table.END_TIME_COL + " INTEGER, " +
@@ -92,7 +93,8 @@ class Undo: Progress_bars_table()
 
         fun upgrade(db: SQLiteDatabase, old_version: Int)
         {
-            if(old_version < 3)
+            // This is a non-persistent table, so no need to migrate data
+            if(old_version < 4)
             {
                 db.execSQL("DROP TABLE IF EXISTS $TABLE_NAME")
                 db.execSQL(CREATE_TABLE)
@@ -104,6 +106,7 @@ class Undo: Progress_bars_table()
             val data = Data()
 
             data.order               = cursor.get_nullable_long(Progress_bars_table.ORDER_COL)              ?: data.order
+            data.single_time         = cursor.get_nullable_bool(Progress_bars_table.SINGLE_TIME_COL)        ?: data.single_time
             data.start_time          = cursor.get_nullable_long(Progress_bars_table.START_TIME_COL)         ?: data.start_time
             data.end_time            = cursor.get_nullable_long(Progress_bars_table.END_TIME_COL)           ?: data.end_time
             data.start_tz            = cursor.get_nullable_string(Progress_bars_table.START_TZ_COL)         ?: data.start_tz

@@ -65,6 +65,7 @@ open class Progress_bars_table: BaseColumns
         const val TABLE_NAME = "progress_bar"
 
         const val ORDER_COL = "order_ind"
+        const val SINGLE_TIME_COL = "single_time"
         const val START_TIME_COL = "start_time"
         const val START_TZ_COL = "start_tz"
         const val END_TIME_COL = "end_time"
@@ -107,6 +108,7 @@ open class Progress_bars_table: BaseColumns
         const val CREATE_TABLE = "CREATE TABLE IF NOT EXISTS " + TABLE_NAME + " (" +
                 BaseColumns._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 ORDER_COL + " INTEGER UNIQUE NOT NULL, " +
+                SINGLE_TIME_COL +  " INTEGER NOT NULL, " +
                 START_TIME_COL + " INTEGER NOT NULL, " +
                 START_TZ_COL + " TEXT NOT NULL, " +
                 END_TIME_COL + " INTEGER NOT NULL, " +
@@ -161,6 +163,7 @@ open class Progress_bars_table: BaseColumns
                     db.execSQL("INSERT INTO " + TABLE_NAME +
                             "(" +
                             ORDER_COL + ", " +
+                            SINGLE_TIME_COL + ", " +
                             START_TIME_COL + ", " +
                             END_TIME_COL + ", " +
                             START_TZ_COL + ", " +
@@ -192,6 +195,7 @@ open class Progress_bars_table: BaseColumns
                             ")" +
                             " SELECT " +
                             ORDER_COL + ", " +
+                            "0, " +
                             START_TIME_COL + ", " +
                             END_TIME_COL + ", " +
                             START_TZ_COL + ", " +
@@ -224,14 +228,16 @@ open class Progress_bars_table: BaseColumns
 
                     db.execSQL("DROP TABLE TMP_$TABLE_NAME")
                 }
-                2 ->
+                2, 3 ->
                 {
-                    // fixed NOT NULL for some columns - copy all data over
+                    // 2 -> 3 fixed NOT NULL for some columns - copy all data over
+                    // 3 -> 4 add SINGLE_TIME_COL
                     db.execSQL("ALTER TABLE $TABLE_NAME RENAME TO TMP_$TABLE_NAME")
                     db.execSQL(CREATE_TABLE)
                     db.execSQL("INSERT INTO " + TABLE_NAME +
                             "(" +
                             ORDER_COL + ", " +
+                            SINGLE_TIME_COL + ", " +
                             START_TIME_COL + ", " +
                             END_TIME_COL + ", " +
                             START_TZ_COL + ", " +
@@ -263,6 +269,7 @@ open class Progress_bars_table: BaseColumns
                             ")" +
                             " SELECT " +
                             ORDER_COL + ", " +
+                            "0, " +
                             START_TIME_COL + ", " +
                             END_TIME_COL + ", " +
                             START_TZ_COL + ", " +

@@ -41,9 +41,10 @@ open class Data(): Serializable
 {
     var rowid = -1L // is -1 when not set, ie. the data doesn't exist in the DB
 
-    var order      = -1L // -1 until set
-    var start_time = 0L
-    var end_time   = 0L
+    var order       = -1L // -1 until set
+    var single_time = false
+    var start_time  = 0L
+    var end_time    = 0L
 
     var start_tz = ""
     var end_tz   = ""
@@ -122,6 +123,7 @@ open class Data(): Serializable
     // verbose ctor
     constructor(
             order: Long,
+            single_time: Boolean,
             start_time: Long,
             end_time: Long,
             start_tz: String,
@@ -153,6 +155,7 @@ open class Data(): Serializable
     {
         this.rowid               = -1
         this.order               = order
+        this.single_time         = single_time
         this.start_time          = start_time
         this.end_time            = end_time
         this.start_tz            = start_tz
@@ -188,6 +191,7 @@ open class Data(): Serializable
     {
         rowid               = b.rowid
         order               = b.order
+        single_time         = b.single_time
         start_time          = b.start_time
         end_time            = b.end_time
         start_tz            = b.start_tz
@@ -222,6 +226,7 @@ open class Data(): Serializable
     {
         rowid               = cursor.get_nullable_long(BaseColumns._ID)!!
         order               = cursor.get_nullable_long(Progress_bars_table.ORDER_COL)!!
+        single_time         = cursor.get_nullable_bool(Progress_bars_table.SINGLE_TIME_COL)!!
         start_time          = cursor.get_nullable_long(Progress_bars_table.START_TIME_COL)!!
         end_time            = cursor.get_nullable_long(Progress_bars_table.END_TIME_COL)!!
         start_tz            = cursor.get_nullable_string(Progress_bars_table.START_TZ_COL)!!
@@ -257,6 +262,7 @@ open class Data(): Serializable
         val values = ContentValues()
 
         values.put(Progress_bars_table.ORDER_COL, order)
+        values.put(Progress_bars_table.SINGLE_TIME_COL, single_time)
         values.put(Progress_bars_table.START_TIME_COL, start_time)
         values.put(Progress_bars_table.END_TIME_COL, end_time)
         values.put(Progress_bars_table.START_TZ_COL, start_tz)
