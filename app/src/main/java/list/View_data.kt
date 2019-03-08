@@ -60,23 +60,17 @@ private val days_in_mon = intArrayOf(31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30,
 // class and fields need to be public so they can be accessed by binding
 class View_data (context: Context, cursor: Cursor): Data(cursor) // contains all DB data from inherited struct
 {
-    // observable fields used by UI
-    val title_disp = ObservableField<String>()
+    // fields used by UI
+    val start_date_disp: String
+    val start_time_disp: String
+    val end_date_disp: String
+    val end_time_disp: String
 
-    val start_date_disp = ObservableField<String>()
-    val start_time_disp = ObservableField<String>()
-    val end_date_disp = ObservableField<String>()
-    val end_time_disp = ObservableField<String>()
-
-    val percentage_disp = ObservableField<String>()
     val progress_disp = ObservableInt()
-
+    val percentage_disp = ObservableField<String>()
     val time_text_disp = ObservableField<String>()
 
-    val show_start_disp = ObservableBoolean()
-    val show_end_disp = ObservableBoolean()
-    val show_progress_disp = ObservableBoolean()
-    val show_time_text_disp = ObservableBoolean()
+    val show_time_text: Boolean
 
     private val start_time_date = Date()
     private val end_time_date = Date()
@@ -463,7 +457,7 @@ class View_data (context: Context, cursor: Cursor): Data(cursor) // contains all
         }// if we are at the end (or past when terminate is set) show completed text
 
         // only calculate time remaining if start or complete text shouldn't be shown
-        if(show_time_text_disp.get() || now_s != start_time || now_s != end_time)
+        if(show_time_text || now_s != start_time || now_s != end_time)
         {
             // time from now to end
             val remaining = end_time - now_s
@@ -484,14 +478,8 @@ class View_data (context: Context, cursor: Cursor): Data(cursor) // contains all
 
     init
     {
-        title_disp.set(title)
-
-        // set up visibility
-        show_start_disp.set(show_start)
-        show_end_disp.set(show_end)
-        show_progress_disp.set(show_progress)
         // only show countdown when there is something to show
-        show_time_text_disp.set(show_years || show_months || show_weeks || show_days || show_hours || show_minutes || show_seconds)
+        show_time_text = show_years || show_months || show_weeks || show_days || show_hours || show_minutes || show_seconds
 
         // format start and end dates and times
         val date_df = get_date_format(context)
@@ -500,10 +488,10 @@ class View_data (context: Context, cursor: Cursor): Data(cursor) // contains all
         start_time_date.time = start_time * 1000L
         end_time_date.time = end_time * 1000L
 
-        start_date_disp.set(date_df.format(start_time_date))
-        start_time_disp.set(time_df.format(start_time_date))
-        end_date_disp.set(date_df.format(end_time_date))
-        end_time_disp.set(time_df.format(end_time_date))
+        start_date_disp = date_df.format(start_time_date)
+        start_time_disp = time_df.format(start_time_date)
+        end_date_disp   = date_df.format(end_time_date)
+        end_time_disp   = time_df.format(end_time_date)
 
         // set initial percentage to 0
         progress_disp.set(0)

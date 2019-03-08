@@ -527,4 +527,3 @@ private fun shift_row(i: Int, to_order: Long, cursor: Cursor, db: SQLiteDatabase
 
     return from_order
 }
-
