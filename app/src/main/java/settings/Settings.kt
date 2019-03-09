@@ -293,7 +293,7 @@ class Settings: Dynamic_theme_activity(), DatePickerDialog.OnDateSetListener, Ti
                     return true
 
                 // check to make sure start time is before end
-                if(data.end_time < data.start_time)
+                if(data.separate_time && data.end_time < data.start_time)
                 {
                     Toast.makeText(this, R.string.end_before_start_err, Toast.LENGTH_LONG).show()
                     return true

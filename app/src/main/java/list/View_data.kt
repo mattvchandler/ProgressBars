@@ -24,9 +24,9 @@ package org.mattvchandler.progressbars.list
 import android.content.Context
 import android.content.res.Resources
 import android.database.Cursor
-import android.databinding.ObservableBoolean
 import android.databinding.ObservableField
 import android.databinding.ObservableInt
+import android.util.Log
 
 import org.mattvchandler.progressbars.db.Data
 import org.mattvchandler.progressbars.R
@@ -70,7 +70,8 @@ class View_data (context: Context, cursor: Cursor): Data(cursor) // contains all
     val percentage_disp = ObservableField<String>()
     val time_text_disp = ObservableField<String>()
 
-    val show_time_text: Boolean
+    // only show countdown when there is something to show
+    val show_time_text: Boolean = show_years || show_months || show_weeks || show_days || show_hours || show_minutes || show_seconds
 
     private val start_time_date = Date()
     private val end_time_date = Date()
@@ -124,17 +125,19 @@ class View_data (context: Context, cursor: Cursor): Data(cursor) // contains all
             {
                 // now is before start, so count down to start time
                 revised_remaining = to_start
-                remaining_prefix = pre_text
+                remaining_prefix = if(separate_time) pre_text else single_pre_text
             }
             revised_remaining >= 0 ->
             {
                 // now is between start and end, so count down to end
                 remaining_prefix = countdown_text
+                if(!separate_time)
+                    Log.e("get_remaining_easy", "countdown on single time: to_start $to_start, remaining: $remaining, revised_remaining: $revised_remaining")
             }
             else ->
             {
                 // now is after end, so count up from end
-                remaining_prefix = post_text
+                remaining_prefix = if(separate_time) post_text else single_post_text
             }
         }
 
@@ -181,7 +184,7 @@ class View_data (context: Context, cursor: Cursor): Data(cursor) // contains all
     {
         val cal_start = Calendar.getInstance()
         var cal_end = Calendar.getInstance()
-        cal_end.time = end_time_date
+        cal_end.time = if(separate_time) end_time_date else start_time_date
 
         // get and format remaining time
         val remaining_prefix: String
@@ -191,20 +194,23 @@ class View_data (context: Context, cursor: Cursor): Data(cursor) // contains all
             to_start >= 0 ->
             {
                 // now is before start, so count down to start time
-                remaining_prefix = pre_text
+                remaining_prefix = if(separate_time) pre_text else single_pre_text
                 cal_end.time = start_time_date
             }
             remaining >= 0 ->
             {
                 // now is between start and end, so count down to end
                 remaining_prefix = countdown_text
+                if(!separate_time)
+                    Log.e("get_remaining_hard", "countdown on single time: to_start $to_start, remaining: $remaining, cal_start: $cal_start, cal_end: $cal_end")
             }
             else ->
             {
                 // now is after end, so count up from end
-                remaining_prefix = post_text
+                remaining_prefix = if(separate_time) post_text else single_post_text
                 cal_end = cal_start.clone() as Calendar
-                cal_start.time = end_time_date
+
+                cal_start.time = if(separate_time) end_time_date else start_time_date
             }
         }
 
@@ -435,39 +441,43 @@ class View_data (context: Context, cursor: Cursor): Data(cursor) // contains all
         // get now, start and end times as unix epoch timestamps
         val now_s = System.currentTimeMillis() / 1000L
 
-        val total_interval = end_time - start_time
-        val elapsed = now_s - start_time
-
         // only calculate percentage if is being shown
-        if(show_progress)
+        if(show_progress && separate_time)
+        {
+            val total_interval = end_time - start_time
+            val elapsed = now_s - start_time
+
             calc_percentage(total_interval, elapsed, now_s)
+        }
 
         // if we are at the start, show started text
-        if(now_s == start_time)
+        if(separate_time && now_s == start_time)
         {
             time_text_disp.set(start_text)
+            return
         }
-        else if((terminate && now_s > end_time) || now_s == end_time)
+        // if we are at the end (or past when terminate is set) show completed text
+        else if(separate_time && ((terminate && now_s > end_time)  || now_s == end_time))
         {
             time_text_disp.set(complete_text)
-
-            // stop if we are done and terminate is set
-            if(terminate && now_s > end_time)
-                return
-        }// if we are at the end (or past when terminate is set) show completed text
+            return
+        }
+        else if(!separate_time && ((terminate && now_s > start_time)  || now_s == start_time))
+        {
+            time_text_disp.set(single_complete_text)
+            return
+        }
 
         // only calculate time remaining if start or complete text shouldn't be shown
         if(show_time_text || now_s != start_time || now_s != end_time)
         {
             // time from now to end
-            val remaining = end_time - now_s
+            val remaining = if(separate_time) end_time - now_s else start_time - now_s
             // time from now to start
             val to_start = start_time - now_s
 
-            val remaining_str: String
-
             // if not needing calendar time difference, we can do calculation from the difference in seconds (much easier)
-            remaining_str = if(!show_years && !show_months)
+            val remaining_str = if(!show_years && !show_months)
                 get_remaining_easy(res, to_start, remaining)
             else
                 get_remaining_hard(res, to_start, remaining)
@@ -478,9 +488,6 @@ class View_data (context: Context, cursor: Cursor): Data(cursor) // contains all
 
     init
     {
-        // only show countdown when there is something to show
-        show_time_text = show_years || show_months || show_weeks || show_days || show_hours || show_minutes || show_seconds
-
         // format start and end dates and times
         val date_df = get_date_format(context)
         val time_df = get_time_format()
