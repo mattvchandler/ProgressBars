@@ -667,7 +667,9 @@ class Settings: Dynamic_theme_activity(), DatePickerDialog.OnDateSetListener, Ti
         {
             data.terminate = selected[TERMINATE_CHECKBOX]
             data.notify_start = selected[NOTIFY_START_CHECKBOX]
-            data.notify_end = selected[NOTIFY_END_CHECKBOX]
+
+            if(data.separate_time)
+                data.notify_end = selected[NOTIFY_END_CHECKBOX]
         }
     }
 
