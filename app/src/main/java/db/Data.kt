@@ -506,7 +506,7 @@ open class Data(): Serializable
 
         fun apply_all_repeats(context: Context)
         {
-            val db = DB(context).readableDatabase
+            val db = DB(context).writableDatabase
             val cursor = db.rawQuery(Progress_bars_table.SELECT_ALL_ROWS, null)
 
             // for every timer
