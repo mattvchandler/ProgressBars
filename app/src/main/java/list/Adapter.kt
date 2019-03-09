@@ -27,7 +27,7 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
-import android.databinding.DataBindingUtil
+import android.databinding.ViewDataBinding
 import android.provider.BaseColumns
 import android.support.v4.content.LocalBroadcastManager
 import android.support.v7.widget.RecyclerView
@@ -35,19 +35,17 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 
-import org.mattvchandler.progressbars.db.DB
-import org.mattvchandler.progressbars.db.Data
-import org.mattvchandler.progressbars.db.Progress_bars_table
 import org.mattvchandler.progressbars.Progress_bars
-import org.mattvchandler.progressbars.R
 import org.mattvchandler.progressbars.settings.Settings
 import org.mattvchandler.progressbars.databinding.ProgressBarRowBinding
-import org.mattvchandler.progressbars.db.get_nullable_long
+import org.mattvchandler.progressbars.databinding.SingleProgressBarRowBinding
+import org.mattvchandler.progressbars.db.*
 
 import java.util.NoSuchElementException
 
 import java.lang.Math.abs
 import java.lang.Math.min
+import java.security.InvalidParameterException
 
 // keeps track of timer GUI rows
 class Adapter(private val context: Progress_bars): RecyclerView.Adapter<Adapter.Progress_bar_row_view_holder>()
@@ -97,9 +95,9 @@ class Adapter(private val context: Progress_bars): RecyclerView.Adapter<Adapter.
     }
 
     // an individual row object
-    inner class Progress_bar_row_view_holder(v: View): RecyclerView.ViewHolder(v), View.OnClickListener
+    inner class Progress_bar_row_view_holder(private val row_binding: ViewDataBinding): RecyclerView.ViewHolder(row_binding.root), View.OnClickListener
     {
-        private val row_binding: ProgressBarRowBinding = DataBindingUtil.bind(v)!!
+        // TODO: can't move views of different types past eachother
         private var moved_from_pos = 0
         internal lateinit var data: View_data
 
@@ -107,7 +105,12 @@ class Adapter(private val context: Progress_bars): RecyclerView.Adapter<Adapter.
         fun bind_cursor(cursor: Cursor)
         {
             data = View_data(context, cursor)
-            row_binding.data = data // let the GUI elements see the data
+
+            when(row_binding)
+            {
+                is ProgressBarRowBinding -> row_binding.data = data
+                is SingleProgressBarRowBinding -> row_binding.data = data
+            }
         }
 
         fun update()
@@ -133,6 +136,7 @@ class Adapter(private val context: Progress_bars): RecyclerView.Adapter<Adapter.
         // called when a row is released from reordering
         fun on_cleared()
         {
+            // TODO: this is getting -1 for adapterPosition
             val moved_to_pos = adapterPosition
             if(moved_to_pos != RecyclerView.NO_POSITION && moved_to_pos != moved_from_pos)
                 data.reorder(context, moved_from_pos, moved_to_pos)
@@ -163,9 +167,15 @@ class Adapter(private val context: Progress_bars): RecyclerView.Adapter<Adapter.
     override fun onCreateViewHolder(parent_in: ViewGroup, viewType: Int): Progress_bar_row_view_holder
     {
         // create a new row
-        val v = LayoutInflater.from(parent_in.context).inflate(R.layout.progress_bar_row, parent_in, false)
-        val holder = Progress_bar_row_view_holder(v)
-        v.setOnClickListener(holder)
+        val inflater = LayoutInflater.from(context)
+        val row_binding = when(viewType)
+        {
+            SEPARATE_TIME_VIEW -> ProgressBarRowBinding.inflate(inflater, parent_in, false)
+            SINGLE_TIME_VIEW -> SingleProgressBarRowBinding.inflate(inflater, parent_in, false)
+            else -> throw(InvalidParameterException("Unknown viewType: $viewType"))
+        }
+        val holder = Progress_bar_row_view_holder(row_binding)
+        row_binding.root.setOnClickListener(holder)
         return holder
     }
 
@@ -174,6 +184,15 @@ class Adapter(private val context: Progress_bars): RecyclerView.Adapter<Adapter.
         // move to the requested position and bind the data
         cursor.moveToPosition(position)
         holder.bind_cursor(cursor)
+    }
+
+    override fun getItemViewType(position: Int): Int
+    {
+        cursor.moveToPosition(position)
+        return if(cursor.get_nullable_bool(Progress_bars_table.SEPARATE_TIME_COL)!!)
+            SEPARATE_TIME_VIEW
+        else
+            SINGLE_TIME_VIEW
     }
 
     override fun getItemCount(): Int
@@ -204,5 +223,11 @@ class Adapter(private val context: Progress_bars): RecyclerView.Adapter<Adapter.
 
         // delete from DB
         Data(cursor).delete(context)
+    }
+
+    companion object
+    {
+        private const val SEPARATE_TIME_VIEW = 0
+        private const val SINGLE_TIME_VIEW = 1
     }
 }

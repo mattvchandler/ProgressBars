@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--
+Copyright (C) 2019 Matthew Chandler
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of
+this software and associated documentation files (the "Software"), to deal in
+the Software without restriction, including without limitation the rights to
+use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
+the Software, and to permit persons to whom the Software is furnished to do so,
+subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
+FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
+COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
+IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+-->
+
+<layout
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    >
+
+    <data>
+        <import type="android.view.View"/>
+        <import type="org.mattvchandler.progressbars.list.View_data"/>
+        <variable name="data" type="View_data"/>
+    </data>
+
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/progress_row"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?android:colorBackground"
+        tools:ignore="UnusedAttribute"
+        android:foreground="?android:selectableItemBackground"
+        android:clickable="true"
+        android:focusable="true"
+        >
+
+        <TextView
+            android:id="@+id/title"
+            android:text="@{data.title}"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textAlignment="center"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toTopOf="@+id/date"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_margin="@dimen/margin_size"
+            />
+
+        <TextView
+            android:id="@+id/date"
+            android:text="@{data.start_date_disp}"
+            android:textAlignment="textEnd"
+            android:visibility="@{data.show_start ? View.VISIBLE: View.GONE}"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/title"
+            app:layout_constraintBottom_toTopOf="@id/time_text"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/time"
+            app:layout_constraintHorizontal_chainStyle="packed"
+            android:layout_marginStart="@dimen/margin_size"
+            android:layout_marginEnd="@dimen/margin_size"
+            />
+
+        <TextView
+            android:id="@+id/time"
+            android:text="@{data.start_time_disp}"
+            android:textAlignment="textEnd"
+            android:visibility="@{data.show_start ? View.VISIBLE: View.GONE}"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toTopOf="@id/date"
+            app:layout_constraintBottom_toBottomOf="@id/date"
+            app:layout_constraintStart_toEndOf="@id/date"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginEnd="@dimen/margin_size"
+            />
+
+        <TextView
+            android:id="@+id/time_text"
+            android:text="@{data.time_text_disp}"
+            android:textAlignment="center"
+            android:visibility="@{data.show_time_text ? View.VISIBLE: View.GONE}"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/date"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_margin="@dimen/margin_size"
+            />
+    </android.support.constraint.ConstraintLayout>
+</layout>
