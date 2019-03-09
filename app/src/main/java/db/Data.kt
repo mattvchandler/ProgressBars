@@ -416,34 +416,39 @@ open class Data(): Serializable
 
         val now_s = System.currentTimeMillis() / 1000L
 
-        while(now_s >= end_time)
+        while(now_s >= if(separate_time) end_time else start_time)
         {
             // convert to calendar, add month/year, convert back
             val start_cal = Calendar.getInstance(TimeZone.getTimeZone(start_tz))
-            val end_cal = Calendar.getInstance(TimeZone.getTimeZone(start_tz))
+            val end_cal = Calendar.getInstance(TimeZone.getTimeZone(end_tz))
 
             start_cal.timeInMillis = start_time * 1000
-            end_cal.timeInMillis = end_time * 1000
+            if(separate_time)
+                end_cal.timeInMillis = end_time * 1000
 
             if(repeat_unit == Progress_bars_table.Unit.SECOND.index)
             {
                 start_cal.add(Calendar.SECOND, repeat_count)
-                end_cal.add(Calendar.SECOND, repeat_count)
+                if(separate_time)
+                    end_cal.add(Calendar.SECOND, repeat_count)
             }
             else if(repeat_unit == Progress_bars_table.Unit.MINUTE.index)
             {
                 start_cal.add(Calendar.MINUTE, repeat_count)
-                end_cal.add(Calendar.MINUTE, repeat_count)
+                if(separate_time)
+                    end_cal.add(Calendar.MINUTE, repeat_count)
             }
             else if(repeat_unit == Progress_bars_table.Unit.HOUR.index)
             {
                 start_cal.add(Calendar.HOUR, repeat_count)
-                end_cal.add(Calendar.HOUR, repeat_count)
+                if(separate_time)
+                    end_cal.add(Calendar.HOUR, repeat_count)
             }
             else if(repeat_unit == Progress_bars_table.Unit.DAY.index)
             {
                 start_cal.add(Calendar.DAY_OF_MONTH, repeat_count)
-                end_cal.add(Calendar.DAY_OF_MONTH, repeat_count)
+                if(separate_time)
+                    end_cal.add(Calendar.DAY_OF_MONTH, repeat_count)
             }
             else if(repeat_unit == Progress_bars_table.Unit.WEEK.index)
             {
@@ -463,22 +468,26 @@ open class Data(): Serializable
                     while(repeat_days_of_week and (1 shl day_of_week) == 0)
 
                     start_cal.add(Calendar.DAY_OF_MONTH, increment_days)
-                    end_cal.add(Calendar.DAY_OF_MONTH, increment_days)
+                    if(separate_time)
+                        end_cal.add(Calendar.DAY_OF_MONTH, increment_days)
                 }
             }
             else if(repeat_unit == Progress_bars_table.Unit.MONTH.index)
             {
                 start_cal.add(Calendar.MONTH, repeat_count)
-                end_cal.add(Calendar.MONTH, repeat_count)
+                if(separate_time)
+                    end_cal.add(Calendar.MONTH, repeat_count)
             }
             else if(repeat_unit == Progress_bars_table.Unit.YEAR.index)
             {
                 start_cal.add(Calendar.YEAR, repeat_count)
-                end_cal.add(Calendar.YEAR, repeat_count)
+                if(separate_time)
+                    end_cal.add(Calendar.YEAR, repeat_count)
             }
 
             start_time = start_cal.timeInMillis / 1000
-            end_time = end_cal.timeInMillis / 1000
+            if(separate_time)
+                end_time = end_cal.timeInMillis / 1000
         }
     }
 
