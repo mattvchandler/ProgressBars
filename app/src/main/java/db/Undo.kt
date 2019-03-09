@@ -94,7 +94,7 @@ class Undo: Progress_bars_table()
                 Progress_bars_table.NOTIFY_START_COL + " INTEGER, " +
                 Progress_bars_table.NOTIFY_END_COL + " INTEGER)"
 
-        fun upgrade(context:Context, db: SQLiteDatabase, old_version: Int)
+        fun upgrade(db: SQLiteDatabase, old_version: Int)
         {
             // This is a non-persistent table, so no need to migrate data
             if(old_version < 4)

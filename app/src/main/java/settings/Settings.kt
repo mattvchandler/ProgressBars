@@ -52,6 +52,7 @@ import java.text.ParsePosition
 import java.text.SimpleDateFormat
 import java.util.*
 
+// TODO: code could be cleaned up if we use end_time for singe-time timers
 // Settings for each timer
 class Settings: Dynamic_theme_activity(), DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener
 {

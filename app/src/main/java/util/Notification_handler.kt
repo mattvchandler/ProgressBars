@@ -73,9 +73,9 @@ class Notification_handler: BroadcastReceiver()
                 var notification_when: Long = 0
                 var do_notify = false
 
-                if((data.notify_start && start_action) ||
+                if(data.separate_time && ((data.notify_start && start_action) ||
                         // special case - when start and end times are the same, only the completed alarm is fired. if only the start notification is enabled, we still need to send it!
-                        (data.notify_start && !data.notify_end && data.start_time == data.end_time && completion_action))
+                        (data.notify_start && !data.notify_end && data.start_time == data.end_time && completion_action)))
                 {
                     do_notify = true
 
@@ -86,8 +86,16 @@ class Notification_handler: BroadcastReceiver()
                 {
                     do_notify = true
 
-                    content = data.complete_text
-                    notification_when = data.end_time
+                    if(data.separate_time)
+                    {
+                        content = data.complete_text
+                        notification_when = data.end_time
+                    }
+                    else
+                    {
+                        content = data.single_complete_text
+                        notification_when = data.start_time
+                    }
                 }
 
                 if(do_notify)
@@ -148,7 +156,7 @@ class Notification_handler: BroadcastReceiver()
             }
 
             // update row to get new repeat time, if needed
-            if(data.repeats && data.end_time <= System.currentTimeMillis() / 1000)
+            if(data.repeats && (if(data.separate_time) data.end_time else data.start_time) <= System.currentTimeMillis() / 1000)
             {
                 data.update(context)
             }
@@ -207,9 +215,9 @@ class Notification_handler: BroadcastReceiver()
             val complete_pi = get_intent(context, data, BASE_COMPLETED_ACTION_NAME)
 
             // if start time is in the future, set an alarm
-            // if start and end times are the same only set the completion alarm
+            // if start and end times are the same or using a single time, only set the completion alarm
             // (will overwrite any existing alarm with the same action and target)
-            if(now < data.start_time && data.start_time != data.end_time)
+            if(now < data.start_time && data.start_time != data.end_time && data.separate_time)
                 if(Build.VERSION.SDK_INT >= 23)
                     am.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, data.start_time * 1000, start_pi)
                 else
@@ -218,11 +226,12 @@ class Notification_handler: BroadcastReceiver()
                 am.cancel(start_pi)// otherwise cancel any existing alarm
 
             // same as above for completion alarms
-            if(now < data.end_time)
+            val end_time = if(data.separate_time) data.end_time else data.start_time
+            if(now < end_time)
                 if(Build.VERSION.SDK_INT >= 23)
-                    am.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, data.end_time * 1000, complete_pi)
+                    am.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, end_time * 1000, complete_pi)
                 else
-                    am.setExact(AlarmManager.RTC_WAKEUP, data.end_time * 1000, complete_pi)
+                    am.setExact(AlarmManager.RTC_WAKEUP, end_time * 1000, complete_pi)
             else
                 am.cancel(complete_pi)
         }
@@ -232,9 +241,8 @@ class Notification_handler: BroadcastReceiver()
             val db = DB(context).readableDatabase
             val cursor = db.rawQuery(Progress_bars_table.SELECT_ALL_ROWS, null)
 
-            val now = System.currentTimeMillis() / 1000
-
             val am = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+            val now = System.currentTimeMillis() / 1000
 
             // for every timer
             for(i in 0 until cursor.count)

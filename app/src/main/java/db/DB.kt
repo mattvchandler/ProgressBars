@@ -70,6 +70,6 @@ class DB(private val context: Context): SQLiteOpenHelper(context, DB_NAME, null,
             throw IllegalStateException("DB version mismatch")
 
         Progress_bars_table.upgrade(context, db, old_version)
-        Undo.upgrade(context, db, old_version)
+        Undo.upgrade(db, old_version)
     }
 }
