@@ -78,7 +78,7 @@ class Touch_helper_callback(private val adapter: Adapter): ItemTouchHelper.Callb
         {
             if(Build.VERSION.SDK_INT >= 21)
             {
-                // raise the selected row up
+                // raise the selected row up (it will do a little bit of this by default, but we can make it more noticeable
                 ViewCompat.setElevation(viewHolder.itemView, recyclerView.context.resources.getDimension(R.dimen.selected_elevation))
             }
             else

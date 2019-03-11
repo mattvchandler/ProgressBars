@@ -375,13 +375,11 @@ open class Data(): Serializable
         {
             for(i in from_pos..to_pos)
                 to_order = shift_row(i, to_order, cursor, db)
-
         }
         else
         // from_pos > to_pos
         {
-            var i = from_pos + 1
-            while(i-- > to_pos)
+            for(i in from_pos downTo to_pos)
                 to_order = shift_row(i, to_order, cursor, db)
         }
         cursor.close()

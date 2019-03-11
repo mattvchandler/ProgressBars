@@ -68,16 +68,16 @@ class Adapter(private val context: Progress_bars): RecyclerView.Adapter<Adapter.
                 Data.INSERT ->
                 {
                     reset_cursor()
-                    this@Adapter.notifyItemInserted(find_by_rowid(rowid))
+                    notifyItemInserted(find_by_rowid(rowid))
                 }
                 Data.UPDATE ->
                 {
-                    this@Adapter.notifyItemChanged(find_by_rowid(rowid))
+                    notifyItemChanged(find_by_rowid(rowid))
                     reset_cursor()
                 }
                 Data.DELETE ->
                 {
-                    this@Adapter.notifyItemRemoved(find_by_rowid(rowid))
+                    notifyItemRemoved(find_by_rowid(rowid))
                     reset_cursor()
                 }
                 Data.MOVE ->
@@ -88,7 +88,7 @@ class Adapter(private val context: Progress_bars): RecyclerView.Adapter<Adapter.
                     if(from_pos == -1 || to_pos == -1)
                         return
 
-                    this@Adapter.notifyItemRangeChanged(min(from_pos, to_pos), abs(from_pos - to_pos) + 1)
+                    notifyItemRangeChanged(min(from_pos, to_pos), abs(from_pos - to_pos) + 1)
                 }
             }
         }
