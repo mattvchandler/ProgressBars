@@ -48,7 +48,6 @@ class Adapter(private val activity: Progress_bars): RecyclerView.Adapter<Adapter
         private var moved_from_pos = 0
         internal lateinit var data: View_data
 
-        // get DB and display data from the cursor for this row
         fun bind(data: View_data)
         {
             this.data = data
@@ -135,10 +134,11 @@ class Adapter(private val activity: Progress_bars): RecyclerView.Adapter<Adapter
             SINGLE_TIME_VIEW
     }
 
-    override fun getItemId(position: Int) = data_list[position].rowid
+    override fun getItemId(position: Int) = data_list[position].id
     override fun getItemCount() = data_list.size
 
-    fun find_by_rowid(rowid: Long) = data_list.indexOfFirst{ it.rowid == rowid }
+    fun find_by_rowid(rowid: Long) = data_list.indexOfFirst{ it.rowid == rowid}
+    fun find_by_id(id: Long) = data_list.indexOfFirst{ it.id == id}
 
     // called when a row is deleted
     fun on_item_dismiss(pos: Int)
@@ -149,7 +149,7 @@ class Adapter(private val activity: Progress_bars): RecyclerView.Adapter<Adapter
 
     fun set_edited(data: Data)
     {
-        val pos = find_by_rowid(data.rowid)
+        val pos = find_by_id(data.id)
         if(pos >= 0)
         {
             data_list[pos] = View_data(activity, data)
@@ -160,6 +160,20 @@ class Adapter(private val activity: Progress_bars): RecyclerView.Adapter<Adapter
             data_list.add(View_data(activity, data))
             notifyItemInserted(data_list.size - 1)
         }
+    }
+
+    fun save_to_db()
+    {
+        val db = DB(activity).writableDatabase
+        db.beginTransaction()
+        db.delete(Progress_bars_table.TABLE_NAME, null, null)
+
+        for(i in 0 until data_list.size)
+            data_list[i].insert(db, i.toLong())
+
+        db.setTransactionSuccessful()
+        db.endTransaction()
+        db.close()
     }
 
     companion object

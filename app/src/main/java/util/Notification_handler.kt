@@ -53,7 +53,7 @@ class Notification_handler: BroadcastReceiver()
         if(action == "android.intent.action.BOOT_COMPLETED")
         {
             // get new start/end times first
-            Data.apply_all_repeats(context)
+            // TODO: Data.apply_all_repeats(context)
             reset_all_alarms(context)
         }
         // one of the alarms went off - send a notification
@@ -155,11 +155,11 @@ class Notification_handler: BroadcastReceiver()
                 }
             }
 
-            // update row to get new repeat time, if needed
-            if(data.repeats && (if(data.separate_time) data.end_time else data.start_time) <= System.currentTimeMillis() / 1000)
-            {
-                data.update(context)
-            }
+            // TODO: update row to get new repeat time, if needed
+//            if(data.repeats && (if(data.separate_time) data.end_time else data.start_time) <= System.currentTimeMillis() / 1000)
+//            {
+//                data.update(context)
+//            }
         }
     }
 

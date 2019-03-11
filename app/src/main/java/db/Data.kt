@@ -23,36 +23,22 @@ package org.mattvchandler.progressbars.db
 
 import android.content.ContentValues
 import android.content.Context
-import android.content.Intent
 import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
 import android.provider.BaseColumns
-import android.support.v4.content.LocalBroadcastManager
-
+import android.util.Log
 import org.mattvchandler.progressbars.R
 import org.mattvchandler.progressbars.util.Notification_handler
-
 import java.io.Serializable
-import java.util.Calendar
-import java.util.TimeZone
-
-// TODO: separate view type for non-separate Datas
-// we can do this, but it looks like it will take some major changes
-// setup stable IDs (use rowid)
-// need to make changes to cursor, then call notifyData... funs
-// do move in Touch_helper_Callback.onMove
-// insert, update, and delete should be OK as is
-// need some way to collapse movements, since these will generate a lot of undo / redo events doing it row by row
-// maybe split reorder. do the undo row generation on on_cleared
-// need to do something to speed it up - hitting the DB each re-order takes noticeable time
-// occasionally failing unique constraint on order col
+import java.util.*
+import java.util.concurrent.atomic.AtomicLong
 
 // struct w/ copy of all DB columns. Serializable so we can store the whole thing
 open class Data(): Serializable
 {
-    var rowid = -1L // is -1 when not set, ie. the data doesn't exist in the DB
+    var rowid = -1L // is -1 when not set, ie. the data doesn't exist in the DB // TODO: probably don't need this
 
-    var order         = -1L // -1 until set
+    var id: Long = -1
     var separate_time = true
     var start_time    = 0L
     var end_time      = 0L
@@ -96,6 +82,7 @@ open class Data(): Serializable
     // default ctor
     constructor(context: Context): this()
     {
+        id = nextId.getAndIncrement()
         val start_time_cal = Calendar.getInstance()
         val end_time_cal = start_time_cal.clone() as Calendar
         end_time_cal.add(Calendar.MINUTE, 1)
@@ -121,12 +108,14 @@ open class Data(): Serializable
     // construct from a DB cursor
     constructor(cursor: Cursor): this()
     {
+        id = nextId.getAndIncrement()
         set_from_cursor(cursor)
     }
 
     // get data from DB given rowid
     constructor(context: Context, rowid_in: Long): this()
     {
+        id = nextId.getAndIncrement()
         val db = DB(context).readableDatabase
         val cursor = db.rawQuery("SELECT * FROM ${Progress_bars_table.TABLE_NAME} WHERE ${BaseColumns._ID} = ?", arrayOf(rowid_in.toString()))
         cursor.moveToFirst()
@@ -141,7 +130,7 @@ open class Data(): Serializable
     constructor(b: Data): this()
     {
         rowid                = b.rowid
-        order                = b.order
+        id                   = b.id
         separate_time        = b.separate_time
         start_time           = b.start_time
         end_time             = b.end_time
@@ -179,7 +168,6 @@ open class Data(): Serializable
     private fun set_from_cursor(cursor: Cursor)
     {
         rowid                = cursor.get_nullable_long(BaseColumns._ID)!!
-        order                = cursor.get_nullable_long(Progress_bars_table.ORDER_COL)!!
         separate_time        = cursor.get_nullable_bool(Progress_bars_table.SEPARATE_TIME_COL)!!
         start_time           = cursor.get_nullable_long(Progress_bars_table.START_TIME_COL)!!
         end_time             = cursor.get_nullable_long(Progress_bars_table.END_TIME_COL)!!
@@ -214,11 +202,11 @@ open class Data(): Serializable
         notify_end           = cursor.get_nullable_bool(Progress_bars_table.NOTIFY_END_COL)!!
     }
 
-    private fun build_ContentValues(): ContentValues
+    private fun build_ContentValues(order_ind: Long): ContentValues
     {
         val values = ContentValues()
 
-        values.put(Progress_bars_table.ORDER_COL, order)
+        values.put(Progress_bars_table.ORDER_COL, order_ind)
         values.put(Progress_bars_table.SEPARATE_TIME_COL, separate_time)
         values.put(Progress_bars_table.START_TIME_COL, start_time)
         values.put(Progress_bars_table.END_TIME_COL, end_time)
@@ -255,166 +243,11 @@ open class Data(): Serializable
         return values
     }
 
-    // insert data into the DB. rowid must not be set
-    // if order is not set, it will be placed at the bottom
-    fun insert(context: Context)
+    fun insert(db: SQLiteDatabase, order_ind: Long)
     {
-        insert(context, Undo.UNDO)
-        Undo.delete_redo_history(context)
-    }
-
-    fun insert(context: Context, undo_redo: String)
-    {
-        apply_repeat()
-
-        val db = DB(context).writableDatabase
-
-        if(order < 0)
-        {
-            // get next available order #
-            val cursor = db.rawQuery("SELECT MAX(${Progress_bars_table.ORDER_COL}) + 1 FROM ${Progress_bars_table.TABLE_NAME}", null)
-            cursor.moveToFirst()
-            order = cursor.getLong(0)
-            cursor.close()
-        }
-
-        val values = build_ContentValues()
-        if(rowid > 0)
-            values.put(BaseColumns._ID, rowid)
+        Log.d("ASDF", "$order_ind, $title")
+        val values = build_ContentValues(order_ind)
         rowid = db.insert(Progress_bars_table.TABLE_NAME, null, values)
-
-        val undo_columns = ContentValues()
-        undo_columns.put(Undo.ACTION_COL, INSERT)
-        undo_columns.put(Undo.UNDO_REDO_COL, undo_redo)
-        undo_columns.put(Undo.TABLE_ROWID_COL, rowid)
-        db.insert(Undo.TABLE_NAME, null, undo_columns)
-        db.close()
-
-        Notification_handler.reset_alarm(context, this)
-
-        val intent = Intent(DB_CHANGED_EVENT)
-        intent.putExtra(DB_CHANGED_TYPE, INSERT)
-        intent.putExtra(DB_CHANGED_ROWID, rowid)
-        LocalBroadcastManager.getInstance(context).sendBroadcast(intent)
-    }
-
-    // update the DB with new data
-    // rowid must be set
-    fun update(context: Context)
-    {
-        update(context, Undo.UNDO)
-        Undo.delete_redo_history(context)
-    }
-
-    fun update(context: Context, undo_redo: String)
-    {
-        if(rowid < 0)
-            throw IllegalStateException("Tried to update when rowid isn't set")
-
-        apply_repeat()
-
-        val db = DB(context).writableDatabase
-
-        val old_data = Data(context, rowid)
-        val undo_columns = old_data.build_ContentValues()
-        undo_columns.put(Undo.ACTION_COL, UPDATE)
-        undo_columns.put(Undo.UNDO_REDO_COL, undo_redo)
-        undo_columns.put(Undo.TABLE_ROWID_COL, rowid)
-        db.insert(Undo.TABLE_NAME, null, undo_columns)
-
-        db.update(Progress_bars_table.TABLE_NAME, build_ContentValues(), BaseColumns._ID + " = ?", arrayOf(rowid.toString()))
-        db.close()
-
-        Notification_handler.reset_alarm(context, this)
-
-        val intent = Intent(DB_CHANGED_EVENT)
-        intent.putExtra(DB_CHANGED_TYPE, UPDATE)
-        intent.putExtra(DB_CHANGED_ROWID, rowid)
-        LocalBroadcastManager.getInstance(context).sendBroadcast(intent)
-    }
-
-    // delete from DB
-    // rowid must be set, and will be unset after deletion
-    fun delete(context: Context)
-    {
-        delete(context, Undo.UNDO)
-        Undo.delete_redo_history(context)
-    }
-
-    fun delete(context: Context, undo_redo: String)
-    {
-        if(rowid < 0)
-            throw IllegalStateException("Tried to delete when rowid isn't set")
-
-        Notification_handler.cancel_alarm(context, this)
-
-        val db = DB(context).writableDatabase
-
-        val undo_columns = build_ContentValues()
-        undo_columns.put(Undo.ACTION_COL, DELETE)
-        undo_columns.put(Undo.UNDO_REDO_COL, undo_redo)
-        undo_columns.put(Undo.TABLE_ROWID_COL, rowid)
-        db.insert(Undo.TABLE_NAME, null, undo_columns)
-
-        db.delete(Progress_bars_table.TABLE_NAME, BaseColumns._ID + " = ?", arrayOf(rowid.toString()))
-        db.close()
-
-        val intent = Intent(DB_CHANGED_EVENT)
-        intent.putExtra(DB_CHANGED_TYPE, DELETE)
-        intent.putExtra(DB_CHANGED_ROWID, rowid)
-        LocalBroadcastManager.getInstance(context).sendBroadcast(intent)
-
-        rowid = -1 // unset rowid
-    }
-
-    fun reorder(context: Context, from_pos: Int, to_pos: Int)
-    {
-        reorder(context, from_pos, to_pos, Undo.UNDO)
-        Undo.delete_redo_history(context)
-    }
-
-    fun reorder(context: Context, from_pos: Int, to_pos: Int, undo_redo: String)
-    {
-        if(from_pos == to_pos)
-            return
-        val db = DB(context).writableDatabase
-        val cursor = db.rawQuery(Progress_bars_table.SELECT_ALL_ROWS, null)
-
-        var to_order = -1L
-
-        if(from_pos < to_pos)
-        {
-            for(i in from_pos..to_pos)
-                to_order = shift_row(i, to_order, cursor, db)
-        }
-        else
-        // from_pos > to_pos
-        {
-            for(i in from_pos downTo to_pos)
-                to_order = shift_row(i, to_order, cursor, db)
-        }
-        cursor.close()
-
-        val values = ContentValues()
-        values.put(Progress_bars_table.ORDER_COL, to_order)
-        db.update(Progress_bars_table.TABLE_NAME, values, BaseColumns._ID + " = ?", arrayOf(rowid.toString()))
-
-        val undo_columns = ContentValues()
-        undo_columns.put(Undo.ACTION_COL, MOVE)
-        undo_columns.put(Undo.UNDO_REDO_COL, undo_redo)
-        undo_columns.put(Undo.TABLE_ROWID_COL, rowid)
-        undo_columns.put(Undo.SWAP_FROM_POS_COL, from_pos)
-        undo_columns.put(Undo.SWAP_TO_POS_COL, to_pos)
-        db.insert(Undo.TABLE_NAME, null, undo_columns)
-        db.close()
-
-        val intent = Intent(DB_CHANGED_EVENT)
-        intent.putExtra(DB_CHANGED_TYPE, MOVE)
-        intent.putExtra(DB_CHANGED_FROM_POS, from_pos)
-        intent.putExtra(DB_CHANGED_TO_POS, to_pos)
-        LocalBroadcastManager.getInstance(context).sendBroadcast(intent)
-
-        order = to_order
     }
 
     // if repeat is set, update start and end times as needed
@@ -502,46 +335,6 @@ open class Data(): Serializable
 
     companion object
     {
-        const val DB_CHANGED_EVENT    = "Data.DB_CHANGED_EVENT"
-        const val DB_CHANGED_TYPE     = "Data.DB_CHANGED_TYPE"
-        const val DB_CHANGED_ROWID    = "Data.DB_CHANGED_ROWID"
-        const val DB_CHANGED_FROM_POS = "Data.DB_CHANGED_FROM_POS"
-        const val DB_CHANGED_TO_POS   = "Data.DB_CHANGED_TO_POS"
-
-        const val INSERT = "insert"
-        const val UPDATE = "update"
-        const val DELETE = "delete"
-        const val MOVE   = "move"
-
-        fun apply_all_repeats(context: Context)
-        {
-            val db = DB(context).writableDatabase
-            val cursor = db.rawQuery(Progress_bars_table.SELECT_ALL_ROWS, null)
-
-            // for every timer
-            for(i in 0 until cursor.count)
-            {
-                cursor.moveToPosition(i)
-                val data = Data(cursor)
-
-                data.apply_repeat()
-                db.update(Progress_bars_table.TABLE_NAME, data.build_ContentValues(), BaseColumns._ID + " = ?", arrayOf(data.rowid.toString()))
-            }
-            cursor.close()
-            db.close()
-        }
+        private val nextId = AtomicLong(0)
     }
-}
-
-private fun shift_row(i: Int, to_order: Long, cursor: Cursor, db: SQLiteDatabase): Long
-{
-    cursor.moveToPosition(i)
-    val from_order = cursor.get_nullable_long(Progress_bars_table.ORDER_COL)!!
-    val i_rowid = cursor.get_nullable_long(BaseColumns._ID)!!
-
-    val values = ContentValues()
-    values.put(Progress_bars_table.ORDER_COL, to_order)
-    db.update(Progress_bars_table.TABLE_NAME, values, BaseColumns._ID + " = ?", arrayOf(i_rowid.toString()))
-
-    return from_order
 }

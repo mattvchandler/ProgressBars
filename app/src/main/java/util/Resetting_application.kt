@@ -26,7 +26,6 @@ import android.app.Application
 import org.mattvchandler.progressbars.db.DB
 import org.mattvchandler.progressbars.db.Data
 import org.mattvchandler.progressbars.db.Progress_bars_table
-import org.mattvchandler.progressbars.db.Undo
 
 class Resetting_application: Application()
 {
@@ -34,24 +33,20 @@ class Resetting_application: Application()
     {
         super.onCreate()
 
-        // reset undo / redo table
-        Undo.delete_undo_history(this)
-        Undo.delete_redo_history(this)
-
-        // insert a new row when no others exist
-        val db = DB(this).readableDatabase
-        val cursor = db.rawQuery(Progress_bars_table.SELECT_ALL_ROWS, null)
-        if(cursor.count == 0)
-        {
-            Data(this).insert(this)
-        }
-        else
-        {
-            // clean up existing orders. make them sequential
-            Progress_bars_table.cleanup_order(this)
-        }
-        cursor.close()
-        db.close()
+        // TODO: insert a new row when no others exist
+//        val db = DB(this).readableDatabase
+//        val cursor = db.rawQuery(Progress_bars_table.SELECT_ALL_ROWS, null)
+//        if(cursor.count == 0)
+//        {
+//            Data(this).insert(this)
+//        }
+//        else
+//        {
+//            // clean up existing orders. make them sequential
+//            Progress_bars_table.cleanup_order(this)
+//        }
+//        cursor.close()
+//        db.close()
 
         // register notification handler
         Notification_handler.setup_notification_channel(this)

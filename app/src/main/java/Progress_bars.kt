@@ -22,16 +22,12 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 package org.mattvchandler.progressbars
 
 import android.app.Activity
-import android.content.BroadcastReceiver
-import android.content.Context
 import android.content.Intent
-import android.content.IntentFilter
 import android.database.ContentObserver
 import android.databinding.DataBindingUtil
 import android.os.Bundle
 import android.os.Handler
 import android.preference.PreferenceManager
-import android.support.v4.content.LocalBroadcastManager
 import android.support.v7.widget.DividerItemDecoration
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.helper.ItemTouchHelper
@@ -39,7 +35,6 @@ import android.view.Menu
 import android.view.MenuItem
 import org.mattvchandler.progressbars.databinding.ActivityProgressBarsBinding
 import org.mattvchandler.progressbars.db.Data
-import org.mattvchandler.progressbars.db.Undo
 import org.mattvchandler.progressbars.list.Adapter
 import org.mattvchandler.progressbars.list.Touch_helper_callback
 import org.mattvchandler.progressbars.settings.Settings
@@ -62,22 +57,6 @@ class Progress_bars: Dynamic_theme_activity()
     private lateinit var adapter: Adapter
 
     private lateinit var date_format: String
-
-    private val on_db_change = object: BroadcastReceiver()
-    {
-        override fun onReceive(context: Context, intent: Intent)
-        {
-            val change_type = intent.getStringExtra(Data.DB_CHANGED_TYPE)
-            if(change_type == Data.INSERT || change_type == Data.UPDATE)
-            {
-                val rowid = intent.getLongExtra(Data.DB_CHANGED_ROWID, -1)
-                if(rowid > 0)
-                    binding.mainList.scrollToPosition(adapter.find_by_rowid(rowid))
-            }
-
-            invalidateOptionsMenu()
-        }
-    }
 
     private val on_24_hour_change = object: ContentObserver(Handler())
     {
@@ -110,7 +89,7 @@ class Progress_bars: Dynamic_theme_activity()
         touch_helper.attachToRecyclerView(binding.mainList)
 
         // update repeat times and alarms
-        Data.apply_all_repeats(this)
+        // TODO: Data.apply_all_repeats(this)
         Notification_handler.reset_all_alarms(this)
 
         val scroll_to_rowid = intent.getLongExtra(EXTRA_SCROLL_TO_ROWID, -1)
@@ -126,19 +105,20 @@ class Progress_bars: Dynamic_theme_activity()
         // start running each second
         update().run()
 
-        // register to receive notifications of DB changes
-        LocalBroadcastManager.getInstance(this).registerReceiver(on_db_change, IntentFilter(Data.DB_CHANGED_EVENT))
         contentResolver.registerContentObserver(android.provider.Settings.System.getUriFor(android.provider.Settings.System.TIME_12_24), false, on_24_hour_change)
     }
 
-    // TODO: save onStop
+    override fun onStop()
+    {
+        adapter.save_to_db()
+        super.onStop()
+    }
+
     override fun onDestroy()
     {
-        LocalBroadcastManager.getInstance(this).unregisterReceiver(on_db_change)
         contentResolver.unregisterContentObserver(on_24_hour_change)
 
         binding.mainList.adapter = null
-//        adapter.close()
         super.onDestroy()
     }
 
@@ -167,8 +147,9 @@ class Progress_bars: Dynamic_theme_activity()
         // dis/enable undo-redo buttons as needed
         super.onPrepareOptionsMenu(menu)
 
-        menu.findItem(R.id.undo).isEnabled = Undo.can_undo(this)
-        menu.findItem(R.id.redo).isEnabled = Undo.can_redo(this)
+        // TODO: en/disable undo/redo buttons (and implement the whole undo/redo system)
+//        menu.findItem(R.id.undo).isEnabled = Undo.can_undo(this)
+//        menu.findItem(R.id.redo).isEnabled = Undo.can_redo(this)
 
         return true
     }
@@ -187,13 +168,13 @@ class Progress_bars: Dynamic_theme_activity()
 
             R.id.undo ->
             {
-                Undo.apply(this, Undo.UNDO)
+//                Undo.apply(this, Undo.UNDO)
                 return true
             }
 
             R.id.redo ->
             {
-                Undo.apply(this, Undo.REDO)
+//                Undo.apply(this, Undo.REDO)
                 return true
             }
 
@@ -219,7 +200,10 @@ class Progress_bars: Dynamic_theme_activity()
         // get data back from Countdown_text
         if(result_code == Activity.RESULT_OK && request_code == RESULT_EDIT_DATA)
         {
-            adapter.set_edited(intent!!.getSerializableExtra(Settings.EXTRA_EDIT_DATA)!! as Data)
+            val data = intent!!.getSerializableExtra(Settings.EXTRA_EDIT_DATA)!! as Data
+            adapter.set_edited(data)
+            // TODO: apply alarms, repeats
+            binding.mainList.scrollToPosition(adapter.find_by_id(data.id))
         }
     }
 
