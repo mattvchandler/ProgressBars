@@ -32,6 +32,7 @@ import android.preference.PreferenceManager
 import android.os.Bundle
 import android.os.Handler
 import android.support.design.widget.TextInputEditText
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -86,21 +87,17 @@ class Settings: Dynamic_theme_activity(), DatePickerDialog.OnDateSetListener, Ti
         // only run this on 1st creation
         if(savedInstanceState == null)
         {
-            val rowid = intent.getLongExtra(EXTRA_EDIT_ROW_ID, -1)
+            data = intent.getSerializableExtra(EXTRA_EDIT_DATA) as Data? ?: Data(this)
 
             // no rowid passed? make a new one
-            data = if(rowid < 0)
+            if(intent.hasExtra(EXTRA_EDIT_DATA))
             {
-                setTitle(R.string.add_title)
-                Data(this)
-            }
-            else
-            {
-                // get data from row
                 setTitle(R.string.edit_title)
                 window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN)
-                Data(this, rowid)
             }
+            else
+                setTitle(R.string.add_title)
+
             save_data = Data(data)
 
             date_df = get_date_format(this)
@@ -300,11 +297,12 @@ class Settings: Dynamic_theme_activity(), DatePickerDialog.OnDateSetListener, Ti
                     return true
                 }
 
-                // insert new or update existing row
-                if(data.rowid < 0)
-                    data.insert(this)
-                else
-                    data.update(this)
+                val intent = Intent()
+
+                Log.d("MySave_butt", "${data.title}, ${data.rowid}")
+
+                intent.putExtra(EXTRA_EDIT_DATA, data)
+                setResult(Activity.RESULT_OK, intent)
 
                 finish()
                 return true
@@ -348,7 +346,7 @@ class Settings: Dynamic_theme_activity(), DatePickerDialog.OnDateSetListener, Ti
 
         if(repeat_count <= 0)
         {
-            Toast.makeText(this@Settings, R.string.invalid_repeat_count, Toast.LENGTH_LONG).show()
+            Toast.makeText(this, R.string.invalid_repeat_count, Toast.LENGTH_LONG).show()
             errors = true
         }
         else
@@ -698,7 +696,7 @@ class Settings: Dynamic_theme_activity(), DatePickerDialog.OnDateSetListener, Ti
 
     companion object
     {
-        const val EXTRA_EDIT_ROW_ID = "org.mattvchandler.progressbars.EDIT_ROW_ID"
+        const val EXTRA_EDIT_DATA = "org.mattvchandler.progressbars.EDIT_DATA"
 
         private const val STATE_DATA = "data"
         private const val STATE_SAVE_DATA = "save_data"

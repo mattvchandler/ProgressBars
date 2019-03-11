@@ -21,6 +21,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 package org.mattvchandler.progressbars
 
+import android.app.Activity
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
@@ -34,6 +35,7 @@ import android.support.v4.content.LocalBroadcastManager
 import android.support.v7.widget.DividerItemDecoration
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.helper.ItemTouchHelper
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import org.mattvchandler.progressbars.databinding.ActivityProgressBarsBinding
@@ -54,6 +56,7 @@ class Progress_bars: Dynamic_theme_activity()
     companion object
     {
         const val EXTRA_SCROLL_TO_ROWID = "org.mattvchandler.progressbars.SCROLL_TO_ROWID"
+        const val RESULT_EDIT_DATA = 0
     }
 
     private lateinit var binding: ActivityProgressBarsBinding
@@ -129,13 +132,14 @@ class Progress_bars: Dynamic_theme_activity()
         contentResolver.registerContentObserver(android.provider.Settings.System.getUriFor(android.provider.Settings.System.TIME_12_24), false, on_24_hour_change)
     }
 
+    // TODO: save onStop
     override fun onDestroy()
     {
         LocalBroadcastManager.getInstance(this).unregisterReceiver(on_db_change)
         contentResolver.unregisterContentObserver(on_24_hour_change)
 
         binding.mainList.adapter = null
-        adapter.close()
+//        adapter.close()
         super.onDestroy()
     }
 
@@ -178,7 +182,7 @@ class Progress_bars: Dynamic_theme_activity()
             R.id.add_butt ->
             {
                 // open editor with no rowid set
-                startActivity(Intent(this, Settings::class.java))
+                startActivityForResult(Intent(this, Settings::class.java), RESULT_EDIT_DATA)
                 return true
             }
 
@@ -211,6 +215,17 @@ class Progress_bars: Dynamic_theme_activity()
         return false
     }
 
+    override fun onActivityResult(request_code: Int, result_code: Int, intent: Intent?)
+    {
+        Log.d("MyonActivityResult", "req: $request_code, res: $result_code")
+        // get data back from Countdown_text
+        if(result_code == Activity.RESULT_OK && request_code == RESULT_EDIT_DATA)
+        {
+            adapter.set_edited(intent!!.getSerializableExtra(Settings.EXTRA_EDIT_DATA)!! as Data)
+        }
+    }
+
+
     private inner class update: Runnable
     {
         private val handler = Handler()
@@ -220,7 +235,7 @@ class Progress_bars: Dynamic_theme_activity()
         {
             for(i in 0 until adapter.itemCount)
             {
-                val view_holder = binding.mainList.findViewHolderForAdapterPosition(i) as Adapter.Progress_bar_row_view_holder?
+                val view_holder = binding.mainList.findViewHolderForAdapterPosition(i) as Adapter.Holder?
                 view_holder?.update()
             }
 

@@ -26,6 +26,7 @@ import android.os.Build
 import android.support.v4.view.ViewCompat
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.helper.ItemTouchHelper
+import android.util.Log
 import android.util.TypedValue
 import org.mattvchandler.progressbars.R
 import kotlin.math.min
@@ -33,11 +34,11 @@ import kotlin.math.min
 // handle drag gestures for reorder and dismiss in RecyclerView
 class Touch_helper_callback(private val adapter: Adapter): ItemTouchHelper.Callback()
 {
-
     // long press and drag to reorder list
     override fun onMove(recyclerView: RecyclerView, source: RecyclerView.ViewHolder, target: RecyclerView.ViewHolder): Boolean
     {
-        adapter.notifyItemMoved(source.adapterPosition, target.adapterPosition)
+        Log.d("Myonmove", "${source.adapterPosition}, ${target.adapterPosition}")
+        (source as Adapter.Holder).on_move(target as Adapter.Holder)
         return true
     }
 
@@ -68,7 +69,7 @@ class Touch_helper_callback(private val adapter: Adapter): ItemTouchHelper.Callb
         super.onSelectedChanged(viewHolder, actionState)
         // notify when a row is selected
         if(actionState != ItemTouchHelper.ACTION_STATE_IDLE)
-            (viewHolder as Adapter.Progress_bar_row_view_holder).on_selected()
+            (viewHolder as Adapter.Holder).on_selected()
     }
 
     override fun onChildDraw(c: Canvas, recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder, dX: Float, dY: Float, actionState: Int, isCurrentlyActive: Boolean)
@@ -96,7 +97,7 @@ class Touch_helper_callback(private val adapter: Adapter): ItemTouchHelper.Callb
     {
         super.clearView(recyclerView, viewHolder)
         // notify when a row is deselected
-        (viewHolder as Adapter.Progress_bar_row_view_holder).on_cleared()
+        (viewHolder as Adapter.Holder).on_cleared()
 
         if(Build.VERSION.SDK_INT >= 21)
         {

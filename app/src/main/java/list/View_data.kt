@@ -23,7 +23,6 @@ package org.mattvchandler.progressbars.list
 
 import android.content.Context
 import android.content.res.Resources
-import android.database.Cursor
 import android.databinding.ObservableField
 import android.databinding.ObservableInt
 import android.util.Log
@@ -58,7 +57,7 @@ private val days_in_mon = intArrayOf(31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30,
 
 // struct bound to progress_bar_row layout
 // class and fields need to be public so they can be accessed by binding
-class View_data (context: Context, cursor: Cursor): Data(cursor) // contains all DB data from inherited struct
+class View_data (context: Context, data: Data): Data(data) // contains all DB data from inherited struct
 {
     // fields used by UI
     val start_date_disp: String

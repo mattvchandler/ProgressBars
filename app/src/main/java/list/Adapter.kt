@@ -21,208 +21,151 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 package org.mattvchandler.progressbars.list
 
-import android.content.BroadcastReceiver
-import android.content.Context
 import android.content.Intent
-import android.content.IntentFilter
-import android.database.Cursor
-import android.database.sqlite.SQLiteDatabase
 import android.databinding.ViewDataBinding
-import android.provider.BaseColumns
-import android.support.v4.content.LocalBroadcastManager
 import android.support.v7.widget.RecyclerView
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-
 import org.mattvchandler.progressbars.Progress_bars
-import org.mattvchandler.progressbars.settings.Settings
 import org.mattvchandler.progressbars.databinding.ProgressBarRowBinding
-import org.mattvchandler.progressbars.databinding.SingleProgressBarRowBinding
-import org.mattvchandler.progressbars.db.*
-
-import java.util.NoSuchElementException
-
-import java.lang.Math.abs
-import java.lang.Math.min
+import org.mattvchandler.progressbars.db.DB
+import org.mattvchandler.progressbars.db.Data
+import org.mattvchandler.progressbars.db.Progress_bars_table
+import org.mattvchandler.progressbars.settings.Settings
 import java.security.InvalidParameterException
+import java.util.Collections.swap
 
 // keeps track of timer GUI rows
-class Adapter(private val context: Progress_bars): RecyclerView.Adapter<Adapter.Progress_bar_row_view_holder>()
+class Adapter(private val activity: Progress_bars): RecyclerView.Adapter<Adapter.Holder>()
 {
-    private val db: SQLiteDatabase = DB(context).writableDatabase
-    private var cursor: Cursor = db.rawQuery(Progress_bars_table.SELECT_ALL_ROWS, null)
-    private val db_change_receiver = object: BroadcastReceiver()
-    {
-        // store the data we'll need for the lifetime of this object
-        override fun onReceive(context: Context, intent: Intent)
-        {
-            val rowid = intent.getLongExtra(Data.DB_CHANGED_ROWID, -1L)
-            val change_type = intent.getStringExtra(Data.DB_CHANGED_TYPE)
-
-            if(rowid == -1L && change_type != "move")
-                return
-
-            when(change_type)
-            {
-                Data.INSERT ->
-                {
-                    reset_cursor()
-                    notifyItemInserted(find_by_rowid(rowid))
-                }
-                Data.UPDATE ->
-                {
-                    notifyItemChanged(find_by_rowid(rowid))
-                    reset_cursor()
-                }
-                Data.DELETE ->
-                {
-                    notifyItemRemoved(find_by_rowid(rowid))
-                    reset_cursor()
-                }
-                Data.MOVE ->
-                {
-                    reset_cursor()
-                    val from_pos = intent.getIntExtra(Data.DB_CHANGED_FROM_POS, -1)
-                    val to_pos = intent.getIntExtra(Data.DB_CHANGED_TO_POS, -1)
-                    if(from_pos == -1 || to_pos == -1)
-                        return
-
-                    notifyItemRangeChanged(min(from_pos, to_pos), abs(from_pos - to_pos) + 1)
-                }
-            }
-        }
-    }
+    private val data_list: MutableList<View_data>
 
     // an individual row object
-    inner class Progress_bar_row_view_holder(private val row_binding: ViewDataBinding): RecyclerView.ViewHolder(row_binding.root), View.OnClickListener
+    inner class Holder(private val row_binding: ViewDataBinding): RecyclerView.ViewHolder(row_binding.root), View.OnClickListener
     {
-        // TODO: can't move views of different types past eachother
         private var moved_from_pos = 0
         internal lateinit var data: View_data
 
         // get DB and display data from the cursor for this row
-        fun bind_cursor(cursor: Cursor)
+        fun bind(data: View_data)
         {
-            data = View_data(context, cursor)
+            this.data = data
 
             when(row_binding)
             {
                 is ProgressBarRowBinding -> row_binding.data = data
-                is SingleProgressBarRowBinding -> row_binding.data = data
+//                is SingleProgressBarRowBinding -> row_binding.data = data
             }
         }
 
         fun update()
         {
-            data.update_display(context.resources)
+            data.update_display(activity.resources)
         }
 
         // click the row to edit its data
         override fun onClick(v: View)
         {
             // create and launch an intent to launch the editor, and pass the rowid
-            val intent = Intent(v.context, Settings::class.java)
-            intent.putExtra(Settings.EXTRA_EDIT_ROW_ID, data.rowid)
-            context.startActivity(intent)
+            val intent = Intent(activity, Settings::class.java)
+            intent.putExtra(Settings.EXTRA_EDIT_DATA, data) // TODO: Data, not rowid
+            activity.startActivityForResult(intent, Progress_bars.RESULT_EDIT_DATA)
         }
 
-        // called when a row is dragged for deletion or reordering
+        // called when dragging during each reordering
+        fun on_move(to: Holder)
+        {
+            swap(data_list, adapterPosition, to.adapterPosition)
+            notifyItemMoved(adapterPosition, to.adapterPosition)
+        }
+        // called when a row is selected for deletion or reordering
         fun on_selected()
         {
-            moved_from_pos = adapterPosition
         }
 
         // called when a row is released from reordering
         fun on_cleared()
         {
-            // TODO: this is getting -1 for adapterPosition
-            val moved_to_pos = adapterPosition
-            if(moved_to_pos != RecyclerView.NO_POSITION && moved_to_pos != moved_from_pos)
-                data.reorder(context, moved_from_pos, moved_to_pos)
+            // TODO: set undo here?
         }
     }
 
     init
     {
-        LocalBroadcastManager.getInstance(context).registerReceiver(db_change_receiver, IntentFilter(Data.DB_CHANGED_EVENT))
-    }
+        setHasStableIds(true)
 
-    fun close()
-    {
+        val db = DB(activity).readableDatabase
+        val cursor = db.rawQuery(Progress_bars_table.SELECT_ALL_ROWS, null)
+
+        cursor.moveToFirst()
+        data_list = (0 until cursor.count).map{ val data = View_data(activity, Data(cursor)); cursor.moveToNext(); data }.toMutableList()
+
         cursor.close()
         db.close()
-        LocalBroadcastManager.getInstance(context).unregisterReceiver(db_change_receiver)
     }
 
-    // called when DB info has changed, to let us update the cursor
-    private fun reset_cursor()
+    override fun onCreateViewHolder(parent_in: ViewGroup, viewType: Int): Holder
     {
-        cursor.close()
-
-        // get new DB data
-        cursor = db.rawQuery(Progress_bars_table.SELECT_ALL_ROWS, null)
-    }
-
-    override fun onCreateViewHolder(parent_in: ViewGroup, viewType: Int): Progress_bar_row_view_holder
-    {
+        Log.d("Mycreateviewholder", "type: $viewType")
         // create a new row
-        val inflater = LayoutInflater.from(context)
+        val inflater = LayoutInflater.from(activity)
         val row_binding = when(viewType)
         {
             SEPARATE_TIME_VIEW -> ProgressBarRowBinding.inflate(inflater, parent_in, false)
-            SINGLE_TIME_VIEW -> SingleProgressBarRowBinding.inflate(inflater, parent_in, false)
+//            SINGLE_TIME_VIEW -> SingleProgressBarRowBinding.inflate(inflater, parent_in, false)
             else -> throw(InvalidParameterException("Unknown viewType: $viewType"))
         }
-        val holder = Progress_bar_row_view_holder(row_binding)
+        val holder = Holder(row_binding)
         row_binding.root.setOnClickListener(holder)
         return holder
     }
 
-    override fun onBindViewHolder(holder: Progress_bar_row_view_holder, position: Int)
+    override fun onBindViewHolder(holder: Holder, position: Int)
     {
         // move to the requested position and bind the data
-        cursor.moveToPosition(position)
-        holder.bind_cursor(cursor)
+        Log.d("Mybindviewholder", "pos: $position, type: ${getItemViewType(position)}")
+        holder.bind(data_list[position])
     }
 
     override fun getItemViewType(position: Int): Int
     {
-        cursor.moveToPosition(position)
-        return if(cursor.get_nullable_bool(Progress_bars_table.SEPARATE_TIME_COL)!!)
-            SEPARATE_TIME_VIEW
-        else
-            SINGLE_TIME_VIEW
+        return SEPARATE_TIME_VIEW
+//        cursor.moveToPosition(position)
+//        Log.d("MygetItemViewType", "pos: $position, sep: ${cursor.get_nullable_bool(Progress_bars_table.SEPARATE_TIME_COL)}")
+//        return if(cursor.get_nullable_bool(Progress_bars_table.SEPARATE_TIME_COL)!!)
+//            SEPARATE_TIME_VIEW
+//        else
+//            SINGLE_TIME_VIEW
     }
 
-    override fun getItemCount(): Int
-    {
-        return cursor.count
-    }
+    override fun getItemId(position: Int) = data_list[position].rowid
+    override fun getItemCount() = data_list.size
 
-    // look up position by rowid.
-    fun find_by_rowid(rowid: Long): Int
-    {
-        // linear search of cursor to find the row with matching rowid
-        for(i in 0 until itemCount)
-        {
-            cursor.moveToPosition(i)
-            if(cursor.get_nullable_long(BaseColumns._ID)!! == rowid)
-            {
-                return i
-            }
-        }
-
-        throw NoSuchElementException("rowid: $rowid not found in cursor")
-    }
+    fun find_by_rowid(rowid: Long) = data_list.indexOfFirst{ it.rowid == rowid }
 
     // called when a row is deleted
     fun on_item_dismiss(pos: Int)
     {
-        cursor.moveToPosition(pos)
+        data_list.removeAt(pos)
+        notifyItemRemoved(pos)
+    }
 
-        // delete from DB
-        Data(cursor).delete(context)
+    fun set_edited(data: Data)
+    {
+        val pos = find_by_rowid(data.rowid)
+        Log.d("Myset_edited", "$pos")
+        if(pos >= 0)
+        {
+            data_list[pos] = View_data(activity, data)
+            notifyItemChanged(pos)
+        }
+        else
+        {
+            data_list.add(View_data(activity, data))
+            notifyItemInserted(data_list.size - 1)
+        }
     }
 
     companion object
