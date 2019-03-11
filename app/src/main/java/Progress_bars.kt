@@ -35,7 +35,6 @@ import android.support.v4.content.LocalBroadcastManager
 import android.support.v7.widget.DividerItemDecoration
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.helper.ItemTouchHelper
-import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import org.mattvchandler.progressbars.databinding.ActivityProgressBarsBinding
@@ -217,7 +216,6 @@ class Progress_bars: Dynamic_theme_activity()
 
     override fun onActivityResult(request_code: Int, result_code: Int, intent: Intent?)
     {
-        Log.d("MyonActivityResult", "req: $request_code, res: $result_code")
         // get data back from Countdown_text
         if(result_code == Activity.RESULT_OK && request_code == RESULT_EDIT_DATA)
         {

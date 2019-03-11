@@ -32,7 +32,6 @@ import android.preference.PreferenceManager
 import android.os.Bundle
 import android.os.Handler
 import android.support.design.widget.TextInputEditText
-import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -298,8 +297,6 @@ class Settings: Dynamic_theme_activity(), DatePickerDialog.OnDateSetListener, Ti
                 }
 
                 val intent = Intent()
-
-                Log.d("MySave_butt", "${data.title}, ${data.rowid}")
 
                 intent.putExtra(EXTRA_EDIT_DATA, data)
                 setResult(Activity.RESULT_OK, intent)

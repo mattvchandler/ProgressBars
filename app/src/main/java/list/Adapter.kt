@@ -24,12 +24,12 @@ package org.mattvchandler.progressbars.list
 import android.content.Intent
 import android.databinding.ViewDataBinding
 import android.support.v7.widget.RecyclerView
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import org.mattvchandler.progressbars.Progress_bars
 import org.mattvchandler.progressbars.databinding.ProgressBarRowBinding
+import org.mattvchandler.progressbars.databinding.SingleProgressBarRowBinding
 import org.mattvchandler.progressbars.db.DB
 import org.mattvchandler.progressbars.db.Data
 import org.mattvchandler.progressbars.db.Progress_bars_table
@@ -56,7 +56,7 @@ class Adapter(private val activity: Progress_bars): RecyclerView.Adapter<Adapter
             when(row_binding)
             {
                 is ProgressBarRowBinding -> row_binding.data = data
-//                is SingleProgressBarRowBinding -> row_binding.data = data
+                is SingleProgressBarRowBinding -> row_binding.data = data
             }
         }
 
@@ -108,13 +108,12 @@ class Adapter(private val activity: Progress_bars): RecyclerView.Adapter<Adapter
 
     override fun onCreateViewHolder(parent_in: ViewGroup, viewType: Int): Holder
     {
-        Log.d("Mycreateviewholder", "type: $viewType")
         // create a new row
         val inflater = LayoutInflater.from(activity)
         val row_binding = when(viewType)
         {
             SEPARATE_TIME_VIEW -> ProgressBarRowBinding.inflate(inflater, parent_in, false)
-//            SINGLE_TIME_VIEW -> SingleProgressBarRowBinding.inflate(inflater, parent_in, false)
+            SINGLE_TIME_VIEW -> SingleProgressBarRowBinding.inflate(inflater, parent_in, false)
             else -> throw(InvalidParameterException("Unknown viewType: $viewType"))
         }
         val holder = Holder(row_binding)
@@ -125,19 +124,15 @@ class Adapter(private val activity: Progress_bars): RecyclerView.Adapter<Adapter
     override fun onBindViewHolder(holder: Holder, position: Int)
     {
         // move to the requested position and bind the data
-        Log.d("Mybindviewholder", "pos: $position, type: ${getItemViewType(position)}")
         holder.bind(data_list[position])
     }
 
     override fun getItemViewType(position: Int): Int
     {
-        return SEPARATE_TIME_VIEW
-//        cursor.moveToPosition(position)
-//        Log.d("MygetItemViewType", "pos: $position, sep: ${cursor.get_nullable_bool(Progress_bars_table.SEPARATE_TIME_COL)}")
-//        return if(cursor.get_nullable_bool(Progress_bars_table.SEPARATE_TIME_COL)!!)
-//            SEPARATE_TIME_VIEW
-//        else
-//            SINGLE_TIME_VIEW
+        return if(data_list[position].separate_time)
+            SEPARATE_TIME_VIEW
+        else
+            SINGLE_TIME_VIEW
     }
 
     override fun getItemId(position: Int) = data_list[position].rowid
@@ -155,7 +150,6 @@ class Adapter(private val activity: Progress_bars): RecyclerView.Adapter<Adapter
     fun set_edited(data: Data)
     {
         val pos = find_by_rowid(data.rowid)
-        Log.d("Myset_edited", "$pos")
         if(pos >= 0)
         {
             data_list[pos] = View_data(activity, data)

@@ -28,7 +28,6 @@ import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
 import android.provider.BaseColumns
 import android.support.v4.content.LocalBroadcastManager
-import android.util.Log
 
 import org.mattvchandler.progressbars.R
 import org.mattvchandler.progressbars.util.Notification_handler
@@ -376,7 +375,6 @@ open class Data(): Serializable
 
     fun reorder(context: Context, from_pos: Int, to_pos: Int, undo_redo: String)
     {
-        Log.d("Myreorder", "from: $from_pos, to: $to_pos")
         if(from_pos == to_pos)
             return
         val db = DB(context).writableDatabase
@@ -540,8 +538,6 @@ private fun shift_row(i: Int, to_order: Long, cursor: Cursor, db: SQLiteDatabase
     cursor.moveToPosition(i)
     val from_order = cursor.get_nullable_long(Progress_bars_table.ORDER_COL)!!
     val i_rowid = cursor.get_nullable_long(BaseColumns._ID)!!
-
-    Log.d("Myshift_row", "i: $i, i_rowid: $i_rowid, from_order: $from_order, to_order: $to_order")
 
     val values = ContentValues()
     values.put(Progress_bars_table.ORDER_COL, to_order)

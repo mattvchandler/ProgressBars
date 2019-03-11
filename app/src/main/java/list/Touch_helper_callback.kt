@@ -26,7 +26,6 @@ import android.os.Build
 import android.support.v4.view.ViewCompat
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.helper.ItemTouchHelper
-import android.util.Log
 import android.util.TypedValue
 import org.mattvchandler.progressbars.R
 import kotlin.math.min
@@ -37,7 +36,6 @@ class Touch_helper_callback(private val adapter: Adapter): ItemTouchHelper.Callb
     // long press and drag to reorder list
     override fun onMove(recyclerView: RecyclerView, source: RecyclerView.ViewHolder, target: RecyclerView.ViewHolder): Boolean
     {
-        Log.d("Myonmove", "${source.adapterPosition}, ${target.adapterPosition}")
         (source as Adapter.Holder).on_move(target as Adapter.Holder)
         return true
     }
