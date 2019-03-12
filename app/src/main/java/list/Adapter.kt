@@ -146,8 +146,12 @@ class Adapter(private val activity: Progress_bars): RecyclerView.Adapter<Adapter
 
     fun find_by_rowid(rowid: Long) = data_list.indexOfFirst{ it.rowid == rowid}
 
-    fun apply_repeat(pos: Int)
+    fun apply_repeat(rowid: Long)
     {
+        val pos = find_by_rowid(rowid)
+        if(pos < 0)
+            return
+
         data_list[pos].apply_repeat()
         Notification_handler.reset_alarm(activity, Data(data_list[pos]))
         data_list[pos].reinit(activity)

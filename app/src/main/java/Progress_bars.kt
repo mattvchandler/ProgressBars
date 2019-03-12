@@ -73,8 +73,7 @@ class Progress_bars: Dynamic_theme_activity()
                 CHANGE_LIST_EVENT ->
                 {
                     val rowid = intent.getLongExtra(EXTRA_ROWID, -1)
-                    if(rowid >= 0)
-                        adapter.apply_repeat(adapter.find_by_rowid(rowid))
+                    adapter.apply_repeat(rowid)
                 }
             }
         }
@@ -129,10 +128,10 @@ class Progress_bars: Dynamic_theme_activity()
         contentResolver.registerContentObserver(android.provider.Settings.System.getUriFor(android.provider.Settings.System.TIME_12_24), false, on_24_hour_change)
     }
 
-    override fun onStop()
+    override fun onPause()
     {
         adapter.save_to_db()
-        super.onStop()
+        super.onPause()
     }
 
     override fun onDestroy()
