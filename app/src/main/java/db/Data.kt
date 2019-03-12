@@ -26,11 +26,9 @@ import android.content.Context
 import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
 import android.provider.BaseColumns
-import android.util.Log
 import org.mattvchandler.progressbars.R
 import java.io.Serializable
 import java.util.*
-import java.util.concurrent.atomic.AtomicLong
 
 // struct w/ copy of all DB columns. Serializable so we can store the whole thing
 open class Data(): Serializable
@@ -247,21 +245,9 @@ open class Data(): Serializable
         rowid = db.insert(Progress_bars_table.TABLE_NAME, null, values)
     }
 
-    fun update(db: SQLiteDatabase, order_ind: Long)
-    {
-        if(rowid < 0)
-            throw IllegalStateException("Tried to update when rowid isn't set")
-
-        val values = build_ContentValues()
-        values.put(BaseColumns._ID, rowid)
-        values.put(Progress_bars_table.ORDER_COL, order_ind)
-        db.update(Progress_bars_table.TABLE_NAME, build_ContentValues(), BaseColumns._ID + " = ?", arrayOf(rowid.toString()))
-    }
-
     // if repeat is set, update start and end times as needed
     fun apply_repeat()
     {
-        Log.d("apply_repeat", "$rowid")
         if(!repeats)
             return
 

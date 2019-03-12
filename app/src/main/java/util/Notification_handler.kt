@@ -83,7 +83,6 @@ class Notification_handler: BroadcastReceiver()
                         (data.notify_start && !data.notify_end && data.start_time == data.end_time && completion_action)))
                 {
                     do_notify = true
-
                     content = data.start_text
                     notification_when = data.start_time
                 }
@@ -202,48 +201,59 @@ class Notification_handler: BroadcastReceiver()
         }
 
         // build start or completion intent for a start/end alarms
-        private fun get_intent(context: Context, data: Data, base_action: String): PendingIntent
+        private fun get_intents(context: Context, data: Data, pack_data: Boolean): Pair<PendingIntent, PendingIntent>
         {
-            // set intent to bring us to the notification handler
-            val intent = Intent(context, Notification_handler::class.java)
-            intent.action = base_action + data.rowid.toString()
+            // set intents to bring us to the notification handler
+            val start_intent = Intent(context, Notification_handler::class.java)
+            start_intent.action = BASE_STARTED_ACTION_NAME + data.rowid.toString()
 
-            // put the rowid in the intent extras (convert to byte array to work around issue w/ passing serializable to Broadcast receiver
-            val out = ByteArrayOutputStream()
-            val os = ObjectOutputStream(out)
-            os.writeObject(data)
-            val data_as_bytes = out.toByteArray()
-            intent.putExtra(EXTRA_DATA, data_as_bytes)
+            val complete_intent = Intent(context, Notification_handler::class.java)
+            complete_intent.action = BASE_COMPLETED_ACTION_NAME + data.rowid.toString()
 
-            return PendingIntent.getBroadcast(context, 0, intent, 0)
+            if(pack_data)
+            {
+                // put the rowid in the intent extras (convert to byte array to work around issue w/ passing serializable to Broadcast receiver
+                val out = ByteArrayOutputStream()
+                val os = ObjectOutputStream(out)
+                os.writeObject(data)
+                val data_as_bytes = out.toByteArray()
+
+                start_intent.putExtra(EXTRA_DATA, data_as_bytes)
+                complete_intent.putExtra(EXTRA_DATA, data_as_bytes)
+            }
+
+            return Pair(PendingIntent.getBroadcast(context, 0, start_intent, PendingIntent.FLAG_CANCEL_CURRENT), PendingIntent.getBroadcast(context, 0, complete_intent, PendingIntent.FLAG_CANCEL_CURRENT))
         }
 
         private fun reset_alarm_details(context: Context, data: Data, am: AlarmManager, now: Long)
         {
             // build start and completion intents
-            val start_pi = get_intent(context, data, BASE_STARTED_ACTION_NAME)
-            val complete_pi = get_intent(context, data, BASE_COMPLETED_ACTION_NAME)
+            val (start_pi, complete_pi) = get_intents(context, data, true)
+
+            // cancel any existing alarms
+            am.cancel(start_pi)
+            am.cancel(complete_pi)
 
             // if start time is in the future, set an alarm
             // if start and end times are the same or using a single time, only set the completion alarm
             // (will overwrite any existing alarm with the same action and target)
             if(now < data.start_time && data.start_time != data.end_time && data.separate_time)
+            {
                 if(Build.VERSION.SDK_INT >= 23)
                     am.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, data.start_time * 1000, start_pi)
                 else
                     am.setExact(AlarmManager.RTC_WAKEUP, data.start_time * 1000, start_pi)
-            else
-                am.cancel(start_pi)// otherwise cancel any existing alarm
+            }
 
             // same as above for completion alarms
             val end_time = if(data.separate_time) data.end_time else data.start_time
             if(now < end_time)
+            {
                 if(Build.VERSION.SDK_INT >= 23)
                     am.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, end_time * 1000, complete_pi)
                 else
                     am.setExact(AlarmManager.RTC_WAKEUP, end_time * 1000, complete_pi)
-            else
-                am.cancel(complete_pi)
+            }
         }
 
         fun reset_all_alarms(context: Context)
@@ -281,8 +291,9 @@ class Notification_handler: BroadcastReceiver()
             val am = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
 
             // cancel both start and completion alarms
-            am.cancel(get_intent(context, data, BASE_STARTED_ACTION_NAME))
-            am.cancel(get_intent(context, data, BASE_COMPLETED_ACTION_NAME))
+            val (start_pi, complete_pi) = get_intents(context, data, false)
+            am.cancel(start_pi)
+            am.cancel(complete_pi)
         }
     }
 }

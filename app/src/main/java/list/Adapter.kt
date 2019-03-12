@@ -148,7 +148,7 @@ class Adapter(private val activity: Progress_bars): RecyclerView.Adapter<Adapter
     fun apply_repeat(pos: Int)
     {
         data_list[pos].apply_repeat()
-        Notification_handler.reset_alarm(activity, data_list[pos])
+        Notification_handler.reset_alarm(activity, Data(data_list[pos]))
         data_list[pos].reinit(activity)
     }
 
@@ -163,23 +163,24 @@ class Adapter(private val activity: Progress_bars): RecyclerView.Adapter<Adapter
     fun set_edited(data: Data): Int
     {
         data.apply_repeat()
-        Notification_handler.reset_alarm(activity, data)
 
-        return if(data.rowid >= 0)
+        val pos = if(data.rowid >= 0)
         {
             val pos = find_by_rowid(data.rowid)
-            data.update(DB(activity).writableDatabase, pos.toLong())
             data_list[pos] = View_data(activity, data)
             notifyItemChanged(pos)
             pos
         }
         else
         {
-            data.insert(DB(activity).writableDatabase, data_list.size.toLong())
+            data.insert(DB(activity).writableDatabase, data_list.size.toLong()) // insert to set rowid
             data_list.add(View_data(activity, data))
             notifyItemInserted(data_list.size - 1)
             data_list.size - 1
         }
+        Notification_handler.reset_alarm(activity, Data(data_list[pos]))
+
+        return pos
     }
 
     fun save_to_db()
