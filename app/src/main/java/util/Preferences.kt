@@ -25,6 +25,7 @@ import android.Manifest
 import android.app.AlertDialog
 import android.app.Dialog
 import android.content.Context
+import android.content.Intent
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.databinding.DataBindingUtil
@@ -33,8 +34,10 @@ import android.preference.PreferenceManager
 import android.support.v4.app.ActivityCompat
 import android.support.v4.app.DialogFragment
 import android.support.v4.content.ContextCompat
+import android.support.v4.content.LocalBroadcastManager
 import android.support.v7.preference.PreferenceFragmentCompat
 import android.view.MenuItem
+import org.mattvchandler.progressbars.Progress_bars
 import org.mattvchandler.progressbars.R
 import org.mattvchandler.progressbars.databinding.ActivityPreferencesBinding
 
@@ -65,7 +68,6 @@ class Preferences: Dynamic_theme_activity()
         {
             super.onPause()
             preferenceScreen.sharedPreferences.unregisterOnSharedPreferenceChangeListener(this)
-
         }
 
         override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences, key: String)
@@ -73,7 +75,7 @@ class Preferences: Dynamic_theme_activity()
             if(key == "master_notification")
             {
                 // re-enable / disable all notification alarms when master notification setting is toggled
-                activity?.let { Notification_handler.reset_all_alarms(it) }
+               LocalBroadcastManager.getInstance(context!!).sendBroadcast(Intent(Progress_bars.CHANGE_ALL_EVENT))
             }
             else if(key == "theme")
             {

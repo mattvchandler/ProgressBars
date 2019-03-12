@@ -55,6 +55,7 @@ class Progress_bars: Dynamic_theme_activity()
     {
         const val EXTRA_ROWID = "org.mattvchandler.progressbars.EXTRA_ROWID"
         const val CHANGE_LIST_EVENT = "ProgressBars.CHANGE_LIST_EVENT"
+        const val CHANGE_ALL_EVENT = "ProgressBars.CHANGE_ALL_EVENT"
         const val RESULT_EDIT_DATA = 0
     }
 
@@ -68,9 +69,17 @@ class Progress_bars: Dynamic_theme_activity()
     {
         override fun onReceive(context: Context, intent: Intent)
         {
-            val rowid = intent.getLongExtra(EXTRA_ROWID, -1)
-            if(rowid >= 0)
-                adapter.apply_repeat(adapter.find_by_rowid(rowid))
+            when(intent.action)
+            {
+                CHANGE_LIST_EVENT ->
+                {
+                    val rowid = intent.getLongExtra(EXTRA_ROWID, -1)
+                    if(rowid >= 0)
+                        adapter.apply_repeat(adapter.find_by_rowid(rowid))
+                }
+
+                CHANGE_ALL_EVENT -> adapter.apply_all_repeats()
+            }
         }
     }
 
@@ -221,7 +230,6 @@ class Progress_bars: Dynamic_theme_activity()
             binding.mainList.scrollToPosition(pos)
         }
     }
-
 
     private inner class update: Runnable
     {
