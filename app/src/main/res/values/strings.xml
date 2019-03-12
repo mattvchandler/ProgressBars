@@ -88,8 +88,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
         <item>YYYY-MM-DD</item>
     </string-array>
 
-    <string name="pref_master_notification">Enable notifications</string>
-    <string name="pref_master_notification_summary">Allow individual timers to send notifications</string>
+    <string name="pref_notification_settings">Notification settings</string>
 
     <string name="theme_title">Day / Night Theme</string>
     <string-array name="theme_settings">

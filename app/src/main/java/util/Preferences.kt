@@ -27,14 +27,18 @@ import android.app.Dialog
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
+import android.content.pm.ApplicationInfo
 import android.content.pm.PackageManager
 import android.databinding.DataBindingUtil
+import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.preference.PreferenceManager
 import android.support.v4.app.ActivityCompat
 import android.support.v4.app.DialogFragment
 import android.support.v4.content.ContextCompat
 import android.support.v4.content.LocalBroadcastManager
+import android.support.v7.preference.Preference
 import android.support.v7.preference.PreferenceFragmentCompat
 import android.view.MenuItem
 import org.mattvchandler.progressbars.Progress_bars
@@ -72,12 +76,7 @@ class Preferences: Dynamic_theme_activity()
 
         override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences, key: String)
         {
-            if(key == "master_notification")
-            {
-                // re-enable / disable all notification alarms when master notification setting is toggled
-               LocalBroadcastManager.getInstance(context!!).sendBroadcast(Intent(Progress_bars.CHANGE_ALL_EVENT))
-            }
-            else if(key == "theme")
+            if(key == "theme")
             {
                 // request location permission for local sunset / sunrise times
                 if(sharedPreferences.getString("theme", "") == resources.getString(R.string.theme_values_auto))
@@ -106,6 +105,42 @@ class Preferences: Dynamic_theme_activity()
                 }
                 // recreate this activity to apply the new theme
                 activity?.recreate()
+            }
+        }
+
+        override fun onPreferenceTreeClick(preference: Preference?): Boolean
+        {
+            when(preference?.key)
+            {
+                "system_notifications" ->
+                {
+                    val intent = Intent()
+                    when
+                    {
+                        Build.VERSION.SDK_INT in 21..25 ->
+                        {
+                            intent.action = "android.settings.APP_NOTIFICATION_SETTINGS"
+                            intent.putExtra("app_package", context!!.packageName)
+                            intent.putExtra("app_uid", context!!.applicationInfo.uid)
+                        }
+                        Build.VERSION.SDK_INT > 26 ->
+                        {
+                            intent.action = android.provider.Settings.ACTION_APP_NOTIFICATION_SETTINGS
+                            intent.putExtra(android.provider.Settings.EXTRA_APP_PACKAGE, context!!.packageName)
+                        }
+                        else ->
+                        {
+                            intent.action = android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS
+                            intent.addCategory(Intent.CATEGORY_DEFAULT)
+                            intent.data = Uri.parse("package:" + context!!.packageName)
+                        }
+                    }
+
+                    startActivity(intent)
+                    return false
+                }
+
+                else -> return super.onPreferenceTreeClick(preference)
             }
         }
     }

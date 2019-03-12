@@ -53,6 +53,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 // TODO: code could be cleaned up if we use end_time for singe-time timers
+// TODO: individual notification options - use Android messages as a model for multiple channels
 // Settings for each timer
 class Settings: Dynamic_theme_activity(), DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener
 {

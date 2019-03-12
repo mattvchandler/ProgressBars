@@ -31,12 +31,10 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
         android:summary="%s"
         />
 
-    <SwitchPreference
-        android:key="master_notification"
-        android:title="@string/pref_master_notification"
-        android:summary="@string/pref_master_notification_summary"
-        android:defaultValue="true"
-        />
+    <PreferenceScreen
+        android:key="system_notifications"
+        android:title="@string/pref_notification_settings">
+    </PreferenceScreen>
 
     <ListPreference
         android:key="theme"
@@ -46,5 +44,4 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
         android:entryValues="@array/theme_values"
         android:defaultValue="@string/theme_values_default"
         />
-
 </PreferenceScreen>

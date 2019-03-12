@@ -153,16 +153,6 @@ class Adapter(private val activity: Progress_bars): RecyclerView.Adapter<Adapter
         data_list[pos].reinit(activity)
     }
 
-    fun apply_all_repeats()
-    {
-        for(data in data_list)
-        {
-            data.apply_repeat()
-            Notification_handler.reset_alarm(activity, Data(data))
-            data.reinit(activity)
-        }
-    }
-
     // called when a row is deleted
     fun on_item_dismiss(pos: Int)
     {

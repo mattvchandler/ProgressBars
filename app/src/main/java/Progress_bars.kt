@@ -55,7 +55,6 @@ class Progress_bars: Dynamic_theme_activity()
     {
         const val EXTRA_ROWID = "org.mattvchandler.progressbars.EXTRA_ROWID"
         const val CHANGE_LIST_EVENT = "ProgressBars.CHANGE_LIST_EVENT"
-        const val CHANGE_ALL_EVENT = "ProgressBars.CHANGE_ALL_EVENT"
         const val RESULT_EDIT_DATA = 0
     }
 
@@ -77,8 +76,6 @@ class Progress_bars: Dynamic_theme_activity()
                     if(rowid >= 0)
                         adapter.apply_repeat(adapter.find_by_rowid(rowid))
                 }
-
-                CHANGE_ALL_EVENT -> adapter.apply_all_repeats()
             }
         }
     }
@@ -128,7 +125,6 @@ class Progress_bars: Dynamic_theme_activity()
 
         val broadcast_filter = IntentFilter()
         broadcast_filter.addAction(CHANGE_LIST_EVENT)
-        broadcast_filter.addAction(CHANGE_ALL_EVENT)
         LocalBroadcastManager.getInstance(this).registerReceiver(on_list_change, IntentFilter(CHANGE_LIST_EVENT))
         contentResolver.registerContentObserver(android.provider.Settings.System.getUriFor(android.provider.Settings.System.TIME_12_24), false, on_24_hour_change)
     }

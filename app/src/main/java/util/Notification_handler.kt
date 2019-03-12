@@ -26,7 +26,6 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.os.Build
-import android.preference.PreferenceManager
 import android.support.v4.app.NotificationCompat
 import android.support.v4.content.LocalBroadcastManager
 import android.util.TypedValue
@@ -69,92 +68,89 @@ class Notification_handler: BroadcastReceiver()
             val istream = ObjectInputStream(instream)
             val data = istream.readObject() as Data
 
-            // send notifications iff master notification setting is on
-            if(PreferenceManager.getDefaultSharedPreferences(context).getBoolean("master_notification", true))
-            {
-                // set up start or completion text
-                var content = ""
-                var notification_when: Long = 0
-                var do_notify = false
+            // set up start or completion text
+            var content = ""
+            var notification_when: Long = 0
+            var do_notify = false
 
-                if(data.separate_time && ((data.notify_start && start_action) ||
-                        // special case - when start and end times are the same, only the completed alarm is fired. if only the start notification is enabled, we still need to send it!
-                        (data.notify_start && !data.notify_end && data.start_time == data.end_time && completion_action)))
+            if(data.separate_time && ((data.notify_start && start_action) ||
+                    // special case - when start and end times are the same, only the completed alarm is fired. if only the start notification is enabled, we still need to send it!
+                    (data.notify_start && !data.notify_end && data.start_time == data.end_time && completion_action)))
+            {
+                do_notify = true
+
+                content = data.start_text
+                notification_when = data.start_time
+            }
+            else if((!data.separate_time && data.notify_start || data.separate_time && data.notify_end) && completion_action)
+            {
+                do_notify = true
+
+                if(data.separate_time)
                 {
-                    do_notify = true
-                    content = data.start_text
+                    content = data.complete_text
+                    notification_when = data.end_time
+                }
+                else
+                {
+                    content = data.single_complete_text
                     notification_when = data.start_time
                 }
-                else if((!data.separate_time && data.notify_start || data.separate_time && data.notify_end) && completion_action)
+            }
+
+            if(do_notify)
+            {
+                val nm = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+                setup_notification_channel(context)
+
+                // get the primary color from the theme
+                context.setTheme(R.style.Theme_progress_bars)
+                val color_tv = TypedValue()
+                context.theme.resolveAttribute(R.attr.colorPrimary, color_tv, true)
+
+                // build the notification
+                val not_builder = NotificationCompat.Builder(context, CHANNEL_ID)
+                        .setContentTitle(data.title)
+                        .setContentText(content)
+                        .setSmallIcon(R.drawable.ic_notification)
+                        .setColor(color_tv.data)
+                        .setGroup(GROUP)
+                        .setAutoCancel(true)
+                        .setPriority(NotificationCompat.PRIORITY_HIGH)
+                        .setCategory(NotificationCompat.CATEGORY_EVENT)
+                        .setDefaults(NotificationCompat.DEFAULT_ALL)
+                        .setWhen(notification_when * 1000)
+
+                // create an intent for clicking the notification to take us to the main activity
+                val i = Intent(context, Progress_bars::class.java)
+                i.putExtra(Progress_bars.EXTRA_ROWID, data.rowid)
+
+                // create an artificial back-stack
+                val stack = TaskStackBuilder.create(context)
+                stack.addParentStack(Progress_bars::class.java)
+                stack.addNextIntent(i)
+
+                // package intent into a pending intent for the notification
+                val pi = stack.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT)
+                not_builder.setContentIntent(pi)
+
+                // send the notification. rowid will be used as the notification's ID
+                nm.notify(data.rowid.toInt(), not_builder.build())
+
+                // build a group summary notification
+                if(Build.VERSION.SDK_INT >= 24)
                 {
-                    do_notify = true
-
-                    if(data.separate_time)
-                    {
-                        content = data.complete_text
-                        notification_when = data.end_time
-                    }
-                    else
-                    {
-                        content = data.single_complete_text
-                        notification_when = data.start_time
-                    }
-                }
-
-                if(do_notify)
-                {
-                    val nm = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-                    setup_notification_channel(context)
-
-                    // get the primary color from the theme
-                    context.setTheme(R.style.Theme_progress_bars)
-                    val color_tv = TypedValue()
-                    context.theme.resolveAttribute(R.attr.colorPrimary, color_tv, true)
-
-                    // build the notification
-                    val not_builder = NotificationCompat.Builder(context, CHANNEL_ID)
-                            .setContentTitle(data.title)
-                            .setContentText(content)
-                            .setSmallIcon(R.drawable.ic_notification)
-                            .setColor(color_tv.data)
-                            .setGroup(GROUP)
-                            .setAutoCancel(true)
-                            .setPriority(NotificationCompat.PRIORITY_HIGH)
-                            .setCategory(NotificationCompat.CATEGORY_EVENT)
-                            .setDefaults(NotificationCompat.DEFAULT_ALL)
-                            .setWhen(notification_when * 1000)
-
-                    // create an intent for clicking the notification to take us to the main activity
-                    val i = Intent(context, Progress_bars::class.java)
-                    i.putExtra(Progress_bars.EXTRA_ROWID, data.rowid)
-
-                    // create an artificial back-stack
-                    val stack = TaskStackBuilder.create(context)
-                    stack.addParentStack(Progress_bars::class.java)
-                    stack.addNextIntent(i)
-
-                    // package intent into a pending intent for the notification
-                    val pi = stack.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT)
-                    not_builder.setContentIntent(pi)
-
-                    // send the notification. rowid will be used as the notification's ID
-                    nm.notify(data.rowid.toInt(), not_builder.build())
-
-                    // build a group summary notification
-                    if(Build.VERSION.SDK_INT >= 24)
-                    {
-                        val summary = NotificationCompat.Builder(context, CHANNEL_ID)
-                            .setSmallIcon(R.drawable.ic_notification)
-                            .setColor(color_tv.data)
-                            .setCategory(NotificationCompat.CATEGORY_EVENT)
-                            .setGroup(GROUP)
-                            .setGroupSummary(true)
-                            .setAutoCancel(true)
-                            .setPriority(NotificationCompat.PRIORITY_HIGH)
-                            .setCategory(NotificationCompat.CATEGORY_EVENT)
-                            .setDefaults(NotificationCompat.DEFAULT_ALL)
-                        nm.notify(GROUP_SUMMARY_ID, summary.build())
-                    }
+                    val summary = NotificationCompat.Builder(context, CHANNEL_ID)
+                        .setSmallIcon(R.drawable.ic_notification)
+                        .setColor(color_tv.data)
+                        .setCategory(NotificationCompat.CATEGORY_EVENT)
+                        .setGroup(GROUP)
+                        .setGroupSummary(true)
+                        .setAutoCancel(true)
+                        .setPriority(NotificationCompat.PRIORITY_HIGH)
+                        .setCategory(NotificationCompat.CATEGORY_EVENT)
+                        .setDefaults(NotificationCompat.DEFAULT_ALL)
+                    nm.notify(GROUP_SUMMARY_ID, summary.build())
                 }
             }
 
