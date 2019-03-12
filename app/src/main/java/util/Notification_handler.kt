@@ -157,9 +157,18 @@ class Notification_handler: BroadcastReceiver()
             // update the displayed list of timers
             if(data.repeats && (if(data.separate_time) data.end_time else data.start_time) <= System.currentTimeMillis() / 1000)
             {
-                val update_intent = Intent(Progress_bars.CHANGE_LIST_EVENT)
-                update_intent.putExtra(Progress_bars.EXTRA_ROWID, data.rowid)
-                LocalBroadcastManager.getInstance(context).sendBroadcast(update_intent)
+                if(Progress_bars.is_running)
+                {
+                    val update_intent = Intent(Progress_bars.CHANGE_LIST_EVENT)
+                    update_intent.putExtra(Progress_bars.EXTRA_ROWID, data.rowid)
+                    LocalBroadcastManager.getInstance(context).sendBroadcast(update_intent)
+                }
+                else
+                {
+                    data.apply_repeat()
+                    reset_alarm(context, data)
+                    data.update(context)
+                }
             }
         }
     }

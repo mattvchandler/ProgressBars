@@ -36,7 +36,6 @@ import org.mattvchandler.progressbars.db.Progress_bars_table
 import org.mattvchandler.progressbars.settings.Settings
 import org.mattvchandler.progressbars.util.Notification_handler
 import java.security.InvalidParameterException
-import java.util.Collections.swap
 
 // keeps track of timer GUI rows
 class Adapter(private val activity: Progress_bars): RecyclerView.Adapter<Adapter.Holder>()

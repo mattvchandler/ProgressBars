@@ -245,6 +245,19 @@ open class Data(): Serializable
         rowid = db.insert(Progress_bars_table.TABLE_NAME, null, values)
     }
 
+    fun update(context: Context)
+    {
+        if(rowid < 0)
+            throw IllegalStateException("Tried to update when rowid isn't set")
+
+        apply_repeat()
+
+        val db = DB(context).writableDatabase
+
+        db.update(Progress_bars_table.TABLE_NAME, build_ContentValues(), BaseColumns._ID + " = ?", arrayOf(rowid.toString()))
+        db.close()
+    }
+
     // if repeat is set, update start and end times as needed
     fun apply_repeat()
     {

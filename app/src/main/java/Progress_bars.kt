@@ -44,7 +44,6 @@ import org.mattvchandler.progressbars.list.Touch_helper_callback
 import org.mattvchandler.progressbars.settings.Settings
 import org.mattvchandler.progressbars.util.About_dialog
 import org.mattvchandler.progressbars.util.Dynamic_theme_activity
-import org.mattvchandler.progressbars.util.Notification_handler
 import org.mattvchandler.progressbars.util.Preferences
 import java.util.*
 
@@ -56,6 +55,8 @@ class Progress_bars: Dynamic_theme_activity()
         const val EXTRA_ROWID = "org.mattvchandler.progressbars.EXTRA_ROWID"
         const val CHANGE_LIST_EVENT = "ProgressBars.CHANGE_LIST_EVENT"
         const val RESULT_EDIT_DATA = 0
+
+        var is_running = false
     }
 
     private lateinit var binding: ActivityProgressBarsBinding
@@ -131,12 +132,6 @@ class Progress_bars: Dynamic_theme_activity()
         contentResolver.registerContentObserver(android.provider.Settings.System.getUriFor(android.provider.Settings.System.TIME_12_24), false, on_24_hour_change)
     }
 
-    override fun onPause()
-    {
-        adapter.save_to_db()
-        super.onPause()
-    }
-
     override fun onDestroy()
     {
         LocalBroadcastManager.getInstance(this).unregisterReceiver(on_list_change)
@@ -146,7 +141,7 @@ class Progress_bars: Dynamic_theme_activity()
         super.onDestroy()
     }
 
-    public override fun onResume()
+    override fun onResume()
     {
         super.onResume()
 
@@ -156,6 +151,24 @@ class Progress_bars: Dynamic_theme_activity()
 
         if(new_date_format != date_format)
             recreate()
+    }
+
+    override fun onPause()
+    {
+        adapter.save_to_db()
+        super.onPause()
+    }
+
+    override fun onStart()
+    {
+        super.onStart()
+        is_running = true
+    }
+
+    override fun onStop()
+    {
+        is_running = false
+        super.onStop()
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean
