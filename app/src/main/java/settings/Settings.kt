@@ -298,7 +298,6 @@ class Settings: Dynamic_theme_activity(), DatePickerDialog.OnDateSetListener, Ti
                 }
 
                 val intent = Intent()
-
                 intent.putExtra(EXTRA_EDIT_DATA, data)
                 setResult(Activity.RESULT_OK, intent)
 

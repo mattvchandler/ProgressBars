@@ -92,6 +92,9 @@ class Progress_bars: Dynamic_theme_activity()
     {
         super.onCreate(savedInstanceState)
 
+        if(intent.action == Intent.ACTION_MAIN && !intent.hasCategory(Intent.CATEGORY_LAUNCHER)) // started from shortcut
+            startActivityForResult(Intent(this, Settings::class.java), RESULT_EDIT_DATA)
+
         binding = DataBindingUtil.setContentView(this, R.layout.activity_progress_bars)
         setSupportActionBar(binding.toolbar)
         binding.mainList.addItemDecoration(DividerItemDecoration(binding.mainList.context, DividerItemDecoration.VERTICAL))

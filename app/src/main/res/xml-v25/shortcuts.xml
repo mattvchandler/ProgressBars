@@ -12,10 +12,5 @@
             android:targetPackage="org.mattvchandler.progressbars"
             android:targetClass="org.mattvchandler.progressbars.Progress_bars"
             />
-        <intent
-            android:action="android.intent.action.MAIN"
-            android:targetPackage="org.mattvchandler.progressbars"
-            android:targetClass="org.mattvchandler.progressbars.settings.Settings"
-            />
     </shortcut>
 </shortcuts>
