@@ -60,17 +60,17 @@ private val days_in_mon = intArrayOf(31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30,
 class View_data (context: Context, data: Data): Data(data) // contains all DB data from inherited struct
 {
     // fields used by UI
-    val start_date_disp: String
-    val start_time_disp: String
-    val end_date_disp: String
-    val end_time_disp: String
+    lateinit var start_date_disp: String
+    lateinit var start_time_disp: String
+    lateinit var end_date_disp: String
+    lateinit var end_time_disp: String
 
     val progress_disp = ObservableInt()
     val percentage_disp = ObservableField<String>()
     val time_text_disp = ObservableField<String>()
 
     // only show countdown when there is something to show
-    val show_time_text: Boolean = show_years || show_months || show_weeks || show_days || show_hours || show_minutes || show_seconds
+    var show_time_text: Boolean = true
 
     private val start_time_date = Date()
     private val end_time_date = Date()
@@ -485,7 +485,7 @@ class View_data (context: Context, data: Data): Data(data) // contains all DB da
         }
     }
 
-    init
+    fun reinit(context: Context)
     {
         // format start and end dates and times
         val date_df = get_date_format(context)
@@ -502,7 +502,13 @@ class View_data (context: Context, data: Data): Data(data) // contains all DB da
         // set initial percentage to 0
         progress_disp.set(0)
 
+        show_time_text = show_years || show_months || show_weeks || show_days || show_hours || show_minutes || show_seconds
+
         // do a run now, to set up remaining display data
         update_display(context.resources)
+    }
+    init
+    {
+        reinit(context)
     }
 }

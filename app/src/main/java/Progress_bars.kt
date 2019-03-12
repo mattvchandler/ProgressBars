@@ -71,8 +71,7 @@ class Progress_bars: Dynamic_theme_activity()
         {
             val rowid = intent.getLongExtra(EXTRA_ROWID, -1)
             if(rowid >= 0)
-                adapter.set_edited(Data(this@Progress_bars, rowid)) // TODO: this is overwriting any changes made since the last DB save
-
+                adapter.apply_repeat(adapter.find_by_rowid(rowid))
         }
     }
 
@@ -126,10 +125,10 @@ class Progress_bars: Dynamic_theme_activity()
         contentResolver.registerContentObserver(android.provider.Settings.System.getUriFor(android.provider.Settings.System.TIME_12_24), false, on_24_hour_change)
     }
 
-    override fun onStop()
+    override fun onPause()
     {
         adapter.save_to_db()
-        super.onStop()
+        super.onPause()
     }
 
     override fun onDestroy()
@@ -180,7 +179,6 @@ class Progress_bars: Dynamic_theme_activity()
         {
             R.id.add_butt ->
             {
-                // open editor with no rowid set
                 startActivityForResult(Intent(this, Settings::class.java), RESULT_EDIT_DATA)
                 return true
             }

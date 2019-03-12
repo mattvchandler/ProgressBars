@@ -70,7 +70,7 @@ class Adapter(private val activity: Progress_bars): RecyclerView.Adapter<Adapter
         {
             // create and launch an intent to launch the editor, and pass the rowid
             val intent = Intent(activity, Settings::class.java)
-            intent.putExtra(Settings.EXTRA_EDIT_DATA, data) // TODO: Data, not rowid
+            intent.putExtra(Settings.EXTRA_EDIT_DATA, data)
             activity.startActivityForResult(intent, Progress_bars.RESULT_EDIT_DATA)
         }
 
@@ -145,10 +145,16 @@ class Adapter(private val activity: Progress_bars): RecyclerView.Adapter<Adapter
 
     fun find_by_rowid(rowid: Long) = data_list.indexOfFirst{ it.rowid == rowid}
 
+    fun apply_repeat(pos: Int)
+    {
+        data_list[pos].apply_repeat()
+        Notification_handler.reset_alarm(activity, data_list[pos])
+        data_list[pos].reinit(activity)
+    }
+
     // called when a row is deleted
     fun on_item_dismiss(pos: Int)
     {
-        // TODO remove from DB
         Notification_handler.cancel_alarm(activity, data_list[pos])
         data_list.removeAt(pos)
         notifyItemRemoved(pos)
@@ -161,8 +167,8 @@ class Adapter(private val activity: Progress_bars): RecyclerView.Adapter<Adapter
 
         return if(data.rowid >= 0)
         {
-            // TODO update DB
             val pos = find_by_rowid(data.rowid)
+            data.update(DB(activity).writableDatabase, pos.toLong())
             data_list[pos] = View_data(activity, data)
             notifyItemChanged(pos)
             pos
@@ -176,7 +182,6 @@ class Adapter(private val activity: Progress_bars): RecyclerView.Adapter<Adapter
         }
     }
 
-    // TODO unneeded?
     fun save_to_db()
     {
         val db = DB(activity).writableDatabase

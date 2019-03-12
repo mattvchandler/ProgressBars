@@ -35,7 +35,7 @@ import java.util.concurrent.atomic.AtomicLong
 // struct w/ copy of all DB columns. Serializable so we can store the whole thing
 open class Data(): Serializable
 {
-    var rowid = -1L // is -1 when not set, ie. the data doesn't exist in the DB // TODO: probably don't need this
+    var rowid = -1L // is -1 when not set, ie. the data doesn't exist in the DB
 
     var separate_time = true
     var start_time    = 0L
@@ -247,6 +247,17 @@ open class Data(): Serializable
         rowid = db.insert(Progress_bars_table.TABLE_NAME, null, values)
     }
 
+    fun update(db: SQLiteDatabase, order_ind: Long)
+    {
+        if(rowid < 0)
+            throw IllegalStateException("Tried to update when rowid isn't set")
+
+        val values = build_ContentValues()
+        values.put(BaseColumns._ID, rowid)
+        values.put(Progress_bars_table.ORDER_COL, order_ind)
+        db.update(Progress_bars_table.TABLE_NAME, build_ContentValues(), BaseColumns._ID + " = ?", arrayOf(rowid.toString()))
+    }
+
     // if repeat is set, update start and end times as needed
     fun apply_repeat()
     {
@@ -256,9 +267,9 @@ open class Data(): Serializable
 
         val now_s = System.currentTimeMillis() / 1000L
 
-        while(now_s >= if(separate_time) end_time else start_time)
+        while(now_s >= (if(separate_time) end_time else start_time))
         {
-            // convert to calendar, add month/year, convert back
+            // convert to calendar, time, convert back
             val start_cal = Calendar.getInstance(TimeZone.getTimeZone(start_tz))
             val end_cal = Calendar.getInstance(TimeZone.getTimeZone(end_tz))
 
