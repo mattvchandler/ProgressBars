@@ -77,7 +77,9 @@ class Adapter(private val activity: Progress_bars): RecyclerView.Adapter<Adapter
         // called when dragging during each reordering
         fun on_move(to: Holder)
         {
-            swap(data_list, adapterPosition, to.adapterPosition)
+            val moved = data_list.removeAt(adapterPosition)
+            data_list.add(to.adapterPosition, moved)
+
             notifyItemMoved(adapterPosition, to.adapterPosition)
         }
         // called when a row is selected for deletion or reordering
