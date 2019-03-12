@@ -44,7 +44,6 @@ import kotlin.math.min
 // all notification / alarm handling done here
 class Notification_handler: BroadcastReceiver()
 {
-    // TODO: single-events not respecting send notification flag
     override fun onReceive(context: Context, intent: Intent)
     {
         if(intent.action == null)
@@ -86,7 +85,7 @@ class Notification_handler: BroadcastReceiver()
                     content = data.start_text
                     notification_when = data.start_time
                 }
-                else if(data.notify_end && completion_action)
+                else if((!data.separate_time && data.notify_start || data.separate_time && data.notify_end) && completion_action)
                 {
                     do_notify = true
 
