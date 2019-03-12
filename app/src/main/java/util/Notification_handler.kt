@@ -26,7 +26,6 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.os.Build
-import android.os.Bundle
 import android.preference.PreferenceManager
 import android.support.v4.app.NotificationCompat
 import android.support.v4.content.LocalBroadcastManager
@@ -36,6 +35,10 @@ import org.mattvchandler.progressbars.R
 import org.mattvchandler.progressbars.db.DB
 import org.mattvchandler.progressbars.db.Data
 import org.mattvchandler.progressbars.db.Progress_bars_table
+import java.io.ByteArrayInputStream
+import java.io.ByteArrayOutputStream
+import java.io.ObjectInputStream
+import java.io.ObjectOutputStream
 import kotlin.math.min
 
 // all notification / alarm handling done here
@@ -62,10 +65,10 @@ class Notification_handler: BroadcastReceiver()
         else if(start_action || completion_action)
         {
             // get the data for the alarm that went off
-            val rowid = intent.getLongExtra(EXTRA_ROWID, -1)
-            if(rowid < 0)
-                return
-            val data = Data(context, rowid)
+            val data_as_bytes = intent.getByteArrayExtra(EXTRA_DATA) ?: return
+            val instream = ByteArrayInputStream(data_as_bytes)
+            val istream = ObjectInputStream(instream)
+            val data = istream.readObject() as Data
 
             // send notifications iff master notification setting is on
             if(PreferenceManager.getDefaultSharedPreferences(context).getBoolean("master_notification", true))
@@ -161,7 +164,7 @@ class Notification_handler: BroadcastReceiver()
             if(data.repeats && (if(data.separate_time) data.end_time else data.start_time) <= System.currentTimeMillis() / 1000)
             {
                 val update_intent = Intent(Progress_bars.CHANGE_LIST_EVENT)
-                update_intent.putExtra(Progress_bars.EXTRA_ROWID, rowid)
+                update_intent.putExtra(Progress_bars.EXTRA_ROWID, data.rowid)
                 LocalBroadcastManager.getInstance(context).sendBroadcast(update_intent)
             }
         }
@@ -171,7 +174,7 @@ class Notification_handler: BroadcastReceiver()
     {
         const val BASE_STARTED_ACTION_NAME = "org.mattvchandler.progressbars.STARTED_ROWID_"
         const val BASE_COMPLETED_ACTION_NAME = "org.mattvchandler.progressbars.COMPLETED_ROWID_"
-        const val EXTRA_ROWID = "EXTRA_ROWID"
+        const val EXTRA_DATA = "EXTRA_DATA"
 
         const val CHANNEL_ID = "org.mattvchandler.progressbars.notification_channel"
         const val GROUP_SUMMARY_ID = 0
@@ -205,10 +208,12 @@ class Notification_handler: BroadcastReceiver()
             val intent = Intent(context, Notification_handler::class.java)
             intent.action = base_action + data.rowid.toString()
 
-            // put the rowid in the intent extras
-            val extras = Bundle()
-            extras.putLong(EXTRA_ROWID, data.rowid)
-            intent.putExtras(extras)
+            // put the rowid in the intent extras (convert to byte array to work around issue w/ passing serializable to Broadcast receiver
+            val out = ByteArrayOutputStream()
+            val os = ObjectOutputStream(out)
+            os.writeObject(data)
+            val data_as_bytes = out.toByteArray()
+            intent.putExtra(EXTRA_DATA, data_as_bytes)
 
             return PendingIntent.getBroadcast(context, 0, intent, 0)
         }
