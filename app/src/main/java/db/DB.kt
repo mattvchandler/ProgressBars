@@ -68,6 +68,9 @@ class DB(private val context: Context): SQLiteOpenHelper(context, DB_NAME, null,
         if(new_version != DB_VERSION)
             throw IllegalStateException("DB version mismatch")
 
+        if(old_version < 4)
+            db.execSQL("DROP TABLE IF EXISTS undo")
+
         Progress_bars_table.upgrade(context, db, old_version)
     }
 }

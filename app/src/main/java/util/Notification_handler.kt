@@ -29,6 +29,7 @@ import android.os.Build
 import android.os.Bundle
 import android.preference.PreferenceManager
 import android.support.v4.app.NotificationCompat
+import android.support.v4.content.LocalBroadcastManager
 import android.util.TypedValue
 import org.mattvchandler.progressbars.Progress_bars
 import org.mattvchandler.progressbars.R
@@ -40,6 +41,7 @@ import kotlin.math.min
 // all notification / alarm handling done here
 class Notification_handler: BroadcastReceiver()
 {
+    // TODO: single-events not respecting send notification flag
     override fun onReceive(context: Context, intent: Intent)
     {
         if(intent.action == null)
@@ -53,7 +55,7 @@ class Notification_handler: BroadcastReceiver()
         if(action == "android.intent.action.BOOT_COMPLETED")
         {
             // get new start/end times first
-            // TODO: Data.apply_all_repeats(context)
+            Data.apply_all_repeats(context)
             reset_all_alarms(context)
         }
         // one of the alarms went off - send a notification
@@ -123,7 +125,7 @@ class Notification_handler: BroadcastReceiver()
 
                     // create an intent for clicking the notification to take us to the main activity
                     val i = Intent(context, Progress_bars::class.java)
-                    i.putExtra(Progress_bars.EXTRA_SCROLL_TO_ROWID, data.rowid)
+                    i.putExtra(Progress_bars.EXTRA_ROWID, data.rowid)
 
                     // create an artificial back-stack
                     val stack = TaskStackBuilder.create(context)
@@ -155,11 +157,13 @@ class Notification_handler: BroadcastReceiver()
                 }
             }
 
-            // TODO: update row to get new repeat time, if needed
-//            if(data.repeats && (if(data.separate_time) data.end_time else data.start_time) <= System.currentTimeMillis() / 1000)
-//            {
-//                data.update(context)
-//            }
+            // update the displayed list of timers
+            if(data.repeats && (if(data.separate_time) data.end_time else data.start_time) <= System.currentTimeMillis() / 1000)
+            {
+                val update_intent = Intent(Progress_bars.CHANGE_LIST_EVENT)
+                update_intent.putExtra(Progress_bars.EXTRA_ROWID, rowid)
+                LocalBroadcastManager.getInstance(context).sendBroadcast(update_intent)
+            }
         }
     }
 
@@ -168,6 +172,7 @@ class Notification_handler: BroadcastReceiver()
         const val BASE_STARTED_ACTION_NAME = "org.mattvchandler.progressbars.STARTED_ROWID_"
         const val BASE_COMPLETED_ACTION_NAME = "org.mattvchandler.progressbars.COMPLETED_ROWID_"
         const val EXTRA_ROWID = "EXTRA_ROWID"
+
         const val CHANNEL_ID = "org.mattvchandler.progressbars.notification_channel"
         const val GROUP_SUMMARY_ID = 0
         const val GROUP = "org.mattvchandler.progressbars.notification_group"

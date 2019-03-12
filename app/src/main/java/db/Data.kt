@@ -28,7 +28,6 @@ import android.database.sqlite.SQLiteDatabase
 import android.provider.BaseColumns
 import android.util.Log
 import org.mattvchandler.progressbars.R
-import org.mattvchandler.progressbars.util.Notification_handler
 import java.io.Serializable
 import java.util.*
 import java.util.concurrent.atomic.AtomicLong
@@ -38,7 +37,6 @@ open class Data(): Serializable
 {
     var rowid = -1L // is -1 when not set, ie. the data doesn't exist in the DB // TODO: probably don't need this
 
-    var id: Long = -1
     var separate_time = true
     var start_time    = 0L
     var end_time      = 0L
@@ -82,7 +80,6 @@ open class Data(): Serializable
     // default ctor
     constructor(context: Context): this()
     {
-        id = nextId.getAndIncrement()
         val start_time_cal = Calendar.getInstance()
         val end_time_cal = start_time_cal.clone() as Calendar
         end_time_cal.add(Calendar.MINUTE, 1)
@@ -108,14 +105,12 @@ open class Data(): Serializable
     // construct from a DB cursor
     constructor(cursor: Cursor): this()
     {
-        id = nextId.getAndIncrement()
         set_from_cursor(cursor)
     }
 
     // get data from DB given rowid
     constructor(context: Context, rowid_in: Long): this()
     {
-        id = nextId.getAndIncrement()
         val db = DB(context).readableDatabase
         val cursor = db.rawQuery("SELECT * FROM ${Progress_bars_table.TABLE_NAME} WHERE ${BaseColumns._ID} = ?", arrayOf(rowid_in.toString()))
         cursor.moveToFirst()
@@ -130,7 +125,6 @@ open class Data(): Serializable
     constructor(b: Data): this()
     {
         rowid                = b.rowid
-        id                   = b.id
         separate_time        = b.separate_time
         start_time           = b.start_time
         end_time             = b.end_time
@@ -202,11 +196,10 @@ open class Data(): Serializable
         notify_end           = cursor.get_nullable_bool(Progress_bars_table.NOTIFY_END_COL)!!
     }
 
-    private fun build_ContentValues(order_ind: Long): ContentValues
+    private fun build_ContentValues(): ContentValues
     {
         val values = ContentValues()
 
-        values.put(Progress_bars_table.ORDER_COL, order_ind)
         values.put(Progress_bars_table.SEPARATE_TIME_COL, separate_time)
         values.put(Progress_bars_table.START_TIME_COL, start_time)
         values.put(Progress_bars_table.END_TIME_COL, end_time)
@@ -245,14 +238,19 @@ open class Data(): Serializable
 
     fun insert(db: SQLiteDatabase, order_ind: Long)
     {
-        Log.d("ASDF", "$order_ind, $title")
-        val values = build_ContentValues(order_ind)
+        val values = build_ContentValues()
+
+        if(rowid > 0)
+            values.put(BaseColumns._ID, rowid)
+
+        values.put(Progress_bars_table.ORDER_COL, order_ind)
         rowid = db.insert(Progress_bars_table.TABLE_NAME, null, values)
     }
 
     // if repeat is set, update start and end times as needed
-    private fun apply_repeat()
+    fun apply_repeat()
     {
+        Log.d("apply_repeat", "$rowid")
         if(!repeats)
             return
 
@@ -335,6 +333,23 @@ open class Data(): Serializable
 
     companion object
     {
-        private val nextId = AtomicLong(0)
+        // only to be run on boot
+        fun apply_all_repeats(context: Context)
+        {
+            val db = DB(context).writableDatabase
+            val cursor = db.rawQuery(Progress_bars_table.SELECT_ALL_ROWS, null)
+
+            // for every timer
+            for(i in 0 until cursor.count)
+            {
+                cursor.moveToPosition(i)
+                val data = Data(cursor)
+
+                data.apply_repeat()
+                db.update(Progress_bars_table.TABLE_NAME, data.build_ContentValues(), BaseColumns._ID + " = ?", arrayOf(data.rowid.toString()))
+            }
+            cursor.close()
+            db.close()
+        }
     }
 }

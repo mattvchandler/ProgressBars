@@ -22,15 +22,20 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 package org.mattvchandler.progressbars
 
 import android.app.Activity
+import android.content.BroadcastReceiver
+import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.database.ContentObserver
 import android.databinding.DataBindingUtil
 import android.os.Bundle
 import android.os.Handler
 import android.preference.PreferenceManager
+import android.support.v4.content.LocalBroadcastManager
 import android.support.v7.widget.DividerItemDecoration
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.helper.ItemTouchHelper
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import org.mattvchandler.progressbars.databinding.ActivityProgressBarsBinding
@@ -49,7 +54,8 @@ class Progress_bars: Dynamic_theme_activity()
 {
     companion object
     {
-        const val EXTRA_SCROLL_TO_ROWID = "org.mattvchandler.progressbars.SCROLL_TO_ROWID"
+        const val EXTRA_ROWID = "org.mattvchandler.progressbars.EXTRA_ROWID"
+        const val CHANGE_LIST_EVENT = "ProgressBars.CHANGE_LIST_EVENT"
         const val RESULT_EDIT_DATA = 0
     }
 
@@ -57,6 +63,18 @@ class Progress_bars: Dynamic_theme_activity()
     private lateinit var adapter: Adapter
 
     private lateinit var date_format: String
+
+
+    private val on_list_change = object: BroadcastReceiver()
+    {
+        override fun onReceive(context: Context, intent: Intent)
+        {
+            val rowid = intent.getLongExtra(EXTRA_ROWID, -1)
+            if(rowid >= 0)
+                adapter.set_edited(Data(this@Progress_bars, rowid)) // TODO: this is overwriting any changes made since the last DB save
+
+        }
+    }
 
     private val on_24_hour_change = object: ContentObserver(Handler())
     {
@@ -88,11 +106,10 @@ class Progress_bars: Dynamic_theme_activity()
         val touch_helper = ItemTouchHelper(Touch_helper_callback(adapter))
         touch_helper.attachToRecyclerView(binding.mainList)
 
-        // update repeat times and alarms
-        // TODO: Data.apply_all_repeats(this)
+        // update and alarms
         Notification_handler.reset_all_alarms(this)
 
-        val scroll_to_rowid = intent.getLongExtra(EXTRA_SCROLL_TO_ROWID, -1)
+        val scroll_to_rowid = intent.getLongExtra(EXTRA_ROWID, -1)
         if(scroll_to_rowid >= 0)
         {
             try
@@ -105,6 +122,7 @@ class Progress_bars: Dynamic_theme_activity()
         // start running each second
         update().run()
 
+        LocalBroadcastManager.getInstance(this).registerReceiver(on_list_change, IntentFilter(CHANGE_LIST_EVENT))
         contentResolver.registerContentObserver(android.provider.Settings.System.getUriFor(android.provider.Settings.System.TIME_12_24), false, on_24_hour_change)
     }
 
@@ -116,6 +134,7 @@ class Progress_bars: Dynamic_theme_activity()
 
     override fun onDestroy()
     {
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(on_list_change)
         contentResolver.unregisterContentObserver(on_24_hour_change)
 
         binding.mainList.adapter = null
@@ -201,9 +220,8 @@ class Progress_bars: Dynamic_theme_activity()
         if(result_code == Activity.RESULT_OK && request_code == RESULT_EDIT_DATA)
         {
             val data = intent!!.getSerializableExtra(Settings.EXTRA_EDIT_DATA)!! as Data
-            adapter.set_edited(data)
-            // TODO: apply alarms, repeats
-            binding.mainList.scrollToPosition(adapter.find_by_id(data.id))
+            val pos = adapter.set_edited(data)
+            binding.mainList.scrollToPosition(pos)
         }
     }
 

@@ -34,13 +34,14 @@ import org.mattvchandler.progressbars.db.DB
 import org.mattvchandler.progressbars.db.Data
 import org.mattvchandler.progressbars.db.Progress_bars_table
 import org.mattvchandler.progressbars.settings.Settings
+import org.mattvchandler.progressbars.util.Notification_handler
 import java.security.InvalidParameterException
 import java.util.Collections.swap
 
 // keeps track of timer GUI rows
 class Adapter(private val activity: Progress_bars): RecyclerView.Adapter<Adapter.Holder>()
 {
-    private val data_list: MutableList<View_data>
+    private lateinit var data_list: MutableList<View_data>
 
     // an individual row object
     inner class Holder(private val row_binding: ViewDataBinding): RecyclerView.ViewHolder(row_binding.root), View.OnClickListener
@@ -91,10 +92,9 @@ class Adapter(private val activity: Progress_bars): RecyclerView.Adapter<Adapter
         }
     }
 
-    init
+    fun rebuild_from_db()
     {
-        setHasStableIds(true)
-
+        Data.apply_all_repeats(activity)
         val db = DB(activity).readableDatabase
         val cursor = db.rawQuery(Progress_bars_table.SELECT_ALL_ROWS, null)
 
@@ -103,6 +103,12 @@ class Adapter(private val activity: Progress_bars): RecyclerView.Adapter<Adapter
 
         cursor.close()
         db.close()
+    }
+
+    init
+    {
+        setHasStableIds(true)
+        rebuild_from_db()
     }
 
     override fun onCreateViewHolder(parent_in: ViewGroup, viewType: Int): Holder
@@ -134,34 +140,43 @@ class Adapter(private val activity: Progress_bars): RecyclerView.Adapter<Adapter
             SINGLE_TIME_VIEW
     }
 
-    override fun getItemId(position: Int) = data_list[position].id
+    override fun getItemId(position: Int) = data_list[position].rowid
     override fun getItemCount() = data_list.size
 
     fun find_by_rowid(rowid: Long) = data_list.indexOfFirst{ it.rowid == rowid}
-    fun find_by_id(id: Long) = data_list.indexOfFirst{ it.id == id}
 
     // called when a row is deleted
     fun on_item_dismiss(pos: Int)
     {
+        // TODO remove from DB
+        Notification_handler.cancel_alarm(activity, data_list[pos])
         data_list.removeAt(pos)
         notifyItemRemoved(pos)
     }
 
-    fun set_edited(data: Data)
+    fun set_edited(data: Data): Int
     {
-        val pos = find_by_id(data.id)
-        if(pos >= 0)
+        data.apply_repeat()
+        Notification_handler.reset_alarm(activity, data)
+
+        return if(data.rowid >= 0)
         {
+            // TODO update DB
+            val pos = find_by_rowid(data.rowid)
             data_list[pos] = View_data(activity, data)
             notifyItemChanged(pos)
+            pos
         }
         else
         {
+            data.insert(DB(activity).writableDatabase, data_list.size.toLong())
             data_list.add(View_data(activity, data))
             notifyItemInserted(data_list.size - 1)
+            data_list.size - 1
         }
     }
 
+    // TODO unneeded?
     fun save_to_db()
     {
         val db = DB(activity).writableDatabase
