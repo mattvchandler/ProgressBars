@@ -113,9 +113,6 @@ class Progress_bars: Dynamic_theme_activity()
         val touch_helper = ItemTouchHelper(Touch_helper_callback(adapter))
         touch_helper.attachToRecyclerView(binding.mainList)
 
-        // update and alarms
-        Notification_handler.reset_all_alarms(this)
-
         val scroll_to_rowid = intent.getLongExtra(EXTRA_ROWID, -1)
         if(scroll_to_rowid >= 0)
         {
@@ -129,14 +126,17 @@ class Progress_bars: Dynamic_theme_activity()
         // start running each second
         update().run()
 
+        val broadcast_filter = IntentFilter()
+        broadcast_filter.addAction(CHANGE_LIST_EVENT)
+        broadcast_filter.addAction(CHANGE_ALL_EVENT)
         LocalBroadcastManager.getInstance(this).registerReceiver(on_list_change, IntentFilter(CHANGE_LIST_EVENT))
         contentResolver.registerContentObserver(android.provider.Settings.System.getUriFor(android.provider.Settings.System.TIME_12_24), false, on_24_hour_change)
     }
 
-    override fun onPause()
+    override fun onStop()
     {
         adapter.save_to_db()
-        super.onPause()
+        super.onStop()
     }
 
     override fun onDestroy()

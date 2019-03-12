@@ -41,7 +41,7 @@ import java.util.Collections.swap
 // keeps track of timer GUI rows
 class Adapter(private val activity: Progress_bars): RecyclerView.Adapter<Adapter.Holder>()
 {
-    private lateinit var data_list: MutableList<View_data>
+    private val data_list: MutableList<View_data>
 
     // an individual row object
     inner class Holder(private val row_binding: ViewDataBinding): RecyclerView.ViewHolder(row_binding.root), View.OnClickListener
@@ -92,9 +92,14 @@ class Adapter(private val activity: Progress_bars): RecyclerView.Adapter<Adapter
         }
     }
 
-    fun rebuild_from_db()
+    init
     {
+        setHasStableIds(true)
+
+        // update and alarms
         Data.apply_all_repeats(activity)
+        Notification_handler.reset_all_alarms(activity)
+
         val db = DB(activity).readableDatabase
         val cursor = db.rawQuery(Progress_bars_table.SELECT_ALL_ROWS, null)
 
@@ -103,12 +108,6 @@ class Adapter(private val activity: Progress_bars): RecyclerView.Adapter<Adapter
 
         cursor.close()
         db.close()
-    }
-
-    init
-    {
-        setHasStableIds(true)
-        rebuild_from_db()
     }
 
     override fun onCreateViewHolder(parent_in: ViewGroup, viewType: Int): Holder
