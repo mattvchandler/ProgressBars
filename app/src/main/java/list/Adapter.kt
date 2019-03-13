@@ -37,10 +37,31 @@ import org.mattvchandler.progressbars.settings.Settings
 import org.mattvchandler.progressbars.util.Notification_handler
 import java.security.InvalidParameterException
 
+private typealias Stack<T> = MutableList<T>
+
+private fun <T> Stack<T>.pop(): T
+{
+    val t = this.last()
+    this.removeAt(this.size - 1)
+    return t
+}
+
+private fun <T> Stack<T>.push(t: T)
+{
+    this.add(t)
+}
+
+private data class Undo_event(val type: Undo_event.Type, val data: Data?, val pos: Int?, val old_pos: Int?)
+{
+    enum class Type{ ADD, REMOVE, EDIT, MOVE }
+}
+
 // keeps track of timer GUI rows
 class Adapter(private val activity: Progress_bars): RecyclerView.Adapter<Adapter.Holder>()
 {
     private val data_list: MutableList<View_data>
+    private val undo_stack: Stack<Undo_event> = mutableListOf()
+    private val redo_stack: Stack<Undo_event> = mutableListOf()
 
     // an individual row object
     inner class Holder(private val row_binding: ViewDataBinding): RecyclerView.ViewHolder(row_binding.root), View.OnClickListener
@@ -59,10 +80,7 @@ class Adapter(private val activity: Progress_bars): RecyclerView.Adapter<Adapter
             }
         }
 
-        fun update()
-        {
-            data.update_display(activity.resources)
-        }
+        fun update() = data.update_display(activity.resources)
 
         // click the row to edit its data
         override fun onClick(v: View)
@@ -74,22 +92,18 @@ class Adapter(private val activity: Progress_bars): RecyclerView.Adapter<Adapter
         }
 
         // called when dragging during each reordering
-        fun on_move(to: Holder)
-        {
-            val moved = data_list.removeAt(adapterPosition)
-            data_list.add(to.adapterPosition, moved)
-
-            notifyItemMoved(adapterPosition, to.adapterPosition)
-        }
+        fun on_move(to: Holder) = move_item(adapterPosition, to.adapterPosition)
         // called when a row is selected for deletion or reordering
-        fun on_selected()
-        {
-        }
+        fun on_selected() { moved_from_pos = adapterPosition }
 
         // called when a row is released from reordering
         fun on_cleared()
         {
-            // TODO: set undo here?
+            if(adapterPosition != RecyclerView.NO_POSITION && adapterPosition != moved_from_pos)
+            {
+                redo_stack.clear()
+                undo_stack.push(Undo_event(Undo_event.Type.MOVE, null, adapterPosition, moved_from_pos))
+            }
         }
     }
 
@@ -159,32 +173,105 @@ class Adapter(private val activity: Progress_bars): RecyclerView.Adapter<Adapter
     // called when a row is deleted
     fun on_item_dismiss(pos: Int)
     {
-        Notification_handler.cancel_alarm(activity, data_list[pos])
-        data_list.removeAt(pos)
-        notifyItemRemoved(pos)
+        redo_stack.clear()
+        undo_stack.push(Undo_event(Undo_event.Type.REMOVE, Data(data_list[pos]), pos, null))
+        activity.invalidateOptionsMenu()
+
+        remove_item(pos)
     }
 
-    fun set_edited(data: Data): Int
+    fun set_edited(data: Data)
     {
-        data.apply_repeat()
+        redo_stack.clear()
 
         val pos = if(data.rowid >= 0)
         {
             val pos = find_by_rowid(data.rowid)
-            data_list[pos] = View_data(activity, data)
-            notifyItemChanged(pos)
+            undo_stack.push(Undo_event(Undo_event.Type.EDIT, Data(data_list[pos]), pos, null))
+            edit_item(data, pos)
             pos
         }
         else
         {
-            data.insert(DB(activity).writableDatabase, data_list.size.toLong()) // insert to set rowid
-            data_list.add(View_data(activity, data))
-            notifyItemInserted(data_list.size - 1)
-            data_list.size - 1
+            val pos = data_list.size
+            data.insert(DB(activity).writableDatabase, pos.toLong()) // insert to set rowid
+            add_item(data, pos)
+            undo_stack.push(Undo_event(Undo_event.Type.ADD, null, pos, null))
+            pos
         }
-        Notification_handler.reset_alarm(activity, Data(data_list[pos]))
 
-        return pos
+        activity.invalidateOptionsMenu()
+    }
+
+    private fun add_item(data: Data, pos: Int)
+    {
+        data.apply_repeat()
+        Notification_handler.reset_alarm(activity, data)
+        data_list.add(pos, View_data(activity, data))
+        notifyItemInserted(pos)
+        activity.scroll_to(pos)
+    }
+    private fun edit_item(data: Data, pos: Int)
+    {
+        data.apply_repeat()
+        Notification_handler.reset_alarm(activity, data)
+        data_list[pos] = View_data(activity, data)
+        notifyItemChanged(pos)
+        activity.scroll_to(pos)
+    }
+    private fun remove_item(pos: Int)
+    {
+        Notification_handler.cancel_alarm(activity, data_list[pos])
+        data_list.removeAt(pos)
+        notifyItemRemoved(pos)
+        activity.scroll_to(pos - 1)
+    }
+
+    private fun move_item(from_pos: Int, to_pos: Int)
+    {
+        val moved = data_list.removeAt(from_pos)
+        data_list.add(to_pos, moved)
+
+        notifyItemMoved(from_pos, to_pos)
+        activity.scroll_to(to_pos)
+    }
+
+    fun can_undo() = !undo_stack.isEmpty()
+    fun can_redo() = !redo_stack.isEmpty()
+
+    fun undo() = undo_redo(undo_stack, redo_stack)
+    fun redo() = undo_redo(redo_stack, undo_stack)
+
+    private fun undo_redo(stack: Stack<Undo_event>, inverse_stack: Stack<Undo_event>)
+    {
+        if(stack.isEmpty())
+            return
+
+        val event = stack.pop()
+        when(event.type)
+        {
+            Undo_event.Type.ADD ->
+            {
+                inverse_stack.push(Undo_event(Undo_event.Type.REMOVE, Data(data_list[event.pos!!]), event.pos, null))
+                remove_item(event.pos)
+            }
+            Undo_event.Type.REMOVE ->
+            {
+                inverse_stack.push(Undo_event(Undo_event.Type.ADD, null, event.pos, null))
+                add_item(event.data!!, event.pos!!)
+            }
+            Undo_event.Type.EDIT ->
+            {
+                inverse_stack.push(Undo_event(Undo_event.Type.EDIT, Data(data_list[event.pos!!]), event.pos, null))
+                edit_item(event.data!!, event.pos)
+            }
+            Undo_event.Type.MOVE ->
+            {
+                inverse_stack.push(Undo_event(Undo_event.Type.MOVE, null, event.old_pos!!, event.pos!!))
+                move_item(event.pos, event.old_pos)
+            }
+        }
+        activity.invalidateOptionsMenu()
     }
 
     fun save_to_db()

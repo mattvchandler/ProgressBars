@@ -132,6 +132,8 @@ class Progress_bars: Dynamic_theme_activity()
         contentResolver.registerContentObserver(android.provider.Settings.System.getUriFor(android.provider.Settings.System.TIME_12_24), false, on_24_hour_change)
     }
 
+    // TODO: save adapter undo / redo
+
     override fun onDestroy()
     {
         LocalBroadcastManager.getInstance(this).unregisterReceiver(on_list_change)
@@ -184,9 +186,8 @@ class Progress_bars: Dynamic_theme_activity()
         // dis/enable undo-redo buttons as needed
         super.onPrepareOptionsMenu(menu)
 
-        // TODO: en/disable undo/redo buttons (and implement the whole undo/redo system)
-//        menu.findItem(R.id.undo).isEnabled = Undo.can_undo(this)
-//        menu.findItem(R.id.redo).isEnabled = Undo.can_redo(this)
+        menu.findItem(R.id.undo).isEnabled = adapter.can_undo()
+        menu.findItem(R.id.redo).isEnabled = adapter.can_redo()
 
         return true
     }
@@ -204,13 +205,13 @@ class Progress_bars: Dynamic_theme_activity()
 
             R.id.undo ->
             {
-//                Undo.apply(this, Undo.UNDO)
+                adapter.undo()
                 return true
             }
 
             R.id.redo ->
             {
-//                Undo.apply(this, Undo.REDO)
+                adapter.redo()
                 return true
             }
 
@@ -237,10 +238,11 @@ class Progress_bars: Dynamic_theme_activity()
         if(result_code == Activity.RESULT_OK && request_code == RESULT_EDIT_DATA)
         {
             val data = intent!!.getSerializableExtra(Settings.EXTRA_EDIT_DATA)!! as Data
-            val pos = adapter.set_edited(data)
-            binding.mainList.scrollToPosition(pos)
+            adapter.set_edited(data)
         }
     }
+
+    fun scroll_to(pos: Int) = binding.mainList.scrollToPosition(pos)
 
     private inner class update: Runnable
     {
