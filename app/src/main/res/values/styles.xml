@@ -24,8 +24,16 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
         <item name="android:background">?android:attr/listDivider</item>
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">1dp</item>
-        <item name="android:layout_marginBottom">@dimen/margin_size</item>
-        <item name="android:layout_marginTop">@dimen/margin_size</item>
+    </style>
+    <style name="SettingFrame">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:padding">@dimen/padding_size</item>
+    </style>
+    <style name="ClickableSettingFrame" parent="SettingFrame">
+        <item name="android:background">?android:attr/selectableItemBackground</item>
+        <item name="android:clickable">true</item>
+        <item name="android:focusable">true</item>
     </style>
     <style name="Theme.progress_bars" parent="Theme.AppCompat.DayNight.NoActionBar">
         <item name="colorPrimary">@color/colorPrimary</item>

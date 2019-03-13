@@ -67,12 +67,10 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
                 >
 
                     <android.support.design.widget.TextInputLayout
+                        style="@style/SettingFrame"
                         android:hint="@string/timer_title"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/margin_size"
-                        android:layout_marginStart="@dimen/margin_size"
-                        android:layout_marginEnd="@dimen/margin_size"
                     >
                         <android.support.design.widget.TextInputEditText
                             android:id="@+id/title"
@@ -84,32 +82,21 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
                         />
                     </android.support.design.widget.TextInputLayout>
 
-                    <View style="@style/Divider"/>
-
-                    <TextView
-                        android:text="@string/time_date_header"
-                        android:textAppearance="?android:textAppearanceSmall"
-                        android:textStyle="bold"
-                        android:textColor="?colorAccent"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_margin="@dimen/margin_size"
-                        />
-
                     <Switch
+                        style="@style/SettingFrame"
                         android:id="@+id/separate_time_sw"
                         android:text="@string/separate_time"
                         android:checked="@{data.separate_time}"
                         android:textAppearance="?android:textAppearanceListItem"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_margin="@dimen/margin_size"
                         android:onClick="on_separate_time_butt"
                         />
 
                     <View style="@style/Divider"/>
 
                     <LinearLayout
+                        style="@style/SettingFrame"
                         android:id="@+id/start_date_box"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -123,7 +110,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="10"
-                            android:layout_margin="@dimen/margin_size"
                             >
                             <android.support.design.widget.TextInputEditText
                                 android:id="@+id/start_date_sel"
@@ -142,13 +128,11 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
                             style="?android:attr/borderlessButtonStyle"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="@dimen/margin_size"
-                            android:layout_marginBottom="@dimen/margin_size"
-                            android:layout_marginEnd="@dimen/margin_size"
                             />
                     </LinearLayout>
 
                     <LinearLayout
+                        style="@style/SettingFrame"
                         android:id="@+id/start_time_box"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -163,7 +147,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="10"
-                            android:layout_margin="@dimen/margin_size"
                             >
                             <android.support.design.widget.TextInputEditText
                                 android:id="@+id/start_time_sel"
@@ -182,13 +165,11 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
                             style="?android:attr/borderlessButtonStyle"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="@dimen/margin_size"
-                            android:layout_marginBottom="@dimen/margin_size"
-                            android:layout_marginEnd="@dimen/margin_size"
                             />
                     </LinearLayout>
 
                     <LinearLayout
+                        style="@style/SettingFrame"
                         android:id="@+id/start_tz_box"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -207,7 +188,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
                             android:textAppearance="?android:textAppearanceListItem"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_margin="@dimen/margin_size"
                             />
 
                         <TextView
@@ -215,9 +195,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
                             android:textAppearance="?android:textAppearanceSmall"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginBottom="@dimen/margin_size"
-                            android:layout_marginStart="@dimen/margin_size"
-                            android:layout_marginEnd="@dimen/margin_size"
                             />
                     </LinearLayout>
 
@@ -229,6 +206,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
                     />
 
                     <LinearLayout
+                        style="@style/SettingFrame"
                         android:id="@+id/end_date_box"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -240,7 +218,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="10"
-                            android:layout_margin="@dimen/margin_size"
                         >
                             <android.support.design.widget.TextInputEditText
                                 android:id="@+id/end_date_sel"
@@ -259,13 +236,11 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
                             style="?android:attr/borderlessButtonStyle"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="@dimen/margin_size"
-                            android:layout_marginBottom="@dimen/margin_size"
-                            android:layout_marginEnd="@dimen/margin_size"
                             />
                     </LinearLayout>
 
                     <LinearLayout
+                        style="@style/SettingFrame"
                         android:id="@+id/end_time_box"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -278,7 +253,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="10"
-                            android:layout_margin="@dimen/margin_size"
                             >
                             <android.support.design.widget.TextInputEditText
                                 android:id="@+id/end_time_sel"
@@ -297,13 +271,11 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
                             style="?android:attr/borderlessButtonStyle"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="@dimen/margin_size"
-                            android:layout_marginBottom="@dimen/margin_size"
-                            android:layout_marginEnd="@dimen/margin_size"
                             />
                     </LinearLayout>
 
                     <LinearLayout
+                        style="@style/SettingFrame"
                         android:id="@+id/end_tz_box"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -320,7 +292,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
                             android:textAppearance="?android:textAppearanceListItem"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_margin="@dimen/margin_size"
                             />
 
                         <TextView
@@ -328,32 +299,29 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
                             android:textAppearance="?android:textAppearanceSmall"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginBottom="@dimen/margin_size"
-                            android:layout_marginStart="@dimen/margin_size"
-                            android:layout_marginEnd="@dimen/margin_size"
                             />
                     </LinearLayout>
 
                     <View style="@style/Divider"/>
 
                     <Switch
+                        style="@style/SettingFrame"
                         android:id="@+id/repeat_sw"
                         android:text="@string/repeat"
                         android:checked="@{data.repeats}"
                         android:textAppearance="?android:textAppearanceListItem"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_margin="@dimen/margin_size"
                         android:onClick="on_repeat_butt"
                         />
 
                     <LinearLayout
+                        style="@style/SettingFrame"
                         android:id="@+id/repeat_freq"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
                         android:gravity="center_vertical"
-                        android:layout_margin="@dimen/margin_size"
                         android:animateLayoutChanges="true"
                         >
                         <TextView
@@ -363,7 +331,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="10"
-                            android:layout_marginEnd="@dimen/margin_size"
                             />
 
                         <EditText
@@ -373,6 +340,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
                             android:textAppearance="?android:textAppearanceListItem"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:layout_marginStart="@dimen/margin_size"
                             android:layout_marginEnd="@dimen/margin_size"
                             android:selectAllOnFocus="true"
                             tools:targetApi="o"/>
@@ -409,6 +377,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
                     <View style="@style/Divider"/>
 
                     <LinearLayout
+                        style="@style/ClickableSettingFrame"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="vertical"
@@ -425,7 +394,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
                             android:textAppearance="?android:textAppearanceListItem"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_margin="@dimen/margin_size"
                             />
 
                         <TextView
@@ -434,67 +402,64 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
                             android:textAppearance="?android:textAppearanceSmall"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginBottom="@dimen/margin_size"
-                            android:layout_marginStart="@dimen/margin_size"
-                            android:layout_marginEnd="@dimen/margin_size"
                             />
                     </LinearLayout>
 
                     <View style="@style/Divider"/>
 
-                    <TextView
-                        android:text="@string/show_elements_header"
-                        android:textAppearance="?android:textAppearanceListItem"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_margin="@dimen/margin_size"
+                    <FrameLayout
+                        style="@style/ClickableSettingFrame"
                         android:onClick="on_show_elements_butt"
-                        android:background="?android:attr/selectableItemBackground"
-                        android:clickable="true"
-                        android:focusable="true"
-                    />
+                        >
+                        <TextView
+                            android:text="@string/show_elements_header"
+                            android:textAppearance="?android:textAppearanceListItem"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                        />
+                    </FrameLayout>
 
                     <View style="@style/Divider"/>
 
-                    <TextView
-                        android:text="@string/show_units_header"
-                        android:textAppearance="?android:textAppearanceListItem"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_margin="@dimen/margin_size"
+                    <FrameLayout
+                        style="@style/ClickableSettingFrame"
                         android:onClick="on_show_units_butt"
-                        android:background="?android:attr/selectableItemBackground"
-                        android:clickable="true"
-                        android:focusable="true"
-                        />
+                        >
+                        <TextView
+                            android:text="@string/show_units_header"
+                            android:textAppearance="?android:textAppearanceListItem"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            />
+                    </FrameLayout>
 
                     <View style="@style/Divider"/>
 
-                    <TextView
-                        android:text="@string/countdown_text_header"
-                        android:textAppearance="?android:textAppearanceListItem"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_margin="@dimen/margin_size"
+                    <FrameLayout
+                        style="@style/ClickableSettingFrame"
                         android:onClick="on_countdown_text_butt"
-                        android:background="?android:attr/selectableItemBackground"
-                        android:clickable="true"
-                        android:focusable="true"
-                        />
+                        >
+                        <TextView
+                            android:text="@string/countdown_text_header"
+                            android:textAppearance="?android:textAppearanceListItem"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            />
+                    </FrameLayout>
 
                     <View style="@style/Divider"/>
 
-                    <TextView
-                        android:text="@string/timer_opts_header"
-                        android:textAppearance="?android:textAppearanceListItem"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_margin="@dimen/margin_size"
+                    <FrameLayout
+                        style="@style/ClickableSettingFrame"
                         android:onClick="on_timer_opts_butt"
-                        android:background="?android:attr/selectableItemBackground"
-                        android:clickable="true"
-                        android:focusable="true"
-                    />
+                        >
+                        <TextView
+                            android:text="@string/timer_opts_header"
+                            android:textAppearance="?android:textAppearanceListItem"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                        />
+                    </FrameLayout>
 
                 </LinearLayout>
             </ScrollView>
