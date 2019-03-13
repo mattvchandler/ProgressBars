@@ -60,10 +60,10 @@ private val days_in_mon = intArrayOf(31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30,
 class View_data (context: Context, data: Data): Data(data) // contains all DB data from inherited struct
 {
     // fields used by UI
-    lateinit var start_date_disp: String
-    lateinit var start_time_disp: String
-    lateinit var end_date_disp: String
-    lateinit var end_time_disp: String
+    val start_date_disp = ObservableField<String>()
+    val start_time_disp = ObservableField<String>()
+    val end_date_disp   = ObservableField<String>()
+    val end_time_disp   = ObservableField<String>()
 
     val progress_disp = ObservableInt()
     val percentage_disp = ObservableField<String>()
@@ -194,7 +194,8 @@ class View_data (context: Context, data: Data): Data(data) // contains all DB da
             {
                 // now is before start, so count down to start time
                 remaining_prefix = if(separate_time) pre_text else single_pre_text
-                cal_end.time = start_time_date
+                if(separate_time)
+                    cal_end.time = start_time_date
             }
             remaining >= 0 ->
             {
@@ -466,12 +467,12 @@ class View_data (context: Context, data: Data): Data(data) // contains all DB da
         }
 
         // only calculate time remaining if start or complete text shouldn't be shown
-        if(show_time_text || now_s != start_time || now_s != end_time)
+        if(show_time_text)
         {
             // time from now to end
             val remaining = end_time - now_s
             // time from now to start
-            val to_start = start_time - now_s
+            val to_start = if(separate_time) start_time - now_s else remaining
 
             // if not needing calendar time difference, we can do calculation from the difference in seconds (much easier)
             val remaining_str = if(!show_years && !show_months)
@@ -492,10 +493,10 @@ class View_data (context: Context, data: Data): Data(data) // contains all DB da
         start_time_date.time = start_time * 1000L
         end_time_date.time = end_time * 1000L
 
-        start_date_disp = date_df.format(start_time_date)
-        start_time_disp = time_df.format(start_time_date)
-        end_date_disp   = date_df.format(end_time_date)
-        end_time_disp   = time_df.format(end_time_date)
+        start_date_disp.set(date_df.format(start_time_date))
+        start_time_disp.set(time_df.format(start_time_date))
+        end_date_disp.set(date_df.format(end_time_date))
+        end_time_disp.set(time_df.format(end_time_date))
 
         // set initial percentage to 0
         progress_disp.set(0)
