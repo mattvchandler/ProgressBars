@@ -82,20 +82,12 @@ class Notification_handler: BroadcastReceiver()
                 content = data.start_text
                 notification_when = data.start_time
             }
-            else if((!data.separate_time && data.notify_start || data.separate_time && data.notify_end) && completion_action)
+            else if(data.notify_end && completion_action)
             {
                 do_notify = true
 
-                if(data.separate_time)
-                {
-                    content = data.complete_text
-                    notification_when = data.end_time
-                }
-                else
-                {
-                    content = data.single_complete_text
-                    notification_when = data.start_time
-                }
+                content = if(data.separate_time) data.complete_text else data.single_complete_text
+                notification_when = data.end_time
             }
 
             if(do_notify)
@@ -155,7 +147,7 @@ class Notification_handler: BroadcastReceiver()
             }
 
             // update the displayed list of timers
-            if(data.repeats && (if(data.separate_time) data.end_time else data.start_time) <= System.currentTimeMillis() / 1000)
+            if(data.repeats && data.end_time <= System.currentTimeMillis() / 1000)
             {
                 if(Progress_bars.is_running)
                 {
@@ -250,7 +242,7 @@ class Notification_handler: BroadcastReceiver()
             }
 
             // same as above for completion alarms
-            val end_time = if(data.separate_time) data.end_time else data.start_time
+            val end_time = data.end_time
             if(now < end_time)
             {
                 if(Build.VERSION.SDK_INT >= 23)

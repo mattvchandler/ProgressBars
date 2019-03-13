@@ -61,9 +61,9 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
         <TextView
             android:id="@+id/date"
-            android:text="@{data.start_date_disp}"
+            android:text="@{data.end_date_disp}"
             android:textAlignment="textEnd"
-            android:visibility="@{data.show_start ? View.VISIBLE: View.GONE}"
+            android:visibility="@{data.show_end ? View.VISIBLE: View.GONE}"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:layout_constraintTop_toBottomOf="@id/title"
@@ -77,9 +77,9 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
         <TextView
             android:id="@+id/time"
-            android:text="@{data.start_time_disp}"
+            android:text="@{data.end_time_disp}"
             android:textAlignment="textEnd"
-            android:visibility="@{data.show_start ? View.VISIBLE: View.GONE}"
+            android:visibility="@{data.show_end ? View.VISIBLE: View.GONE}"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:layout_constraintTop_toTopOf="@id/date"

@@ -183,7 +183,7 @@ class View_data (context: Context, data: Data): Data(data) // contains all DB da
     {
         val cal_start = Calendar.getInstance()
         var cal_end = Calendar.getInstance()
-        cal_end.time = if(separate_time) end_time_date else start_time_date
+        cal_end.time = end_time_date
 
         // get and format remaining time
         val remaining_prefix: String
@@ -209,7 +209,7 @@ class View_data (context: Context, data: Data): Data(data) // contains all DB da
                 remaining_prefix = if(separate_time) post_text else single_post_text
                 cal_end = cal_start.clone() as Calendar
 
-                cal_start.time = if(separate_time) end_time_date else start_time_date
+                cal_start.time = end_time_date
             }
         }
 
@@ -456,14 +456,12 @@ class View_data (context: Context, data: Data): Data(data) // contains all DB da
             return
         }
         // if we are at the end (or past when terminate is set) show completed text
-        else if(separate_time && ((terminate && now_s > end_time)  || now_s == end_time))
+        else if((terminate && now_s > end_time)  || now_s == end_time)
         {
-            time_text_disp.set(complete_text)
-            return
-        }
-        else if(!separate_time && ((terminate && now_s > start_time)  || now_s == start_time))
-        {
-            time_text_disp.set(single_complete_text)
+            if(separate_time)
+                time_text_disp.set(complete_text)
+            else
+                time_text_disp.set(single_complete_text)
             return
         }
 
@@ -471,7 +469,7 @@ class View_data (context: Context, data: Data): Data(data) // contains all DB da
         if(show_time_text || now_s != start_time || now_s != end_time)
         {
             // time from now to end
-            val remaining = if(separate_time) end_time - now_s else start_time - now_s
+            val remaining = end_time - now_s
             // time from now to start
             val to_start = start_time - now_s
 

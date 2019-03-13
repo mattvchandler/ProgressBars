@@ -114,6 +114,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
+                        android:visibility="@{data.separate_time ? View.VISIBLE : View.GONE}"
+                        android:animateLayoutChanges="true"
                         >
                         <android.support.design.widget.TextInputLayout
                             android:id="@+id/start_date_txt"
@@ -152,6 +154,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
                         android:gravity="center_vertical"
+                        android:visibility="@{data.separate_time ? View.VISIBLE : View.GONE}"
+                        android:animateLayoutChanges="true"
                         >
                         <android.support.design.widget.TextInputLayout
                             android:id="@+id/start_time_txt"
@@ -192,6 +196,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
                         android:layout_gravity="center_vertical"
                         android:onClick="on_start_tz_butt"
                         android:background="?android:attr/selectableItemBackground"
+                        android:visibility="@{data.separate_time ? View.VISIBLE : View.GONE}"
+                        android:animateLayoutChanges="true"
                         android:clickable="true"
                         android:focusable="true"
                         >
@@ -216,7 +222,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
                     </LinearLayout>
 
                     <View
-                        android:id="@+id/end_time_divider"
+                        android:id="@+id/start_time_divider"
                         style="@style/Divider"
                         android:visibility="@{data.separate_time ? View.VISIBLE : View.GONE}"
                         android:animateLayoutChanges="true"
@@ -227,8 +233,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
-                        android:visibility="@{data.separate_time ? View.VISIBLE : View.GONE}"
-                        android:animateLayoutChanges="true"
                     >
                         <android.support.design.widget.TextInputLayout
                             android:id="@+id/end_date_txt"
@@ -267,8 +271,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
                         android:gravity="center_vertical"
-                        android:visibility="@{data.separate_time ? View.VISIBLE : View.GONE}"
-                        android:animateLayoutChanges="true"
                         >
                         <android.support.design.widget.TextInputLayout
                             android:id="@+id/end_time_txt"
@@ -309,12 +311,11 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
                         android:layout_gravity="center_vertical"
                         android:onClick="on_end_tz_butt"
                         android:background="?android:attr/selectableItemBackground"
-                        android:visibility="@{data.separate_time ? View.VISIBLE : View.GONE}"
-                        android:animateLayoutChanges="true"
                         android:clickable="true"
                         android:focusable="true"
                         >
                         <TextView
+                            android:id="@+id/end_tz_txt"
                             android:text="@string/end_tz_prompt"
                             android:textAppearance="?android:textAppearanceListItem"
                             android:layout_width="wrap_content"

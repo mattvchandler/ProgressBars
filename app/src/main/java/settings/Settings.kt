@@ -52,7 +52,6 @@ import java.text.ParsePosition
 import java.text.SimpleDateFormat
 import java.util.*
 
-// TODO: code could be cleaned up if we use end_time for singe-time timers
 // TODO: individual notification options - use Android messages as a model for multiple channels
 // Settings for each timer
 class Settings: Dynamic_theme_activity(), DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener
@@ -124,9 +123,9 @@ class Settings: Dynamic_theme_activity(), DatePickerDialog.OnDateSetListener, Ti
         // set selected values
         binding.data = data
 
-        binding.startDateTxt.hint = if(data.separate_time) resources.getString(R.string.start_date_txt) else resources.getString(R.string.single_date_txt)
-        binding.startTimeTxt.hint = if(data.separate_time) resources.getString(R.string.start_time_txt) else resources.getString(R.string.single_time_txt)
-        binding.startTzTxt.text  = if(data.separate_time) resources.getString(R.string.start_tz_prompt) else resources.getString(R.string.single_tz_prompt)
+        binding.endDateTxt.hint = if(data.separate_time) resources.getString(R.string.end_date_txt) else resources.getString(R.string.single_date_txt)
+        binding.endTimeTxt.hint = if(data.separate_time) resources.getString(R.string.end_time_txt) else resources.getString(R.string.single_time_txt)
+        binding.endTzTxt.text  = if(data.separate_time)  resources.getString(R.string.end_tz_prompt) else resources.getString(R.string.single_tz_prompt)
 
         binding.startTz.text = data.start_tz.replace('_', ' ')
         binding.endTz.text   = data.end_tz.replace('_', ' ')
@@ -397,14 +396,14 @@ class Settings: Dynamic_theme_activity(), DatePickerDialog.OnDateSetListener, Ti
         data.separate_time = binding.separateTimeSw.isChecked
 
         val visibility = if(data.separate_time) View.VISIBLE else View.GONE
-        binding.endTimeDivider.visibility = visibility
-        binding.endDateBox.visibility = visibility
-        binding.endTimeBox.visibility = visibility
-        binding.endTzBox.visibility = visibility
+        binding.startTimeDivider.visibility = visibility
+        binding.startDateBox.visibility = visibility
+        binding.startTimeBox.visibility = visibility
+        binding.startTzBox.visibility = visibility
 
-        binding.startDateTxt.hint = if(data.separate_time) resources.getString(R.string.start_date_txt) else resources.getString(R.string.single_date_txt)
-        binding.startTimeTxt.hint = if(data.separate_time) resources.getString(R.string.start_time_txt) else resources.getString(R.string.single_time_txt)
-        binding.startTzTxt.text  = if(data.separate_time) resources.getString(R.string.start_tz_prompt) else resources.getString(R.string.single_tz_prompt)
+        binding.endDateTxt.hint = if(data.separate_time) resources.getString(R.string.end_date_txt) else resources.getString(R.string.single_date_txt)
+        binding.endTimeTxt.hint = if(data.separate_time) resources.getString(R.string.end_time_txt) else resources.getString(R.string.single_time_txt)
+        binding.endTzTxt.text  = if(data.separate_time)  resources.getString(R.string.end_tz_prompt) else resources.getString(R.string.single_tz_prompt)
     }
 
     fun on_start_cal_butt(@Suppress("UNUSED_PARAMETER") view: View)
@@ -518,7 +517,7 @@ class Settings: Dynamic_theme_activity(), DatePickerDialog.OnDateSetListener, Ti
         }
         else
         {
-            selected[SHOW_SINGLE_TIME_CHECKBOX] = data.show_start
+            selected[SHOW_SINGLE_TIME_CHECKBOX] = data.show_end
         }
 
         val frag = Checkbox_dialog_frag()
@@ -566,10 +565,14 @@ class Settings: Dynamic_theme_activity(), DatePickerDialog.OnDateSetListener, Ti
     {
         val selected = BooleanArray(if(data.separate_time) 3 else 2)
         selected[TERMINATE_CHECKBOX] = data.terminate
-        selected[NOTIFY_START_CHECKBOX] = data.notify_start
 
         if(data.separate_time)
+        {
+            selected[NOTIFY_START_CHECKBOX] = data.notify_start
             selected[NOTIFY_END_CHECKBOX] = data.notify_end
+        }
+        else
+            selected[NOTIFY_SINGLE_CHECKBOX] = data.notify_end
 
         val frag = Checkbox_dialog_frag()
 
@@ -646,7 +649,7 @@ class Settings: Dynamic_theme_activity(), DatePickerDialog.OnDateSetListener, Ti
             }
             else
             {
-                data.show_start = selected[SHOW_SINGLE_TIME_CHECKBOX]
+                data.show_end = selected[SHOW_SINGLE_TIME_CHECKBOX]
             }
         }
         else if(id == SHOW_UNITS_CHECKBOX_DIALOG)
@@ -662,10 +665,15 @@ class Settings: Dynamic_theme_activity(), DatePickerDialog.OnDateSetListener, Ti
         else if(id == TIMER_OPTS_CHECKBOX_DIALOG)
         {
             data.terminate = selected[TERMINATE_CHECKBOX]
-            data.notify_start = selected[NOTIFY_START_CHECKBOX]
 
             if(data.separate_time)
+            {
+                data.notify_start = selected[NOTIFY_START_CHECKBOX]
                 data.notify_end = selected[NOTIFY_END_CHECKBOX]
+            }
+            else
+                data.notify_end = selected[NOTIFY_SINGLE_CHECKBOX]
+
         }
     }
 
@@ -724,6 +732,7 @@ class Settings: Dynamic_theme_activity(), DatePickerDialog.OnDateSetListener, Ti
         private const val TERMINATE_CHECKBOX = 0
         private const val NOTIFY_START_CHECKBOX = 1
         private const val NOTIFY_END_CHECKBOX = 2
+        private const val NOTIFY_SINGLE_CHECKBOX = 1
 
         private const val RESULT_TIMEZONE_START = 0
         private const val RESULT_TIMEZONE_END = 1
