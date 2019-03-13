@@ -33,20 +33,15 @@ class Resetting_application: Application()
     {
         super.onCreate()
 
-        // TODO: insert a new row when no others exist
-//        val db = DB(this).readableDatabase
-//        val cursor = db.rawQuery(Progress_bars_table.SELECT_ALL_ROWS, null)
-//        if(cursor.count == 0)
-//        {
-//            Data(this).insert(this)
-//        }
-//        else
-//        {
-//            // clean up existing orders. make them sequential
-//            Progress_bars_table.cleanup_order(this)
-//        }
-//        cursor.close()
-//        db.close()
+        val db = DB(this).writableDatabase
+        val cursor = db.rawQuery(Progress_bars_table.SELECT_ALL_ROWS, null)
+        if(cursor.count == 0)
+        {
+            Data(this).insert(db,0)
+        }
+
+        cursor.close()
+        db.close()
 
         // register notification handler
         Notification_handler.setup_notification_channel(this)
