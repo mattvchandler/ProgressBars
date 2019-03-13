@@ -56,6 +56,8 @@ class Progress_bars: Dynamic_theme_activity()
         const val CHANGE_LIST_EVENT = "ProgressBars.CHANGE_LIST_EVENT"
         const val RESULT_EDIT_DATA = 0
 
+        private const val SAVE_UNDO_REDO = "SAVE_UNDO_REDO"
+
         var is_running = false
     }
 
@@ -107,6 +109,9 @@ class Progress_bars: Dynamic_theme_activity()
         // set up row Adapter
         adapter = Adapter(this)
 
+        if(savedInstanceState != null)
+            adapter.undo_redo_stacks = savedInstanceState.getSerializable(SAVE_UNDO_REDO)!!
+
         binding.mainList.layoutManager = LinearLayoutManager(this)
         binding.mainList.adapter = adapter
 
@@ -132,7 +137,12 @@ class Progress_bars: Dynamic_theme_activity()
         contentResolver.registerContentObserver(android.provider.Settings.System.getUriFor(android.provider.Settings.System.TIME_12_24), false, on_24_hour_change)
     }
 
-    // TODO: save adapter undo / redo
+    override fun onSaveInstanceState(out: Bundle)
+    {
+        super.onSaveInstanceState(out)
+
+        out.putSerializable(SAVE_UNDO_REDO, adapter.undo_redo_stacks)
+    }
 
     override fun onDestroy()
     {

@@ -35,6 +35,7 @@ import org.mattvchandler.progressbars.db.Data
 import org.mattvchandler.progressbars.db.Progress_bars_table
 import org.mattvchandler.progressbars.settings.Settings
 import org.mattvchandler.progressbars.util.Notification_handler
+import java.io.Serializable
 import java.security.InvalidParameterException
 
 private typealias Stack<T> = MutableList<T>
@@ -272,6 +273,21 @@ class Adapter(private val activity: Progress_bars): RecyclerView.Adapter<Adapter
             }
         }
         activity.invalidateOptionsMenu()
+    }
+
+    var undo_redo_stacks
+    get() = Pair(undo_stack, redo_stack) as Serializable
+    set(stack_pair: Serializable)
+    {
+        val (new_undo_stack, new_redo_stack) = stack_pair as Pair<*, *>
+
+        undo_stack.clear()
+        redo_stack.clear()
+
+        @Suppress("UNCHECKED_CAST")
+        undo_stack.addAll(new_undo_stack as Stack<Undo_event>)
+        @Suppress("UNCHECKED_CAST")
+        redo_stack.addAll(new_redo_stack as Stack<Undo_event>)
     }
 
     fun save_to_db()
