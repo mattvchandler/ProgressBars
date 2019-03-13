@@ -277,7 +277,7 @@ class Adapter(private val activity: Progress_bars): RecyclerView.Adapter<Adapter
 
     var undo_redo_stacks
     get() = Pair(undo_stack, redo_stack) as Serializable
-    set(stack_pair: Serializable)
+    set(stack_pair)
     {
         val (new_undo_stack, new_redo_stack) = stack_pair as Pair<*, *>
 

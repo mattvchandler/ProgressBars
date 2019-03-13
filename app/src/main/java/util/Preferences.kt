@@ -27,7 +27,6 @@ import android.app.Dialog
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
-import android.content.pm.ApplicationInfo
 import android.content.pm.PackageManager
 import android.databinding.DataBindingUtil
 import android.net.Uri
@@ -37,11 +36,9 @@ import android.preference.PreferenceManager
 import android.support.v4.app.ActivityCompat
 import android.support.v4.app.DialogFragment
 import android.support.v4.content.ContextCompat
-import android.support.v4.content.LocalBroadcastManager
 import android.support.v7.preference.Preference
 import android.support.v7.preference.PreferenceFragmentCompat
 import android.view.MenuItem
-import org.mattvchandler.progressbars.Progress_bars
 import org.mattvchandler.progressbars.R
 import org.mattvchandler.progressbars.databinding.ActivityPreferencesBinding
 
