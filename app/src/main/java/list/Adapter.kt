@@ -52,7 +52,7 @@ private fun <T> Stack<T>.push(t: T)
     this.add(t)
 }
 
-private data class Undo_event(val type: Undo_event.Type, val data: Data?, val pos: Int?, val old_pos: Int?)
+private data class Undo_event(val type: Undo_event.Type, val data: Data?, val pos: Int?, val old_pos: Int?): Serializable
 {
     enum class Type{ ADD, REMOVE, EDIT, MOVE }
 }
