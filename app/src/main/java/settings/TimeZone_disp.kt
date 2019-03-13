@@ -229,6 +229,8 @@ class TimeZone_activity: Dynamic_theme_activity()
             search.setQuery(saved_search, true)
             search.clearFocus()
         }
+        else
+            search.requestFocus()
 
         return super.onCreateOptionsMenu(menu)
     }
