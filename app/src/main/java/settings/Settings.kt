@@ -123,9 +123,11 @@ class Settings: Dynamic_theme_activity(), DatePickerDialog.OnDateSetListener, Ti
         // set selected values
         binding.data = data
 
-        binding.endDateTxt.hint = if(data.separate_time) resources.getString(R.string.end_date_txt) else resources.getString(R.string.single_date_txt)
-        binding.endTimeTxt.hint = if(data.separate_time) resources.getString(R.string.end_time_txt) else resources.getString(R.string.single_time_txt)
-        binding.endTzTxt.text  = if(data.separate_time)  resources.getString(R.string.end_tz_prompt) else resources.getString(R.string.single_tz_prompt)
+        binding.endDateTxt.hint  = if(data.separate_time) resources.getString(R.string.end_date_txt)  else resources.getString(R.string.single_date_txt)
+        binding.endTimeTxt.hint  = if(data.separate_time) resources.getString(R.string.end_time_txt)  else resources.getString(R.string.single_time_txt)
+        binding.endTzTxt.text    = if(data.separate_time) resources.getString(R.string.end_tz_prompt) else resources.getString(R.string.single_tz_prompt)
+        binding.terminateSw.text = if(data.separate_time) resources.getString(R.string.terminate)     else resources.getString(R.string.single_terminate)
+        binding.endNotifySw.text = if(data.separate_time) resources.getString(R.string.end_notify)    else resources.getString(R.string.single_notify)
 
         binding.startTz.text = data.start_tz.replace('_', ' ')
         binding.endTz.text   = data.end_tz.replace('_', ' ')
@@ -397,13 +399,17 @@ class Settings: Dynamic_theme_activity(), DatePickerDialog.OnDateSetListener, Ti
 
         val visibility = if(data.separate_time) View.VISIBLE else View.GONE
         binding.startTimeDivider.visibility = visibility
-        binding.startDateBox.visibility = visibility
-        binding.startTimeBox.visibility = visibility
-        binding.startTzBox.visibility = visibility
+        binding.startDateBox.visibility     = visibility
+        binding.startTimeBox.visibility     = visibility
+        binding.startTzBox.visibility       = visibility
+        binding.startNotifySw.visibility    = visibility
 
-        binding.endDateTxt.hint = if(data.separate_time) resources.getString(R.string.end_date_txt) else resources.getString(R.string.single_date_txt)
-        binding.endTimeTxt.hint = if(data.separate_time) resources.getString(R.string.end_time_txt) else resources.getString(R.string.single_time_txt)
-        binding.endTzTxt.text  = if(data.separate_time)  resources.getString(R.string.end_tz_prompt) else resources.getString(R.string.single_tz_prompt)
+        binding.endDateTxt.hint  = if(data.separate_time) resources.getString(R.string.end_date_txt)  else resources.getString(R.string.single_date_txt)
+        binding.endTimeTxt.hint  = if(data.separate_time) resources.getString(R.string.end_time_txt)  else resources.getString(R.string.single_time_txt)
+        binding.endTzTxt.text    = if(data.separate_time) resources.getString(R.string.end_tz_prompt) else resources.getString(R.string.single_tz_prompt)
+        binding.terminateSw.text = if(data.separate_time) resources.getString(R.string.terminate)     else resources.getString(R.string.single_terminate)
+        binding.endNotifySw.text = if(data.separate_time) resources.getString(R.string.end_notify)    else resources.getString(R.string.single_notify)
+
     }
 
     fun on_start_cal_butt(@Suppress("UNUSED_PARAMETER") view: View)
@@ -474,7 +480,6 @@ class Settings: Dynamic_theme_activity(), DatePickerDialog.OnDateSetListener, Ti
 
     fun on_repeat_butt(@Suppress("UNUSED_PARAMETER") view: View)
     {
-        data.repeats = binding.repeatSw.isChecked
         binding.repeatFreq.visibility = if(data.repeats) View.VISIBLE else View.GONE
     }
 
@@ -561,30 +566,6 @@ class Settings: Dynamic_theme_activity(), DatePickerDialog.OnDateSetListener, Ti
         startActivityForResult(intent, RESULT_COUNTDOWN_TEXT)
     }
 
-    fun on_timer_opts_butt(@Suppress("UNUSED_PARAMETER") view: View)
-    {
-        val selected = BooleanArray(if(data.separate_time) 3 else 2)
-        selected[TERMINATE_CHECKBOX] = data.terminate
-
-        if(data.separate_time)
-        {
-            selected[NOTIFY_START_CHECKBOX] = data.notify_start
-            selected[NOTIFY_END_CHECKBOX] = data.notify_end
-        }
-        else
-            selected[NOTIFY_SINGLE_CHECKBOX] = data.notify_end
-
-        val frag = Checkbox_dialog_frag()
-
-        val args = Bundle()
-        args.putInt(Checkbox_dialog_frag.TITLE_ARG, R.string.timer_opts_header)
-        args.putInt(Checkbox_dialog_frag.ENTRIES_ARG, if(data.separate_time) R.array.timer_opts else R.array.single_timer_opts)
-        args.putBooleanArray(Checkbox_dialog_frag.SELECTION_ARG, selected)
-
-        frag.arguments = args
-        frag.show(supportFragmentManager, TIMER_OPTS_CHECKBOX_DIALOG)
-    }
-
     // Dialog return callbacks
 
     override fun onDateSet(view: DatePicker, year: Int, month: Int, day: Int)
@@ -662,19 +643,6 @@ class Settings: Dynamic_theme_activity(), DatePickerDialog.OnDateSetListener, Ti
             data.show_months = selected[SHOW_MONTHS_CHECKBOX]
             data.show_years = selected[SHOW_YEARS_CHECKBOX]
         }
-        else if(id == TIMER_OPTS_CHECKBOX_DIALOG)
-        {
-            data.terminate = selected[TERMINATE_CHECKBOX]
-
-            if(data.separate_time)
-            {
-                data.notify_start = selected[NOTIFY_START_CHECKBOX]
-                data.notify_end = selected[NOTIFY_END_CHECKBOX]
-            }
-            else
-                data.notify_end = selected[NOTIFY_SINGLE_CHECKBOX]
-
-        }
     }
 
     override fun onActivityResult(request_code: Int, result_code: Int, intent: Intent?)
@@ -728,11 +696,6 @@ class Settings: Dynamic_theme_activity(), DatePickerDialog.OnDateSetListener, Ti
         private const val SHOW_WEEKS_CHECKBOX = 4
         private const val SHOW_MONTHS_CHECKBOX = 5
         private const val SHOW_YEARS_CHECKBOX = 6
-
-        private const val TERMINATE_CHECKBOX = 0
-        private const val NOTIFY_START_CHECKBOX = 1
-        private const val NOTIFY_END_CHECKBOX = 2
-        private const val NOTIFY_SINGLE_CHECKBOX = 1
 
         private const val RESULT_TIMEZONE_START = 0
         private const val RESULT_TIMEZONE_END = 1

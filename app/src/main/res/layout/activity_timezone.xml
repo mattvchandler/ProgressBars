@@ -44,13 +44,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
                 >
-                <!--<android.support.v7.widget.AppCompatEditText-->
-                    <!--android:id="@+id/time_zone_search"-->
-                    <!--android:hint="@string/choose_tz"-->
-                    <!--android:singleLine="true"-->
-                    <!--android:layout_width="match_parent"-->
-                    <!--android:layout_height="wrap_content"-->
-                    <!--/>-->
             </android.support.v7.widget.Toolbar>
         </android.support.design.widget.AppBarLayout>
         <android.support.v7.widget.RecyclerView

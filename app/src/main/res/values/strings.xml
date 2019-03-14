@@ -192,16 +192,11 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
         <item>Event time</item>
     </string-array>
 
-    <string-array name="timer_opts">
-        <item>Stop timer when completed</item>
-        <item>Send notification on start</item>
-        <item>Send notification on completion</item>
-    </string-array>
-
-    <string-array name="single_timer_opts">
-        <item>Stop countdown when event reached</item>
-        <item>Send notification on event</item>
-    </string-array>
+    <string name="terminate">Stop timer when completed</string>
+    <string name="single_terminate">Stop countdown when event reached</string>
+    <string name="start_notify">Send notification on start</string>
+    <string name="end_notify">Send notification on completion</string>
+    <string name="single_notify">Send notification on event</string>
 
     <string name="default_title">New timer</string>
     <string name="default_pre_text">"Time until start: "</string>

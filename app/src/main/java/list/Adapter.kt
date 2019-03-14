@@ -185,12 +185,11 @@ class Adapter(private val activity: Progress_bars): RecyclerView.Adapter<Adapter
     {
         redo_stack.clear()
 
-        val pos = if(data.rowid >= 0)
+        if(data.rowid >= 0)
         {
             val pos = find_by_rowid(data.rowid)
             undo_stack.push(Undo_event(Undo_event.Type.EDIT, Data(data_list[pos]), pos, null))
             edit_item(data, pos)
-            pos
         }
         else
         {
@@ -198,7 +197,6 @@ class Adapter(private val activity: Progress_bars): RecyclerView.Adapter<Adapter
             data.insert(DB(activity).writableDatabase, pos.toLong()) // insert to set rowid
             add_item(data, pos)
             undo_stack.push(Undo_event(Undo_event.Type.ADD, null, pos, null))
-            pos
         }
 
         activity.invalidateOptionsMenu()

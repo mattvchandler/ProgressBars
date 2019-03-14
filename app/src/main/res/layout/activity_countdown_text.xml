@@ -66,11 +66,10 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
                     android:animateLayoutChanges="true"
                     >
                     <android.support.design.widget.TextInputLayout
+                        style="@style/ShortSettingFrame"
                         android:hint="@string/pre_text"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="@dimen/margin_size"
-                        android:layout_marginEnd="@dimen/margin_size"
                         android:visibility="@{data.separate_time ? View.VISIBLE : View.GONE}"
                         >
                         <android.support.design.widget.TextInputEditText
@@ -84,11 +83,10 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
                     </android.support.design.widget.TextInputLayout>
 
                     <android.support.design.widget.TextInputLayout
+                        style="@style/ShortSettingFrame"
                         android:hint="@string/start_text"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="@dimen/margin_size"
-                        android:layout_marginEnd="@dimen/margin_size"
                         android:visibility="@{data.separate_time ? View.VISIBLE : View.GONE}"
                         >
                         <android.support.design.widget.TextInputEditText
@@ -102,11 +100,10 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
                     </android.support.design.widget.TextInputLayout>
 
                     <android.support.design.widget.TextInputLayout
+                        style="@style/ShortSettingFrame"
                         android:hint="@string/countdown_text"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="@dimen/margin_size"
-                        android:layout_marginEnd="@dimen/margin_size"
                         android:visibility="@{data.separate_time ? View.VISIBLE : View.GONE}"
                         >
                         <android.support.design.widget.TextInputEditText
@@ -120,11 +117,10 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
                     </android.support.design.widget.TextInputLayout>
 
                     <android.support.design.widget.TextInputLayout
+                        style="@style/ShortSettingFrame"
                         android:hint="@string/complete_text"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="@dimen/margin_size"
-                        android:layout_marginEnd="@dimen/margin_size"
                         android:visibility="@{data.separate_time ? View.VISIBLE : View.GONE}"
                         >
                         <android.support.design.widget.TextInputEditText
@@ -138,11 +134,10 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
                     </android.support.design.widget.TextInputLayout>
 
                     <android.support.design.widget.TextInputLayout
+                        style="@style/ShortSettingFrame"
                         android:hint="@string/post_text"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="@dimen/margin_size"
-                        android:layout_marginEnd="@dimen/margin_size"
                         android:visibility="@{data.separate_time ? View.VISIBLE : View.GONE}"
                         >
                         <android.support.design.widget.TextInputEditText
@@ -156,11 +151,10 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
                     </android.support.design.widget.TextInputLayout>
 
                     <android.support.design.widget.TextInputLayout
+                        style="@style/ShortSettingFrame"
                         android:hint="@string/single_pre_text"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="@dimen/margin_size"
-                        android:layout_marginEnd="@dimen/margin_size"
                         android:visibility="@{data.separate_time ? View.GONE : View.VISIBLE}"
                         >
                         <android.support.design.widget.TextInputEditText
@@ -174,11 +168,10 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
                     </android.support.design.widget.TextInputLayout>
 
                     <android.support.design.widget.TextInputLayout
+                        style="@style/ShortSettingFrame"
                         android:hint="@string/single_complete_text"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="@dimen/margin_size"
-                        android:layout_marginEnd="@dimen/margin_size"
                         android:visibility="@{data.separate_time ? View.GONE : View.VISIBLE}"
                         >
                         <android.support.design.widget.TextInputEditText
@@ -192,11 +185,10 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
                     </android.support.design.widget.TextInputLayout>
 
                     <android.support.design.widget.TextInputLayout
+                        style="@style/ShortSettingFrame"
                         android:hint="@string/single_post_text"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="@dimen/margin_size"
-                        android:layout_marginEnd="@dimen/margin_size"
                         android:visibility="@{data.separate_time ? View.GONE : View.VISIBLE}"
                         >
                         <android.support.design.widget.TextInputEditText
