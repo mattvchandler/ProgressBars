@@ -25,6 +25,7 @@ import android.app.Activity
 import android.content.Intent
 import android.databinding.DataBindingUtil
 import android.os.Bundle
+import android.support.v7.widget.Toolbar
 import android.view.MenuItem
 
 import org.mattvchandler.progressbars.R
@@ -45,7 +46,7 @@ class Countdown_text: Dynamic_theme_activity()
         super.onCreate(savedInstanceState)
 
         binding = DataBindingUtil.setContentView(this, R.layout.activity_countdown_text)
-        setSupportActionBar(binding.toolbar)
+        setSupportActionBar(binding.toolbar as Toolbar)
         if(supportActionBar != null)
             supportActionBar!!.setDisplayHomeAsUpEnabled(true)
 

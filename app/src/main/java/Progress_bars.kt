@@ -34,6 +34,7 @@ import android.preference.PreferenceManager
 import android.support.v4.content.LocalBroadcastManager
 import android.support.v7.widget.DividerItemDecoration
 import android.support.v7.widget.LinearLayoutManager
+import android.support.v7.widget.Toolbar
 import android.support.v7.widget.helper.ItemTouchHelper
 import android.view.Menu
 import android.view.MenuItem
@@ -99,7 +100,7 @@ class Progress_bars: Dynamic_theme_activity()
             startActivityForResult(Intent(this, Settings::class.java), RESULT_EDIT_DATA)
 
         binding = DataBindingUtil.setContentView(this, R.layout.activity_progress_bars)
-        setSupportActionBar(binding.toolbar)
+        setSupportActionBar(binding.toolbar as Toolbar)
         binding.mainList.addItemDecoration(DividerItemDecoration(binding.mainList.context, DividerItemDecoration.VERTICAL))
 
         // save date format to detect when it changes

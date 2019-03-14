@@ -38,6 +38,7 @@ import android.support.v4.app.DialogFragment
 import android.support.v4.content.ContextCompat
 import android.support.v7.preference.Preference
 import android.support.v7.preference.PreferenceFragmentCompat
+import android.support.v7.widget.Toolbar
 import android.view.MenuItem
 import org.mattvchandler.progressbars.R
 import org.mattvchandler.progressbars.databinding.ActivityPreferencesBinding
@@ -147,7 +148,7 @@ class Preferences: Dynamic_theme_activity()
         super.onCreate(savedInstanceState)
 
         val binding = DataBindingUtil.setContentView<ActivityPreferencesBinding>(this, R.layout.activity_preferences)
-        setSupportActionBar(binding.toolbar)
+        setSupportActionBar(binding.toolbar as Toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         // put settings content into frame layout

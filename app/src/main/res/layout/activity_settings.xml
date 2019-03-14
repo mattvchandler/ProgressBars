@@ -25,6 +25,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    tools:context="org.mattvchandler.progressbars.settings.Settings"
     >
 
     <data>
@@ -36,445 +37,437 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
     <android.support.design.widget.CoordinatorLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context="org.mattvchandler.progressbars.settings.Settings"
         >
-        <LinearLayout
+        <android.support.design.widget.AppBarLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            >
+            <include
+                layout="@layout/toolbar"
+                android:id="@+id/toolbar"
+                />
+        </android.support.design.widget.AppBarLayout>
+
+        <ScrollView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior"
         >
-
-            <android.support.v7.widget.Toolbar
-                android:id="@+id/toolbar"
-                android:background="?attr/colorPrimary"
-                android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
-                tools:ignore="UnusedAttribute"
-                android:elevation="4dp"
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="?attr/actionBarSize"
-                app:layout_constraintTop_toTopOf="parent"
-                />
-
-            <ScrollView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:animateLayoutChanges="true"
             >
+
+                <android.support.design.widget.TextInputLayout
+                    style="@style/SettingFrame"
+                    android:hint="@string/timer_title"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                >
+                    <android.support.design.widget.TextInputEditText
+                        android:id="@+id/title"
+                        android:text="@{data.title}"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="textCapSentences"
+                        android:selectAllOnFocus="true"
+                    />
+                </android.support.design.widget.TextInputLayout>
+
+                <Switch
+                    style="@style/SettingFrame"
+                    android:id="@+id/separate_time_sw"
+                    android:text="@string/separate_time"
+                    android:checked="@{data.separate_time}"
+                    android:textAppearance="?android:textAppearanceListItem"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:onClick="on_separate_time_butt"
+                    />
+
+                <View style="@style/Divider"/>
+
                 <LinearLayout
+                    style="@style/SettingFrame"
+                    android:id="@+id/start_date_box"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:visibility="@{data.separate_time ? View.VISIBLE : View.GONE}"
+                    android:animateLayoutChanges="true"
+                    >
+                    <android.support.design.widget.TextInputLayout
+                        android:id="@+id/start_date_txt"
+                        android:hint="@string/start_date_txt"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="10"
+                        >
+                        <android.support.design.widget.TextInputEditText
+                            android:id="@+id/start_date_sel"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:inputType="date"
+                            android:selectAllOnFocus="true"
+                            />
+                    </android.support.design.widget.TextInputLayout>
+
+                    <ImageButton
+                        android:id="@+id/start_date_butt"
+                        android:onClick="on_start_cal_butt"
+                        android:contentDescription="@string/start_cal_butt"
+                        app:srcCompat="@android:drawable/ic_menu_month"
+                        style="?android:attr/borderlessButtonStyle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        />
+                </LinearLayout>
+
+                <LinearLayout
+                    style="@style/SettingFrame"
+                    android:id="@+id/start_time_box"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:visibility="@{data.separate_time ? View.VISIBLE : View.GONE}"
+                    android:animateLayoutChanges="true"
+                    >
+                    <android.support.design.widget.TextInputLayout
+                        android:id="@+id/start_time_txt"
+                        android:hint="@string/start_time_txt"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="10"
+                        >
+                        <android.support.design.widget.TextInputEditText
+                            android:id="@+id/start_time_sel"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:inputType="text"
+                            android:selectAllOnFocus="true"
+                            />
+                    </android.support.design.widget.TextInputLayout>
+
+                    <ImageButton
+                        android:id="@+id/start_time_butt"
+                        android:onClick="on_start_clock_butt"
+                        android:contentDescription="@string/start_clock_butt"
+                        app:srcCompat="@android:drawable/ic_menu_recent_history"
+                        style="?android:attr/borderlessButtonStyle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        />
+                </LinearLayout>
+
+                <LinearLayout
+                    style="@style/SettingFrame"
+                    android:id="@+id/start_tz_box"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
+                    android:layout_gravity="center_vertical"
+                    android:onClick="on_start_tz_butt"
+                    android:background="?android:attr/selectableItemBackground"
+                    android:visibility="@{data.separate_time ? View.VISIBLE : View.GONE}"
                     android:animateLayoutChanges="true"
-                >
-
-                    <android.support.design.widget.TextInputLayout
-                        style="@style/SettingFrame"
-                        android:hint="@string/timer_title"
-                        android:layout_width="match_parent"
+                    android:clickable="true"
+                    android:focusable="true"
+                    >
+                    <TextView
+                        android:id="@+id/start_tz_txt"
+                        android:text="@string/start_tz_prompt"
+                        android:textAppearance="?android:textAppearanceListItem"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        />
+
+                    <TextView
+                        android:id="@+id/start_tz"
+                        android:textAppearance="?android:textAppearanceSmall"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        />
+                </LinearLayout>
+
+                <View
+                    android:id="@+id/start_time_divider"
+                    style="@style/Divider"
+                    android:visibility="@{data.separate_time ? View.VISIBLE : View.GONE}"
+                    android:animateLayoutChanges="true"
+                />
+
+                <LinearLayout
+                    style="@style/SettingFrame"
+                    android:id="@+id/end_date_box"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                >
+                    <android.support.design.widget.TextInputLayout
+                        android:id="@+id/end_date_txt"
+                        android:hint="@string/end_date_txt"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="10"
                     >
                         <android.support.design.widget.TextInputEditText
-                            android:id="@+id/title"
-                            android:text="@{data.title}"
+                            android:id="@+id/end_date_sel"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:inputType="textCapSentences"
+                            android:inputType="date"
                             android:selectAllOnFocus="true"
                         />
                     </android.support.design.widget.TextInputLayout>
 
-                    <Switch
-                        style="@style/SettingFrame"
-                        android:id="@+id/separate_time_sw"
-                        android:text="@string/separate_time"
-                        android:checked="@{data.separate_time}"
-                        android:textAppearance="?android:textAppearanceListItem"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:onClick="on_separate_time_butt"
-                        />
-
-                    <View style="@style/Divider"/>
-
-                    <LinearLayout
-                        style="@style/SettingFrame"
-                        android:id="@+id/start_date_box"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:visibility="@{data.separate_time ? View.VISIBLE : View.GONE}"
-                        android:animateLayoutChanges="true"
-                        >
-                        <android.support.design.widget.TextInputLayout
-                            android:id="@+id/start_date_txt"
-                            android:hint="@string/start_date_txt"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="10"
-                            >
-                            <android.support.design.widget.TextInputEditText
-                                android:id="@+id/start_date_sel"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:inputType="date"
-                                android:selectAllOnFocus="true"
-                                />
-                        </android.support.design.widget.TextInputLayout>
-
-                        <ImageButton
-                            android:id="@+id/start_date_butt"
-                            android:onClick="on_start_cal_butt"
-                            android:contentDescription="@string/start_cal_butt"
-                            app:srcCompat="@android:drawable/ic_menu_month"
-                            style="?android:attr/borderlessButtonStyle"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            />
-                    </LinearLayout>
-
-                    <LinearLayout
-                        style="@style/SettingFrame"
-                        android:id="@+id/start_time_box"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:gravity="center_vertical"
-                        android:visibility="@{data.separate_time ? View.VISIBLE : View.GONE}"
-                        android:animateLayoutChanges="true"
-                        >
-                        <android.support.design.widget.TextInputLayout
-                            android:id="@+id/start_time_txt"
-                            android:hint="@string/start_time_txt"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="10"
-                            >
-                            <android.support.design.widget.TextInputEditText
-                                android:id="@+id/start_time_sel"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:inputType="text"
-                                android:selectAllOnFocus="true"
-                                />
-                        </android.support.design.widget.TextInputLayout>
-
-                        <ImageButton
-                            android:id="@+id/start_time_butt"
-                            android:onClick="on_start_clock_butt"
-                            android:contentDescription="@string/start_clock_butt"
-                            app:srcCompat="@android:drawable/ic_menu_recent_history"
-                            style="?android:attr/borderlessButtonStyle"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            />
-                    </LinearLayout>
-
-                    <LinearLayout
-                        style="@style/SettingFrame"
-                        android:id="@+id/start_tz_box"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:layout_gravity="center_vertical"
-                        android:onClick="on_start_tz_butt"
-                        android:background="?android:attr/selectableItemBackground"
-                        android:visibility="@{data.separate_time ? View.VISIBLE : View.GONE}"
-                        android:animateLayoutChanges="true"
-                        android:clickable="true"
-                        android:focusable="true"
-                        >
-                        <TextView
-                            android:id="@+id/start_tz_txt"
-                            android:text="@string/start_tz_prompt"
-                            android:textAppearance="?android:textAppearanceListItem"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            />
-
-                        <TextView
-                            android:id="@+id/start_tz"
-                            android:textAppearance="?android:textAppearanceSmall"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            />
-                    </LinearLayout>
-
-                    <View
-                        android:id="@+id/start_time_divider"
-                        style="@style/Divider"
-                        android:visibility="@{data.separate_time ? View.VISIBLE : View.GONE}"
-                        android:animateLayoutChanges="true"
-                    />
-
-                    <LinearLayout
-                        style="@style/SettingFrame"
-                        android:id="@+id/end_date_box"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                    >
-                        <android.support.design.widget.TextInputLayout
-                            android:id="@+id/end_date_txt"
-                            android:hint="@string/end_date_txt"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="10"
-                        >
-                            <android.support.design.widget.TextInputEditText
-                                android:id="@+id/end_date_sel"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:inputType="date"
-                                android:selectAllOnFocus="true"
-                            />
-                        </android.support.design.widget.TextInputLayout>
-
-                        <ImageButton
-                            android:id="@+id/end_date_butt"
-                            android:onClick="on_end_cal_butt"
-                            android:contentDescription="@string/end_cal_butt"
-                            app:srcCompat="@android:drawable/ic_menu_month"
-                            style="?android:attr/borderlessButtonStyle"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            />
-                    </LinearLayout>
-
-                    <LinearLayout
-                        style="@style/SettingFrame"
-                        android:id="@+id/end_time_box"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:gravity="center_vertical"
-                        >
-                        <android.support.design.widget.TextInputLayout
-                            android:id="@+id/end_time_txt"
-                            android:hint="@string/end_time_txt"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="10"
-                            >
-                            <android.support.design.widget.TextInputEditText
-                                android:id="@+id/end_time_sel"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:inputType="text"
-                                android:selectAllOnFocus="true"
-                                />
-                        </android.support.design.widget.TextInputLayout>
-
-                        <ImageButton
-                            android:id="@+id/end_time_butt"
-                            android:onClick="on_end_clock_butt"
-                            android:contentDescription="@string/end_clock_butt"
-                            app:srcCompat="@android:drawable/ic_menu_recent_history"
-                            style="?android:attr/borderlessButtonStyle"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            />
-                    </LinearLayout>
-
-                    <LinearLayout
-                        style="@style/SettingFrame"
-                        android:id="@+id/end_tz_box"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:layout_gravity="center_vertical"
-                        android:onClick="on_end_tz_butt"
-                        android:background="?android:attr/selectableItemBackground"
-                        android:clickable="true"
-                        android:focusable="true"
-                        >
-                        <TextView
-                            android:id="@+id/end_tz_txt"
-                            android:text="@string/end_tz_prompt"
-                            android:textAppearance="?android:textAppearanceListItem"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            />
-
-                        <TextView
-                            android:id="@+id/end_tz"
-                            android:textAppearance="?android:textAppearanceSmall"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            />
-                    </LinearLayout>
-
-                    <View style="@style/Divider"/>
-
-                    <Switch
-                        style="@style/SettingFrame"
-                        android:id="@+id/terminate_sw"
-                        android:text="@string/terminate"
-                        android:checked="@={data.terminate}"
-                        android:textAppearance="?android:textAppearanceListItem"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        />
-
-                    <Switch
-                        style="@style/SettingFrame"
-                        android:id="@+id/repeat_sw"
-                        android:text="@string/repeat"
-                        android:checked="@={data.repeats}"
-                        android:textAppearance="?android:textAppearanceListItem"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:onClick="on_repeat_butt"
-                        />
-
-                    <LinearLayout
-                        style="@style/SettingFrame"
-                        android:id="@+id/repeat_freq"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:gravity="center_vertical"
-                        android:animateLayoutChanges="true"
-                        >
-                        <TextView
-                            android:text="@string/repeat_every"
-                            android:textAppearance="?android:textAppearanceSmall"
-                            android:labelFor="@+id/repeat_count"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="10"
-                            />
-
-                        <EditText
-                            android:id="@+id/repeat_count"
-                            android:inputType="number"
-                            android:importantForAutofill="no"
-                            android:textAppearance="?android:textAppearanceListItem"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="@dimen/margin_size"
-                            android:layout_marginEnd="@dimen/margin_size"
-                            android:selectAllOnFocus="true"
-                            tools:targetApi="o"/>
-
-                        <Spinner
-                            android:id="@+id/repeat_units"
-                            android:entries="@array/time_units"
-                            android:prompt="@string/repeat_unit_prompt"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:spinnerMode="dialog"
-                            />
-
-                        <TextView
-                            android:id="@+id/repeat_on"
-                            android:text="@string/on"
-                            android:textAppearance="?android:textAppearanceSmall"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="@dimen/margin_size"
-                            android:layout_marginEnd="@dimen/margin_size"
-                            android:onClick="on_days_of_week_butt"
-                            />
-
-                        <TextView
-                            android:id="@+id/repeat_days_of_week"
-                            android:textAppearance="?android:textAppearanceListItem"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:onClick="on_days_of_week_butt"
-                            />
-                    </LinearLayout>
-
-                    <View style="@style/Divider"/>
-
-                    <FrameLayout
-                        style="@style/ClickableSettingFrame"
-                        android:onClick="on_show_elements_butt"
-                        >
-                        <TextView
-                            android:text="@string/show_elements_header"
-                            android:textAppearance="?android:textAppearanceListItem"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                        />
-                    </FrameLayout>
-
-                    <FrameLayout
-                        style="@style/ClickableSettingFrame"
-                        android:onClick="on_show_units_butt"
-                        >
-                        <TextView
-                            android:text="@string/show_units_header"
-                            android:textAppearance="?android:textAppearanceListItem"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            />
-                    </FrameLayout>
-
-                    <FrameLayout
-                        style="@style/ClickableSettingFrame"
-                        android:onClick="on_countdown_text_butt"
-                        >
-                        <TextView
-                            android:text="@string/countdown_text_header"
-                            android:textAppearance="?android:textAppearanceListItem"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            />
-                    </FrameLayout>
-
-                    <LinearLayout
-                        style="@style/ClickableSettingFrame"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:layout_gravity="center_vertical"
-                        android:onClick="on_precision_butt"
-                        android:background="?android:attr/selectableItemBackground"
-                        android:clickable="true"
-                        android:focusable="true"
-                        >
-
-                        <TextView
-                            android:id="@+id/textView"
-                            android:text="@string/precision"
-                            android:textAppearance="?android:textAppearanceListItem"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            />
-
-                        <TextView
-                            android:id="@+id/precision"
-                            android:text="@{String.valueOf(data.precision)}"
-                            android:textAppearance="?android:textAppearanceSmall"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            />
-                    </LinearLayout>
-
-                    <View style="@style/Divider"/>
-
-                    <Switch
-                        style="@style/SettingFrame"
-                        android:id="@+id/start_notify_sw"
-                        android:text="@string/start_notify"
-                        android:checked="@={data.notify_start}"
-                        android:textAppearance="?android:textAppearanceListItem"
-                        android:visibility="@{data.separate_time ? View.VISIBLE : View.GONE}"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        />
-
-                    <Switch
-                        style="@style/SettingFrame"
-                        android:id="@+id/end_notify_sw"
-                        android:text="@string/end_notify"
-                        android:checked="@={data.notify_end}"
-                        android:textAppearance="?android:textAppearanceListItem"
-                        android:layout_width="match_parent"
+                    <ImageButton
+                        android:id="@+id/end_date_butt"
+                        android:onClick="on_end_cal_butt"
+                        android:contentDescription="@string/end_cal_butt"
+                        app:srcCompat="@android:drawable/ic_menu_month"
+                        style="?android:attr/borderlessButtonStyle"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         />
                 </LinearLayout>
-            </ScrollView>
-        </LinearLayout>
+
+                <LinearLayout
+                    style="@style/SettingFrame"
+                    android:id="@+id/end_time_box"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    >
+                    <android.support.design.widget.TextInputLayout
+                        android:id="@+id/end_time_txt"
+                        android:hint="@string/end_time_txt"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="10"
+                        >
+                        <android.support.design.widget.TextInputEditText
+                            android:id="@+id/end_time_sel"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:inputType="text"
+                            android:selectAllOnFocus="true"
+                            />
+                    </android.support.design.widget.TextInputLayout>
+
+                    <ImageButton
+                        android:id="@+id/end_time_butt"
+                        android:onClick="on_end_clock_butt"
+                        android:contentDescription="@string/end_clock_butt"
+                        app:srcCompat="@android:drawable/ic_menu_recent_history"
+                        style="?android:attr/borderlessButtonStyle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        />
+                </LinearLayout>
+
+                <LinearLayout
+                    style="@style/SettingFrame"
+                    android:id="@+id/end_tz_box"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_gravity="center_vertical"
+                    android:onClick="on_end_tz_butt"
+                    android:background="?android:attr/selectableItemBackground"
+                    android:clickable="true"
+                    android:focusable="true"
+                    >
+                    <TextView
+                        android:id="@+id/end_tz_txt"
+                        android:text="@string/end_tz_prompt"
+                        android:textAppearance="?android:textAppearanceListItem"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        />
+
+                    <TextView
+                        android:id="@+id/end_tz"
+                        android:textAppearance="?android:textAppearanceSmall"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        />
+                </LinearLayout>
+
+                <View style="@style/Divider"/>
+
+                <Switch
+                    style="@style/SettingFrame"
+                    android:id="@+id/terminate_sw"
+                    android:text="@string/terminate"
+                    android:checked="@={data.terminate}"
+                    android:textAppearance="?android:textAppearanceListItem"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    />
+
+                <Switch
+                    style="@style/SettingFrame"
+                    android:id="@+id/repeat_sw"
+                    android:text="@string/repeat"
+                    android:checked="@={data.repeats}"
+                    android:textAppearance="?android:textAppearanceListItem"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:onClick="on_repeat_butt"
+                    />
+
+                <LinearLayout
+                    style="@style/SettingFrame"
+                    android:id="@+id/repeat_freq"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:animateLayoutChanges="true"
+                    >
+                    <TextView
+                        android:text="@string/repeat_every"
+                        android:textAppearance="?android:textAppearanceSmall"
+                        android:labelFor="@+id/repeat_count"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="10"
+                        />
+
+                    <EditText
+                        android:id="@+id/repeat_count"
+                        android:inputType="number"
+                        android:importantForAutofill="no"
+                        android:textAppearance="?android:textAppearanceListItem"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/margin_size"
+                        android:layout_marginEnd="@dimen/margin_size"
+                        android:selectAllOnFocus="true"
+                        tools:targetApi="o"/>
+
+                    <Spinner
+                        android:id="@+id/repeat_units"
+                        android:entries="@array/time_units"
+                        android:prompt="@string/repeat_unit_prompt"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:spinnerMode="dialog"
+                        />
+
+                    <TextView
+                        android:id="@+id/repeat_on"
+                        android:text="@string/on"
+                        android:textAppearance="?android:textAppearanceSmall"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/margin_size"
+                        android:layout_marginEnd="@dimen/margin_size"
+                        android:onClick="on_days_of_week_butt"
+                        />
+
+                    <TextView
+                        android:id="@+id/repeat_days_of_week"
+                        android:textAppearance="?android:textAppearanceListItem"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:onClick="on_days_of_week_butt"
+                        />
+                </LinearLayout>
+
+                <View style="@style/Divider"/>
+
+                <FrameLayout
+                    style="@style/ClickableSettingFrame"
+                    android:onClick="on_show_elements_butt"
+                    >
+                    <TextView
+                        android:text="@string/show_elements_header"
+                        android:textAppearance="?android:textAppearanceListItem"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                    />
+                </FrameLayout>
+
+                <FrameLayout
+                    style="@style/ClickableSettingFrame"
+                    android:onClick="on_show_units_butt"
+                    >
+                    <TextView
+                        android:text="@string/show_units_header"
+                        android:textAppearance="?android:textAppearanceListItem"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        />
+                </FrameLayout>
+
+                <FrameLayout
+                    style="@style/ClickableSettingFrame"
+                    android:onClick="on_countdown_text_butt"
+                    >
+                    <TextView
+                        android:text="@string/countdown_text_header"
+                        android:textAppearance="?android:textAppearanceListItem"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        />
+                </FrameLayout>
+
+                <LinearLayout
+                    style="@style/ClickableSettingFrame"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_gravity="center_vertical"
+                    android:onClick="on_precision_butt"
+                    android:background="?android:attr/selectableItemBackground"
+                    android:clickable="true"
+                    android:focusable="true"
+                    >
+
+                    <TextView
+                        android:id="@+id/textView"
+                        android:text="@string/precision"
+                        android:textAppearance="?android:textAppearanceListItem"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        />
+
+                    <TextView
+                        android:id="@+id/precision"
+                        android:text="@{String.valueOf(data.precision)}"
+                        android:textAppearance="?android:textAppearanceSmall"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        />
+                </LinearLayout>
+
+                <View style="@style/Divider"/>
+
+                <Switch
+                    style="@style/SettingFrame"
+                    android:id="@+id/start_notify_sw"
+                    android:text="@string/start_notify"
+                    android:checked="@={data.notify_start}"
+                    android:textAppearance="?android:textAppearanceListItem"
+                    android:visibility="@{data.separate_time ? View.VISIBLE : View.GONE}"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    />
+
+                <Switch
+                    style="@style/SettingFrame"
+                    android:id="@+id/end_notify_sw"
+                    android:text="@string/end_notify"
+                    android:checked="@={data.notify_end}"
+                    android:textAppearance="?android:textAppearanceListItem"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    />
+            </LinearLayout>
+        </ScrollView>
     </android.support.design.widget.CoordinatorLayout>
 </layout>

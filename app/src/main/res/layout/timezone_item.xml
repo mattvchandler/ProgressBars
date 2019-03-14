@@ -29,12 +29,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
         <variable name="tz" type="TimeZone_disp"/>
     </data>
     <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        style="@style/ClickableSettingFrame"
         android:orientation="vertical"
-        android:background="?android:attr/selectableItemBackground"
-        android:clickable="true"
-        android:focusable="true"
         >
         <TextView
             android:id="@+id/timezone_title"
@@ -42,9 +38,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
             android:textAppearance="?android:textAppearanceMedium"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/margin_size"
-            android:layout_marginStart="@dimen/margin_size"
-            android:layout_marginEnd="@dimen/margin_size"
             />
         <TextView
             android:textAppearance="?android:textAppearanceSmall"
@@ -52,9 +45,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
             android:id="@+id/timezone_subtitle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/margin_size"
-            android:layout_marginStart="@dimen/margin_size"
-            android:layout_marginEnd="@dimen/margin_size"
             />
     </LinearLayout>
 </layout>

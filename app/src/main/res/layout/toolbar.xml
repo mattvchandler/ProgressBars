@@ -21,28 +21,13 @@ IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 -->
 
-<layout
+<android.support.v7.widget.Toolbar
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context="org.mattvchandler.progressbars.util.Preferences"
-    >
-
-        <LinearLayout
-            android:orientation="vertical"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="?android:windowBackground"
-            >
-
-            <include
-                layout="@layout/toolbar"
-                android:id="@+id/toolbar"
-                />
-            <FrameLayout
-                android:id="@+id/preferences"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="10"
-                />
-        </LinearLayout>
-</layout>
+    android:background="?attr/colorPrimary"
+    android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
+    tools:ignore="UnusedAttribute"
+    android:elevation="4dp"
+    android:layout_width="match_parent"
+    android:layout_height="?attr/actionBarSize"
+    />
