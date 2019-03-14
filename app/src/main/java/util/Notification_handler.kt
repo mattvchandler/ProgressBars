@@ -115,7 +115,7 @@ class Notification_handler: BroadcastReceiver()
 
                 // create an intent for clicking the notification to take us to the main activity
                 val i = Intent(context, Progress_bars::class.java)
-                i.putExtra(Progress_bars.EXTRA_ROWID, data.rowid)
+                i.putExtra(Progress_bars.EXTRA_ID, data.id)
 
                 // create an artificial back-stack
                 val stack = TaskStackBuilder.create(context)
@@ -127,7 +127,7 @@ class Notification_handler: BroadcastReceiver()
                 not_builder.setContentIntent(pi)
 
                 // send the notification. rowid will be used as the notification's ID
-                nm.notify(data.rowid.toInt(), not_builder.build())
+                nm.notify(data.id, not_builder.build())
 
                 // build a group summary notification
                 if(Build.VERSION.SDK_INT >= 24)
@@ -152,7 +152,7 @@ class Notification_handler: BroadcastReceiver()
                 if(Progress_bars.is_running)
                 {
                     val update_intent = Intent(Progress_bars.CHANGE_LIST_EVENT)
-                    update_intent.putExtra(Progress_bars.EXTRA_ROWID, data.rowid)
+                    update_intent.putExtra(Progress_bars.EXTRA_ID, data.id)
                     LocalBroadcastManager.getInstance(context).sendBroadcast(update_intent)
                 }
                 else
@@ -201,10 +201,10 @@ class Notification_handler: BroadcastReceiver()
         {
             // set intents to bring us to the notification handler
             val start_intent = Intent(context, Notification_handler::class.java)
-            start_intent.action = BASE_STARTED_ACTION_NAME + data.rowid.toString()
+            start_intent.action = BASE_STARTED_ACTION_NAME + data.id.toString()
 
             val complete_intent = Intent(context, Notification_handler::class.java)
-            complete_intent.action = BASE_COMPLETED_ACTION_NAME + data.rowid.toString()
+            complete_intent.action = BASE_COMPLETED_ACTION_NAME + data.id.toString()
 
             if(pack_data)
             {

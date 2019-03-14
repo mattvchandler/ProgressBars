@@ -53,7 +53,7 @@ class Progress_bars: Dynamic_theme_activity()
 {
     companion object
     {
-        const val EXTRA_ROWID = "org.mattvchandler.progressbars.EXTRA_ROWID"
+        const val EXTRA_ID = "org.mattvchandler.progressbars.EXTRA_ID"
         const val CHANGE_LIST_EVENT = "ProgressBars.CHANGE_LIST_EVENT"
         const val RESULT_EDIT_DATA = 0
 
@@ -76,8 +76,8 @@ class Progress_bars: Dynamic_theme_activity()
             {
                 CHANGE_LIST_EVENT ->
                 {
-                    val rowid = intent.getLongExtra(EXTRA_ROWID, -1)
-                    adapter.apply_repeat(rowid)
+                    val id = intent.getIntExtra(EXTRA_ID, -1)
+                    adapter.apply_repeat(id)
                 }
             }
         }
@@ -119,12 +119,12 @@ class Progress_bars: Dynamic_theme_activity()
         val touch_helper = ItemTouchHelper(Touch_helper_callback(adapter))
         touch_helper.attachToRecyclerView(binding.mainList)
 
-        val scroll_to_rowid = intent.getLongExtra(EXTRA_ROWID, -1)
-        if(scroll_to_rowid >= 0)
+        val scroll_to_id = intent.getIntExtra(EXTRA_ID, -1)
+        if(scroll_to_id >= 0)
         {
             try
             {
-                binding.mainList.scrollToPosition(adapter.find_by_rowid(scroll_to_rowid))
+                binding.mainList.scrollToPosition(adapter.find_by_id(scroll_to_id))
             }
             catch(ignored: NoSuchElementException) {}
         }

@@ -130,7 +130,7 @@ class Preferences: Dynamic_theme_activity()
                         {
                             intent.action = android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS
                             intent.addCategory(Intent.CATEGORY_DEFAULT)
-                            intent.data = Uri.parse("package:" + context!!.packageName)
+                            intent.data = Uri.parse("package:${context!!.packageName}")
                         }
                     }
 

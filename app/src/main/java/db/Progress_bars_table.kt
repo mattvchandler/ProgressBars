@@ -66,6 +66,8 @@ open class Progress_bars_table: BaseColumns
         const val TABLE_NAME = "progress_bar"
 
         const val ORDER_COL = "order_ind"
+        const val ID_COL = "id"
+
         const val SEPARATE_TIME_COL = "separate_time"
         const val START_TIME_COL = "start_time"
         const val START_TZ_COL = "start_tz"
@@ -111,7 +113,9 @@ open class Progress_bars_table: BaseColumns
         // table schema
         const val CREATE_TABLE = "CREATE TABLE IF NOT EXISTS " + TABLE_NAME + " (" +
                 BaseColumns._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                ID_COL + " INTEGER UNIQUE NOT NULL, " +
                 ORDER_COL + " INTEGER UNIQUE NOT NULL, " +
+
                 SEPARATE_TIME_COL +  " INTEGER NOT NULL, " +
                 START_TIME_COL + " INTEGER NOT NULL, " +
                 START_TZ_COL + " TEXT NOT NULL, " +
@@ -151,7 +155,7 @@ open class Progress_bars_table: BaseColumns
                 NOTIFY_START_COL + " INTEGER NOT NULL, " +
                 NOTIFY_END_COL + " INTEGER NOT NULL)"
 
-        fun upgrade(context:Context, db: SQLiteDatabase, old_version: Int)
+        fun upgrade(context: Context, db: SQLiteDatabase, old_version: Int)
         {
             val table_exists = db.query("sqlite_master", arrayOf("name"), "type = 'table' AND name = ?", arrayOf(TABLE_NAME), null, null, null)
             if(table_exists.count == 0)
@@ -170,6 +174,7 @@ open class Progress_bars_table: BaseColumns
                     db.execSQL("INSERT INTO " + TABLE_NAME +
                             "(" +
                             ORDER_COL + ", " +
+                            ID_COL + ", " +
                             SEPARATE_TIME_COL + ", " +
                             START_TIME_COL + ", " +
                             END_TIME_COL + ", " +
@@ -205,6 +210,7 @@ open class Progress_bars_table: BaseColumns
                             ")" +
                             " SELECT " +
                             ORDER_COL + ", " +
+                            Data.generate_id(context) + ", " +
                             "1, " +
                             START_TIME_COL + ", " +
                             END_TIME_COL + ", " +
@@ -244,12 +250,13 @@ open class Progress_bars_table: BaseColumns
                 2, 3 ->
                 {
                     // 2 -> 3 fixed NOT NULL for some columns - copy all data over
-                    // 3 -> 4 add SEPARATE_TIME_COL
+                    // 3 -> 4 add SEPARATE_TIME_COL, countdown text for single time, UUID col
                     db.execSQL("ALTER TABLE $TABLE_NAME RENAME TO TMP_$TABLE_NAME")
                     db.execSQL(CREATE_TABLE)
                     db.execSQL("INSERT INTO " + TABLE_NAME +
                             "(" +
                             ORDER_COL + ", " +
+                            ID_COL + ", " +
                             SEPARATE_TIME_COL + ", " +
                             START_TIME_COL + ", " +
                             END_TIME_COL + ", " +
@@ -285,6 +292,7 @@ open class Progress_bars_table: BaseColumns
                             ")" +
                             " SELECT " +
                             ORDER_COL + ", " +
+                            Data.generate_id(context) + ", " +
                             "1, " +
                             START_TIME_COL + ", " +
                             END_TIME_COL + ", " +

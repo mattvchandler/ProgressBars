@@ -21,12 +21,17 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 package org.mattvchandler.progressbars.db
 
+import android.app.NotificationChannel
+import android.app.NotificationManager
 import android.content.ContentValues
 import android.content.Context
 import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
+import android.os.Build
+import android.preference.PreferenceManager
 import android.provider.BaseColumns
 import org.mattvchandler.progressbars.R
+import org.mattvchandler.progressbars.util.Notification_handler
 import java.io.Serializable
 import java.util.*
 
@@ -34,6 +39,7 @@ import java.util.*
 open class Data(): Serializable
 {
     var rowid = -1L // is -1 when not set, ie. the data doesn't exist in the DB
+    var id = -1
 
     var separate_time = true
     var start_time    = 0L
@@ -78,6 +84,7 @@ open class Data(): Serializable
     // default ctor
     constructor(context: Context): this()
     {
+        id = generate_id(context)
         val start_time_cal = Calendar.getInstance()
         val end_time_cal = start_time_cal.clone() as Calendar
         end_time_cal.add(Calendar.MINUTE, 1)
@@ -123,6 +130,7 @@ open class Data(): Serializable
     constructor(b: Data): this()
     {
         rowid                = b.rowid
+        id                   = b.id
         separate_time        = b.separate_time
         start_time           = b.start_time
         end_time             = b.end_time
@@ -160,6 +168,7 @@ open class Data(): Serializable
     private fun set_from_cursor(cursor: Cursor)
     {
         rowid                = cursor.get_nullable_long(BaseColumns._ID)!!
+        id                   = cursor.get_nullable_int(Progress_bars_table.ID_COL)!!
         separate_time        = cursor.get_nullable_bool(Progress_bars_table.SEPARATE_TIME_COL)!!
         start_time           = cursor.get_nullable_long(Progress_bars_table.START_TIME_COL)!!
         end_time             = cursor.get_nullable_long(Progress_bars_table.END_TIME_COL)!!
@@ -198,6 +207,7 @@ open class Data(): Serializable
     {
         val values = ContentValues()
 
+        values.put(Progress_bars_table.ID_COL, id.toString())
         values.put(Progress_bars_table.SEPARATE_TIME_COL, separate_time)
         values.put(Progress_bars_table.START_TIME_COL, start_time)
         values.put(Progress_bars_table.END_TIME_COL, end_time)
@@ -344,6 +354,17 @@ open class Data(): Serializable
 
     companion object
     {
+        private const val NEXT_ID_PREF = "next_id"
+
+        fun generate_id(context: Context): Int
+        {
+            val prefs = PreferenceManager.getDefaultSharedPreferences(context)
+            val next_id = prefs.getInt(NEXT_ID_PREF, 0)
+            prefs.edit().putInt(NEXT_ID_PREF, next_id + 1).apply()
+
+            return next_id
+        }
+
         // only to be run on boot
         fun apply_all_repeats(context: Context)
         {

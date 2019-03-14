@@ -115,10 +115,10 @@ class Settings: Dynamic_theme_activity(), DatePickerDialog.OnDateSetListener, Ti
             locale = savedInstanceState.getSerializable(STATE_LOCALE) as Locale
 
             // populate date/time widget values
-            if(data.rowid < 0)
-                setTitle(R.string.add_title)
-            else
+            if(intent.hasExtra(EXTRA_EDIT_DATA))
                 setTitle(R.string.edit_title)
+            else
+                setTitle(R.string.add_title)
         }
 
         // set selected values

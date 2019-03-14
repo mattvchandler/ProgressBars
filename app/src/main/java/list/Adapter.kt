@@ -86,7 +86,7 @@ class Adapter(private val activity: Progress_bars): RecyclerView.Adapter<Adapter
         // click the row to edit its data
         override fun onClick(v: View)
         {
-            // create and launch an intent to launch the editor, and pass the rowid
+            // create and launch an intent to launch the editor
             val intent = Intent(activity, Settings::class.java)
             intent.putExtra(Settings.EXTRA_EDIT_DATA, data)
             activity.startActivityForResult(intent, Progress_bars.RESULT_EDIT_DATA)
@@ -155,14 +155,14 @@ class Adapter(private val activity: Progress_bars): RecyclerView.Adapter<Adapter
             SINGLE_TIME_VIEW
     }
 
-    override fun getItemId(position: Int) = data_list[position].rowid
+    override fun getItemId(position: Int) = data_list[position].id.toLong()
     override fun getItemCount() = data_list.size
 
-    fun find_by_rowid(rowid: Long) = data_list.indexOfFirst{ it.rowid == rowid}
+    fun find_by_id(id: Int) = data_list.indexOfFirst{ it.id == id}
 
-    fun apply_repeat(rowid: Long)
+    fun apply_repeat(id: Int)
     {
-        val pos = find_by_rowid(rowid)
+        val pos = find_by_id(id)
         if(pos < 0)
             return
 
@@ -185,16 +185,15 @@ class Adapter(private val activity: Progress_bars): RecyclerView.Adapter<Adapter
     {
         redo_stack.clear()
 
-        if(data.rowid >= 0)
+        var pos = find_by_id(data.id)
+        if(pos >= 0)
         {
-            val pos = find_by_rowid(data.rowid)
             undo_stack.push(Undo_event(Undo_event.Type.EDIT, Data(data_list[pos]), pos, null))
             edit_item(data, pos)
         }
         else
         {
-            val pos = data_list.size
-            data.insert(DB(activity).writableDatabase, pos.toLong()) // insert to set rowid
+            pos = data_list.size
             add_item(data, pos)
             undo_stack.push(Undo_event(Undo_event.Type.ADD, null, pos, null))
         }
