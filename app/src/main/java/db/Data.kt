@@ -410,9 +410,9 @@ open class Data(): Serializable
     {
         const val CHANNEL_ID_BASE = "org.mattvchandler.progressbars.notification_channel_"
 
-        private const val NEXT_ID_PREF = "next_id"
+        const val NEXT_ID_PREF = "next_id"
 
-        fun generate_id(context: Context): Int
+        private fun generate_id(context: Context): Int
         {
             val prefs = PreferenceManager.getDefaultSharedPreferences(context)
             val next_id = prefs.getInt(NEXT_ID_PREF, 0)

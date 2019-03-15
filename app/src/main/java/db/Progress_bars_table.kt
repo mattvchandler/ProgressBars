@@ -24,6 +24,7 @@ package org.mattvchandler.progressbars.db
 import android.content.ContentValues
 import android.content.Context
 import android.database.sqlite.SQLiteDatabase
+import android.preference.PreferenceManager
 import android.provider.BaseColumns
 import org.mattvchandler.progressbars.R
 
@@ -167,6 +168,14 @@ open class Progress_bars_table: BaseColumns
                 return
             }
 
+            fun set_new_id()
+            {
+                val cursor = db.rawQuery("SELECT MAX($ID_COL) from $TABLE_NAME", null)
+                cursor.moveToFirst()
+                val count = cursor.getInt(0)
+                cursor.close()
+                PreferenceManager.getDefaultSharedPreferences(context).edit().putInt(Data.NEXT_ID_PREF, count).apply()
+            }
             when(old_version)
             {
                 1 ->
@@ -214,7 +223,7 @@ open class Progress_bars_table: BaseColumns
                             ")" +
                             " SELECT " +
                             ORDER_COL + ", " +
-                            Data.generate_id(context) + ", " +
+                            ORDER_COL + ", " + // using order for id
                             "1, " +
                             START_TIME_COL + ", " +
                             END_TIME_COL + ", " +
@@ -230,9 +239,9 @@ open class Progress_bars_table: BaseColumns
                             COUNTDOWN_TEXT_COL + ", " +
                             COMPLETE_TEXT_COL + ", " +
                             POST_TEXT_COL + ", " +
-                            context.getString(R.string.default_single_pre_text) + ", " +
-                            context.getString(R.string.default_single_complete_text) + ", " +
-                            context.getString(R.string.default_single_post_text) + ", " +
+                            "'" + context.getString(R.string.default_single_pre_text) + "', " +
+                            "'" + context.getString(R.string.default_single_complete_text) + "', " +
+                            "'" + context.getString(R.string.default_single_post_text) + "', " +
                             PRECISION_COL + ", " +
                             SHOW_START_COL + ", " +
                             SHOW_END_COL + ", " +
@@ -251,6 +260,8 @@ open class Progress_bars_table: BaseColumns
                             "FROM TMP_" + TABLE_NAME)
 
                     db.execSQL("DROP TABLE TMP_$TABLE_NAME")
+
+                    set_new_id()
                 }
                 2, 3 ->
                 {
@@ -298,7 +309,7 @@ open class Progress_bars_table: BaseColumns
                             ")" +
                             " SELECT " +
                             ORDER_COL + ", " +
-                            Data.generate_id(context) + ", " +
+                            ORDER_COL + ", " + // using order for id
                             "1, " +
                             START_TIME_COL + ", " +
                             END_TIME_COL + ", " +
@@ -314,9 +325,9 @@ open class Progress_bars_table: BaseColumns
                             COUNTDOWN_TEXT_COL + ", " +
                             COMPLETE_TEXT_COL + ", " +
                             POST_TEXT_COL + ", " +
-                            context.getString(R.string.default_single_pre_text) + ", " +
-                            context.getString(R.string.default_single_complete_text) + ", " +
-                            context.getString(R.string.default_single_post_text) + ", " +
+                            "'" + context.getString(R.string.default_single_pre_text) + "', " +
+                            "'" + context.getString(R.string.default_single_complete_text) + "', " +
+                            "'" + context.getString(R.string.default_single_post_text) + "', " +
                             PRECISION_COL + ", " +
                             SHOW_START_COL + ", " +
                             SHOW_END_COL + ", " +
@@ -335,6 +346,8 @@ open class Progress_bars_table: BaseColumns
                             "FROM TMP_" + TABLE_NAME)
 
                     db.execSQL("DROP TABLE TMP_$TABLE_NAME")
+
+                    set_new_id()
                 }
                 else ->
                 {
@@ -343,26 +356,6 @@ open class Progress_bars_table: BaseColumns
                 }
             }
             table_exists.close()
-        }
-
-        // redo order column to remove gaps, etc. Order #s will be sequential, from 0 to count
-        fun cleanup_order(context: Context)
-        {
-            val db = DB(context).writableDatabase
-            val cursor = db.rawQuery(SELECT_ALL_ROWS, null)
-
-            val values = ContentValues()
-
-            for(i in 0 until cursor.count)
-            {
-                values.clear()
-                values.put(ORDER_COL, i)
-                cursor.moveToPosition(i)
-                db.update(TABLE_NAME, values, BaseColumns._ID + " = ?", arrayOf(cursor.get_nullable_string(BaseColumns._ID)!!))
-            }
-
-            cursor.close()
-            db.close()
         }
     }
 }
