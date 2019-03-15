@@ -24,30 +24,28 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 <layout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context="org.mattvchandler.progressbars.util.Preferences"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context="org.mattvchandler.progressbars.settings.TimeZone_activity"
     >
 
-        <LinearLayout
-            android:orientation="vertical"
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        >
+        <com.google.android.material.appbar.AppBarLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            >
+            <include
+                layout="@layout/toolbar"
+                android:id="@+id/toolbar"
+                />
+        </com.google.android.material.appbar.AppBarLayout>
+        <FrameLayout
+            android:id="@+id/preferences"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            >
-
-            <androidx.appcompat.widget.Toolbar
-                android:id="@+id/toolbar"
-                android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
-                android:background="?attr/colorPrimary"
-                tools:ignore="UnusedAttribute"
-                android:elevation="4dp"
-                android:layout_width="match_parent"
-                android:layout_height="?attr/actionBarSize"
-                />
-
-            <FrameLayout
-                android:id="@+id/preferences"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="10"
-                />
-        </LinearLayout>
+            app:layout_behavior="@string/appbar_scrolling_view_behavior"
+            />
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
 </layout>
