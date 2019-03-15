@@ -60,7 +60,7 @@ private data class Undo_event(val type: Undo_event.Type, val data: Data?, val po
 // keeps track of timer GUI rows
 class Adapter(private val activity: Progress_bars): RecyclerView.Adapter<Adapter.Holder>()
 {
-    private val data_list: MutableList<View_data>
+    private val data_list =  mutableListOf<View_data>()
     private val undo_stack: Stack<Undo_event> = mutableListOf()
     private val redo_stack: Stack<Undo_event> = mutableListOf()
 
@@ -112,15 +112,15 @@ class Adapter(private val activity: Progress_bars): RecyclerView.Adapter<Adapter
     {
         setHasStableIds(true)
 
-        // update and alarms
-        Data.apply_all_repeats(activity)
-        Notification_handler.reset_all_alarms(activity)
-
         val db = DB(activity).readableDatabase
         val cursor = db.rawQuery(Progress_bars_table.SELECT_ALL_ROWS, null)
 
         cursor.moveToFirst()
-        data_list = (0 until cursor.count).map{ val data = View_data(activity, Data(cursor)); cursor.moveToNext(); data }.toMutableList()
+        for(i in 0 until cursor.count)
+        {
+            add_item(Data(cursor), i)
+            cursor.moveToNext()
+        }
 
         cursor.close()
         db.close()

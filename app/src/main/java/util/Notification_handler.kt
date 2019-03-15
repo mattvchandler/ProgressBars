@@ -58,6 +58,7 @@ class Notification_handler: BroadcastReceiver()
             // get new start/end times first
             Data.apply_all_repeats(context)
             reset_all_alarms(context)
+            setup_notification_channel(context)
         }
         // one of the alarms went off - send a notification
         else if(start_action || completion_action)
@@ -93,7 +94,6 @@ class Notification_handler: BroadcastReceiver()
             if(do_notify)
             {
                 val nm = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-                setup_notification_channel(context)
 
                 // get the primary color from the theme
                 context.setTheme(R.style.Theme_progress_bars)
@@ -101,6 +101,22 @@ class Notification_handler: BroadcastReceiver()
                 context.theme.resolveAttribute(R.attr.colorPrimary, color_tv, true)
 
                 val channel_id = if(data.has_notification_channel) data.channel_id else DEFAULT_CHANNEL_ID
+
+                // build a group summary notification
+                if(Build.VERSION.SDK_INT >= 24)
+                {
+                    val summary = NotificationCompat.Builder(context, channel_id)
+                            .setSmallIcon(R.drawable.ic_notification)
+                            .setColor(color_tv.data)
+                            .setCategory(NotificationCompat.CATEGORY_EVENT)
+                            .setGroup(GROUP)
+                            .setGroupSummary(true)
+                            .setAutoCancel(true)
+                            .setPriority(NotificationCompat.PRIORITY_HIGH)
+                            .setCategory(NotificationCompat.CATEGORY_EVENT)
+                            .setDefaults(NotificationCompat.DEFAULT_ALL)
+                    nm.notify(GROUP_SUMMARY_ID, summary.build())
+                }
 
                 // build the notification
                 val not_builder = NotificationCompat.Builder(context, channel_id)
@@ -128,24 +144,9 @@ class Notification_handler: BroadcastReceiver()
                 val pi = stack.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT)
                 not_builder.setContentIntent(pi)
 
-                // send the notification. rowid will be used as the notification's ID
+                // send the notification. id will be used as the notification's ID
                 nm.notify(data.id, not_builder.build())
 
-                // build a group summary notification
-                if(Build.VERSION.SDK_INT >= 24)
-                {
-                    val summary = NotificationCompat.Builder(context, channel_id)
-                        .setSmallIcon(R.drawable.ic_notification)
-                        .setColor(color_tv.data)
-                        .setCategory(NotificationCompat.CATEGORY_EVENT)
-                        .setGroup(GROUP)
-                        .setGroupSummary(true)
-                        .setAutoCancel(true)
-                        .setPriority(NotificationCompat.PRIORITY_HIGH)
-                        .setCategory(NotificationCompat.CATEGORY_EVENT)
-                        .setDefaults(NotificationCompat.DEFAULT_ALL)
-                    nm.notify(GROUP_SUMMARY_ID, summary.build())
-                }
             }
 
             // update the displayed list of timers
@@ -175,13 +176,14 @@ class Notification_handler: BroadcastReceiver()
 
         private const val DEFAULT_CHANNEL_ID = "org.mattvchandler.progressbars.notification_channel"
         const val CHANNEL_GROUP_ID = "org.mattvchandler.progressbars.notification_channel_timer_group"
+
         private const val GROUP_SUMMARY_ID = 0
         private const val GROUP = "org.mattvchandler.progressbars.notification_group"
 
         fun setup_notification_channel(context: Context)
         {
             // Set up notification channel (API 26+)
-            if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
+            if(Build.VERSION.SDK_INT >= 26)
             {
                 val nm = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
