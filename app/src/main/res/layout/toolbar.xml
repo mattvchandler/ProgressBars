@@ -21,10 +21,9 @@ IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 -->
 
-<android.support.v7.widget.Toolbar
+<androidx.appcompat.widget.Toolbar
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:background="?attr/colorPrimary"
     android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
     tools:ignore="UnusedAttribute"
     android:elevation="4dp"

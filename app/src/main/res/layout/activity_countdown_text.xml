@@ -34,12 +34,12 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
         <variable name="data" type="Data"/>
     </data>
 
-    <android.support.design.widget.CoordinatorLayout
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         >
 
-        <android.support.design.widget.AppBarLayout
+        <com.google.android.material.appbar.AppBarLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             >
@@ -47,7 +47,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
                 layout="@layout/toolbar"
                 android:id="@+id/toolbar"
                 />
-        </android.support.design.widget.AppBarLayout>
+        </com.google.android.material.appbar.AppBarLayout>
 
         <ScrollView
             android:layout_width="match_parent"
@@ -60,14 +60,14 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
                 android:orientation="vertical"
                 android:animateLayoutChanges="true"
                 >
-                <android.support.design.widget.TextInputLayout
+                <com.google.android.material.textfield.TextInputLayout
                     style="@style/ShortSettingFrame"
                     android:hint="@string/pre_text"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:visibility="@{data.separate_time ? View.VISIBLE : View.GONE}"
                     >
-                    <android.support.design.widget.TextInputEditText
+                    <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/pre_text"
                         android:text="@{data.pre_text}"
                         android:layout_width="match_parent"
@@ -75,16 +75,16 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
                         android:inputType="textCapSentences"
                         android:selectAllOnFocus="true"
                         />
-                </android.support.design.widget.TextInputLayout>
+                </com.google.android.material.textfield.TextInputLayout>
 
-                <android.support.design.widget.TextInputLayout
+                <com.google.android.material.textfield.TextInputLayout
                     style="@style/ShortSettingFrame"
                     android:hint="@string/start_text"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:visibility="@{data.separate_time ? View.VISIBLE : View.GONE}"
                     >
-                    <android.support.design.widget.TextInputEditText
+                    <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/start_text"
                         android:text="@{data.start_text}"
                         android:layout_width="match_parent"
@@ -92,16 +92,16 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
                         android:inputType="textCapSentences"
                         android:selectAllOnFocus="true"
                         />
-                </android.support.design.widget.TextInputLayout>
+                </com.google.android.material.textfield.TextInputLayout>
 
-                <android.support.design.widget.TextInputLayout
+                <com.google.android.material.textfield.TextInputLayout
                     style="@style/ShortSettingFrame"
                     android:hint="@string/countdown_text"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:visibility="@{data.separate_time ? View.VISIBLE : View.GONE}"
                     >
-                    <android.support.design.widget.TextInputEditText
+                    <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/countdown_text"
                         android:text="@{data.countdown_text}"
                         android:layout_width="match_parent"
@@ -109,16 +109,16 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
                         android:inputType="textCapSentences"
                         android:selectAllOnFocus="true"
                         />
-                </android.support.design.widget.TextInputLayout>
+                </com.google.android.material.textfield.TextInputLayout>
 
-                <android.support.design.widget.TextInputLayout
+                <com.google.android.material.textfield.TextInputLayout
                     style="@style/ShortSettingFrame"
                     android:hint="@string/complete_text"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:visibility="@{data.separate_time ? View.VISIBLE : View.GONE}"
                     >
-                    <android.support.design.widget.TextInputEditText
+                    <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/complete_text"
                         android:text="@{data.complete_text}"
                         android:layout_width="match_parent"
@@ -126,16 +126,16 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
                         android:inputType="textCapSentences"
                         android:selectAllOnFocus="true"
                         />
-                </android.support.design.widget.TextInputLayout>
+                </com.google.android.material.textfield.TextInputLayout>
 
-                <android.support.design.widget.TextInputLayout
+                <com.google.android.material.textfield.TextInputLayout
                     style="@style/ShortSettingFrame"
                     android:hint="@string/post_text"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:visibility="@{data.separate_time ? View.VISIBLE : View.GONE}"
                     >
-                    <android.support.design.widget.TextInputEditText
+                    <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/post_text"
                         android:text="@{data.post_text}"
                         android:layout_width="match_parent"
@@ -143,16 +143,16 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
                         android:inputType="textCapSentences"
                         android:selectAllOnFocus="true"
                         />
-                </android.support.design.widget.TextInputLayout>
+                </com.google.android.material.textfield.TextInputLayout>
 
-                <android.support.design.widget.TextInputLayout
+                <com.google.android.material.textfield.TextInputLayout
                     style="@style/ShortSettingFrame"
                     android:hint="@string/single_pre_text"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:visibility="@{data.separate_time ? View.GONE : View.VISIBLE}"
                     >
-                    <android.support.design.widget.TextInputEditText
+                    <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/single_pre_text"
                         android:text="@{data.single_pre_text}"
                         android:layout_width="match_parent"
@@ -160,16 +160,16 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
                         android:inputType="textCapSentences"
                         android:selectAllOnFocus="true"
                         />
-                </android.support.design.widget.TextInputLayout>
+                </com.google.android.material.textfield.TextInputLayout>
 
-                <android.support.design.widget.TextInputLayout
+                <com.google.android.material.textfield.TextInputLayout
                     style="@style/ShortSettingFrame"
                     android:hint="@string/single_complete_text"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:visibility="@{data.separate_time ? View.GONE : View.VISIBLE}"
                     >
-                    <android.support.design.widget.TextInputEditText
+                    <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/single_complete_text"
                         android:text="@{data.single_complete_text}"
                         android:layout_width="match_parent"
@@ -177,16 +177,16 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
                         android:inputType="textCapSentences"
                         android:selectAllOnFocus="true"
                         />
-                </android.support.design.widget.TextInputLayout>
+                </com.google.android.material.textfield.TextInputLayout>
 
-                <android.support.design.widget.TextInputLayout
+                <com.google.android.material.textfield.TextInputLayout
                     style="@style/ShortSettingFrame"
                     android:hint="@string/single_post_text"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:visibility="@{data.separate_time ? View.GONE : View.VISIBLE}"
                     >
-                    <android.support.design.widget.TextInputEditText
+                    <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/single_post_text"
                         android:text="@{data.single_post_text}"
                         android:layout_width="match_parent"
@@ -194,8 +194,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
                         android:inputType="textCapSentences"
                         android:selectAllOnFocus="true"
                         />
-                </android.support.design.widget.TextInputLayout>
+                </com.google.android.material.textfield.TextInputLayout>
             </LinearLayout>
         </ScrollView>
-    </android.support.design.widget.CoordinatorLayout>
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
 </layout>

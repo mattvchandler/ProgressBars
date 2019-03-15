@@ -21,36 +21,35 @@ IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 -->
 
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:tools="http://schemas.android.com/tools"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        tools:context="org.mattvchandler.progressbars.Progress_bars"
-        >
-    <android.support.design.widget.CoordinatorLayout
+<layout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context="org.mattvchandler.progressbars.Progress_bars"
+    >
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         >
+        <com.google.android.material.appbar.AppBarLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            >
+            <include
+                layout="@layout/toolbar"
+                android:id="@+id/toolbar"
+                />
+        </com.google.android.material.appbar.AppBarLayout>
 
-            <android.support.design.widget.AppBarLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="?android:windowBackground"
-                >
-                <include
-                    layout="@layout/toolbar"
-                    android:id="@+id/toolbar"
-                    />
-            </android.support.design.widget.AppBarLayout>
-
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/mainList"
-                android:divider="?attr/colorAccent"
-                android:dividerHeight="2dp"
-                android:scrollbars="vertical"
-                android:fadeScrollbars="true"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/mainList"
+            android:divider="?attr/colorAccent"
+            android:dividerHeight="2dp"
+            android:scrollbars="vertical"
+            android:fadeScrollbars="true"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior"
             />
-    </android.support.design.widget.CoordinatorLayout>
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
 </layout>

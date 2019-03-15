@@ -27,14 +27,13 @@ import android.app.TimePickerDialog
 import android.content.Context
 import android.content.Intent
 import android.database.ContentObserver
-import android.databinding.DataBindingUtil
-import android.net.Uri
+import androidx.databinding.DataBindingUtil
 import android.os.Build
 import android.preference.PreferenceManager
 import android.os.Bundle
 import android.os.Handler
-import android.support.design.widget.TextInputEditText
-import android.support.v7.widget.Toolbar
+import com.google.android.material.textfield.TextInputEditText
+import androidx.appcompat.widget.Toolbar
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View

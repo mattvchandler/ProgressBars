@@ -33,7 +33,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
         <variable name="data" type="View_data"/>
     </data>
 
-    <android.support.constraint.ConstraintLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/progress_row"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -60,7 +60,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
             app:layout_goneMarginBottom="0dp"
             />
 
-        <android.support.constraint.Barrier
+        <androidx.constraintlayout.widget.Barrier
             android:id="@+id/top_barrier"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -99,7 +99,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
             android:layout_marginEnd="@dimen/margin_size"
             />
 
-        <android.support.constraint.Barrier
+        <androidx.constraintlayout.widget.Barrier
             android:id="@+id/left_barrier"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -151,7 +151,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
             android:layout_marginStart="@dimen/margin_size"
             />
 
-        <android.support.constraint.Barrier
+        <androidx.constraintlayout.widget.Barrier
             android:id="@+id/right_barrier"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -203,7 +203,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
             android:layout_marginEnd="@dimen/margin_size"
             />
 
-        <android.support.constraint.Barrier
+        <androidx.constraintlayout.widget.Barrier
             android:id="@+id/bottom_barrier"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -224,5 +224,5 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
             app:layout_constraintEnd_toEndOf="parent"
             android:layout_margin="@dimen/margin_size"
         />
-    </android.support.constraint.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

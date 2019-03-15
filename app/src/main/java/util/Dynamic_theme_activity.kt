@@ -24,8 +24,8 @@ package org.mattvchandler.progressbars.util
 import android.content.Context
 import android.os.Bundle
 import android.preference.PreferenceManager
-import android.support.v7.app.AppCompatActivity
-import android.support.v7.app.AppCompatDelegate
+import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatDelegate
 
 import org.mattvchandler.progressbars.R
 

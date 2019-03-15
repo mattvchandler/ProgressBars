@@ -146,8 +146,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
     <string name="single_complete_text">Event reached text</string>
     <string name="single_post_text">Post-event text</string>
 
-    <string name="time_date_header">Times and dates</string>
-
     <string name="separate_time">Separate start and end times</string>
     <string name="single_date_txt">Date</string>
     <string name="single_time_txt">Time</string>
