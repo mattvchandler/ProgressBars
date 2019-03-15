@@ -107,6 +107,8 @@ open class Progress_bars_table: BaseColumns
         const val NOTIFY_START_COL = "notify_start"
         const val NOTIFY_END_COL = "notify_end"
 
+        const val HAS_NOTIFICATION_CHANNEL_COL = "has_notification_channel"
+
         // Select stmt to get all columns, all rows, ordered by order #
         const val SELECT_ALL_ROWS = "SELECT * FROM $TABLE_NAME ORDER BY $ORDER_COL"
 
@@ -153,7 +155,8 @@ open class Progress_bars_table: BaseColumns
 
                 TERMINATE_COL + " INTEGER NOT NULL, " +
                 NOTIFY_START_COL + " INTEGER NOT NULL, " +
-                NOTIFY_END_COL + " INTEGER NOT NULL)"
+                NOTIFY_END_COL + " INTEGER NOT NULL, " +
+                HAS_NOTIFICATION_CHANNEL_COL + " INTEGER NOT NULL)"
 
         fun upgrade(context: Context, db: SQLiteDatabase, old_version: Int)
         {
@@ -206,7 +209,8 @@ open class Progress_bars_table: BaseColumns
                             SHOW_SECONDS_COL + ", " +
                             TERMINATE_COL + ", " +
                             NOTIFY_START_COL + ", " +
-                            NOTIFY_END_COL +
+                            NOTIFY_END_COL + ", " +
+                            HAS_NOTIFICATION_CHANNEL_COL +
                             ")" +
                             " SELECT " +
                             ORDER_COL + ", " +
@@ -242,7 +246,8 @@ open class Progress_bars_table: BaseColumns
                             SHOW_SECONDS_COL + ", " +
                             TERMINATE_COL + ", " +
                             NOTIFY_START_COL + ", " +
-                            NOTIFY_END_COL + " " +
+                            NOTIFY_END_COL + ", " +
+                            "1 " +
                             "FROM TMP_" + TABLE_NAME)
 
                     db.execSQL("DROP TABLE TMP_$TABLE_NAME")
@@ -250,7 +255,7 @@ open class Progress_bars_table: BaseColumns
                 2, 3 ->
                 {
                     // 2 -> 3 fixed NOT NULL for some columns - copy all data over
-                    // 3 -> 4 add SEPARATE_TIME_COL, countdown text for single time, UUID col
+                    // 3 -> 4 add SEPARATE_TIME_COL, countdown text for single time, ID col, notification channel
                     db.execSQL("ALTER TABLE $TABLE_NAME RENAME TO TMP_$TABLE_NAME")
                     db.execSQL(CREATE_TABLE)
                     db.execSQL("INSERT INTO " + TABLE_NAME +
@@ -288,7 +293,8 @@ open class Progress_bars_table: BaseColumns
                             SHOW_SECONDS_COL + ", " +
                             TERMINATE_COL + ", " +
                             NOTIFY_START_COL + ", " +
-                            NOTIFY_END_COL +
+                            NOTIFY_END_COL + ", " +
+                            HAS_NOTIFICATION_CHANNEL_COL +
                             ")" +
                             " SELECT " +
                             ORDER_COL + ", " +
@@ -324,7 +330,8 @@ open class Progress_bars_table: BaseColumns
                             SHOW_SECONDS_COL + ", " +
                             TERMINATE_COL + ", " +
                             NOTIFY_START_COL + ", " +
-                            NOTIFY_END_COL + " " +
+                            NOTIFY_END_COL + ", " +
+                            "1 " +
                             "FROM TMP_" + TABLE_NAME)
 
                     db.execSQL("DROP TABLE TMP_$TABLE_NAME")

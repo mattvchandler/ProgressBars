@@ -100,8 +100,10 @@ class Notification_handler: BroadcastReceiver()
                 val color_tv = TypedValue()
                 context.theme.resolveAttribute(R.attr.colorPrimary, color_tv, true)
 
+                val channel_id = if(data.has_notification_channel) data.channel_id else DEFAULT_CHANNEL_ID
+
                 // build the notification
-                val not_builder = NotificationCompat.Builder(context, CHANNEL_ID)
+                val not_builder = NotificationCompat.Builder(context, channel_id)
                         .setContentTitle(data.title)
                         .setContentText(content)
                         .setSmallIcon(R.drawable.ic_notification)
@@ -132,7 +134,7 @@ class Notification_handler: BroadcastReceiver()
                 // build a group summary notification
                 if(Build.VERSION.SDK_INT >= 24)
                 {
-                    val summary = NotificationCompat.Builder(context, CHANNEL_ID)
+                    val summary = NotificationCompat.Builder(context, channel_id)
                         .setSmallIcon(R.drawable.ic_notification)
                         .setColor(color_tv.data)
                         .setCategory(NotificationCompat.CATEGORY_EVENT)
@@ -167,13 +169,14 @@ class Notification_handler: BroadcastReceiver()
 
     companion object
     {
-        const val BASE_STARTED_ACTION_NAME = "org.mattvchandler.progressbars.STARTED_ROWID_"
-        const val BASE_COMPLETED_ACTION_NAME = "org.mattvchandler.progressbars.COMPLETED_ROWID_"
-        const val EXTRA_DATA = "EXTRA_DATA"
+        private const val BASE_STARTED_ACTION_NAME = "org.mattvchandler.progressbars.STARTED_ROWID_"
+        private const val BASE_COMPLETED_ACTION_NAME = "org.mattvchandler.progressbars.COMPLETED_ROWID_"
+        private const val EXTRA_DATA = "EXTRA_DATA"
 
-        const val CHANNEL_ID = "org.mattvchandler.progressbars.notification_channel"
-        const val GROUP_SUMMARY_ID = 0
-        const val GROUP = "org.mattvchandler.progressbars.notification_group"
+        private const val DEFAULT_CHANNEL_ID = "org.mattvchandler.progressbars.notification_channel"
+        const val CHANNEL_GROUP_ID = "org.mattvchandler.progressbars.notification_channel_timer_group"
+        private const val GROUP_SUMMARY_ID = 0
+        private const val GROUP = "org.mattvchandler.progressbars.notification_group"
 
         fun setup_notification_channel(context: Context)
         {
@@ -181,18 +184,21 @@ class Notification_handler: BroadcastReceiver()
             if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
             {
                 val nm = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-                if(nm.getNotificationChannel(CHANNEL_ID) == null)
-                {
-                    val channel = NotificationChannel(CHANNEL_ID,
-                            context.resources.getString(R.string.notification_channel_name),
-                            NotificationManager.IMPORTANCE_HIGH)
-                    channel.description = context.resources.getString(R.string.notification_channel_desc)
-                    channel.enableVibration(true)
-                    channel.enableLights(true)
-                    channel.setShowBadge(true)
 
-                    nm.createNotificationChannel(channel)
-                }
+                val channel = nm.getNotificationChannel(DEFAULT_CHANNEL_ID) ?:
+                    NotificationChannel(DEFAULT_CHANNEL_ID,
+                        context.resources.getString(R.string.notification_channel_name),
+                        NotificationManager.IMPORTANCE_HIGH)
+
+                channel.name = context.resources.getString(R.string.notification_channel_name)
+                channel.description = context.resources.getString(R.string.notification_channel_desc)
+                channel.enableVibration(true)
+                channel.enableLights(true)
+                channel.setShowBadge(true)
+
+                nm.createNotificationChannel(channel)
+
+                nm.createNotificationChannelGroup(NotificationChannelGroup(CHANNEL_GROUP_ID, context.resources.getString(R.string.notification_channel_group_name)))
             }
         }
 

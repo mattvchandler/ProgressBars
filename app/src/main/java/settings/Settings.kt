@@ -28,6 +28,8 @@ import android.content.Context
 import android.content.Intent
 import android.database.ContentObserver
 import android.databinding.DataBindingUtil
+import android.net.Uri
+import android.os.Build
 import android.preference.PreferenceManager
 import android.os.Bundle
 import android.os.Handler
@@ -53,7 +55,6 @@ import java.text.ParsePosition
 import java.text.SimpleDateFormat
 import java.util.*
 
-// TODO: individual notification options - use Android messages as a model for multiple channels
 // Settings for each timer
 class Settings: Dynamic_theme_activity(), DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener
 {
@@ -153,6 +154,9 @@ class Settings: Dynamic_theme_activity(), DatePickerDialog.OnDateSetListener, Ti
         val week_selected = data.repeat_unit == Progress_bars_table.Unit.WEEK.index
         binding.repeatOn.visibility = if(week_selected) View.VISIBLE else View.GONE
         binding.repeatDaysOfWeek.visibility = if(week_selected) View.VISIBLE else View.GONE
+
+        if(Build.VERSION.SDK_INT < 26)
+            binding.notificationSettings.visibility = View.GONE
     }
 
     public override fun onResume()
@@ -565,6 +569,38 @@ class Settings: Dynamic_theme_activity(), DatePickerDialog.OnDateSetListener, Ti
         val intent = Intent(this, Countdown_text::class.java)
         intent.putExtra(Countdown_text.EXTRA_DATA, data)
         startActivityForResult(intent, RESULT_COUNTDOWN_TEXT)
+    }
+
+    fun on_notification_settings_butt(@Suppress("UNUSED_PARAMETER") view: View)
+    {
+        val intent = Intent()
+        when
+        {
+//            Build.VERSION.SDK_INT in 21..25 ->
+//            {
+//                intent.action = "android.settings.APP_NOTIFICATION_SETTINGS"
+//                intent.putExtra("app_package", packageName)
+//                intent.putExtra("app_uid", applicationInfo.uid)
+//            }
+            Build.VERSION.SDK_INT > 26 ->
+            {
+                if(!store_widgets_to_data())
+                    return
+
+                data.create_notification_channel(this)
+                intent.action = android.provider.Settings.ACTION_CHANNEL_NOTIFICATION_SETTINGS
+                intent.putExtra(android.provider.Settings.EXTRA_APP_PACKAGE, packageName)
+                intent.putExtra(android.provider.Settings.EXTRA_CHANNEL_ID, data.channel_id)
+            }
+//            else ->
+//            {
+//                intent.action = android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS
+//                intent.addCategory(Intent.CATEGORY_DEFAULT)
+//                intent.data = Uri.parse("package:$packageName")
+//            }
+        }
+
+        startActivity(intent)
     }
 
     // Dialog return callbacks

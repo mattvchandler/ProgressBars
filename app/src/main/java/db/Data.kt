@@ -81,6 +81,8 @@ open class Data(): Serializable
     var notify_start = true
     var notify_end   = true
 
+    var has_notification_channel = false
+
     // default ctor
     constructor(context: Context): this()
     {
@@ -103,7 +105,6 @@ open class Data(): Serializable
         single_pre_text      = context.resources.getString(R.string.default_single_pre_text)
         single_complete_text = context.resources.getString(R.string.default_single_complete_text)
         single_post_text     = context.resources.getString(R.string.default_single_post_text)
-
     }
 
     // set all fields from DB cursor
@@ -129,78 +130,80 @@ open class Data(): Serializable
     // trivial copy ctor. Because, although we could call this a data class and have this auto generated, Kotlin won't let us inherit from it
     constructor(b: Data): this()
     {
-        rowid                = b.rowid
-        id                   = b.id
-        separate_time        = b.separate_time
-        start_time           = b.start_time
-        end_time             = b.end_time
-        start_tz             = b.start_tz
-        end_tz               = b.end_tz
-        repeats              = b.repeats
-        repeat_count         = b.repeat_count
-        repeat_unit          = b.repeat_unit
-        repeat_days_of_week  = b.repeat_days_of_week
-        title                = b.title
-        pre_text             = b.pre_text
-        start_text           = b.start_text
-        countdown_text       = b.countdown_text
-        complete_text        = b.complete_text
-        post_text            = b.post_text
-        single_pre_text      = b.single_pre_text
-        single_complete_text = b.single_complete_text
-        single_post_text     = b.single_post_text
-        precision            = b.precision
-        show_progress        = b.show_progress
-        show_start           = b.show_start
-        show_end             = b.show_end
-        show_years           = b.show_years
-        show_months          = b.show_months
-        show_weeks           = b.show_weeks
-        show_days            = b.show_days
-        show_hours           = b.show_hours
-        show_minutes         = b.show_minutes
-        show_seconds         = b.show_seconds
-        terminate            = b.terminate
-        notify_start         = b.notify_start
-        notify_end           = b.notify_end
+        rowid                    = b.rowid
+        id                       = b.id
+        separate_time            = b.separate_time
+        start_time               = b.start_time
+        end_time                 = b.end_time
+        start_tz                 = b.start_tz
+        end_tz                   = b.end_tz
+        repeats                  = b.repeats
+        repeat_count             = b.repeat_count
+        repeat_unit              = b.repeat_unit
+        repeat_days_of_week      = b.repeat_days_of_week
+        title                    = b.title
+        pre_text                 = b.pre_text
+        start_text               = b.start_text
+        countdown_text           = b.countdown_text
+        complete_text            = b.complete_text
+        post_text                = b.post_text
+        single_pre_text          = b.single_pre_text
+        single_complete_text     = b.single_complete_text
+        single_post_text         = b.single_post_text
+        precision                = b.precision
+        show_progress            = b.show_progress
+        show_start               = b.show_start
+        show_end                 = b.show_end
+        show_years               = b.show_years
+        show_months              = b.show_months
+        show_weeks               = b.show_weeks
+        show_days                = b.show_days
+        show_hours               = b.show_hours
+        show_minutes             = b.show_minutes
+        show_seconds             = b.show_seconds
+        terminate                = b.terminate
+        notify_start             = b.notify_start
+        notify_end               = b.notify_end
+        has_notification_channel = b.has_notification_channel
     }
 
     private fun set_from_cursor(cursor: Cursor)
     {
-        rowid                = cursor.get_nullable_long(BaseColumns._ID)!!
-        id                   = cursor.get_nullable_int(Progress_bars_table.ID_COL)!!
-        separate_time        = cursor.get_nullable_bool(Progress_bars_table.SEPARATE_TIME_COL)!!
-        start_time           = cursor.get_nullable_long(Progress_bars_table.START_TIME_COL)!!
-        end_time             = cursor.get_nullable_long(Progress_bars_table.END_TIME_COL)!!
-        start_tz             = cursor.get_nullable_string(Progress_bars_table.START_TZ_COL)!!
-        end_tz               = cursor.get_nullable_string(Progress_bars_table.END_TZ_COL)!!
-        repeats              = cursor.get_nullable_bool(Progress_bars_table.REPEATS_COL)!!
-        repeat_count         = cursor.get_nullable_int(Progress_bars_table.REPEAT_COUNT_COL)!!
-        repeat_unit          = cursor.get_nullable_int(Progress_bars_table.REPEAT_UNIT_COL)!!
-        repeat_days_of_week  = cursor.get_nullable_int(Progress_bars_table.REPEAT_DAYS_OF_WEEK_COL)!!
-        title                = cursor.get_nullable_string(Progress_bars_table.TITLE_COL)!!
-        pre_text             = cursor.get_nullable_string(Progress_bars_table.PRE_TEXT_COL)!!
-        start_text           = cursor.get_nullable_string(Progress_bars_table.START_TEXT_COL)!!
-        countdown_text       = cursor.get_nullable_string(Progress_bars_table.COUNTDOWN_TEXT_COL)!!
-        complete_text        = cursor.get_nullable_string(Progress_bars_table.COMPLETE_TEXT_COL)!!
-        post_text            = cursor.get_nullable_string(Progress_bars_table.POST_TEXT_COL)!!
-        single_pre_text      = cursor.get_nullable_string(Progress_bars_table.SINGLE_PRE_TEXT_COL)!!
-        single_complete_text = cursor.get_nullable_string(Progress_bars_table.SINGLE_COMPLETE_TEXT_COL)!!
-        single_post_text     = cursor.get_nullable_string(Progress_bars_table.SINGLE_POST_TEXT_COL)!!
-        precision            = cursor.get_nullable_int(Progress_bars_table.PRECISION_COL)!!
-        show_progress        = cursor.get_nullable_bool(Progress_bars_table.SHOW_PROGRESS_COL)!!
-        show_start           = cursor.get_nullable_bool(Progress_bars_table.SHOW_START_COL)!!
-        show_end             = cursor.get_nullable_bool(Progress_bars_table.SHOW_END_COL)!!
-        show_years           = cursor.get_nullable_bool(Progress_bars_table.SHOW_YEARS_COL)!!
-        show_months          = cursor.get_nullable_bool(Progress_bars_table.SHOW_MONTHS_COL)!!
-        show_weeks           = cursor.get_nullable_bool(Progress_bars_table.SHOW_WEEKS_COL)!!
-        show_days            = cursor.get_nullable_bool(Progress_bars_table.SHOW_DAYS_COL)!!
-        show_hours           = cursor.get_nullable_bool(Progress_bars_table.SHOW_HOURS_COL)!!
-        show_minutes         = cursor.get_nullable_bool(Progress_bars_table.SHOW_MINUTES_COL)!!
-        show_seconds         = cursor.get_nullable_bool(Progress_bars_table.SHOW_SECONDS_COL)!!
-        terminate            = cursor.get_nullable_bool(Progress_bars_table.TERMINATE_COL)!!
-        notify_start         = cursor.get_nullable_bool(Progress_bars_table.NOTIFY_START_COL)!!
-        notify_end           = cursor.get_nullable_bool(Progress_bars_table.NOTIFY_END_COL)!!
+        rowid                    = cursor.get_nullable_long(BaseColumns._ID)!!
+        id                       = cursor.get_nullable_int(Progress_bars_table.ID_COL)!!
+        separate_time            = cursor.get_nullable_bool(Progress_bars_table.SEPARATE_TIME_COL)!!
+        start_time               = cursor.get_nullable_long(Progress_bars_table.START_TIME_COL)!!
+        end_time                 = cursor.get_nullable_long(Progress_bars_table.END_TIME_COL)!!
+        start_tz                 = cursor.get_nullable_string(Progress_bars_table.START_TZ_COL)!!
+        end_tz                   = cursor.get_nullable_string(Progress_bars_table.END_TZ_COL)!!
+        repeats                  = cursor.get_nullable_bool(Progress_bars_table.REPEATS_COL)!!
+        repeat_count             = cursor.get_nullable_int(Progress_bars_table.REPEAT_COUNT_COL)!!
+        repeat_unit              = cursor.get_nullable_int(Progress_bars_table.REPEAT_UNIT_COL)!!
+        repeat_days_of_week      = cursor.get_nullable_int(Progress_bars_table.REPEAT_DAYS_OF_WEEK_COL)!!
+        title                    = cursor.get_nullable_string(Progress_bars_table.TITLE_COL)!!
+        pre_text                 = cursor.get_nullable_string(Progress_bars_table.PRE_TEXT_COL)!!
+        start_text               = cursor.get_nullable_string(Progress_bars_table.START_TEXT_COL)!!
+        countdown_text           = cursor.get_nullable_string(Progress_bars_table.COUNTDOWN_TEXT_COL)!!
+        complete_text            = cursor.get_nullable_string(Progress_bars_table.COMPLETE_TEXT_COL)!!
+        post_text                = cursor.get_nullable_string(Progress_bars_table.POST_TEXT_COL)!!
+        single_pre_text          = cursor.get_nullable_string(Progress_bars_table.SINGLE_PRE_TEXT_COL)!!
+        single_complete_text     = cursor.get_nullable_string(Progress_bars_table.SINGLE_COMPLETE_TEXT_COL)!!
+        single_post_text         = cursor.get_nullable_string(Progress_bars_table.SINGLE_POST_TEXT_COL)!!
+        precision                = cursor.get_nullable_int(Progress_bars_table.PRECISION_COL)!!
+        show_progress            = cursor.get_nullable_bool(Progress_bars_table.SHOW_PROGRESS_COL)!!
+        show_start               = cursor.get_nullable_bool(Progress_bars_table.SHOW_START_COL)!!
+        show_end                 = cursor.get_nullable_bool(Progress_bars_table.SHOW_END_COL)!!
+        show_years               = cursor.get_nullable_bool(Progress_bars_table.SHOW_YEARS_COL)!!
+        show_months              = cursor.get_nullable_bool(Progress_bars_table.SHOW_MONTHS_COL)!!
+        show_weeks               = cursor.get_nullable_bool(Progress_bars_table.SHOW_WEEKS_COL)!!
+        show_days                = cursor.get_nullable_bool(Progress_bars_table.SHOW_DAYS_COL)!!
+        show_hours               = cursor.get_nullable_bool(Progress_bars_table.SHOW_HOURS_COL)!!
+        show_minutes             = cursor.get_nullable_bool(Progress_bars_table.SHOW_MINUTES_COL)!!
+        show_seconds             = cursor.get_nullable_bool(Progress_bars_table.SHOW_SECONDS_COL)!!
+        terminate                = cursor.get_nullable_bool(Progress_bars_table.TERMINATE_COL)!!
+        notify_start             = cursor.get_nullable_bool(Progress_bars_table.NOTIFY_START_COL)!!
+        notify_end               = cursor.get_nullable_bool(Progress_bars_table.NOTIFY_END_COL)!!
+        has_notification_channel = cursor.get_nullable_bool(Progress_bars_table.HAS_NOTIFICATION_CHANNEL_COL)!!
     }
 
     private fun build_ContentValues(): ContentValues
@@ -240,6 +243,7 @@ open class Data(): Serializable
         values.put(Progress_bars_table.TERMINATE_COL, terminate)
         values.put(Progress_bars_table.NOTIFY_START_COL, notify_start)
         values.put(Progress_bars_table.NOTIFY_END_COL, notify_end)
+        values.put(Progress_bars_table.HAS_NOTIFICATION_CHANNEL_COL, has_notification_channel)
 
         return values
     }
@@ -352,8 +356,60 @@ open class Data(): Serializable
         }
     }
 
+    val channel_id get() = "$CHANNEL_ID_BASE$id"
+
+    fun create_notification_channel(context: Context)
+    {
+        if(Build.VERSION.SDK_INT >= 26)
+        {
+            val nm = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+
+            val channel = nm.getNotificationChannel(channel_id) ?:
+                NotificationChannel(channel_id, title, NotificationManager.IMPORTANCE_HIGH)
+
+            channel.name = title
+
+            channel.enableVibration(true)
+            channel.enableLights(true)
+            channel.setShowBadge(true)
+            channel.group = Notification_handler.CHANNEL_GROUP_ID
+
+            nm.createNotificationChannel(channel)
+            has_notification_channel = true
+        }
+    }
+    fun update_notification_channel(context: Context)
+    {
+        if(Build.VERSION.SDK_INT >= 26)
+        {
+            if(!has_notification_channel)
+                return
+
+            val nm = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+            val channel = nm.getNotificationChannel(channel_id) ?: return
+            channel.name = title
+
+            nm.createNotificationChannel(channel)
+        }
+    }
+
+    fun delete_notification_channel(context: Context)
+    {
+        if(Build.VERSION.SDK_INT >= 26)
+        {
+            if(!has_notification_channel)
+                return
+
+            val nm = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+
+            nm.deleteNotificationChannel(channel_id)
+        }
+    }
+
     companion object
     {
+        const val CHANNEL_ID_BASE = "org.mattvchandler.progressbars.notification_channel_"
+
         private const val NEXT_ID_PREF = "next_id"
 
         fun generate_id(context: Context): Int

@@ -100,8 +100,9 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
     <string name="loc_perm_title">"Allow access to location?"</string>
     <string name="loc_perm_msg">"You will be asked to allow location access.\n\nIf granted, your location will be used to switch the theme at local sunrise / sunset. Otherwise, hard-coded times will be used instead.\n\nLocation data is not stored or used in any other way."</string>
 
-    <string name="notification_channel_name">Timer start / end</string>
-    <string name="notification_channel_desc">Notifications for when a timer starts or completes</string>
+    <string name="notification_channel_name">Default timer start / end</string>
+    <string name="notification_channel_desc">Default notifications for when a timer starts or completes</string>
+    <string name="notification_channel_group_name">Timer-specific settings</string>
 
     <string-array name="day_of_week_abbr">
         <item>U</item>
