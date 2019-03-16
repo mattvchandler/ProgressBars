@@ -195,9 +195,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
         <item>End time</item>
     </string-array>
 
-    <string-array name="single_show_elements">
-        <item>Event time</item>
-    </string-array>
+    <string name="single_show_element">Show event time</string>
 
     <string name="terminate">Stop timer when completed</string>
     <string name="single_terminate">Stop countdown when event reached</string>

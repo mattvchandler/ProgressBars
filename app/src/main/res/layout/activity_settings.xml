@@ -80,7 +80,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
                     style="@style/SettingFrame"
                     android:id="@+id/separate_time_sw"
                     android:text="@string/separate_time"
-                    android:checked="@{data.separate_time}"
+                    android:checked="@={data.separate_time}"
                     android:textAppearance="?android:textAppearanceListItem"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -382,6 +382,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
                 <FrameLayout
                     style="@style/ClickableSettingFrame"
+                    android:id="@+id/show_elements"
+                    android:visibility="@{data.separate_time ? View.VISIBLE : View.GONE}"
                     android:onClick="on_show_elements_butt"
                     >
                     <TextView
@@ -391,6 +393,16 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
                         android:layout_height="wrap_content"
                     />
                 </FrameLayout>
+                <Switch
+                    style="@style/SettingFrame"
+                    android:id="@+id/single_show_element"
+                    android:text="@string/single_show_element"
+                    android:checked="@={data.show_end}"
+                    android:textAppearance="?android:textAppearanceListItem"
+                    android:visibility="@{data.separate_time ? View.GONE : View.VISIBLE}"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    />
 
                 <FrameLayout
                     style="@style/ClickableSettingFrame"
