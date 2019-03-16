@@ -118,14 +118,14 @@ class Settings: Dynamic_theme_activity(), DatePickerDialog.OnDateSetListener, Ti
         // set selected values
         binding.data = data
 
-        binding.endDateTxt.hint  = if(data.separate_time) resources.getString(R.string.end_date_txt)  else resources.getString(R.string.single_date_txt)
-        binding.endTimeTxt.hint  = if(data.separate_time) resources.getString(R.string.end_time_txt)  else resources.getString(R.string.single_time_txt)
-        binding.endTzTxt.text    = if(data.separate_time) resources.getString(R.string.end_tz_prompt) else resources.getString(R.string.single_tz_prompt)
-        binding.terminateSw.text = if(data.separate_time) resources.getString(R.string.terminate)     else resources.getString(R.string.single_terminate)
-        binding.endNotifySw.text = if(data.separate_time) resources.getString(R.string.end_notify)    else resources.getString(R.string.single_notify)
+        binding.endDateTxt.hint = if(data.separate_time) resources.getString(R.string.end_date_txt) else resources.getString(R.string.single_date_txt)
+        binding.endTimeTxt.hint = if(data.separate_time) resources.getString(R.string.end_time_txt) else resources.getString(R.string.single_time_txt)
+        binding.endTzTxt.text = if(data.separate_time) resources.getString(R.string.end_tz_prompt) else resources.getString(R.string.single_tz_prompt)
+        binding.terminateSw.text = if(data.separate_time) resources.getString(R.string.terminate) else resources.getString(R.string.single_terminate)
+        binding.endNotifySw.text = if(data.separate_time) resources.getString(R.string.end_notify) else resources.getString(R.string.single_notify)
 
         binding.startTz.text = data.start_tz.replace('_', ' ')
-        binding.endTz.text   = data.end_tz.replace('_', ' ')
+        binding.endTz.text = data.end_tz.replace('_', ' ')
 
         val start_date = Date(data.start_time * 1000)
         date_df.timeZone = TimeZone.getTimeZone(data.start_tz)
@@ -151,17 +151,7 @@ class Settings: Dynamic_theme_activity(), DatePickerDialog.OnDateSetListener, Ti
         if(Build.VERSION.SDK_INT < 26)
         {
             binding.notificationSettingsBox.visibility = View.GONE
-
             binding.notificationPriority.setSelection(resources.getStringArray(R.array.notification_priority_levels).indexOf(data.notification_priority))
-            binding.notificationPriority.onItemSelectedListener = object : AdapterView.OnItemSelectedListener
-            {
-                override fun onNothingSelected(parent: AdapterView<*>?) {}
-
-                override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long)
-                {
-                    data.notification_priority = resources.getStringArray(R.array.notification_priority_levels)[position]
-                }
-            }
         }
         else
             binding.notificationPriorityBox.visibility = View.GONE
@@ -233,7 +223,7 @@ class Settings: Dynamic_theme_activity(), DatePickerDialog.OnDateSetListener, Ti
             }
         }
 
-        // set listeners on time and date fields
+        // set listeners
         binding.startTimeSel.onFocusChangeListener = Time_listener(data)
         binding.endTimeSel.onFocusChangeListener = Time_listener(data)
 
@@ -244,16 +234,29 @@ class Settings: Dynamic_theme_activity(), DatePickerDialog.OnDateSetListener, Ti
 
         binding.repeatUnits.onItemSelectedListener = object: AdapterView.OnItemSelectedListener
         {
-            override fun onItemSelected(adapterView: AdapterView<*>, view: View?, i: Int, l: Long)
+            override fun onItemSelected(adapterView: AdapterView<*>, view: View?, position: Int, id: Long)
             {
-                val week_selected = i == Progress_bars_table.Unit.WEEK.index
+                val week_selected = position == Progress_bars_table.Unit.WEEK.index
                 binding.repeatOn.visibility = if(week_selected) View.VISIBLE else View.GONE
                 binding.repeatDaysOfWeek.visibility = if(week_selected) View.VISIBLE else View.GONE
 
-                data.repeat_unit = i
+                data.repeat_unit = position
             }
 
             override fun onNothingSelected(adapterView: AdapterView<*>) {}
+        }
+
+        if(Build.VERSION.SDK_INT < 26)
+        {
+            binding.notificationPriority.onItemSelectedListener = object : AdapterView.OnItemSelectedListener
+            {
+                override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long)
+                {
+                    data.notification_priority = resources.getStringArray(R.array.notification_priority_levels)[position]
+                }
+
+                override fun onNothingSelected(parent: AdapterView<*>?) {}
+            }
         }
 
         contentResolver.registerContentObserver(android.provider.Settings.System.getUriFor(android.provider.Settings.System.TIME_12_24), false, on_24_hour_change)
@@ -268,6 +271,8 @@ class Settings: Dynamic_theme_activity(), DatePickerDialog.OnDateSetListener, Ti
         binding.endDateSel.onFocusChangeListener = null
         binding.repeatCount.onFocusChangeListener = null
         binding.repeatUnits.onItemSelectedListener = null
+        if(Build.VERSION.SDK_INT < 26)
+            binding.notificationPriority.onItemSelectedListener = null
 
         contentResolver.unregisterContentObserver(on_24_hour_change)
 

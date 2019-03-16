@@ -48,6 +48,10 @@ import org.mattvchandler.progressbars.util.Dynamic_theme_activity
 import org.mattvchandler.progressbars.util.Preferences
 import java.util.*
 
+// TODO: for single events, show switch instead of checkbox dialog for show event time
+// TODO: don't scroll on undo / redo
+// TODO: undo button not being enabled on moves
+
 // main activity. display each timer in a list
 class Progress_bars: Dynamic_theme_activity()
 {
