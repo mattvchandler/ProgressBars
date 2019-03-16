@@ -258,7 +258,7 @@ open class Progress_bars_table: BaseColumns
                             TERMINATE_COL + ", " +
                             NOTIFY_START_COL + ", " +
                             NOTIFY_END_COL + ", " +
-                            "1, " +
+                            "0, " +
                             "'HIGH' " +
                             "FROM TMP_" + TABLE_NAME)
 
@@ -346,7 +346,7 @@ open class Progress_bars_table: BaseColumns
                             TERMINATE_COL + ", " +
                             NOTIFY_START_COL + ", " +
                             NOTIFY_END_COL + ", " +
-                            "1, " +
+                            "0, " +
                             "'HIGH' " +
                             "FROM TMP_" + TABLE_NAME)
 
