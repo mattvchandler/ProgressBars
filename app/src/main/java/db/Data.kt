@@ -366,20 +366,8 @@ open class Data(): Serializable
     {
         if(Build.VERSION.SDK_INT >= 26)
         {
-            val nm = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-
-            val channel = nm.getNotificationChannel(channel_id) ?:
-                NotificationChannel(channel_id, title, NotificationManager.IMPORTANCE_HIGH)
-
-            channel.name = title
-
-            channel.enableVibration(true)
-            channel.enableLights(true)
-            channel.setShowBadge(true)
-            channel.group = Notification_handler.CHANNEL_GROUP_ID
-
-            nm.createNotificationChannel(channel)
             has_notification_channel = true
+            update_notification_channel(context)
         }
     }
     fun update_notification_channel(context: Context)
@@ -390,8 +378,13 @@ open class Data(): Serializable
                 return
 
             val nm = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-            val channel = nm.getNotificationChannel(channel_id) ?: return
+            val channel = nm.getNotificationChannel(channel_id) ?: NotificationChannel(channel_id, title, NotificationManager.IMPORTANCE_HIGH)
             channel.name = title
+
+            channel.enableVibration(true)
+            channel.enableLights(true)
+            channel.setShowBadge(true)
+            channel.group = Notification_handler.CHANNEL_GROUP_ID
 
             nm.createNotificationChannel(channel)
         }
