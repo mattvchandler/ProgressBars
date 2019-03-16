@@ -195,6 +195,7 @@ class Adapter(private val activity: Progress_bars): RecyclerView.Adapter<Adapter
         {
             pos = data_list.size
             add_item(data, pos)
+            activity.scroll_to(pos)
             undo_stack.push(Undo_event(Undo_event.Type.ADD, null, pos, null))
         }
 
@@ -212,7 +213,6 @@ class Adapter(private val activity: Progress_bars): RecyclerView.Adapter<Adapter
 
         data_list.add(pos, View_data(activity, data))
         notifyItemInserted(pos)
-        activity.scroll_to(pos)
     }
     private fun edit_item(data: Data, pos: Int)
     {
@@ -224,7 +224,6 @@ class Adapter(private val activity: Progress_bars): RecyclerView.Adapter<Adapter
 
         data_list[pos] = View_data(activity, data)
         notifyItemChanged(pos)
-        activity.scroll_to(pos)
     }
     private fun remove_item(pos: Int)
     {
@@ -232,7 +231,6 @@ class Adapter(private val activity: Progress_bars): RecyclerView.Adapter<Adapter
         Notification_handler.cancel_alarm(activity, data_list[pos])
         data_list.removeAt(pos)
         notifyItemRemoved(pos)
-        activity.scroll_to(pos - 1)
     }
 
     private fun move_item(from_pos: Int, to_pos: Int)
@@ -241,7 +239,6 @@ class Adapter(private val activity: Progress_bars): RecyclerView.Adapter<Adapter
         data_list.add(to_pos, moved)
 
         notifyItemMoved(from_pos, to_pos)
-        activity.scroll_to(to_pos)
     }
 
     fun can_undo() = !undo_stack.isEmpty()
