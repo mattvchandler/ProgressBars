@@ -104,6 +104,7 @@ class Adapter(private val activity: Progress_bars): RecyclerView.Adapter<Adapter
             {
                 redo_stack.clear()
                 undo_stack.push(Undo_event(Undo_event.Type.MOVE, null, adapterPosition, moved_from_pos))
+                activity.invalidateOptionsMenu()
             }
         }
     }
