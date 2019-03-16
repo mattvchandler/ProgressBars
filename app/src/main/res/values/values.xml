@@ -22,25 +22,33 @@ SOFTWARE.
 -->
 
 <resources>
-    <string name="theme_values_system">system</string>
-    <string name="theme_values_day">day</string>
-    <string name="theme_values_night">night</string>
-    <string name="theme_values_auto">auto</string>
+    <string name="theme_values_system" translatable="false">system</string>
+    <string name="theme_values_day" translatable="false">day</string>
+    <string name="theme_values_night" translatable="false">night</string>
+    <string name="theme_values_auto" translatable="false">auto</string>
 
-    <string-array name="theme_values">
+    <string-array name="theme_values" translatable="false">
         <item>@string/theme_values_system</item>
         <item>@string/theme_values_day</item>
         <item>@string/theme_values_night</item>
         <item>@string/theme_values_auto</item>
     </string-array>
 
-    <string name="theme_values_default">@string/theme_values_system</string>
+    <string name="theme_values_default" translatable="false">@string/theme_values_system</string>
 
     <!-- date format strings to pass to SimpleDateFormat.applyLocalizedPattern -->
-    <string-array name="date_formats_java">
+    <string-array name="date_formats_java" translatable="false">
         <item>locale</item>
         <item>yyyy-MM-dd</item>
     </string-array>
 
-    <item name="pref_date_format_default" type="string">locale</item>
+    <string name="pref_date_format_default" translatable="false">locale</string>
+
+    <string-array name="notification_priority_levels" translatable="false">
+        <item>MIN</item>
+        <item>LOW</item>
+        <item>DEFAULT</item>
+        <item>HIGH</item>
+        <item>MAX</item>
+    </string-array>
 </resources>

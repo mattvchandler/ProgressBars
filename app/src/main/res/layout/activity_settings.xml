@@ -470,6 +470,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
                 <FrameLayout
                     style="@style/ClickableSettingFrame"
+                    android:id="@+id/notification_settings_box"
                     android:onClick="on_notification_settings_butt"
                     >
                     <TextView
@@ -481,6 +482,32 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
                         />
                 </FrameLayout>
 
+                <LinearLayout
+                    style="@style/SettingFrame"
+                    android:id="@+id/notification_priority_box"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:animateLayoutChanges="true"
+                    >
+                    <TextView
+                        android:text="@string/notification_priority_label"
+                        android:textAppearance="?android:textAppearanceListItem"
+                        android:labelFor="@+id/notification_priority"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="10"
+                        />
+
+                    <Spinner
+                        android:id="@+id/notification_priority"
+                        android:entries="@array/notification_priority_levels_disp"
+                        android:prompt="@string/notification_priority_label"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        />
+                </LinearLayout>
             </LinearLayout>
         </ScrollView>
     </androidx.coordinatorlayout.widget.CoordinatorLayout>

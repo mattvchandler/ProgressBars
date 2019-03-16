@@ -21,7 +21,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 package org.mattvchandler.progressbars.db
 
-import android.content.ContentValues
 import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.preference.PreferenceManager
@@ -109,6 +108,7 @@ open class Progress_bars_table: BaseColumns
         const val NOTIFY_END_COL = "notify_end"
 
         const val HAS_NOTIFICATION_CHANNEL_COL = "has_notification_channel"
+        const val NOTIFICATION_PRIORITY_COL = "notification_priority"
 
         // Select stmt to get all columns, all rows, ordered by order #
         const val SELECT_ALL_ROWS = "SELECT * FROM $TABLE_NAME ORDER BY $ORDER_COL"
@@ -131,14 +131,14 @@ open class Progress_bars_table: BaseColumns
                 REPEAT_DAYS_OF_WEEK_COL + " INTEGER NOT NULL, " +
 
                 TITLE_COL + " TEXT NOT NULL, " +
-                PRE_TEXT_COL + " TEXT, " +
-                START_TEXT_COL + " TEXT, " +
-                COUNTDOWN_TEXT_COL + " TEXT, " +
-                COMPLETE_TEXT_COL + " TEXT, " +
-                POST_TEXT_COL + " TEXT, " +
-                SINGLE_PRE_TEXT_COL + " TEXT, " +
-                SINGLE_COMPLETE_TEXT_COL + " TEXT, " +
-                SINGLE_POST_TEXT_COL + " TEXT, " +
+                PRE_TEXT_COL + " TEXT NOT NULL, " +
+                START_TEXT_COL + " TEXT NOT NULL, " +
+                COUNTDOWN_TEXT_COL + " TEXT NOT NULL, " +
+                COMPLETE_TEXT_COL + " TEXT NOT NULL, " +
+                POST_TEXT_COL + " TEXT NOT NULL, " +
+                SINGLE_PRE_TEXT_COL + " TEXT NOT NULL, " +
+                SINGLE_COMPLETE_TEXT_COL + " TEXT NOT NULL, " +
+                SINGLE_POST_TEXT_COL + " TEXT NOT NULL, " +
 
                 PRECISION_COL + " INTEGER NOT NULL, " +
 
@@ -157,7 +157,8 @@ open class Progress_bars_table: BaseColumns
                 TERMINATE_COL + " INTEGER NOT NULL, " +
                 NOTIFY_START_COL + " INTEGER NOT NULL, " +
                 NOTIFY_END_COL + " INTEGER NOT NULL, " +
-                HAS_NOTIFICATION_CHANNEL_COL + " INTEGER NOT NULL)"
+                HAS_NOTIFICATION_CHANNEL_COL + " INTEGER NOT NULL, " +
+                NOTIFICATION_PRIORITY_COL + " TEXT NOT NULL)"
 
         fun upgrade(context: Context, db: SQLiteDatabase, old_version: Int)
         {
@@ -219,7 +220,8 @@ open class Progress_bars_table: BaseColumns
                             TERMINATE_COL + ", " +
                             NOTIFY_START_COL + ", " +
                             NOTIFY_END_COL + ", " +
-                            HAS_NOTIFICATION_CHANNEL_COL +
+                            HAS_NOTIFICATION_CHANNEL_COL + ", " +
+                            NOTIFICATION_PRIORITY_COL +
                             ")" +
                             " SELECT " +
                             ORDER_COL + ", " +
@@ -256,7 +258,8 @@ open class Progress_bars_table: BaseColumns
                             TERMINATE_COL + ", " +
                             NOTIFY_START_COL + ", " +
                             NOTIFY_END_COL + ", " +
-                            "1 " +
+                            "1, " +
+                            "'HIGH' " +
                             "FROM TMP_" + TABLE_NAME)
 
                     db.execSQL("DROP TABLE TMP_$TABLE_NAME")
@@ -305,7 +308,8 @@ open class Progress_bars_table: BaseColumns
                             TERMINATE_COL + ", " +
                             NOTIFY_START_COL + ", " +
                             NOTIFY_END_COL + ", " +
-                            HAS_NOTIFICATION_CHANNEL_COL +
+                            HAS_NOTIFICATION_CHANNEL_COL + ", " +
+                            NOTIFICATION_PRIORITY_COL +
                             ")" +
                             " SELECT " +
                             ORDER_COL + ", " +
@@ -342,7 +346,8 @@ open class Progress_bars_table: BaseColumns
                             TERMINATE_COL + ", " +
                             NOTIFY_START_COL + ", " +
                             NOTIFY_END_COL + ", " +
-                            "1 " +
+                            "1, " +
+                            "'HIGH' " +
                             "FROM TMP_" + TABLE_NAME)
 
                     db.execSQL("DROP TABLE TMP_$TABLE_NAME")

@@ -27,13 +27,10 @@ import android.app.TimePickerDialog
 import android.content.Context
 import android.content.Intent
 import android.database.ContentObserver
-import androidx.databinding.DataBindingUtil
 import android.os.Build
-import android.preference.PreferenceManager
 import android.os.Bundle
 import android.os.Handler
-import com.google.android.material.textfield.TextInputEditText
-import androidx.appcompat.widget.Toolbar
+import android.preference.PreferenceManager
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -42,14 +39,15 @@ import android.widget.AdapterView
 import android.widget.DatePicker
 import android.widget.TimePicker
 import android.widget.Toast
-
+import androidx.appcompat.widget.Toolbar
+import androidx.databinding.DataBindingUtil
+import com.google.android.material.textfield.TextInputEditText
+import org.mattvchandler.progressbars.R
+import org.mattvchandler.progressbars.databinding.ActivitySettingsBinding
 import org.mattvchandler.progressbars.db.Data
 import org.mattvchandler.progressbars.db.Progress_bars_table
 import org.mattvchandler.progressbars.util.Dynamic_theme_activity
 import org.mattvchandler.progressbars.util.Preferences
-import org.mattvchandler.progressbars.R
-import org.mattvchandler.progressbars.databinding.ActivitySettingsBinding
-
 import java.text.ParsePosition
 import java.text.SimpleDateFormat
 import java.util.*
@@ -59,7 +57,6 @@ class Settings: Dynamic_theme_activity(), DatePickerDialog.OnDateSetListener, Ti
 {
     private lateinit var binding: ActivitySettingsBinding
     private lateinit var data: Data
-    private lateinit var save_data: Data
 
     private var date_time_dialog_target: Int = 0
 
@@ -98,8 +95,6 @@ class Settings: Dynamic_theme_activity(), DatePickerDialog.OnDateSetListener, Ti
             else
                 setTitle(R.string.add_title)
 
-            save_data = Data(data)
-
             date_df = get_date_format(this)
             time_df = get_time_format()
         }
@@ -107,7 +102,6 @@ class Settings: Dynamic_theme_activity(), DatePickerDialog.OnDateSetListener, Ti
         {
             // reload old and current data from save state
             data = savedInstanceState.getSerializable(STATE_DATA) as Data
-            save_data = savedInstanceState.getSerializable(STATE_SAVE_DATA) as Data
             date_time_dialog_target = savedInstanceState.getInt(STATE_TARGET)
 
             date_df = savedInstanceState.getSerializable(STATE_DATE_DF) as SimpleDateFormat
@@ -155,7 +149,22 @@ class Settings: Dynamic_theme_activity(), DatePickerDialog.OnDateSetListener, Ti
         binding.repeatDaysOfWeek.visibility = if(week_selected) View.VISIBLE else View.GONE
 
         if(Build.VERSION.SDK_INT < 26)
-            binding.notificationSettings.visibility = View.GONE
+        {
+            binding.notificationSettingsBox.visibility = View.GONE
+
+            binding.notificationPriority.setSelection(resources.getStringArray(R.array.notification_priority_levels).indexOf(data.notification_priority))
+            binding.notificationPriority.onItemSelectedListener = object : AdapterView.OnItemSelectedListener
+            {
+                override fun onNothingSelected(parent: AdapterView<*>?) {}
+
+                override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long)
+                {
+                    data.notification_priority = resources.getStringArray(R.array.notification_priority_levels)[position]
+                }
+            }
+        }
+        else
+            binding.notificationPriorityBox.visibility = View.GONE
     }
 
     public override fun onResume()
@@ -272,7 +281,6 @@ class Settings: Dynamic_theme_activity(), DatePickerDialog.OnDateSetListener, Ti
         // save all data to be restored
         store_widgets_to_data()
         out.putSerializable(STATE_DATA, data)
-        out.putSerializable(STATE_SAVE_DATA, save_data)
         out.putInt(STATE_TARGET, date_time_dialog_target)
         out.putSerializable(STATE_DATE_DF, date_df)
         out.putSerializable(STATE_TIME_DF, time_df)
@@ -572,34 +580,18 @@ class Settings: Dynamic_theme_activity(), DatePickerDialog.OnDateSetListener, Ti
 
     fun on_notification_settings_butt(@Suppress("UNUSED_PARAMETER") view: View)
     {
-        val intent = Intent()
-        when
+        if(Build.VERSION.SDK_INT > 26)
         {
-//            Build.VERSION.SDK_INT in 21..25 ->
-//            {
-//                intent.action = "android.settings.APP_NOTIFICATION_SETTINGS"
-//                intent.putExtra("app_package", packageName)
-//                intent.putExtra("app_uid", applicationInfo.uid)
-//            }
-            Build.VERSION.SDK_INT > 26 ->
-            {
-                if(!store_widgets_to_data())
-                    return
+            val intent = Intent()
+            if(!store_widgets_to_data())
+                return
 
-                data.create_notification_channel(this)
-                intent.action = android.provider.Settings.ACTION_CHANNEL_NOTIFICATION_SETTINGS
-                intent.putExtra(android.provider.Settings.EXTRA_APP_PACKAGE, packageName)
-                intent.putExtra(android.provider.Settings.EXTRA_CHANNEL_ID, data.channel_id)
-            }
-//            else ->
-//            {
-//                intent.action = android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS
-//                intent.addCategory(Intent.CATEGORY_DEFAULT)
-//                intent.data = Uri.parse("package:$packageName")
-//            }
+            data.create_notification_channel(this)
+            intent.action = android.provider.Settings.ACTION_CHANNEL_NOTIFICATION_SETTINGS
+            intent.putExtra(android.provider.Settings.EXTRA_APP_PACKAGE, packageName)
+            intent.putExtra(android.provider.Settings.EXTRA_CHANNEL_ID, data.channel_id)
+            startActivity(intent)
         }
-
-        startActivity(intent)
     }
 
     // Dialog return callbacks
@@ -708,7 +700,6 @@ class Settings: Dynamic_theme_activity(), DatePickerDialog.OnDateSetListener, Ti
         const val EXTRA_EDIT_DATA = "org.mattvchandler.progressbars.EDIT_DATA"
 
         private const val STATE_DATA = "data"
-        private const val STATE_SAVE_DATA = "save_data"
         private const val STATE_TARGET = "target"
         private const val STATE_DATE_FORMAT = "date_format"
         private const val STATE_DATE_DF = "date_df"

@@ -82,6 +82,7 @@ open class Data(): Serializable
     var notify_end   = true
 
     var has_notification_channel = false
+    var notification_priority = "HIGH"
 
     // default ctor
     constructor(context: Context): this()
@@ -165,6 +166,7 @@ open class Data(): Serializable
         notify_start             = b.notify_start
         notify_end               = b.notify_end
         has_notification_channel = b.has_notification_channel
+        notification_priority    = b.notification_priority
     }
 
     private fun set_from_cursor(cursor: Cursor)
@@ -204,6 +206,7 @@ open class Data(): Serializable
         notify_start             = cursor.get_nullable_bool(Progress_bars_table.NOTIFY_START_COL)!!
         notify_end               = cursor.get_nullable_bool(Progress_bars_table.NOTIFY_END_COL)!!
         has_notification_channel = cursor.get_nullable_bool(Progress_bars_table.HAS_NOTIFICATION_CHANNEL_COL)!!
+        notification_priority    = cursor.get_nullable_string(Progress_bars_table.NOTIFICATION_PRIORITY_COL)!!
     }
 
     private fun build_ContentValues(): ContentValues
@@ -244,6 +247,7 @@ open class Data(): Serializable
         values.put(Progress_bars_table.NOTIFY_START_COL, notify_start)
         values.put(Progress_bars_table.NOTIFY_END_COL, notify_end)
         values.put(Progress_bars_table.HAS_NOTIFICATION_CHANNEL_COL, has_notification_channel)
+        values.put(Progress_bars_table.NOTIFICATION_PRIORITY_COL, notification_priority)
 
         return values
     }

@@ -179,7 +179,15 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
     <string name="show_elements_header">Information to display</string>
     <string name="show_units_header">Units of time to display</string>
     <string name="countdown_text_header">Countdown messages</string>
-    <string name="timer_opts_header">Timer start / end options</string>
+
+    <string name="notification_priority_label">Notification priority</string>
+    <string-array name="notification_priority_levels_disp">
+        <item>Minimum</item>
+        <item>Low</item>
+        <item>Default</item>
+        <item>High</item>
+        <item>Maximum</item>
+    </string-array>
 
     <string-array name="show_elements">
         <item>Progress bar</item>

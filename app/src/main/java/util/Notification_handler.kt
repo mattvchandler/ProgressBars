@@ -102,6 +102,16 @@ class Notification_handler: BroadcastReceiver()
 
                 val channel_id = if(data.has_notification_channel) data.channel_id else DEFAULT_CHANNEL_ID
 
+                val priority = when(data.notification_priority)
+                {
+                    "MIN"     -> NotificationCompat.PRIORITY_MIN
+                    "LOW"     -> NotificationCompat.PRIORITY_LOW
+                    "DEFAULT" -> NotificationCompat.PRIORITY_DEFAULT
+                    "HIGH"    -> NotificationCompat.PRIORITY_HIGH
+                    "MAX"     -> NotificationCompat.PRIORITY_MAX
+                    else      -> NotificationCompat.PRIORITY_HIGH
+                }
+
                 // build a group summary notification
                 if(Build.VERSION.SDK_INT >= 24)
                 {
@@ -112,7 +122,7 @@ class Notification_handler: BroadcastReceiver()
                             .setGroup(GROUP)
                             .setGroupSummary(true)
                             .setAutoCancel(true)
-                            .setPriority(NotificationCompat.PRIORITY_HIGH)
+                            .setPriority(priority)
                             .setCategory(NotificationCompat.CATEGORY_EVENT)
                             .setDefaults(NotificationCompat.DEFAULT_ALL)
                     nm.notify(GROUP_SUMMARY_ID, summary.build())
@@ -126,7 +136,7 @@ class Notification_handler: BroadcastReceiver()
                         .setColor(color_tv.data)
                         .setGroup(GROUP)
                         .setAutoCancel(true)
-                        .setPriority(NotificationCompat.PRIORITY_HIGH)
+                        .setPriority(priority)
                         .setCategory(NotificationCompat.CATEGORY_EVENT)
                         .setDefaults(NotificationCompat.DEFAULT_ALL)
                         .setWhen(notification_when * 1000)
