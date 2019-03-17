@@ -58,7 +58,7 @@ class Progress_bars: Dynamic_theme_activity()
         const val RESULT_EDIT_DATA = 0
 
         private const val SAVE_UNDO_REDO = "SAVE_UNDO_REDO"
-
+        private const val SAVE_ADD_FROM_SHORTCUT = "SAVE_ADD_FROM_SHORTCUT"
         var is_running = false
     }
 
@@ -67,6 +67,7 @@ class Progress_bars: Dynamic_theme_activity()
 
     private lateinit var date_format: String
 
+    private var add_from_shortcut = true
 
     private val on_list_change = object: BroadcastReceiver()
     {
@@ -96,9 +97,6 @@ class Progress_bars: Dynamic_theme_activity()
     {
         super.onCreate(savedInstanceState)
 
-        if(intent.action == Intent.ACTION_MAIN && !intent.hasCategory(Intent.CATEGORY_LAUNCHER)) // started from shortcut
-            startActivityForResult(Intent(this, Settings::class.java), RESULT_EDIT_DATA)
-
         binding = DataBindingUtil.setContentView(this, R.layout.activity_progress_bars)
         setSupportActionBar(binding.toolbar as Toolbar)
         binding.mainList.addItemDecoration(DividerItemDecoration(binding.mainList.context, DividerItemDecoration.VERTICAL))
@@ -111,7 +109,10 @@ class Progress_bars: Dynamic_theme_activity()
         adapter = Adapter(this)
 
         if(savedInstanceState != null)
+        {
             adapter.undo_redo_stacks = savedInstanceState.getSerializable(SAVE_UNDO_REDO)!!
+            add_from_shortcut = savedInstanceState.getBoolean(SAVE_ADD_FROM_SHORTCUT, false)
+        }
 
         binding.mainList.layoutManager = LinearLayoutManager(this)
         binding.mainList.adapter = adapter
@@ -136,6 +137,11 @@ class Progress_bars: Dynamic_theme_activity()
         broadcast_filter.addAction(CHANGE_LIST_EVENT)
         LocalBroadcastManager.getInstance(this).registerReceiver(on_list_change, IntentFilter(CHANGE_LIST_EVENT))
         contentResolver.registerContentObserver(android.provider.Settings.System.getUriFor(android.provider.Settings.System.TIME_12_24), false, on_24_hour_change)
+
+        if(add_from_shortcut && intent.action == Intent.ACTION_MAIN && !intent.hasCategory(Intent.CATEGORY_LAUNCHER)) // started from shortcut
+            startActivityForResult(Intent(this, Settings::class.java), RESULT_EDIT_DATA)
+
+        add_from_shortcut = false
     }
 
     override fun onSaveInstanceState(out: Bundle)
