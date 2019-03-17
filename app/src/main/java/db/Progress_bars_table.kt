@@ -175,7 +175,7 @@ open class Progress_bars_table: BaseColumns
                 cursor.moveToFirst()
                 val count = cursor.getInt(0)
                 cursor.close()
-                PreferenceManager.getDefaultSharedPreferences(context).edit().putInt(Data.NEXT_ID_PREF, count).apply()
+                PreferenceManager.getDefaultSharedPreferences(context).edit().putInt(Data.NEXT_ID_PREF, count + 1).apply()
             }
             when(old_version)
             {
