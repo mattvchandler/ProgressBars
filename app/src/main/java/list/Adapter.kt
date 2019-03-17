@@ -64,10 +64,11 @@ class Adapter(private val activity: Progress_bars): RecyclerView.Adapter<Adapter
     private val undo_stack: Stack<Undo_event> = mutableListOf()
     private val redo_stack: Stack<Undo_event> = mutableListOf()
 
+    private var moved_from_pos = 0
+
     // an individual row object
     inner class Holder(private val row_binding: ViewDataBinding): RecyclerView.ViewHolder(row_binding.root), View.OnClickListener
     {
-        private var moved_from_pos = 0
         internal lateinit var data: View_data
 
         fun bind(data: View_data)
@@ -90,22 +91,6 @@ class Adapter(private val activity: Progress_bars): RecyclerView.Adapter<Adapter
             val intent = Intent(activity, Settings::class.java)
             intent.putExtra(Settings.EXTRA_EDIT_DATA, data)
             activity.startActivityForResult(intent, Progress_bars.RESULT_EDIT_DATA)
-        }
-
-        // called when dragging during each reordering
-        fun on_move(to: Holder) = move_item(adapterPosition, to.adapterPosition)
-        // called when a row is selected for deletion or reordering
-        fun on_selected() { moved_from_pos = adapterPosition }
-
-        // called when a row is released from reordering
-        fun on_cleared()
-        {
-            if(adapterPosition != RecyclerView.NO_POSITION && adapterPosition != moved_from_pos)
-            {
-                redo_stack.clear()
-                undo_stack.push(Undo_event(Undo_event.Type.MOVE, null, adapterPosition, moved_from_pos))
-                activity.invalidateOptionsMenu()
-            }
         }
     }
 
@@ -182,6 +167,20 @@ class Adapter(private val activity: Progress_bars): RecyclerView.Adapter<Adapter
         remove_item(pos)
     }
 
+    // called when a row is selected for deletion or reordering
+    fun on_selected(pos: Int) { moved_from_pos = pos }
+
+    // called when a row is released from reordering
+    fun on_cleared(pos: Int)
+    {
+        if(pos != RecyclerView.NO_POSITION && pos != moved_from_pos)
+        {
+            redo_stack.clear()
+            undo_stack.push(Undo_event(Undo_event.Type.MOVE, null, pos, moved_from_pos))
+            activity.invalidateOptionsMenu()
+        }
+    }
+
     fun set_edited(data: Data)
     {
         redo_stack.clear()
@@ -233,8 +232,7 @@ class Adapter(private val activity: Progress_bars): RecyclerView.Adapter<Adapter
         data_list.removeAt(pos)
         notifyItemRemoved(pos)
     }
-
-    private fun move_item(from_pos: Int, to_pos: Int)
+    fun move_item(from_pos: Int, to_pos: Int)
     {
         val moved = data_list.removeAt(from_pos)
         data_list.add(to_pos, moved)

@@ -36,7 +36,7 @@ class Touch_helper_callback(private val adapter: Adapter): ItemTouchHelper.Callb
     // long press and drag to reorder list
     override fun onMove(recyclerView: RecyclerView, source: RecyclerView.ViewHolder, target: RecyclerView.ViewHolder): Boolean
     {
-        (source as Adapter.Holder).on_move(target as Adapter.Holder)
+        adapter.move_item(source.adapterPosition, target.adapterPosition)
         return true
     }
 
@@ -67,7 +67,7 @@ class Touch_helper_callback(private val adapter: Adapter): ItemTouchHelper.Callb
         super.onSelectedChanged(viewHolder, actionState)
         // notify when a row is selected
         if(actionState != ItemTouchHelper.ACTION_STATE_IDLE)
-            (viewHolder as Adapter.Holder).on_selected()
+            adapter.on_selected(viewHolder!!.adapterPosition)
     }
 
     override fun onChildDraw(c: Canvas, recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder, dX: Float, dY: Float, actionState: Int, isCurrentlyActive: Boolean)
@@ -95,7 +95,7 @@ class Touch_helper_callback(private val adapter: Adapter): ItemTouchHelper.Callb
     {
         super.clearView(recyclerView, viewHolder)
         // notify when a row is deselected
-        (viewHolder as Adapter.Holder).on_cleared()
+        adapter.on_cleared(viewHolder.adapterPosition)
 
         if(Build.VERSION.SDK_INT >= 21)
         {
