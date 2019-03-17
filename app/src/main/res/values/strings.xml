@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <!--
 Copyright (C) 2019 Matthew Chandler
 
@@ -18,7 +19,7 @@ COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
 IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 -->
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <string name="app_name">Progress Bars</string>
     <string name="app_version" translatable="false">v.%1$s</string>
     <string name="app_copyright" translatable="false">© 2019 Matthew Chandler</string>
@@ -91,7 +92,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
     <string name="pref_notification_settings">Notification settings</string>
 
     <string name="theme_title">Day / Night Theme</string>
-    <string-array name="theme_settings">
+    <string-array name="theme_settings" tools:ignore="InconsistentArrays">
         <item>Follow System</item>
         <item>Day</item>
         <item>Night</item>
