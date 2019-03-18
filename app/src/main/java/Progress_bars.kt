@@ -21,7 +21,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 package org.mattvchandler.progressbars
 
-import android.app.Activity
+import androidx.appcompat.app.AppCompatActivity
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
@@ -252,7 +252,7 @@ class Progress_bars: Dynamic_theme_activity()
     override fun onActivityResult(request_code: Int, result_code: Int, intent: Intent?)
     {
         // get data back from Countdown_text
-        if(result_code == Activity.RESULT_OK && request_code == RESULT_EDIT_DATA)
+        if(result_code == AppCompatActivity.RESULT_OK && request_code == RESULT_EDIT_DATA)
         {
             val data = intent!!.getSerializableExtra(Settings.EXTRA_EDIT_DATA)!! as Data
             adapter.set_edited(data)

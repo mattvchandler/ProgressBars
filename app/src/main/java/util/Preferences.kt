@@ -22,7 +22,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 package org.mattvchandler.progressbars.util
 
 import android.Manifest
-import android.app.AlertDialog
+import androidx.appcompat.app.AlertDialog
 import android.app.Dialog
 import android.content.Context
 import android.content.Intent
@@ -86,7 +86,7 @@ class Preferences: Dynamic_theme_activity()
                             class Location_frag: DialogFragment()
                             {
                                 override fun onCreateDialog(savedInstanceState: Bundle?): Dialog =
-                                        AlertDialog.Builder(activity)
+                                        AlertDialog.Builder(context!!)
                                                 .setTitle(R.string.loc_perm_title)
                                                 .setMessage(R.string.loc_perm_msg)
                                                 .setPositiveButton(android.R.string.ok) { _, _ -> ActivityCompat.requestPermissions(activity!!, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), LOCATION_PERMISSION_RESPONSE)}

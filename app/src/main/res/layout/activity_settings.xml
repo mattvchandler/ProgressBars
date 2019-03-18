@@ -81,7 +81,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
                     android:id="@+id/separate_time_sw"
                     android:text="@string/separate_time"
                     android:checked="@={data.separate_time}"
-                    android:textAppearance="?android:textAppearanceListItem"
+                    android:textAppearance="?attr/textAppearanceListItem"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:onClick="on_separate_time_butt"
@@ -170,7 +170,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
                     android:orientation="vertical"
                     android:layout_gravity="center_vertical"
                     android:onClick="on_start_tz_butt"
-                    android:background="?android:attr/selectableItemBackground"
+                    android:background="?attr/selectableItemBackground"
                     android:visibility="@{data.separate_time ? View.VISIBLE : View.GONE}"
                     android:animateLayoutChanges="true"
                     android:clickable="true"
@@ -179,7 +179,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
                     <TextView
                         android:id="@+id/start_tz_txt"
                         android:text="@string/start_tz_prompt"
-                        android:textAppearance="?android:textAppearanceListItem"
+                        android:textAppearance="?attr/textAppearanceListItem"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         />
@@ -276,14 +276,14 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
                     android:orientation="vertical"
                     android:layout_gravity="center_vertical"
                     android:onClick="on_end_tz_butt"
-                    android:background="?android:attr/selectableItemBackground"
+                    android:background="?attr/selectableItemBackground"
                     android:clickable="true"
                     android:focusable="true"
                     >
                     <TextView
                         android:id="@+id/end_tz_txt"
                         android:text="@string/end_tz_prompt"
-                        android:textAppearance="?android:textAppearanceListItem"
+                        android:textAppearance="?attr/textAppearanceListItem"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         />
@@ -303,7 +303,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
                     android:id="@+id/terminate_sw"
                     android:text="@string/terminate"
                     android:checked="@={data.terminate}"
-                    android:textAppearance="?android:textAppearanceListItem"
+                    android:textAppearance="?attr/textAppearanceListItem"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     />
@@ -313,7 +313,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
                     android:id="@+id/repeat_sw"
                     android:text="@string/repeat"
                     android:checked="@={data.repeats}"
-                    android:textAppearance="?android:textAppearanceListItem"
+                    android:textAppearance="?attr/textAppearanceListItem"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:onClick="on_repeat_butt"
@@ -341,7 +341,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
                         android:id="@+id/repeat_count"
                         android:inputType="number"
                         android:importantForAutofill="no"
-                        android:textAppearance="?android:textAppearanceListItem"
+                        android:textAppearance="?attr/textAppearanceListItem"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="@dimen/margin_size"
@@ -371,7 +371,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
                     <TextView
                         android:id="@+id/repeat_days_of_week"
-                        android:textAppearance="?android:textAppearanceListItem"
+                        android:textAppearance="?attr/textAppearanceListItem"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:onClick="on_days_of_week_butt"
@@ -388,7 +388,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
                     >
                     <TextView
                         android:text="@string/show_elements_header"
-                        android:textAppearance="?android:textAppearanceListItem"
+                        android:textAppearance="?attr/textAppearanceListItem"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                     />
@@ -398,7 +398,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
                     android:id="@+id/single_show_element"
                     android:text="@string/single_show_element"
                     android:checked="@={data.show_end}"
-                    android:textAppearance="?android:textAppearanceListItem"
+                    android:textAppearance="?attr/textAppearanceListItem"
                     android:visibility="@{data.separate_time ? View.GONE : View.VISIBLE}"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -410,7 +410,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
                     >
                     <TextView
                         android:text="@string/show_units_header"
-                        android:textAppearance="?android:textAppearanceListItem"
+                        android:textAppearance="?attr/textAppearanceListItem"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         />
@@ -422,7 +422,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
                     >
                     <TextView
                         android:text="@string/countdown_text_header"
-                        android:textAppearance="?android:textAppearanceListItem"
+                        android:textAppearance="?attr/textAppearanceListItem"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         />
@@ -435,7 +435,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
                     android:orientation="vertical"
                     android:layout_gravity="center_vertical"
                     android:onClick="on_precision_butt"
-                    android:background="?android:attr/selectableItemBackground"
+                    android:background="?attr/selectableItemBackground"
                     android:clickable="true"
                     android:focusable="true"
                     >
@@ -443,7 +443,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
                     <TextView
                         android:id="@+id/textView"
                         android:text="@string/precision"
-                        android:textAppearance="?android:textAppearanceListItem"
+                        android:textAppearance="?attr/textAppearanceListItem"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         />
@@ -464,7 +464,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
                     android:id="@+id/start_notify_sw"
                     android:text="@string/start_notify"
                     android:checked="@={data.notify_start}"
-                    android:textAppearance="?android:textAppearanceListItem"
+                    android:textAppearance="?attr/textAppearanceListItem"
                     android:visibility="@{data.separate_time ? View.VISIBLE : View.GONE}"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -475,7 +475,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
                     android:id="@+id/end_notify_sw"
                     android:text="@string/end_notify"
                     android:checked="@={data.notify_end}"
-                    android:textAppearance="?android:textAppearanceListItem"
+                    android:textAppearance="?attr/textAppearanceListItem"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     />
@@ -488,7 +488,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
                     <TextView
                         android:id="@+id/notification_settings"
                         android:text="@string/pref_notification_settings"
-                        android:textAppearance="?android:textAppearanceListItem"
+                        android:textAppearance="?attr/textAppearanceListItem"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         />
@@ -505,7 +505,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
                     >
                     <TextView
                         android:text="@string/notification_priority_label"
-                        android:textAppearance="?android:textAppearanceListItem"
+                        android:textAppearance="?attr/textAppearanceListItem"
                         android:labelFor="@+id/notification_priority"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"

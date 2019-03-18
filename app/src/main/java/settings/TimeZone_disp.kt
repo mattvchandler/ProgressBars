@@ -21,7 +21,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 package org.mattvchandler.progressbars.settings
 
-import android.app.Activity
+import androidx.appcompat.app.AppCompatActivity
 import android.content.Context
 import android.content.Intent
 import androidx.databinding.DataBindingUtil
@@ -100,7 +100,7 @@ private class TimeZone_adapter(private val activity: TimeZone_activity, private 
             val intent = Intent()
 
             intent.putExtra(TimeZone_activity.EXTRA_SELECTED_TZ, tz)
-            activity.setResult(Activity.RESULT_OK, intent)
+            activity.setResult(AppCompatActivity.RESULT_OK, intent)
             activity.finish()
         }
     }

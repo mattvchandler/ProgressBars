@@ -21,7 +21,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 package org.mattvchandler.progressbars.settings
 
-import android.app.Activity
+import androidx.appcompat.app.AppCompatActivity
 import android.content.Intent
 import androidx.databinding.DataBindingUtil
 import android.os.Bundle
@@ -86,7 +86,7 @@ class Countdown_text: Dynamic_theme_activity()
         save()
         val intent = Intent()
         intent.putExtra(EXTRA_DATA, data)
-        setResult(Activity.RESULT_OK, intent)
+        setResult(AppCompatActivity.RESULT_OK, intent)
         finish()
     }
 

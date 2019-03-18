@@ -39,7 +39,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
         android:layout_height="wrap_content"
         android:background="?android:colorBackground"
         tools:ignore="UnusedAttribute"
-        android:foreground="?android:selectableItemBackground"
+        android:foreground="?attr/selectableItemBackground"
         android:clickable="true"
         android:focusable="true"
         >

@@ -21,7 +21,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 package org.mattvchandler.progressbars.settings
 
-import android.app.Activity
+import androidx.appcompat.app.AppCompatActivity
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
 import android.content.Context
@@ -317,7 +317,7 @@ class Settings: Dynamic_theme_activity(), DatePickerDialog.OnDateSetListener, Ti
 
                 val intent = Intent()
                 intent.putExtra(EXTRA_EDIT_DATA, data)
-                setResult(Activity.RESULT_OK, intent)
+                setResult(AppCompatActivity.RESULT_OK, intent)
 
                 finish()
                 return true
@@ -670,7 +670,7 @@ class Settings: Dynamic_theme_activity(), DatePickerDialog.OnDateSetListener, Ti
     override fun onActivityResult(request_code: Int, result_code: Int, intent: Intent?)
     {
         // get data back from Countdown_text
-        if(result_code == Activity.RESULT_OK)
+        if(result_code == AppCompatActivity.RESULT_OK)
         {
             when(request_code)
             {
