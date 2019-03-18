@@ -674,7 +674,10 @@ class Settings: Dynamic_theme_activity(), DatePickerDialog.OnDateSetListener, Ti
         {
             when(request_code)
             {
-                RESULT_COUNTDOWN_TEXT -> data = intent?.getSerializableExtra(Countdown_text.EXTRA_DATA) as Data
+                RESULT_COUNTDOWN_TEXT -> {
+                    data = intent?.getSerializableExtra(Countdown_text.EXTRA_DATA) as Data
+                    binding.data = data
+                }
                 RESULT_TIMEZONE_START -> {
                     val tz = intent?.getSerializableExtra(TimeZone_activity.EXTRA_SELECTED_TZ) as TimeZone_disp
                     data.start_tz = tz.id
