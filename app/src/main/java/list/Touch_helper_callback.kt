@@ -23,10 +23,10 @@ package org.mattvchandler.progressbars.list
 
 import android.graphics.Canvas
 import android.os.Build
-import androidx.core.view.ViewCompat
-import androidx.recyclerview.widget.RecyclerView
-import androidx.recyclerview.widget.ItemTouchHelper
 import android.util.TypedValue
+import androidx.core.view.ViewCompat
+import androidx.recyclerview.widget.ItemTouchHelper
+import androidx.recyclerview.widget.RecyclerView
 import org.mattvchandler.progressbars.R
 import kotlin.math.min
 

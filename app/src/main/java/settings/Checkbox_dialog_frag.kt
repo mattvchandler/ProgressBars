@@ -23,9 +23,8 @@ package org.mattvchandler.progressbars.settings
 
 import android.app.Dialog
 import android.os.Bundle
-import androidx.fragment.app.DialogFragment
 import androidx.appcompat.app.AlertDialog
-
+import androidx.fragment.app.DialogFragment
 import java.security.InvalidParameterException
 
 // Dialog box w/ checkboxes

@@ -21,23 +21,23 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 package org.mattvchandler.progressbars
 
-import androidx.appcompat.app.AppCompatActivity
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.database.ContentObserver
-import androidx.databinding.DataBindingUtil
 import android.os.Bundle
 import android.os.Handler
 import android.preference.PreferenceManager
-import androidx.localbroadcastmanager.content.LocalBroadcastManager
-import androidx.recyclerview.widget.DividerItemDecoration
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.appcompat.widget.Toolbar
-import androidx.recyclerview.widget.ItemTouchHelper
 import android.view.Menu
 import android.view.MenuItem
+import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
+import androidx.databinding.DataBindingUtil
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
+import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.ItemTouchHelper
+import androidx.recyclerview.widget.LinearLayoutManager
 import org.mattvchandler.progressbars.databinding.ActivityProgressBarsBinding
 import org.mattvchandler.progressbars.db.Data
 import org.mattvchandler.progressbars.list.Adapter
@@ -46,7 +46,6 @@ import org.mattvchandler.progressbars.settings.Settings
 import org.mattvchandler.progressbars.util.About_dialog
 import org.mattvchandler.progressbars.util.Dynamic_theme_activity
 import org.mattvchandler.progressbars.util.Preferences
-import java.util.*
 
 // main activity. display each timer in a list
 class Progress_bars: Dynamic_theme_activity()

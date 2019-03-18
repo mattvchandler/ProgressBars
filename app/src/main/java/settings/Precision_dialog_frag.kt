@@ -23,13 +23,12 @@ package org.mattvchandler.progressbars.settings
 
 import android.app.Dialog
 import android.os.Bundle
-import androidx.fragment.app.DialogFragment
-import androidx.appcompat.app.AlertDialog
 import android.view.Gravity
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.NumberPicker
-
+import androidx.appcompat.app.AlertDialog
+import androidx.fragment.app.DialogFragment
 import org.mattvchandler.progressbars.R
 
 // a number_picker fragment for precision setting

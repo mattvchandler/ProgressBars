@@ -21,12 +21,12 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 package org.mattvchandler.progressbars.util
 
 import android.app.Dialog
-import androidx.databinding.DataBindingUtil
 import android.os.Bundle
-import androidx.fragment.app.DialogFragment
-import androidx.appcompat.app.AlertDialog
 import android.text.method.LinkMovementMethod
 import android.view.LayoutInflater
+import androidx.appcompat.app.AlertDialog
+import androidx.databinding.DataBindingUtil
+import androidx.fragment.app.DialogFragment
 import org.mattvchandler.progressbars.BuildConfig
 import org.mattvchandler.progressbars.R
 import org.mattvchandler.progressbars.databinding.AboutDialogBinding

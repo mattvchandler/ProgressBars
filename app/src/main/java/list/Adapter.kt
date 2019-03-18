@@ -22,11 +22,11 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 package org.mattvchandler.progressbars.list
 
 import android.content.Intent
-import androidx.databinding.ViewDataBinding
-import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.databinding.ViewDataBinding
+import androidx.recyclerview.widget.RecyclerView
 import org.mattvchandler.progressbars.Progress_bars
 import org.mattvchandler.progressbars.databinding.ProgressBarRowBinding
 import org.mattvchandler.progressbars.databinding.SingleProgressBarRowBinding

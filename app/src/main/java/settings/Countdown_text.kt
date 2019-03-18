@@ -21,18 +21,16 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 package org.mattvchandler.progressbars.settings
 
-import androidx.appcompat.app.AppCompatActivity
 import android.content.Intent
-import androidx.databinding.DataBindingUtil
 import android.os.Bundle
-import androidx.appcompat.widget.Toolbar
 import android.view.MenuItem
-
+import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
+import androidx.databinding.DataBindingUtil
 import org.mattvchandler.progressbars.R
 import org.mattvchandler.progressbars.databinding.ActivityCountdownTextBinding
 import org.mattvchandler.progressbars.db.Data
 import org.mattvchandler.progressbars.util.Dynamic_theme_activity
-
 import java.security.InvalidParameterException
 
 // displays EditText widgets for setting countdown messages

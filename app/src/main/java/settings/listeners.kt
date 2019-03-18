@@ -24,15 +24,12 @@ package org.mattvchandler.progressbars.settings
 import android.view.View
 import android.widget.EditText
 import android.widget.Toast
-
-import org.mattvchandler.progressbars.db.Data
 import org.mattvchandler.progressbars.R
+import org.mattvchandler.progressbars.db.Data
 import org.mattvchandler.progressbars.settings.Settings.Companion.get_date_format
 import org.mattvchandler.progressbars.settings.Settings.Companion.get_time_format
-
 import java.text.ParsePosition
-import java.util.Date
-import java.util.TimeZone
+import java.util.*
 
 // listen for changes to date text
 internal class Date_listener(private val data: Data): View.OnFocusChangeListener

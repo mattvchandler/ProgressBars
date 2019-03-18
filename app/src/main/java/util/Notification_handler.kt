@@ -26,9 +26,9 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.os.Build
+import android.util.TypedValue
 import androidx.core.app.NotificationCompat
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
-import android.util.TypedValue
 import org.mattvchandler.progressbars.Progress_bars
 import org.mattvchandler.progressbars.R
 import org.mattvchandler.progressbars.db.DB

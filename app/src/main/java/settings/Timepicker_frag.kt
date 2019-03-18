@@ -3,8 +3,8 @@ package org.mattvchandler.progressbars.settings
 import android.app.Dialog
 import android.app.TimePickerDialog
 import android.os.Bundle
-import androidx.fragment.app.DialogFragment
 import android.widget.Toast
+import androidx.fragment.app.DialogFragment
 import org.mattvchandler.progressbars.R
 import org.mattvchandler.progressbars.settings.Settings.Companion.get_time_format
 import java.security.InvalidParameterException

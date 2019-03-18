@@ -23,22 +23,16 @@ package org.mattvchandler.progressbars.list
 
 import android.content.Context
 import android.content.res.Resources
+import android.util.Log
 import androidx.databinding.ObservableField
 import androidx.databinding.ObservableInt
-import android.util.Log
-
-import org.mattvchandler.progressbars.db.Data
 import org.mattvchandler.progressbars.R
+import org.mattvchandler.progressbars.db.Data
 import org.mattvchandler.progressbars.settings.Settings.Companion.get_date_format
 import org.mattvchandler.progressbars.settings.Settings.Companion.get_time_format
-
+import java.lang.Math.*
 import java.text.DecimalFormat
-import java.util.Calendar
-import java.util.Date
-
-import java.lang.Math.abs
-import java.lang.Math.max
-import java.lang.Math.min
+import java.util.*
 
 // is a given year a leap year?
 private fun is_leap_year(year: Int): Boolean
