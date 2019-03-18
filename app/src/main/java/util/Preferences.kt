@@ -32,7 +32,8 @@ import androidx.databinding.DataBindingUtil
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.preference.PreferenceManager
+import androidx.preference.ListPreference
+import androidx.preference.PreferenceManager
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.DialogFragment
 import androidx.core.content.ContextCompat
@@ -56,6 +57,8 @@ class Preferences: Dynamic_theme_activity()
         {
             setPreferencesFromResource(R.xml.preferences, rootKey)
             PreferenceManager.setDefaultValues(activity, R.xml.preferences, false)
+            findPreference<ListPreference>("date_format")?.summaryProvider = ListPreference.SimpleSummaryProvider.getInstance()
+            findPreference<ListPreference>("theme")?.summaryProvider = ListPreference.SimpleSummaryProvider.getInstance()
         }
 
         // register / unregister listener
