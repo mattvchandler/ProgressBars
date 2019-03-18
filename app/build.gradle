@@ -3,7 +3,7 @@ apply plugin: 'kotlin-android'
 
 ext.ver_major = 1
 ext.ver_minor = 6
-ext.ver_patch = 4
+ext.ver_patch = 5
 ext.min_sdk   = 19
 
 private Integer gen_version_code()
