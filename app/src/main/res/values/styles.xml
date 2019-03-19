@@ -21,7 +21,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 <resources>
     <style name="Divider">
-        <item name="background">?android:attr/listDivider</item>
+        <item name="android:background">?android:attr/listDivider</item>
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">1dp</item>
     </style>
@@ -35,11 +35,11 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
         <item name="android:layout_height">wrap_content</item>
         <item name="android:paddingTop">@dimen/short_padding_size</item>
         <item name="android:paddingBottom">@dimen/short_padding_size</item>
-        <item name="paddingStart">@dimen/padding_size</item>
-        <item name="paddingEnd">@dimen/padding_size</item>
+        <item name="android:paddingStart">@dimen/padding_size</item>
+        <item name="android:paddingEnd">@dimen/padding_size</item>
     </style>
     <style name="ClickableSettingFrame" parent="SettingFrame">
-        <item name="background">?attr/selectableItemBackground</item>
+        <item name="android:background">?attr/selectableItemBackground</item>
         <item name="android:clickable">true</item>
         <item name="android:focusable">true</item>
     </style>

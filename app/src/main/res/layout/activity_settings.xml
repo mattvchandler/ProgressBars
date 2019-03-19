@@ -63,8 +63,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
                 <com.google.android.material.textfield.TextInputLayout
                     style="@style/SettingFrame"
                     android:hint="@string/timer_title"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
                 >
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/title"
@@ -82,8 +80,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
                     android:text="@string/separate_time"
                     android:checked="@={data.separate_time}"
                     android:textAppearance="?attr/textAppearanceListItem"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
                     android:onClick="on_separate_time_butt"
                     />
 
@@ -92,8 +88,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
                 <LinearLayout
                     style="@style/SettingFrame"
                     android:id="@+id/start_date_box"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
                     android:orientation="horizontal"
                     android:visibility="@{data.separate_time ? View.VISIBLE : View.GONE}"
                     android:animateLayoutChanges="true"
@@ -128,8 +122,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
                 <LinearLayout
                     style="@style/SettingFrame"
                     android:id="@+id/start_time_box"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
                     android:orientation="horizontal"
                     android:gravity="center_vertical"
                     android:visibility="@{data.separate_time ? View.VISIBLE : View.GONE}"
@@ -163,18 +155,13 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
                 </LinearLayout>
 
                 <LinearLayout
-                    style="@style/SettingFrame"
+                    style="@style/ClickableSettingFrame"
                     android:id="@+id/start_tz_box"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
                     android:orientation="vertical"
                     android:layout_gravity="center_vertical"
                     android:onClick="on_start_tz_butt"
-                    android:background="?attr/selectableItemBackground"
                     android:visibility="@{data.separate_time ? View.VISIBLE : View.GONE}"
                     android:animateLayoutChanges="true"
-                    android:clickable="true"
-                    android:focusable="true"
                     >
                     <TextView
                         android:id="@+id/start_tz_txt"
@@ -202,8 +189,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
                 <LinearLayout
                     style="@style/SettingFrame"
                     android:id="@+id/end_date_box"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
                     android:orientation="horizontal"
                 >
                     <com.google.android.material.textfield.TextInputLayout
@@ -236,8 +221,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
                 <LinearLayout
                     style="@style/SettingFrame"
                     android:id="@+id/end_time_box"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
                     android:orientation="horizontal"
                     android:gravity="center_vertical"
                     >
@@ -269,16 +252,11 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
                 </LinearLayout>
 
                 <LinearLayout
-                    style="@style/SettingFrame"
+                    style="@style/ClickableSettingFrame"
                     android:id="@+id/end_tz_box"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
                     android:orientation="vertical"
                     android:layout_gravity="center_vertical"
                     android:onClick="on_end_tz_butt"
-                    android:background="?attr/selectableItemBackground"
-                    android:clickable="true"
-                    android:focusable="true"
                     >
                     <TextView
                         android:id="@+id/end_tz_txt"
@@ -304,8 +282,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
                     android:text="@string/terminate"
                     android:checked="@={data.terminate}"
                     android:textAppearance="?attr/textAppearanceListItem"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
                     />
 
                 <Switch
@@ -314,16 +290,12 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
                     android:text="@string/repeat"
                     android:checked="@={data.repeats}"
                     android:textAppearance="?attr/textAppearanceListItem"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
                     android:onClick="on_repeat_butt"
                     />
 
                 <LinearLayout
                     style="@style/SettingFrame"
                     android:id="@+id/repeat_freq"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
                     android:orientation="horizontal"
                     android:gravity="center_vertical"
                     android:animateLayoutChanges="true"
@@ -400,8 +372,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
                     android:checked="@={data.show_end}"
                     android:textAppearance="?attr/textAppearanceListItem"
                     android:visibility="@{data.separate_time ? View.GONE : View.VISIBLE}"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
                     />
 
                 <FrameLayout
@@ -430,14 +400,9 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
                 <LinearLayout
                     style="@style/ClickableSettingFrame"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
                     android:orientation="vertical"
                     android:layout_gravity="center_vertical"
                     android:onClick="on_precision_butt"
-                    android:background="?attr/selectableItemBackground"
-                    android:clickable="true"
-                    android:focusable="true"
                     >
 
                     <TextView
@@ -466,8 +431,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
                     android:checked="@={data.notify_start}"
                     android:textAppearance="?attr/textAppearanceListItem"
                     android:visibility="@{data.separate_time ? View.VISIBLE : View.GONE}"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
                     />
 
                 <Switch
@@ -476,8 +439,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
                     android:text="@string/end_notify"
                     android:checked="@={data.notify_end}"
                     android:textAppearance="?attr/textAppearanceListItem"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
                     />
 
                 <FrameLayout
@@ -497,8 +458,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
                 <LinearLayout
                     style="@style/SettingFrame"
                     android:id="@+id/notification_priority_box"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
                     android:orientation="horizontal"
                     android:gravity="center_vertical"
                     android:animateLayoutChanges="true"
