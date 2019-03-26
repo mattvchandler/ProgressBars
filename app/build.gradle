@@ -1,9 +1,9 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 
-ext.ver_major = 1
-ext.ver_minor = 6
-ext.ver_patch = 6
+ext.ver_major = 2
+ext.ver_minor = 0
+ext.ver_patch = 0
 ext.min_sdk   = 19
 
 private Integer gen_version_code()
