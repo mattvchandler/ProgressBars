@@ -209,43 +209,41 @@ class Progress_bars: Dynamic_theme_activity()
     }
 
     // handle toolbar menu presses
-    override fun onOptionsItemSelected(item: MenuItem): Boolean
+    override fun onOptionsItemSelected(item: MenuItem) = when(item.itemId)
     {
-        when(item.itemId)
+        R.id.add_butt ->
         {
-            R.id.add_butt ->
-            {
-                startActivityForResult(Intent(this, Settings::class.java), RESULT_EDIT_DATA)
-                return true
-            }
-
-            R.id.undo ->
-            {
-                adapter.undo()
-                return true
-            }
-
-            R.id.redo ->
-            {
-                adapter.redo()
-                return true
-            }
-
-            R.id.settings ->
-            {
-                // open app settings menu
-                startActivity(Intent(this, Preferences::class.java))
-                return true
-            }
-
-            R.id.about ->
-            {
-                // show about dialog
-                About_dialog().show(supportFragmentManager, "about")
-                return true
-            }
+            startActivityForResult(Intent(this, Settings::class.java), RESULT_EDIT_DATA)
+            true
         }
-        return false
+
+        R.id.undo ->
+        {
+            adapter.undo()
+            true
+        }
+
+        R.id.redo ->
+        {
+            adapter.redo()
+            true
+        }
+
+        R.id.settings ->
+        {
+            // open app settings menu
+            startActivity(Intent(this, Preferences::class.java))
+            true
+        }
+
+        R.id.about ->
+        {
+            // show about dialog
+            About_dialog().show(supportFragmentManager, "about")
+            true
+        }
+
+        else -> super.onOptionsItemSelected(item)
     }
 
     override fun onActivityResult(request_code: Int, result_code: Int, intent: Intent?)

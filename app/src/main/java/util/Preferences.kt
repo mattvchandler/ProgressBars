@@ -158,13 +158,10 @@ class Preferences: Dynamic_theme_activity()
         supportFragmentManager.beginTransaction().replace(R.id.preferences, Progress_bar_prefs_frag()).commit()
     }
 
-    override fun onOptionsItemSelected(item: MenuItem): Boolean
-    {
-        // make home button go back
-        when(item.itemId)
+    override fun onOptionsItemSelected(item: MenuItem) = when(item.itemId)
         {
-            android.R.id.home -> { finish(); return true }
+            // make home button go back
+            android.R.id.home -> { finish(); true }
+            else -> super.onOptionsItemSelected(item)
         }
-        return false
-    }
 }

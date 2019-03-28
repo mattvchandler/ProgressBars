@@ -40,6 +40,7 @@ import android.widget.TimePicker
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import androidx.core.app.NavUtils
 import androidx.databinding.DataBindingUtil
 import com.google.android.material.textfield.TextInputEditText
 import org.mattvchandler.progressbars.R
@@ -302,38 +303,57 @@ class Settings: Dynamic_theme_activity(), DatePickerDialog.OnDateSetListener, Ti
         return true
     }
 
-    override fun onOptionsItemSelected(item: MenuItem): Boolean
+    override fun onOptionsItemSelected(item: MenuItem) = when(item.itemId)
     {
-        when(item.itemId)
+        R.id.save_butt ->
         {
-            R.id.save_butt ->
+            // dump all widget data into data struct
+            if(store_widgets_to_data())
             {
-                // dump all widget data into data struct
-                if(!store_widgets_to_data())
-                    return true
-
                 // check to make sure start time is before end
                 if(data.separate_time && data.end_time < data.start_time)
                 {
                     Toast.makeText(this, R.string.end_before_start_err, Toast.LENGTH_LONG).show()
-                    return true
                 }
+                else
+                {
+                    val intent = Intent()
+                    intent.putExtra(EXTRA_EDIT_DATA, data)
+                    setResult(AppCompatActivity.RESULT_OK, intent)
 
-                val intent = Intent()
-                intent.putExtra(EXTRA_EDIT_DATA, data)
-                setResult(AppCompatActivity.RESULT_OK, intent)
-
-                finish()
-                return true
+                    finish()
+                }
             }
-
-            R.id.settings ->
-            {
-                startActivity(Intent(this, Preferences::class.java))
-                return true
-            }
+            true
         }
-        return false
+
+        R.id.settings ->
+        {
+            startActivity(Intent(this, Preferences::class.java))
+            true
+        }
+
+        android.R.id.home ->
+        {
+            cancel()
+            NavUtils.navigateUpFromSameTask(this)
+            true
+        }
+
+        else -> super.onOptionsItemSelected(item)
+    }
+
+    override fun onBackPressed()
+    {
+        cancel()
+        super.onBackPressed()
+    }
+
+    private fun cancel()
+    {
+        // if this was a new timer, delete any notification channel that may have been created
+        if(Build.VERSION.SDK_INT > 26 && !intent.hasExtra(EXTRA_EDIT_DATA) && data.has_notification_channel)
+            data.delete_notification_channel(this)
     }
 
     // dump all widget data into data obj
@@ -686,7 +706,6 @@ class Settings: Dynamic_theme_activity(), DatePickerDialog.OnDateSetListener, Ti
 
     override fun onActivityResult(request_code: Int, result_code: Int, intent: Intent?)
     {
-        // get data back from Countdown_text
         if(result_code == AppCompatActivity.RESULT_OK)
         {
             when(request_code)

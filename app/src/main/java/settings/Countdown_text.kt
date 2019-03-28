@@ -26,6 +26,7 @@ import android.os.Bundle
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import androidx.core.app.NavUtils
 import androidx.databinding.DataBindingUtil
 import org.mattvchandler.progressbars.R
 import org.mattvchandler.progressbars.databinding.ActivityCountdownTextBinding
@@ -85,26 +86,24 @@ class Countdown_text: Dynamic_theme_activity()
         val intent = Intent()
         intent.putExtra(EXTRA_DATA, data)
         setResult(AppCompatActivity.RESULT_OK, intent)
-        finish()
     }
 
     override fun onBackPressed()
     {
         go_back()
+        super.onBackPressed()
     }
 
-    override fun onOptionsItemSelected(item: MenuItem): Boolean
+    override fun onOptionsItemSelected(item: MenuItem) = when(item.itemId)
     {
         // make home button go back
-        when(item.itemId)
+        android.R.id.home ->
         {
-            android.R.id.home ->
-            {
-                go_back()
-                return true
-            }
+            go_back()
+            NavUtils.navigateUpFromSameTask(this)
+            true
         }
-        return false
+        else -> super.onOptionsItemSelected(item)
     }
 
     companion object
