@@ -447,8 +447,21 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
                     android:onClick="on_notification_settings_butt"
                     >
                     <TextView
-                        android:id="@+id/notification_settings"
-                        android:text="@string/pref_notification_settings"
+                        android:text="@string/notification_settings"
+                        android:textAppearance="?attr/textAppearanceListItem"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        />
+                </FrameLayout>
+
+                <FrameLayout
+                    style="@style/ClickableSettingFrame"
+                    android:id="@+id/notification_reset_box"
+                    android:onClick="on_notification_reset_butt"
+                    >
+                    <TextView
+                        android:id="@+id/notification_reset"
+                        android:text="@string/notification_reset"
                         android:textAppearance="?attr/textAppearanceListItem"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"

@@ -151,10 +151,14 @@ class Settings: Dynamic_theme_activity(), DatePickerDialog.OnDateSetListener, Ti
         if(Build.VERSION.SDK_INT < 26)
         {
             binding.notificationSettingsBox.visibility = View.GONE
+            binding.notificationResetBox.visibility = View.GONE
             binding.notificationPriority.setSelection(resources.getStringArray(R.array.notification_priority_levels).indexOf(data.notification_priority))
         }
         else
+        {
             binding.notificationPriorityBox.visibility = View.GONE
+            binding.notificationReset.isEnabled = data.has_notification_channel
+        }
     }
 
     public override fun onResume()
@@ -589,10 +593,23 @@ class Settings: Dynamic_theme_activity(), DatePickerDialog.OnDateSetListener, Ti
                 return
 
             data.create_notification_channel(this)
+            binding.notificationReset.isEnabled = true
+
             intent.action = android.provider.Settings.ACTION_CHANNEL_NOTIFICATION_SETTINGS
             intent.putExtra(android.provider.Settings.EXTRA_APP_PACKAGE, packageName)
             intent.putExtra(android.provider.Settings.EXTRA_CHANNEL_ID, data.channel_id)
             startActivity(intent)
+        }
+    }
+
+    fun on_notification_reset_butt(@Suppress("UNUSED_PARAMETER") view: View)
+    {
+        if(Build.VERSION.SDK_INT > 26 && data.has_notification_channel)
+        {
+            data.delete_notification_channel(this)
+            binding.notificationReset.isEnabled = false
+
+            Toast.makeText(this, getString(R.string.notification_reset_msg), Toast.LENGTH_SHORT).show()
         }
     }
 
