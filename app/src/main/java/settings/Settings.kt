@@ -724,8 +724,12 @@ class Settings: Dynamic_theme_activity(), DatePickerDialog.OnDateSetListener, Ti
                     data.end_tz = tz.id
                     binding.endTz.text = tz.name
                 }
+                else -> super.onActivityResult(request_code, result_code, intent)
             }
         }
+        else
+            super.onActivityResult(request_code, result_code, intent)
+
     }
 
     companion object

@@ -47,6 +47,8 @@ import org.mattvchandler.progressbars.util.About_dialog
 import org.mattvchandler.progressbars.util.Dynamic_theme_activity
 import org.mattvchandler.progressbars.util.Preferences
 
+// TODO: widget? persistent notification?
+
 // main activity. display each timer in a list
 class Progress_bars: Dynamic_theme_activity()
 {
@@ -254,6 +256,8 @@ class Progress_bars: Dynamic_theme_activity()
             val data = intent!!.getSerializableExtra(Settings.EXTRA_EDIT_DATA)!! as Data
             adapter.set_edited(data)
         }
+        else
+            super.onActivityResult(request_code, result_code, intent)
     }
 
     fun scroll_to(pos: Int) = binding.mainList.scrollToPosition(pos)
