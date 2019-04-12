@@ -2,7 +2,7 @@
 
 ProgressBars is a simple timer / countdown app for Android.
 
-<img src="screenshots/scrn_phone_land_1.png" alt="screenshot" height=320/>
+![screenshot](/metadata/en-US/images/phoneScreenshots/scrn_phone_land_1.png?raw=true)
 
 ### Basic Features
 * Countdown/up to/from a specified time
