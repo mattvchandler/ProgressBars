@@ -38,7 +38,6 @@ import android.widget.AdapterView
 import android.widget.DatePicker
 import android.widget.TimePicker
 import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.app.NavUtils
 import androidx.databinding.DataBindingUtil
@@ -319,7 +318,7 @@ class Settings: Dynamic_theme_activity(), DatePickerDialog.OnDateSetListener, Ti
                 {
                     val intent = Intent()
                     intent.putExtra(EXTRA_EDIT_DATA, data)
-                    setResult(AppCompatActivity.RESULT_OK, intent)
+                    setResult(RESULT_OK, intent)
 
                     finish()
                 }
@@ -706,7 +705,7 @@ class Settings: Dynamic_theme_activity(), DatePickerDialog.OnDateSetListener, Ti
 
     override fun onActivityResult(request_code: Int, result_code: Int, intent: Intent?)
     {
-        if(result_code == AppCompatActivity.RESULT_OK)
+        if(result_code == RESULT_OK)
         {
             when(request_code)
             {

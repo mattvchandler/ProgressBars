@@ -24,7 +24,6 @@ package org.mattvchandler.progressbars.settings
 import android.content.Intent
 import android.os.Bundle
 import android.view.MenuItem
-import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.app.NavUtils
 import androidx.databinding.DataBindingUtil
@@ -85,7 +84,7 @@ class Countdown_text: Dynamic_theme_activity()
         save()
         val intent = Intent()
         intent.putExtra(EXTRA_DATA, data)
-        setResult(AppCompatActivity.RESULT_OK, intent)
+        setResult(RESULT_OK, intent)
     }
 
     override fun onBackPressed()

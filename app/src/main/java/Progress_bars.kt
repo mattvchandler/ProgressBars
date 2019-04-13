@@ -31,7 +31,6 @@ import android.os.Handler
 import android.preference.PreferenceManager
 import android.view.Menu
 import android.view.MenuItem
-import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.databinding.DataBindingUtil
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
@@ -251,7 +250,7 @@ class Progress_bars: Dynamic_theme_activity()
     override fun onActivityResult(request_code: Int, result_code: Int, intent: Intent?)
     {
         // get data back from Countdown_text
-        if(result_code == AppCompatActivity.RESULT_OK && request_code == RESULT_EDIT_DATA)
+        if(result_code == RESULT_OK && request_code == RESULT_EDIT_DATA)
         {
             val data = intent!!.getSerializableExtra(Settings.EXTRA_EDIT_DATA)!! as Data
             adapter.set_edited(data)

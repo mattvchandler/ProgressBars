@@ -52,7 +52,7 @@ private fun <T> Stack<T>.push(t: T)
     this.add(t)
 }
 
-private data class Undo_event(val type: Undo_event.Type, val data: Data?, val pos: Int?, val old_pos: Int?): Serializable
+private data class Undo_event(val type: Type, val data: Data?, val pos: Int?, val old_pos: Int?): Serializable
 {
     enum class Type{ ADD, REMOVE, EDIT, MOVE }
 }
@@ -240,8 +240,8 @@ class Adapter(private val activity: Progress_bars): RecyclerView.Adapter<Adapter
         notifyItemMoved(from_pos, to_pos)
     }
 
-    fun can_undo() = !undo_stack.isEmpty()
-    fun can_redo() = !redo_stack.isEmpty()
+    fun can_undo() = undo_stack.isNotEmpty()
+    fun can_redo() = redo_stack.isNotEmpty()
 
     fun undo() = undo_redo(undo_stack, redo_stack)
     fun redo() = undo_redo(redo_stack, undo_stack)
