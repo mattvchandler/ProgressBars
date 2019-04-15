@@ -225,4 +225,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
     <string name="default_single_complete_text">Event reached</string>
     <string name="default_single_pre_text">"Time until event: "</string>
     <string name="default_single_post_text">"Time since event: "</string>
+    <string name="appwidget_text">EXAMPLE</string>
+    <string name="add_widget">Add widget</string>
 </resources>

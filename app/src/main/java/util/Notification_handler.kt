@@ -233,7 +233,8 @@ class Notification_handler: BroadcastReceiver()
                 complete_intent.putExtra(EXTRA_DATA, data_as_bytes)
             }
 
-            return Pair(PendingIntent.getBroadcast(context, 0, start_intent, PendingIntent.FLAG_CANCEL_CURRENT), PendingIntent.getBroadcast(context, 0, complete_intent, PendingIntent.FLAG_CANCEL_CURRENT))
+            return Pair(PendingIntent.getBroadcast(context, 0, start_intent,    PendingIntent.FLAG_CANCEL_CURRENT),
+                        PendingIntent.getBroadcast(context, 0, complete_intent, PendingIntent.FLAG_CANCEL_CURRENT))
         }
 
         private fun reset_alarm_details(context: Context, data: Data, am: AlarmManager, now: Long)
