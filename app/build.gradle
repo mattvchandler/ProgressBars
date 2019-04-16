@@ -1,34 +1,16 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 
-ext.ver_major = 2
-ext.ver_minor = 0
-ext.ver_patch = 2
-ext.min_sdk   = 19
-
-private Integer gen_version_code()
-{
-    // version code is <MIN_SDK>0<2-digit MAJOR><2-digit MINOR><2-digit PATCH>
-    return ext.min_sdk   * 10000000 +
-           ext.ver_major *    10000 +
-           ext.ver_minor *      100 +
-           ext.ver_patch
-}
-
-private String gen_version_name()
-{
-    return "${ext.ver_major}.${ext.ver_minor}.${ext.ver_patch}"
-}
-
 android {
     compileSdkVersion 28
     dataBinding.enabled = true
     defaultConfig {
         applicationId "org.mattvchandler.progressbars"
-        minSdkVersion project.ext.min_sdk
+        minSdkVersion 19
         targetSdkVersion 28
-        versionCode gen_version_code()
-        versionName gen_version_name()
+        versionName "2.0.2"
+        // version code is <MIN_SDK>0<2-digit MAJOR><2-digit MINOR><2-digit PATCH>
+        versionCode 190020002
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
     }
