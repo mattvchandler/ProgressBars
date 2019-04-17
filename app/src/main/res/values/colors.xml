@@ -26,4 +26,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
     <color name="colorPrimaryDark">#FF388E3C</color>
     <color name="colorAccent">#FF009688</color>
     <color name="colorNavBar">#B3000000</color>
+
+    <color name="widget_text_color">#FFFFFFFF</color>
+    <color name="widget_shadow_color">#94000000</color>
 </resources>

@@ -43,4 +43,10 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
         <item name="android:clickable">true</item>
         <item name="android:focusable">true</item>
     </style>
+    <style name="WidgetText">
+        <item name="android:textColor">@color/widget_text_color</item>
+        <item name="android:shadowColor">@color/widget_shadow_color</item>
+        <item name="android:shadowDy">2</item>
+        <item name="android:shadowRadius">4</item>
+    </style>
 </resources>
