@@ -33,6 +33,7 @@ import android.os.Bundle
 import android.os.PowerManager
 import android.os.SystemClock
 import android.util.Log
+import android.view.View
 import android.widget.RemoteViews
 import org.mattvchandler.progressbars.db.DB
 import org.mattvchandler.progressbars.db.Data
@@ -86,7 +87,6 @@ class Widget: AppWidgetProvider()
 
     private fun update(context: Context, appWidgetManager: AppWidgetManager?, appWidgetIds: IntArray?)
     {
-        // TODO: check PowerManager.isScreenOn
         val pm = context.getSystemService(Context.POWER_SERVICE) as PowerManager
         val screen_on = if(Build.VERSION.SDK_INT >= 20) pm.isInteractive else true
         if(screen_on)
@@ -108,7 +108,7 @@ class Widget: AppWidgetProvider()
     companion object
     {
         private const val ACTION_UPDATE_TIME = "org.mattvchandler.progressbars.ACTION_UPDATE_TIME"
-        private val TIME_INTERVAL = TimeUnit.SECONDS.toMillis(10)
+        private val TIME_INTERVAL = TimeUnit.SECONDS.toMillis(1) // TODO: get from settings
         internal fun updateAppWidget(context: Context, appWidgetManager: AppWidgetManager, appWidgetId: Int)
         {
             val db = DB(context).readableDatabase
@@ -124,25 +124,71 @@ class Widget: AppWidgetProvider()
 
             views.setTextViewText(R.id.title, data.title)
 
-            if(data.separate_time)
+            if(data.show_time_text)
             {
-                views.setTextViewText(R.id.start_time_date, data.start_date_disp.get())
-                views.setTextViewText(R.id.start_time_time, data.start_time_disp.get())
-
-                views.setTextViewText(R.id.end_time_date, data.end_date_disp.get())
-                views.setTextViewText(R.id.end_time_time, data.end_time_disp.get())
-
-                views.setTextViewText(R.id.percentage, data.percentage_disp.get())
-                views.setInt(R.id.progress_bar, "setProgress", data.progress_disp.get())
+                views.setTextViewText(R.id.time_text, data.time_text_disp.get())
+                views.setViewVisibility(R.id.time_text, View.VISIBLE)
             }
             else
             {
-                views.setTextViewText(R.id.date, data.end_date_disp.get())
-                views.setTextViewText(R.id.time, data.end_time_disp.get())
+                views.setViewVisibility(R.id.time_text, View.GONE)
             }
 
-            // TODO: partiallyUpdateAppWidget?
-            views.setTextViewText(R.id.time_text, data.time_text_disp.get())
+            if(data.separate_time)
+            {
+                if(data.show_start)
+                {
+                    views.setTextViewText(R.id.start_time_date, data.start_date_disp.get())
+                    views.setTextViewText(R.id.start_time_time, data.start_time_disp.get())
+
+                    views.setViewVisibility(R.id.start_time_box, View.VISIBLE)
+                }
+                else
+                {
+                    views.setViewVisibility(R.id.start_time_box, View.GONE)
+                }
+                if(data.show_end)
+                {
+                    views.setTextViewText(R.id.end_time_date, data.end_date_disp.get())
+                    views.setTextViewText(R.id.end_time_time, data.end_time_disp.get())
+
+                    views.setViewVisibility(R.id.end_time_box, View.VISIBLE)
+                }
+                else
+                {
+                    views.setViewVisibility(R.id.end_time_box, View.GONE)
+                }
+                if(data.show_progress)
+                {
+                    views.setTextViewText(R.id.percentage, data.percentage_disp.get())
+                    views.setInt(R.id.progress_bar, "setProgress", data.progress_disp.get())
+
+                    views.setViewVisibility(R.id.percentage_box, View.VISIBLE)
+                }
+                else
+                {
+                    views.setViewVisibility(R.id.percentage_box, View.GONE)
+                }
+
+                if(data.show_start || data.show_end || data.show_progress)
+                    views.setViewVisibility(R.id.center_box, View.VISIBLE)
+                else
+                    views.setViewVisibility(R.id.center_box, View.GONE)
+            }
+            else
+            {
+                if(data.show_end)
+                {
+                    views.setTextViewText(R.id.date, data.end_date_disp.get())
+                    views.setTextViewText(R.id.time, data.end_time_disp.get())
+
+                    views.setViewVisibility(R.id.center_box, View.VISIBLE)
+                }
+                else
+                {
+                    views.setViewVisibility(R.id.center_box, View.GONE)
+                }
+            }
 
             appWidgetManager.updateAppWidget(appWidgetId, views)
         }

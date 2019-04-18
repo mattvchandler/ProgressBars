@@ -39,7 +39,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
         android:textAlignment="center"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/margin_size"
         />
 
     <LinearLayout
@@ -49,13 +48,13 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
         android:baselineAligned="false"
         android:gravity="center"
         android:orientation="horizontal"
+        android:layout_marginTop="@dimen/margin_size"
         >
         <TextView
             android:id="@+id/date"
             style="@style/WidgetText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/margin_size"
             android:layout_marginEnd="@dimen/margin_size"
             />
         <TextView
@@ -63,7 +62,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
             style="@style/WidgetText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="@dimen/margin_size"
             />
     </LinearLayout>
 
@@ -73,7 +71,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
         android:textAlignment="center"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/margin_size"
+        android:layout_marginTop="@dimen/margin_size"
         />
 
 </LinearLayout>
