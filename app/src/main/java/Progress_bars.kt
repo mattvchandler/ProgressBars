@@ -42,7 +42,7 @@ import org.mattvchandler.progressbars.util.About_dialog
 import org.mattvchandler.progressbars.util.Dynamic_theme_activity
 import org.mattvchandler.progressbars.util.Preferences
 
-// TODO: widget? persistent notification?
+// TODO: progress_bar_widget? persistent notification?
 // TODO: consider moving to LiveData / ViewModel. May reduce complexity
 
 // main activity. display each timer in a list

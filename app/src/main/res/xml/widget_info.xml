@@ -22,8 +22,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 -->
 
 <appwidget-provider xmlns:android="http://schemas.android.com/apk/res/android"
-                    android:initialKeyguardLayout="@layout/widget"
-                    android:initialLayout="@layout/widget"
+                    android:initialLayout="@layout/progress_bar_widget"
                     android:minWidth="180dp"
                     android:minHeight="110dp"
                     android:minResizeWidth="180dp"

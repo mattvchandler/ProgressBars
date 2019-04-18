@@ -34,8 +34,10 @@ import android.os.PowerManager
 import android.os.SystemClock
 import android.util.Log
 import android.widget.RemoteViews
-import org.mattvchandler.progressbars.settings.Settings.Companion.get_date_format
-import org.mattvchandler.progressbars.settings.Settings.Companion.get_time_format
+import org.mattvchandler.progressbars.db.DB
+import org.mattvchandler.progressbars.db.Data
+import org.mattvchandler.progressbars.db.Progress_bars_table
+import org.mattvchandler.progressbars.list.View_data
 import java.util.concurrent.TimeUnit
 
 class Widget: AppWidgetProvider()
@@ -106,21 +108,42 @@ class Widget: AppWidgetProvider()
     companion object
     {
         private const val ACTION_UPDATE_TIME = "org.mattvchandler.progressbars.ACTION_UPDATE_TIME"
-        private val TIME_INTERVAL = TimeUnit.SECONDS.toMillis(10) // TODO: change interval in settings?
+        private val TIME_INTERVAL = TimeUnit.SECONDS.toMillis(10)
         internal fun updateAppWidget(context: Context, appWidgetManager: AppWidgetManager, appWidgetId: Int)
         {
-            // format start and end dates and times
-            val date_df = get_date_format(context)
-            val time_df = get_time_format()
+            val db = DB(context).readableDatabase
+            val cursor = db.rawQuery(Progress_bars_table.SELECT_ALL_ROWS, null)
 
-            val now = System.currentTimeMillis()
+            cursor.moveToFirst()
+            val data = View_data(context, Data(cursor))
 
-            val widgetText = "${date_df.format(now)} ${time_df.format(now)}"
-            // Construct the RemoteViews object
-            val views = RemoteViews(context.packageName, R.layout.widget)
-            views.setTextViewText(R.id.title, widgetText)
+            cursor.close()
+            db.close()
 
-            // Instruct the widget manager to update the widget
+            val views = RemoteViews(context.packageName, if(data.separate_time) R.layout.progress_bar_widget else R.layout.single_progress_bar_widget)
+
+            views.setTextViewText(R.id.title, data.title)
+
+            if(data.separate_time)
+            {
+                views.setTextViewText(R.id.start_time_date, data.start_date_disp.get())
+                views.setTextViewText(R.id.start_time_time, data.start_time_disp.get())
+
+                views.setTextViewText(R.id.end_time_date, data.end_date_disp.get())
+                views.setTextViewText(R.id.end_time_time, data.end_time_disp.get())
+
+                views.setTextViewText(R.id.percentage, data.percentage_disp.get())
+                views.setInt(R.id.progress_bar, "setProgress", data.progress_disp.get())
+            }
+            else
+            {
+                views.setTextViewText(R.id.date, data.end_date_disp.get())
+                views.setTextViewText(R.id.time, data.end_time_disp.get())
+            }
+
+            // TODO: partiallyUpdateAppWidget?
+            views.setTextViewText(R.id.time_text, data.time_text_disp.get())
+
             appWidgetManager.updateAppWidget(appWidgetId, views)
         }
     }
