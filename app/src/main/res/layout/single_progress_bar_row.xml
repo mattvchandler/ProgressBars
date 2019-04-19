@@ -56,7 +56,10 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
             app:layout_constraintBottom_toTopOf="@+id/date"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            android:layout_margin="@dimen/margin_size"
+            android:layout_marginTop="@dimen/margin_size"
+            android:layout_marginStart="@dimen/margin_size"
+            android:layout_marginEnd="@dimen/margin_size"
+            app:layout_goneMarginBottom="@dimen/margin_size"
             />
 
         <TextView
@@ -71,8 +74,10 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toStartOf="@id/time"
             app:layout_constraintHorizontal_chainStyle="packed"
+            android:layout_marginTop="@dimen/margin_size"
             android:layout_marginStart="@dimen/margin_size"
             android:layout_marginEnd="@dimen/margin_size"
+            app:layout_goneMarginBottom="@dimen/margin_size"
             />
 
         <TextView
@@ -101,6 +106,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             android:layout_margin="@dimen/margin_size"
+            app:layout_goneMarginTop="0dp"
             />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
