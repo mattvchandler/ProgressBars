@@ -21,8 +21,10 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 package org.mattvchandler.progressbars.settings
 
+import android.app.Activity
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
+import android.appwidget.AppWidgetManager
 import android.content.Context
 import android.content.Intent
 import android.database.ContentObserver
@@ -33,16 +35,14 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.view.WindowManager
-import android.widget.AdapterView
-import android.widget.DatePicker
-import android.widget.TimePicker
-import android.widget.Toast
+import android.widget.*
 import androidx.appcompat.widget.Toolbar
 import androidx.core.app.NavUtils
 import androidx.databinding.DataBindingUtil
 import androidx.preference.PreferenceManager
 import com.google.android.material.textfield.TextInputEditText
 import org.mattvchandler.progressbars.R
+import org.mattvchandler.progressbars.Widget
 import org.mattvchandler.progressbars.databinding.ActivitySettingsBinding
 import org.mattvchandler.progressbars.db.Data
 import org.mattvchandler.progressbars.db.Progress_bars_table
@@ -77,6 +77,8 @@ private fun <T>Array<T>.rotate(distance: Int)
             this[size + distance + i] = tmp[i]
     }
 }
+
+// TODO: don't go back to main activity when opening from a widget
 
 // Settings for each timer
 class Settings: Dynamic_theme_activity(), DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener
@@ -116,6 +118,7 @@ class Settings: Dynamic_theme_activity(), DatePickerDialog.OnDateSetListener, Ti
         {
             data = intent.getSerializableExtra(EXTRA_EDIT_DATA) as Data? ?: Data(this)
 
+            // TODO: if launching from widget, get data from widget ID (do DB lookup in widget class / free func). Refactor below to include this
             // no rowid passed? make a new one
             if(intent.hasExtra(EXTRA_EDIT_DATA))
             {
@@ -364,10 +367,20 @@ class Settings: Dynamic_theme_activity(), DatePickerDialog.OnDateSetListener, Ti
                 }
                 else
                 {
-                    val intent = Intent()
-                    intent.putExtra(EXTRA_EDIT_DATA, data)
-                    setResult(RESULT_OK, intent)
+                    val result_intent = Intent()
 
+                    // was this launched from an app widget?
+                    if(intent.action == AppWidgetManager.ACTION_APPWIDGET_CONFIGURE)
+                    {
+                        val widget_id = intent.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, AppWidgetManager.INVALID_APPWIDGET_ID)
+                        Widget.update(this, null, intArrayOf(widget_id))
+
+                        result_intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, widget_id)
+                    }
+                    else
+                        result_intent.putExtra(EXTRA_EDIT_DATA, data)
+
+                    setResult(RESULT_OK, result_intent)
                     finish()
                 }
             }
@@ -398,9 +411,19 @@ class Settings: Dynamic_theme_activity(), DatePickerDialog.OnDateSetListener, Ti
 
     private fun cancel()
     {
+        val result_intent = Intent()
+
         // if this was a new timer, delete any notification channel that may have been created
         if(Build.VERSION.SDK_INT >= 26 && !intent.hasExtra(EXTRA_EDIT_DATA) && data.has_notification_channel)
             data.delete_notification_channel(this)
+
+        // if this is for a widget, cancel it so it isn't created
+        if(intent.action == AppWidgetManager.ACTION_APPWIDGET_CONFIGURE)
+        {
+            val widget_id = intent.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, AppWidgetManager.INVALID_APPWIDGET_ID)
+            result_intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, widget_id)
+        }
+        setResult(Activity.RESULT_CANCELED, result_intent)
     }
 
     // dump all widget data into data obj

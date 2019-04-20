@@ -39,7 +39,12 @@ import org.mattvchandler.progressbars.db.DB
 import org.mattvchandler.progressbars.db.Data
 import org.mattvchandler.progressbars.db.Progress_bars_table
 import org.mattvchandler.progressbars.list.View_data
+import org.mattvchandler.progressbars.settings.Settings
 import java.util.concurrent.TimeUnit
+
+// TODO: DB changes to store widget Data. Add a widgetID column. Order and widget ID should be mutually exclusive
+// TODO preview image?
+// TODO: functions for DataFromWidgetID,
 
 class Widget: AppWidgetProvider()
 {
@@ -76,7 +81,6 @@ class Widget: AppWidgetProvider()
 
     override fun onReceive(context: Context?, intent: Intent?)
     {
-        Log.d("widget recv", "got: ${intent?.action}")
         when(intent?.action)
         {
             ACTION_UPDATE_TIME -> if(context != null) update(context, null, null)
@@ -85,31 +89,32 @@ class Widget: AppWidgetProvider()
         }
     }
 
-    private fun update(context: Context, appWidgetManager: AppWidgetManager?, appWidgetIds: IntArray?)
-    {
-        val pm = context.getSystemService(Context.POWER_SERVICE) as PowerManager
-        val screen_on = if(Build.VERSION.SDK_INT >= 20) pm.isInteractive else true
-        if(screen_on)
-        {
-            val appWidgetManager_default = appWidgetManager ?: AppWidgetManager.getInstance(context)
-
-            for(appWidgetId in appWidgetIds?: appWidgetManager_default.getAppWidgetIds(ComponentName(context, Widget::class.java)))
-                updateAppWidget(context, appWidgetManager_default, appWidgetId)
-        }
-
-        // schedule another update
-        val intent = Intent(context, this::class.java)
-        intent.action = ACTION_UPDATE_TIME
-        val pi = PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT)
-        val am = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
-        am.set(AlarmManager.ELAPSED_REALTIME, SystemClock.elapsedRealtime() + TIME_INTERVAL, pi)
-    }
-
     companion object
     {
         private const val ACTION_UPDATE_TIME = "org.mattvchandler.progressbars.ACTION_UPDATE_TIME"
         private val TIME_INTERVAL = TimeUnit.SECONDS.toMillis(1) // TODO: get from settings
-        internal fun updateAppWidget(context: Context, appWidgetManager: AppWidgetManager, appWidgetId: Int)
+
+        fun update(context: Context, appWidgetManager: AppWidgetManager?, appWidgetIds: IntArray?)
+        {
+            val pm = context.getSystemService(Context.POWER_SERVICE) as PowerManager
+            val screen_on = if(Build.VERSION.SDK_INT >= 20) pm.isInteractive else true
+            if(screen_on)
+            {
+                val appWidgetManager_default = appWidgetManager ?: AppWidgetManager.getInstance(context)
+
+                for(appWidgetId in appWidgetIds?: appWidgetManager_default.getAppWidgetIds(ComponentName(context, Widget::class.java)))
+                    updateAppWidget(context, appWidgetManager_default, appWidgetId)
+            }
+
+            // schedule another update
+            val intent = Intent(context, this::class.java)
+            intent.action = ACTION_UPDATE_TIME
+            val pi = PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT)
+            val am = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+            am.set(AlarmManager.ELAPSED_REALTIME, SystemClock.elapsedRealtime() + TIME_INTERVAL, pi)
+        }
+
+        private fun updateAppWidget(context: Context, appWidgetManager: AppWidgetManager, appWidgetId: Int)
         {
             val db = DB(context).readableDatabase
             val cursor = db.rawQuery(Progress_bars_table.SELECT_ALL_ROWS, null)
@@ -189,6 +194,11 @@ class Widget: AppWidgetProvider()
                     views.setViewVisibility(R.id.center_box, View.GONE)
                 }
             }
+
+            val edit_intent = Intent(context, Settings::class.java)
+            edit_intent.action = AppWidgetManager.ACTION_APPWIDGET_CONFIGURE
+            edit_intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId)
+            views.setOnClickPendingIntent(R.id.background, PendingIntent.getActivity(context, 0, edit_intent, PendingIntent.FLAG_CANCEL_CURRENT))
 
             appWidgetManager.updateAppWidget(appWidgetId, views)
         }

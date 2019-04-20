@@ -29,5 +29,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
                     android:minResizeHeight="40dp"
                     android:resizeMode="horizontal|vertical"
                     android:updatePeriodMillis="1800000"
-                    android:widgetCategory="home_screen">
+                    android:widgetCategory="home_screen"
+                    android:configure="org.mattvchandler.progressbars.settings.Settings"
+    >
 </appwidget-provider>

@@ -40,6 +40,9 @@
                 android:name="android.support.parent_activity"
                 android:value=".progress_bars"
                 />
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE"/>
+            </intent-filter>
         </activity>
 
         <activity
