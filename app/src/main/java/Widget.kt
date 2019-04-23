@@ -42,7 +42,7 @@ import org.mattvchandler.progressbars.list.View_data
 import org.mattvchandler.progressbars.settings.Settings
 
 // TODO preview image?
-// TODO: functions for DataFromWidgetID,
+// TODO: functions for DataFromWidgetID?
 
 class Widget: AppWidgetProvider()
 {
@@ -64,6 +64,9 @@ class Widget: AppWidgetProvider()
 
     override fun onDisabled(context: Context?)
     {
+        val am = context!!.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+        am.cancel(build_alarm_intent(context))
+
         super.onDisabled(context)
     }
 
@@ -79,6 +82,7 @@ class Widget: AppWidgetProvider()
 
     override fun onReceive(context: Context?, intent: Intent?)
     {
+        Log.v("Widget::onReceive", intent?.action)
         when(intent?.action)
         {
             ACTION_UPDATE_TIME -> if(context != null) update(context, null, null)
@@ -103,14 +107,18 @@ class Widget: AppWidgetProvider()
             }
 
             // schedule another update
+
+            val time_interval = PreferenceManager.getDefaultSharedPreferences(context).getString(context.resources.getString(R.string.pref_widget_refresh_key), context.resources.getString(R.string.pref_widget_refresh_default))!!.toInt()
+            val am = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+            am.set(AlarmManager.ELAPSED_REALTIME, SystemClock.elapsedRealtime() + time_interval, build_alarm_intent(context))
+        }
+
+        private fun build_alarm_intent(context:Context):PendingIntent
+        {
             val intent = Intent(context, Widget::class.java)
             intent.action = ACTION_UPDATE_TIME
 
-            val pi = PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT)
-            val am = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
-
-            val time_interval = PreferenceManager.getDefaultSharedPreferences(context).getString(context.resources.getString(R.string.pref_widget_refresh_key), context.resources.getString(R.string.pref_widget_refresh_default))!!.toInt()
-            am.set(AlarmManager.ELAPSED_REALTIME, SystemClock.elapsedRealtime() + time_interval, pi)
+            return PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT)
         }
 
         private fun updateAppWidget(context: Context, appWidgetManager: AppWidgetManager, appWidgetId: Int)
