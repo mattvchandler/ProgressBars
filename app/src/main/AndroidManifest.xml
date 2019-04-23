@@ -34,7 +34,6 @@
             android:name=".settings.Settings"
             android:launchMode="singleTop"
             android:label="@string/edit_title"
-            android:parentActivityName=".Progress_bars"
             >
             <meta-data
                 android:name="android.support.parent_activity"

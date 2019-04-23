@@ -78,8 +78,6 @@ private fun <T>Array<T>.rotate(distance: Int)
     }
 }
 
-// TODO: don't go back to main activity when opening from a widget
-
 // Settings for each timer
 class Settings: Dynamic_theme_activity(), DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener
 {
@@ -396,7 +394,7 @@ class Settings: Dynamic_theme_activity(), DatePickerDialog.OnDateSetListener, Ti
         android.R.id.home ->
         {
             cancel()
-            NavUtils.navigateUpFromSameTask(this)
+            finish()
             true
         }
 
