@@ -379,7 +379,10 @@ class Settings: Dynamic_theme_activity(), DatePickerDialog.OnDateSetListener, Ti
                         result_intent.putExtra(EXTRA_EDIT_DATA, data)
 
                     setResult(RESULT_OK, result_intent)
-                    finish()
+                    if(intent.action == AppWidgetManager.ACTION_APPWIDGET_CONFIGURE && Build.VERSION.SDK_INT >= 21)
+                            finishAndRemoveTask()
+                    else
+                        finish()
                 }
             }
             true
@@ -394,7 +397,10 @@ class Settings: Dynamic_theme_activity(), DatePickerDialog.OnDateSetListener, Ti
         android.R.id.home ->
         {
             cancel()
-            finish()
+            if(intent.action == AppWidgetManager.ACTION_APPWIDGET_CONFIGURE && Build.VERSION.SDK_INT >= 21)
+                finishAndRemoveTask()
+            else
+                finish()
             true
         }
 
@@ -404,7 +410,10 @@ class Settings: Dynamic_theme_activity(), DatePickerDialog.OnDateSetListener, Ti
     override fun onBackPressed()
     {
         cancel()
-        super.onBackPressed()
+        if(intent.action == AppWidgetManager.ACTION_APPWIDGET_CONFIGURE && Build.VERSION.SDK_INT >= 21)
+            finishAndRemoveTask()
+        else
+            super.onBackPressed()
     }
 
     private fun cancel()
@@ -818,7 +827,6 @@ class Settings: Dynamic_theme_activity(), DatePickerDialog.OnDateSetListener, Ti
         }
         else
             super.onActivityResult(request_code, result_code, intent)
-
     }
 
     companion object

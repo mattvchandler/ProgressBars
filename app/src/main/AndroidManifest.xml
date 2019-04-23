@@ -34,11 +34,8 @@
             android:name=".settings.Settings"
             android:launchMode="singleTop"
             android:label="@string/edit_title"
+            android:taskAffinity=""
             >
-            <meta-data
-                android:name="android.support.parent_activity"
-                android:value=".progress_bars"
-                />
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE"/>
             </intent-filter>

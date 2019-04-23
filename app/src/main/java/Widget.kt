@@ -105,6 +105,7 @@ class Widget: AppWidgetProvider()
             // schedule another update
             val intent = Intent(context, Widget::class.java)
             intent.action = ACTION_UPDATE_TIME
+
             val pi = PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT)
             val am = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
 
@@ -195,6 +196,8 @@ class Widget: AppWidgetProvider()
 
             val edit_intent = Intent(context, Settings::class.java)
             edit_intent.action = AppWidgetManager.ACTION_APPWIDGET_CONFIGURE
+            edit_intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+
             edit_intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId)
             views.setOnClickPendingIntent(R.id.background, PendingIntent.getActivity(context, 0, edit_intent, PendingIntent.FLAG_CANCEL_CURRENT))
 
