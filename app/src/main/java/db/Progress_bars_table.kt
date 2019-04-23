@@ -65,8 +65,9 @@ open class Progress_bars_table: BaseColumns
     {
         const val TABLE_NAME = "progress_bar"
 
-        const val ORDER_COL = "order_ind"
         const val ID_COL = "id"
+        const val ORDER_COL = "order_ind"
+        const val WIDGET_ID_COL = "widget_id"
 
         const val SEPARATE_TIME_COL = "separate_time"
         const val START_TIME_COL = "start_time"
@@ -110,14 +111,15 @@ open class Progress_bars_table: BaseColumns
         const val HAS_NOTIFICATION_CHANNEL_COL = "has_notification_channel"
         const val NOTIFICATION_PRIORITY_COL = "notification_priority"
 
-        // Select stmt to get all columns, all rows, ordered by order #
-        const val SELECT_ALL_ROWS = "SELECT * FROM $TABLE_NAME ORDER BY $ORDER_COL"
+        const val SELECT_ALL_ROWS = "SELECT * FROM $TABLE_NAME ORDER BY $ORDER_COL, $WIDGET_ID_COL"
+        const val SELECT_ALL_ROWS_NO_WIDGET = "SELECT * FROM $TABLE_NAME WHERE $WIDGET_ID_COL IS NULL ORDER BY $ORDER_COL"
 
         // table schema
         const val CREATE_TABLE = "CREATE TABLE IF NOT EXISTS " + TABLE_NAME + " (" +
                 BaseColumns._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 ID_COL + " INTEGER UNIQUE NOT NULL, " +
-                ORDER_COL + " INTEGER UNIQUE NOT NULL, " +
+                ORDER_COL + " INTEGER UNIQUE, " +
+                WIDGET_ID_COL + " INTEGER UNIQUE, " +
 
                 SEPARATE_TIME_COL +  " INTEGER NOT NULL, " +
                 START_TIME_COL + " INTEGER NOT NULL, " +
@@ -186,8 +188,9 @@ open class Progress_bars_table: BaseColumns
                     db.execSQL(CREATE_TABLE)
                     db.execSQL("INSERT INTO " + TABLE_NAME +
                             "(" +
-                            ORDER_COL + ", " +
                             ID_COL + ", " +
+                            ORDER_COL + ", " +
+                            WIDGET_ID_COL + ", " +
                             SEPARATE_TIME_COL + ", " +
                             START_TIME_COL + ", " +
                             END_TIME_COL + ", " +
@@ -224,8 +227,9 @@ open class Progress_bars_table: BaseColumns
                             NOTIFICATION_PRIORITY_COL +
                             ")" +
                             " SELECT " +
-                            ORDER_COL + ", " +
                             ORDER_COL + ", " + // using order for id
+                            ORDER_COL + ", " +
+                            "NULL, " +
                             "1, " +
                             START_TIME_COL + ", " +
                             END_TIME_COL + ", " +
@@ -274,8 +278,9 @@ open class Progress_bars_table: BaseColumns
                     db.execSQL(CREATE_TABLE)
                     db.execSQL("INSERT INTO " + TABLE_NAME +
                             "(" +
-                            ORDER_COL + ", " +
                             ID_COL + ", " +
+                            ORDER_COL + ", " +
+                            WIDGET_ID_COL + ", " +
                             SEPARATE_TIME_COL + ", " +
                             START_TIME_COL + ", " +
                             END_TIME_COL + ", " +
@@ -312,8 +317,9 @@ open class Progress_bars_table: BaseColumns
                             NOTIFICATION_PRIORITY_COL +
                             ")" +
                             " SELECT " +
-                            ORDER_COL + ", " +
                             ORDER_COL + ", " + // using order for id
+                            ORDER_COL + ", " +
+                            "NULL, " +
                             "1, " +
                             START_TIME_COL + ", " +
                             END_TIME_COL + ", " +
@@ -348,6 +354,94 @@ open class Progress_bars_table: BaseColumns
                             NOTIFY_END_COL + ", " +
                             "0, " +
                             "'HIGH' " +
+                            "FROM TMP_" + TABLE_NAME)
+
+                    db.execSQL("DROP TABLE TMP_$TABLE_NAME")
+
+                    set_new_id()
+                }
+                4 ->
+                {
+                    db.execSQL("ALTER TABLE $TABLE_NAME RENAME TO TMP_$TABLE_NAME")
+                    db.execSQL(CREATE_TABLE)
+                    db.execSQL("INSERT INTO " + TABLE_NAME +
+                            "(" +
+                            ID_COL + ", " +
+                            ORDER_COL + ", " +
+                            WIDGET_ID_COL + ", " +
+                            SEPARATE_TIME_COL + ", " +
+                            START_TIME_COL + ", " +
+                            END_TIME_COL + ", " +
+                            START_TZ_COL + ", " +
+                            END_TZ_COL + ", " +
+                            REPEATS_COL + ", " +
+                            REPEAT_COUNT_COL + ", " +
+                            REPEAT_UNIT_COL + ", " +
+                            REPEAT_DAYS_OF_WEEK_COL + ", " +
+                            TITLE_COL + ", " +
+                            PRE_TEXT_COL + ", " +
+                            START_TEXT_COL + ", " +
+                            COUNTDOWN_TEXT_COL + ", " +
+                            COMPLETE_TEXT_COL + ", " +
+                            POST_TEXT_COL + ", " +
+                            SINGLE_PRE_TEXT_COL + ", " +
+                            SINGLE_COMPLETE_TEXT_COL + ", " +
+                            SINGLE_POST_TEXT_COL + ", " +
+                            PRECISION_COL + ", " +
+                            SHOW_START_COL + ", " +
+                            SHOW_END_COL + ", " +
+                            SHOW_PROGRESS_COL + ", " +
+                            SHOW_YEARS_COL + ", " +
+                            SHOW_MONTHS_COL + ", " +
+                            SHOW_WEEKS_COL + ", " +
+                            SHOW_DAYS_COL + ", " +
+                            SHOW_HOURS_COL + ", " +
+                            SHOW_MINUTES_COL + ", " +
+                            SHOW_SECONDS_COL + ", " +
+                            TERMINATE_COL + ", " +
+                            NOTIFY_START_COL + ", " +
+                            NOTIFY_END_COL + ", " +
+                            HAS_NOTIFICATION_CHANNEL_COL + ", " +
+                            NOTIFICATION_PRIORITY_COL +
+                            ")" +
+                            " SELECT " +
+                            ID_COL + ", " +
+                            ORDER_COL + ", " +
+                            "NULL, " +
+                            SEPARATE_TIME_COL + ", " +
+                            START_TIME_COL + ", " +
+                            END_TIME_COL + ", " +
+                            START_TZ_COL + ", " +
+                            END_TZ_COL + ", " +
+                            REPEATS_COL + ", " +
+                            REPEAT_COUNT_COL + ", " +
+                            REPEAT_UNIT_COL + ", " +
+                            REPEAT_DAYS_OF_WEEK_COL + ", " +
+                            TITLE_COL + ", " +
+                            PRE_TEXT_COL + ", " +
+                            START_TEXT_COL + ", " +
+                            COUNTDOWN_TEXT_COL + ", " +
+                            COMPLETE_TEXT_COL + ", " +
+                            POST_TEXT_COL + ", " +
+                            SINGLE_PRE_TEXT_COL + ", " +
+                            SINGLE_COMPLETE_TEXT_COL + ", " +
+                            SINGLE_POST_TEXT_COL + ", " +
+                            PRECISION_COL + ", " +
+                            SHOW_START_COL + ", " +
+                            SHOW_END_COL + ", " +
+                            SHOW_PROGRESS_COL + ", " +
+                            SHOW_YEARS_COL + ", " +
+                            SHOW_MONTHS_COL + ", " +
+                            SHOW_WEEKS_COL + ", " +
+                            SHOW_DAYS_COL + ", " +
+                            SHOW_HOURS_COL + ", " +
+                            SHOW_MINUTES_COL + ", " +
+                            SHOW_SECONDS_COL + ", " +
+                            TERMINATE_COL + ", " +
+                            NOTIFY_START_COL + ", " +
+                            NOTIFY_END_COL + ", " +
+                            HAS_NOTIFICATION_CHANNEL_COL + ", " +
+                            NOTIFICATION_PRIORITY_COL + " " +
                             "FROM TMP_" + TABLE_NAME)
 
                     db.execSQL("DROP TABLE TMP_$TABLE_NAME")

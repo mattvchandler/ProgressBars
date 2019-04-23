@@ -42,16 +42,14 @@ class Resetting_application: Application()
         if(first_run)
         {
             val db = DB(this).writableDatabase
-            val cursor = db.rawQuery(Progress_bars_table.SELECT_ALL_ROWS, null)
+            val cursor = db.rawQuery(Progress_bars_table.SELECT_ALL_ROWS_NO_WIDGET, null)
             if(cursor.count == 0)
             {
-                Data(this).insert(db,0)
+                Data(this).insert(db,0, null)
             }
 
             cursor.close()
             db.close()
-
-            prefs.edit().putBoolean(resources.getString(R.string.pref_first_run_key), false).apply()
         }
 
         // register notification handler

@@ -42,7 +42,6 @@ import org.mattvchandler.progressbars.list.View_data
 import org.mattvchandler.progressbars.settings.Settings
 import java.util.concurrent.TimeUnit
 
-// TODO: DB changes to store widget Data. Add a widgetID column. Order and widget ID should be mutually exclusive
 // TODO preview image?
 // TODO: functions for DataFromWidgetID,
 

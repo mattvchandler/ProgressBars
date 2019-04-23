@@ -252,7 +252,7 @@ open class Data(): Serializable
         return values
     }
 
-    fun insert(db: SQLiteDatabase, order_ind: Long)
+    fun insert(db: SQLiteDatabase, order_ind: Long?, widget_id: Long?)
     {
         val values = build_ContentValues()
 
@@ -260,6 +260,7 @@ open class Data(): Serializable
             values.put(BaseColumns._ID, rowid)
 
         values.put(Progress_bars_table.ORDER_COL, order_ind)
+        values.put(Progress_bars_table.WIDGET_ID_COL, widget_id)
         rowid = db.insert(Progress_bars_table.TABLE_NAME, null, values)
     }
 

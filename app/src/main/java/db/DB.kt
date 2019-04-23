@@ -53,7 +53,7 @@ class DB(private val context: Context): SQLiteOpenHelper(context, DB_NAME, null,
 {
     companion object
     {
-        private const val DB_VERSION = 4
+        private const val DB_VERSION = 5
         private const val DB_NAME = "progress_bar_db"
     }
     // build the tables / whatever else when new
