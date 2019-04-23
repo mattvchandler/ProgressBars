@@ -882,7 +882,7 @@ class Settings: Dynamic_theme_activity(), DatePickerDialog.OnDateSetListener, Ti
             val date_format = PreferenceManager.getDefaultSharedPreferences(context).getString("date_format", context.resources.getString(R.string.pref_date_format_default))!!
             val date_df = SimpleDateFormat.getDateInstance(SimpleDateFormat.SHORT) as SimpleDateFormat
 
-            if(date_format != "locale")
+            if(date_format != "locale") // TODO: replace w/ resource lookup
             {
                 date_df.applyPattern(date_format)
             }

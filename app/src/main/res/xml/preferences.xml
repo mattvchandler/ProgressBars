@@ -23,10 +23,10 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
     <ListPreference
-        android:key="date_format"
-        android:title="@string/pref_date_format"
-        android:entries="@array/date_formats_display"
-        android:entryValues="@array/date_formats_java"
+        android:key="@string/pref_date_format_key"
+        android:title="@string/pref_date_format_title"
+        android:entries="@array/pref_date_format_display"
+        android:entryValues="@array/pref_date_format_values"
         android:defaultValue="@string/pref_date_format_default"
         />
 
@@ -39,15 +39,23 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
         />
 
     <PreferenceScreen
-        android:key="system_notifications"
-        android:title="@string/pref_notification_settings">
+        android:key="@string/pref_system_notifications_key"
+        android:title="@string/pref_system_notifications">
     </PreferenceScreen>
 
     <ListPreference
-        android:key="theme"
-        android:title="@string/theme_title"
-        android:entries="@array/theme_settings"
-        android:entryValues="@array/theme_values"
-        android:defaultValue="@string/theme_values_default"
+        android:key="@string/pref_widget_refresh_key"
+        android:title="@string/pref_widget_refresh_title"
+        android:entries="@array/pref_widget_refresh_display"
+        android:entryValues="@array/pref_widget_refresh_values"
+        android:defaultValue="@string/pref_widget_refresh_default"
+        />
+
+    <ListPreference
+        android:key="@string/pref_theme_key"
+        android:title="@string/pref_theme_title"
+        android:entries="@array/pref_theme_display"
+        android:entryValues="@array/pref_theme_values"
+        android:defaultValue="@string/pref_theme_default"
         />
 </PreferenceScreen>

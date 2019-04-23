@@ -83,8 +83,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
     <string name="settings">Settings</string>
 
-    <string name="pref_date_format">Date format</string>
-    <string-array name="date_formats_display">
+    <string name="pref_date_format_title">Date format</string>
+    <string-array name="pref_date_format_display">
         <item>Locale Default</item>
         <item>YYYY-MM-DD</item>
     </string-array>
@@ -97,10 +97,21 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
         <item>Monday</item>
     </string-array>
 
-    <string name="pref_notification_settings">Notification settings</string>
+    <string name="pref_system_notifications">Notification settings</string>
 
-    <string name="theme_title">Day / Night Theme</string>
-    <string-array name="theme_settings" tools:ignore="InconsistentArrays">
+    <string name="pref_widget_refresh_title">Desktop widget refresh rate</string>
+    <string-array name="pref_widget_refresh_display">
+        <item>5 seconds</item>
+        <item>30 seconds</item>
+        <item>1 minute</item>
+        <item>15 minute</item>
+        <item>30 minutes</item>
+        <item>Hourly</item>
+        <item>Daily</item>
+    </string-array>
+
+    <string name="pref_theme_title">Day / Night Theme</string>
+    <string-array name="pref_theme_display" tools:ignore="InconsistentArrays">
         <item>Follow System</item>
         <item>Day</item>
         <item>Night</item>

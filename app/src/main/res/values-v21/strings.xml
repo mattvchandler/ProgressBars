@@ -20,7 +20,7 @@ IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 -->
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <string-array name="theme_settings" tools:ignore="InconsistentArrays">
+    <string-array name="pref_theme_display" tools:ignore="InconsistentArrays">
         <item>Follow System</item>
         <item>Day</item>
         <item>Night</item>

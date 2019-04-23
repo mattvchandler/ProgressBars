@@ -22,6 +22,16 @@ SOFTWARE.
 -->
 
 <resources xmlns:tools="http://schemas.android.com/tools">
+    <string name="pref_date_format_key" translatable="false">date_format</string>
+
+    <!-- date format strings to pass to SimpleDateFormat.applyLocalizedPattern -->
+    <string-array name="pref_date_format_values" translatable="false">
+        <item>locale</item>
+        <item>yyyy-MM-dd</item>
+    </string-array>
+
+    <string name="pref_date_format_default" translatable="false">locale</string>
+
     <string name="pref_first_day_of_wk_key" translatable="false">first_day_of_wk</string>
 
     <!-- Corresponds to values behind Calendar.SUNDAY, etc. enums, with 0 being used as locale default -->
@@ -39,28 +49,39 @@ SOFTWARE.
 
     <string name="pref_first_day_of_wk_default" translatable="false">@string/pref_first_day_of_wk_value_locale</string>
 
-    <string name="theme_values_system" translatable="false">system</string>
-    <string name="theme_values_day" translatable="false">day</string>
-    <string name="theme_values_night" translatable="false">night</string>
-    <string name="theme_values_auto" translatable="false">auto</string>
-    <string name="theme_values_auto_batt" translatable="false">auto_batt</string>
+    <string name="pref_system_notifications_key" translatable="false">system_notifications</string>
 
-    <string-array name="theme_values" translatable="false" tools:ignore="InconsistentArrays">
-        <item>@string/theme_values_system</item>
-        <item>@string/theme_values_day</item>
-        <item>@string/theme_values_night</item>
-        <item>@string/theme_values_auto</item>
+    <string name="pref_widget_refresh_key" translatable="false">widget_refresh</string>
+
+    <!-- widget refresh times in milliseconds -->
+    <!-- Doesn't seem to go any faster than about every 5s -->
+    <string-array name="pref_widget_refresh_values" translatable="false">
+        <item>5000</item>     <!--  5s -->
+        <item>30000</item>    <!-- 30s -->
+        <item>60000</item>    <!--  1m -->
+        <item>100000</item>   <!-- 15m -->
+        <item>1800000</item>  <!-- 30m -->
+        <item>3600000</item>  <!--  1h -->
+        <item>86400000</item> <!--  1d -->
+    </string-array>
+    <string name="pref_widget_refresh_default" translatable="false">60000</string>
+
+
+    <string name="pref_theme_key" translatable="false">theme</string>
+    <string name="pref_theme_values_system" translatable="false">system</string>
+    <string name="pref_theme_values_day" translatable="false">day</string>
+    <string name="pref_theme_values_night" translatable="false">night</string>
+    <string name="pref_theme_values_auto" translatable="false">auto</string>
+    <string name="pref_theme_values_auto_batt" translatable="false">auto_batt</string>
+
+    <string-array name="pref_theme_values" translatable="false" tools:ignore="InconsistentArrays">
+        <item>@string/pref_theme_values_system</item>
+        <item>@string/pref_theme_values_day</item>
+        <item>@string/pref_theme_values_night</item>
+        <item>@string/pref_theme_values_auto</item>
     </string-array>
 
-    <string name="theme_values_default" translatable="false">@string/theme_values_system</string>
-
-    <!-- date format strings to pass to SimpleDateFormat.applyLocalizedPattern -->
-    <string-array name="date_formats_java" translatable="false">
-        <item>locale</item>
-        <item>yyyy-MM-dd</item>
-    </string-array>
-
-    <string name="pref_date_format_default" translatable="false">locale</string>
+    <string name="pref_theme_default" translatable="false">@string/pref_theme_values_system</string>
 
     <string name="pref_first_run_key" translatable="false">first_run</string>
 

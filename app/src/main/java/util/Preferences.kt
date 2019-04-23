@@ -57,9 +57,10 @@ class Preferences: Dynamic_theme_activity()
         {
             setPreferencesFromResource(R.xml.preferences, rootKey)
             PreferenceManager.setDefaultValues(activity, R.xml.preferences, false)
-            findPreference<ListPreference>("date_format")?.summaryProvider = ListPreference.SimpleSummaryProvider.getInstance()
+            findPreference<ListPreference>(resources.getString(R.string.pref_date_format_key))?.summaryProvider = ListPreference.SimpleSummaryProvider.getInstance()
             findPreference<ListPreference>(resources.getString(R.string.pref_first_day_of_wk_key))?.summaryProvider = ListPreference.SimpleSummaryProvider.getInstance()
-            findPreference<ListPreference>("theme")?.summaryProvider = ListPreference.SimpleSummaryProvider.getInstance()
+            findPreference<ListPreference>(resources.getString(R.string.pref_widget_refresh_key))?.summaryProvider = ListPreference.SimpleSummaryProvider.getInstance()
+            findPreference<ListPreference>(resources.getString(R.string.pref_theme_key))?.summaryProvider = ListPreference.SimpleSummaryProvider.getInstance()
         }
 
         // register / unregister listener
@@ -78,10 +79,10 @@ class Preferences: Dynamic_theme_activity()
 
         override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences, key: String)
         {
-            if(key == "theme")
+            if(key == resources.getString(R.string.pref_theme_key))
             {
                 // request location permission for local sunset / sunrise times
-                if(sharedPreferences.getString("theme", "") == resources.getString(R.string.theme_values_auto))
+                if(sharedPreferences.getString(resources.getString(R.string.pref_theme_key), "") == resources.getString(R.string.pref_theme_values_auto))
                 {
                     if (ContextCompat.checkSelfPermission(activity as Context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED)
                     {
@@ -114,7 +115,7 @@ class Preferences: Dynamic_theme_activity()
         {
             when(preference?.key)
             {
-                "system_notifications" ->
+                resources.getString(R.string.pref_system_notifications_key) ->
                 {
                     val intent = Intent()
                     when
