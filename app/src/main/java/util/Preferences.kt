@@ -82,7 +82,7 @@ class Preferences: Dynamic_theme_activity()
             if(key == resources.getString(R.string.pref_theme_key))
             {
                 // request location permission for local sunset / sunrise times
-                if(sharedPreferences.getString(resources.getString(R.string.pref_theme_key), "") == resources.getString(R.string.pref_theme_values_auto))
+                if(sharedPreferences.getString(resources.getString(R.string.pref_theme_key), "") == resources.getString(R.string.pref_theme_value_auto))
                 {
                     if (ContextCompat.checkSelfPermission(activity as Context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED)
                     {

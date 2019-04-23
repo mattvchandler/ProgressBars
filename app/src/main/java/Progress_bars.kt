@@ -95,7 +95,7 @@ class Progress_bars: Dynamic_theme_activity()
 
         // save date format to detect when it changes
         val prefs = PreferenceManager.getDefaultSharedPreferences(this)
-        date_format = prefs.getString("date_format", resources.getString(R.string.pref_date_format_default))!!
+        date_format = prefs.getString(resources.getString(R.string.pref_date_format_key), resources.getString(R.string.pref_date_format_default))!!
 
         // set up row Adapter
         adapter = Adapter(this)
@@ -154,7 +154,7 @@ class Progress_bars: Dynamic_theme_activity()
 
         // check to see if date format has changed. rebuild activity with new format if it has
         val prefs = PreferenceManager.getDefaultSharedPreferences(this)
-        val new_date_format = prefs.getString("date_format", resources.getString(R.string.pref_date_format_default))
+        val new_date_format = prefs.getString(resources.getString(R.string.pref_date_format_key), resources.getString(R.string.pref_date_format_default))
 
         if(new_date_format != date_format)
             recreate()

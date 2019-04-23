@@ -32,15 +32,14 @@ import android.os.Build
 import android.os.Bundle
 import android.os.PowerManager
 import android.os.SystemClock
-import android.util.Log
 import android.view.View
 import android.widget.RemoteViews
+import androidx.preference.PreferenceManager
 import org.mattvchandler.progressbars.db.DB
 import org.mattvchandler.progressbars.db.Data
 import org.mattvchandler.progressbars.db.Progress_bars_table
 import org.mattvchandler.progressbars.list.View_data
 import org.mattvchandler.progressbars.settings.Settings
-import java.util.concurrent.TimeUnit
 
 // TODO preview image?
 // TODO: functions for DataFromWidgetID,
@@ -91,8 +90,6 @@ class Widget: AppWidgetProvider()
     companion object
     {
         private const val ACTION_UPDATE_TIME = "org.mattvchandler.progressbars.ACTION_UPDATE_TIME"
-        private val TIME_INTERVAL = TimeUnit.SECONDS.toMillis(1) // TODO: get from settings
-
         fun update(context: Context, appWidgetManager: AppWidgetManager?, appWidgetIds: IntArray?)
         {
             val pm = context.getSystemService(Context.POWER_SERVICE) as PowerManager
@@ -110,7 +107,9 @@ class Widget: AppWidgetProvider()
             intent.action = ACTION_UPDATE_TIME
             val pi = PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT)
             val am = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
-            am.set(AlarmManager.ELAPSED_REALTIME, SystemClock.elapsedRealtime() + TIME_INTERVAL, pi)
+
+            val time_interval = PreferenceManager.getDefaultSharedPreferences(context).getString(context.resources.getString(R.string.pref_widget_refresh_key), context.resources.getString(R.string.pref_widget_refresh_default))!!.toInt()
+            am.set(AlarmManager.ELAPSED_REALTIME, SystemClock.elapsedRealtime() + time_interval, pi)
         }
 
         private fun updateAppWidget(context: Context, appWidgetManager: AppWidgetManager, appWidgetId: Int)

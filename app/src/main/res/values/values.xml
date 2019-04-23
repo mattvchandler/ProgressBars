@@ -25,9 +25,12 @@ SOFTWARE.
     <string name="pref_date_format_key" translatable="false">date_format</string>
 
     <!-- date format strings to pass to SimpleDateFormat.applyLocalizedPattern -->
+    <string name="pref_date_format_value_locale" translatable="false">locale</string>
+    <string name="pref_date_format_value_ISO8601" translatable="false">yyyy-MM-dd</string>
+
     <string-array name="pref_date_format_values" translatable="false">
-        <item>locale</item>
-        <item>yyyy-MM-dd</item>
+        <item>@string/pref_date_format_value_locale</item>
+        <item>@string/pref_date_format_value_ISO8601</item>
     </string-array>
 
     <string name="pref_date_format_default" translatable="false">locale</string>
@@ -55,33 +58,43 @@ SOFTWARE.
 
     <!-- widget refresh times in milliseconds -->
     <!-- Doesn't seem to go any faster than about every 5s -->
+    <string name="pref_widget_refresh_value_5s"  translatable="false">5000</string>
+    <string name="pref_widget_refresh_value_30s" translatable="false">30000</string>
+    <string name="pref_widget_refresh_value_1m"  translatable="false">60000</string>
+    <string name="pref_widget_refresh_value_15m" translatable="false">100000</string>
+    <string name="pref_widget_refresh_value_30m" translatable="false">1800000</string>
+    <string name="pref_widget_refresh_value_1h"  translatable="false">3600000</string>
+    <string name="pref_widget_refresh_value_1d"  translatable="false">86400000</string>
+
     <string-array name="pref_widget_refresh_values" translatable="false">
-        <item>5000</item>     <!--  5s -->
-        <item>30000</item>    <!-- 30s -->
-        <item>60000</item>    <!--  1m -->
-        <item>100000</item>   <!-- 15m -->
-        <item>1800000</item>  <!-- 30m -->
-        <item>3600000</item>  <!--  1h -->
-        <item>86400000</item> <!--  1d -->
+        <item>@string/pref_widget_refresh_value_5s</item>
+        <item>@string/pref_widget_refresh_value_30s</item>
+        <item>@string/pref_widget_refresh_value_1m</item>
+        <item>@string/pref_widget_refresh_value_15m</item>
+        <item>@string/pref_widget_refresh_value_30m</item>
+        <item>@string/pref_widget_refresh_value_1h</item>
+        <item>@string/pref_widget_refresh_value_1d</item>
     </string-array>
-    <string name="pref_widget_refresh_default" translatable="false">60000</string>
+    <string name="pref_widget_refresh_default" translatable="false">@string/pref_widget_refresh_value_30s</string>
 
 
     <string name="pref_theme_key" translatable="false">theme</string>
-    <string name="pref_theme_values_system" translatable="false">system</string>
-    <string name="pref_theme_values_day" translatable="false">day</string>
-    <string name="pref_theme_values_night" translatable="false">night</string>
-    <string name="pref_theme_values_auto" translatable="false">auto</string>
-    <string name="pref_theme_values_auto_batt" translatable="false">auto_batt</string>
+    <string name="pref_theme_value_system" translatable="false">system</string>
+    <string name="pref_theme_value_day" translatable="false">day</string>
+    <string name="pref_theme_value_night" translatable="false">night</string>
+    <string name="pref_theme_value_auto" translatable="false">auto</string>
+    <string name="pref_theme_value_auto_batt" translatable="false">auto_batt</string>
 
     <string-array name="pref_theme_values" translatable="false" tools:ignore="InconsistentArrays">
-        <item>@string/pref_theme_values_system</item>
-        <item>@string/pref_theme_values_day</item>
-        <item>@string/pref_theme_values_night</item>
-        <item>@string/pref_theme_values_auto</item>
+        <item>@string/pref_theme_value_system</item>
+        <item>@string/pref_theme_value_day</item>
+        <item>@string/pref_theme_value_night</item>
+        <item>@string/pref_theme_value_auto</item>
     </string-array>
 
-    <string name="pref_theme_default" translatable="false">@string/pref_theme_values_system</string>
+    <string name="pref_theme_default" translatable="false">@string/pref_theme_value_system</string>
+
+    <string name="pref_next_id_key" translatable="false">next_id</string>
 
     <string name="pref_first_run_key" translatable="false">first_run</string>
 

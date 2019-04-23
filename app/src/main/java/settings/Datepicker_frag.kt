@@ -47,7 +47,7 @@ class Datepicker_frag: DialogFragment()
         val cal = Calendar.getInstance()
 
         val preferenceManager = PreferenceManager.getDefaultSharedPreferences(activity)
-        val date_format = preferenceManager.getString("date_format", resources.getString(R.string.pref_date_format_default))
+        val date_format = preferenceManager.getString(resources.getString(R.string.pref_date_format_key), resources.getString(R.string.pref_date_format_default))
 
         val date = arguments!!.getString(DATE) ?: throw InvalidParameterException("No date argument given")
 

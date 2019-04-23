@@ -23,10 +23,10 @@ SOFTWARE.
 
 <resources xmlns:tools="http://schemas.android.com/tools">
     <string-array name="pref_theme_values" translatable="false" tools:ignore="InconsistentArrays">
-        <item>@string/pref_theme_values_system</item>
-        <item>@string/pref_theme_values_day</item>
-        <item>@string/pref_theme_values_night</item>
-        <item>@string/pref_theme_values_auto</item>
-        <item>@string/pref_theme_values_auto_batt</item>
+        <item>@string/pref_theme_value_system</item>
+        <item>@string/pref_theme_value_day</item>
+        <item>@string/pref_theme_value_night</item>
+        <item>@string/pref_theme_value_auto</item>
+        <item>@string/pref_theme_value_auto_batt</item>
     </string-array>
 </resources>
