@@ -59,6 +59,7 @@ SOFTWARE.
     <!-- widget refresh times in milliseconds -->
     <!-- Doesn't seem to go any faster than about every 5s -->
     <string name="pref_widget_refresh_value_5s"  translatable="false">5000</string>
+    <string name="pref_widget_refresh_value_15s" translatable="false">15000</string>
     <string name="pref_widget_refresh_value_30s" translatable="false">30000</string>
     <string name="pref_widget_refresh_value_1m"  translatable="false">60000</string>
     <string name="pref_widget_refresh_value_15m" translatable="false">100000</string>
@@ -68,6 +69,7 @@ SOFTWARE.
 
     <string-array name="pref_widget_refresh_values" translatable="false">
         <item>@string/pref_widget_refresh_value_5s</item>
+        <item>@string/pref_widget_refresh_value_15s</item>
         <item>@string/pref_widget_refresh_value_30s</item>
         <item>@string/pref_widget_refresh_value_1m</item>
         <item>@string/pref_widget_refresh_value_15m</item>
