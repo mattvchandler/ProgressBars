@@ -107,7 +107,7 @@ class Widget: AppWidgetProvider()
             }
 
             // schedule another update
-            val intent = Intent(context, this::class.java)
+            val intent = Intent(context, Widget::class.java)
             intent.action = ACTION_UPDATE_TIME
             val pi = PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT)
             val am = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
