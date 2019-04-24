@@ -32,6 +32,7 @@ import android.os.Build
 import android.os.Bundle
 import android.os.PowerManager
 import android.os.SystemClock
+import android.util.Log
 import android.view.View
 import android.widget.RemoteViews
 import androidx.preference.PreferenceManager
@@ -42,7 +43,7 @@ import org.mattvchandler.progressbars.list.View_data
 import org.mattvchandler.progressbars.settings.Settings
 
 // TODO preview image?
-// TODO: functions for DataFromWidgetID?
+// TODO: repeat & notifications not working?
 
 class Widget: AppWidgetProvider()
 {
@@ -67,17 +68,54 @@ class Widget: AppWidgetProvider()
         val am = context!!.getSystemService(Context.ALARM_SERVICE) as AlarmManager
         am.cancel(build_alarm_intent(context))
 
-        super.onDisabled(context)
+        val db = DB(context).writableDatabase
+        db.delete(Progress_bars_table.TABLE_NAME, "${Progress_bars_table.WIDGET_ID_COL} IS NOT NULL", null)
+        db.close()
     }
 
     override fun onDeleted(context: Context?, appWidgetIds: IntArray?)
     {
-        super.onDeleted(context, appWidgetIds)
+        if(appWidgetIds != null)
+        {
+            val db = DB(context!!).writableDatabase
+            for(widget_id in appWidgetIds)
+                db.delete(Progress_bars_table.TABLE_NAME, "${Progress_bars_table.WIDGET_ID_COL} = ?", arrayOf(widget_id.toString()))
+
+            db.close()
+        }
     }
 
     override fun onRestored(context: Context?, oldWidgetIds: IntArray?, newWidgetIds: IntArray?)
     {
-        super.onRestored(context, oldWidgetIds, newWidgetIds)
+        if(oldWidgetIds != null && newWidgetIds != null && oldWidgetIds.size == newWidgetIds.size)
+        {
+            val db = DB(context!!).writableDatabase
+
+            data class Widget_migration(val data: Data, val new_id: Int)
+            val widget_data = Array(oldWidgetIds.size)
+            {
+                val cursor = db.rawQuery(Progress_bars_table.SELECT_WIDGET, arrayOf(oldWidgetIds[it].toString()))
+                val data = Data(cursor)
+                cursor.close()
+                Widget_migration(data, newWidgetIds[it])
+            }
+
+            db.beginTransaction()
+            try
+            {
+                db.delete(Progress_bars_table.TABLE_NAME, "${Progress_bars_table.WIDGET_ID_COL} IS NOT NULL", null)
+
+                for((data, new_id) in widget_data)
+                    data.insert(db, null, new_id)
+
+                db.setTransactionSuccessful()
+            }
+            finally
+            {
+                db.endTransaction()
+                db.close()
+            }
+        }
     }
 
     override fun onReceive(context: Context?, intent: Intent?)
@@ -94,7 +132,51 @@ class Widget: AppWidgetProvider()
     companion object
     {
         private const val ACTION_UPDATE_TIME = "org.mattvchandler.progressbars.ACTION_UPDATE_TIME"
-        fun update(context: Context, appWidgetManager: AppWidgetManager?, appWidgetIds: IntArray?)
+
+        fun create_or_update_data(context: Context, widget_id: Int, data: Data)
+        {
+            val db = DB(context).writableDatabase
+            val cursor = db.rawQuery(Progress_bars_table.SELECT_WIDGET, arrayOf(widget_id.toString()))
+            if(cursor.count == 0)
+            {
+                Log.d("Widget::create", "$widget_id")
+                data.insert(db, null, widget_id)
+            }
+            else
+            {
+                Log.d("Widget::update", "$widget_id")
+                data.update(db)
+            }
+            cursor.close()
+            db.close()
+
+            update(context, AppWidgetManager.getInstance(context), intArrayOf(widget_id))
+        }
+
+        fun get_data_from_id(context: Context, widget_id: Int): View_data?
+        {
+            val db = DB(context).readableDatabase
+            val cursor = db.rawQuery(Progress_bars_table.SELECT_WIDGET, arrayOf(widget_id.toString()))
+            if(cursor.count == 0)
+            {
+                Log.e("Widget::updateAppWidget", "No data found for widget: $widget_id")
+
+                cursor.close()
+                db.close()
+
+                return null
+            }
+
+            cursor.moveToFirst()
+            val data = View_data(context, Data(cursor))
+
+            cursor.close()
+            db.close()
+
+            return data
+        }
+
+        private fun update(context: Context, appWidgetManager: AppWidgetManager?, appWidgetIds: IntArray?)
         {
             val pm = context.getSystemService(Context.POWER_SERVICE) as PowerManager
             val screen_on = if(Build.VERSION.SDK_INT >= 20) pm.isInteractive else true
@@ -103,7 +185,11 @@ class Widget: AppWidgetProvider()
                 val appWidgetManager_default = appWidgetManager ?: AppWidgetManager.getInstance(context)
 
                 for(appWidgetId in appWidgetIds?: appWidgetManager_default.getAppWidgetIds(ComponentName(context, Widget::class.java)))
-                    updateAppWidget(context, appWidgetManager_default, appWidgetId)
+                {
+                    val data = get_data_from_id(context, appWidgetId)
+                    if(data != null)
+                        build_view(context, appWidgetManager_default, appWidgetId, data)
+                }
             }
 
             // schedule another update
@@ -121,17 +207,8 @@ class Widget: AppWidgetProvider()
             return PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT)
         }
 
-        private fun updateAppWidget(context: Context, appWidgetManager: AppWidgetManager, appWidgetId: Int)
+        private fun build_view(context: Context, appWidgetManager: AppWidgetManager, widget_id: Int, data: View_data)
         {
-            val db = DB(context).readableDatabase
-            val cursor = db.rawQuery(Progress_bars_table.SELECT_ALL_ROWS, null)
-
-            cursor.moveToFirst()
-            val data = View_data(context, Data(cursor))
-
-            cursor.close()
-            db.close()
-
             val views = RemoteViews(context.packageName, if(data.separate_time) R.layout.progress_bar_widget else R.layout.single_progress_bar_widget)
 
             views.setTextViewText(R.id.title, data.title)
@@ -206,10 +283,10 @@ class Widget: AppWidgetProvider()
             edit_intent.action = AppWidgetManager.ACTION_APPWIDGET_CONFIGURE
             edit_intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
 
-            edit_intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId)
+            edit_intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, widget_id)
             views.setOnClickPendingIntent(R.id.background, PendingIntent.getActivity(context, 0, edit_intent, PendingIntent.FLAG_CANCEL_CURRENT))
 
-            appWidgetManager.updateAppWidget(appWidgetId, views)
+            appWidgetManager.updateAppWidget(widget_id, views)
         }
     }
 }

@@ -113,6 +113,7 @@ open class Progress_bars_table: BaseColumns
 
         const val SELECT_ALL_ROWS = "SELECT * FROM $TABLE_NAME ORDER BY $ORDER_COL, $WIDGET_ID_COL"
         const val SELECT_ALL_ROWS_NO_WIDGET = "SELECT * FROM $TABLE_NAME WHERE $WIDGET_ID_COL IS NULL ORDER BY $ORDER_COL"
+        const val SELECT_WIDGET = "SELECT * FROM $TABLE_NAME WHERE $WIDGET_ID_COL = ?"
 
         // table schema
         const val CREATE_TABLE = "CREATE TABLE IF NOT EXISTS " + TABLE_NAME + " (" +

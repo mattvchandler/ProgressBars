@@ -31,13 +31,13 @@ import android.database.ContentObserver
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.view.WindowManager
 import android.widget.*
 import androidx.appcompat.widget.Toolbar
-import androidx.core.app.NavUtils
 import androidx.databinding.DataBindingUtil
 import androidx.preference.PreferenceManager
 import com.google.android.material.textfield.TextInputEditText
@@ -111,14 +111,23 @@ class Settings: Dynamic_theme_activity(), DatePickerDialog.OnDateSetListener, Ti
 
         consume_insets(this, binding.mainList, binding.appbarLayout)
 
+        Log.v("Settings::onCreate", intent?.action ?: "null")
+
         // only run this on 1st creation
         if(savedInstanceState == null)
         {
-            data = intent.getSerializableExtra(EXTRA_EDIT_DATA) as Data? ?: Data(this)
-
-            // TODO: if launching from widget, get data from widget ID (do DB lookup in widget class / free func). Refactor below to include this
-            // no rowid passed? make a new one
             if(intent.hasExtra(EXTRA_EDIT_DATA))
+                data = intent.getSerializableExtra(EXTRA_EDIT_DATA) as Data
+            else if(intent.action == AppWidgetManager.ACTION_APPWIDGET_CONFIGURE)
+            {
+                val widget_id = intent.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, AppWidgetManager.INVALID_APPWIDGET_ID)
+                data = Widget.get_data_from_id(this, widget_id) ?: Data(this)
+            }
+            else
+                data = Data(this)
+
+            // no rowid passed? make a new one
+            if(data.rowid > 0)
             {
                 setTitle(R.string.edit_title)
                 window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN)
@@ -371,7 +380,7 @@ class Settings: Dynamic_theme_activity(), DatePickerDialog.OnDateSetListener, Ti
                     if(intent.action == AppWidgetManager.ACTION_APPWIDGET_CONFIGURE)
                     {
                         val widget_id = intent.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, AppWidgetManager.INVALID_APPWIDGET_ID)
-                        Widget.update(this, null, intArrayOf(widget_id))
+                        Widget.create_or_update_data(this, widget_id, data)
 
                         result_intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, widget_id)
                     }

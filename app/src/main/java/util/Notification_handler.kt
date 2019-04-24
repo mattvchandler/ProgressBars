@@ -169,7 +169,10 @@ class Notification_handler: BroadcastReceiver()
                 {
                     data.apply_repeat()
                     reset_alarm(context, data)
-                    data.update(context)
+
+                    val db = DB(context).writableDatabase
+                    data.update(db)
+                    db.close()
                 }
             }
         }

@@ -297,14 +297,20 @@ class Adapter(private val activity: Progress_bars): RecyclerView.Adapter<Adapter
     {
         val db = DB(activity).writableDatabase
         db.beginTransaction()
-        db.delete(Progress_bars_table.TABLE_NAME, null, null)
+        try
+        {
+            db.delete(Progress_bars_table.TABLE_NAME, "${Progress_bars_table.ORDER_COL} IS NOT NULL", null)
 
-        for(i in 0 until data_list.size)
-            data_list[i].insert(db, i.toLong(), null)
+            for(i in 0 until data_list.size)
+                data_list[i].insert(db, i.toLong(), null)
 
-        db.setTransactionSuccessful()
-        db.endTransaction()
-        db.close()
+            db.setTransactionSuccessful()
+        }
+        finally
+        {
+            db.endTransaction()
+            db.close()
+        }
     }
 
     companion object
