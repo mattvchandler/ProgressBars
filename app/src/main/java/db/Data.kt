@@ -273,6 +273,32 @@ open class Data(): Serializable
         db.update(Progress_bars_table.TABLE_NAME, build_ContentValues(), BaseColumns._ID + " = ?", arrayOf(rowid.toString()))
     }
 
+    fun register_alarms(context: Context)
+    {
+        apply_repeat()
+
+        if(has_notification_channel)
+            create_notification_channel(context)
+
+        Notification_handler.reset_alarm(context, this)
+    }
+
+    fun update_alarms(context: Context)
+    {
+        apply_repeat()
+
+        if(has_notification_channel)
+            update_notification_channel(context)
+
+        Notification_handler.reset_alarm(context, this)
+    }
+
+    fun unregister_alarms(context: Context)
+    {
+        delete_notification_channel(context)
+        Notification_handler.cancel_alarm(context, this)
+    }
+
     // if repeat is set, update start and end times as needed
     fun apply_repeat()
     {

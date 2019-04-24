@@ -140,6 +140,8 @@ class Notification_handler: BroadcastReceiver()
                         .setDefaults(NotificationCompat.DEFAULT_ALL)
                         .setWhen(notification_when * 1000)
 
+                // TODO: repeats not firing consistently when this intent is activated (this happens in master too)
+                // TODO: not for a widget
                 // create an intent for clicking the notification to take us to the main activity
                 val i = Intent(context, Progress_bars::class.java)
                 i.putExtra(Progress_bars.EXTRA_ID, data.id)
@@ -161,14 +163,8 @@ class Notification_handler: BroadcastReceiver()
             // update the displayed list of timers
             if(data.repeats && data.end_time <= System.currentTimeMillis() / 1000)
             {
-                if(Progress_bars.is_running)
-                {
-                    Progress_bars.apply_repeat(data.id)
-                }
-                else
-                {
-                    data.apply_repeat()
-                    reset_alarm(context, data)
+                if(!data.is_widget)
+                    Progress_bars.change_list(data.id)
 
                     val db = DB(context).writableDatabase
                     data.update(db)

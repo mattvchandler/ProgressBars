@@ -152,8 +152,7 @@ class Adapter(private val activity: Progress_bars): RecyclerView.Adapter<Adapter
         if(pos < 0)
             return
 
-        data_list[pos].apply_repeat()
-        Notification_handler.reset_alarm(activity, Data(data_list[pos]))
+        data_list[pos].update_alarms(activity)
         data_list[pos].reinit(activity)
     }
 
@@ -204,30 +203,20 @@ class Adapter(private val activity: Progress_bars): RecyclerView.Adapter<Adapter
 
     private fun add_item(data: Data, pos: Int)
     {
-        data.apply_repeat()
-
-        if(data.has_notification_channel)
-            data.create_notification_channel(activity)
-
-        Notification_handler.reset_alarm(activity, data)
+        data.register_alarms(activity)
 
         data_list.add(pos, View_data(activity, data))
         notifyItemInserted(pos)
     }
     private fun edit_item(data: Data, pos: Int)
     {
-        data.apply_repeat()
-        if(data.has_notification_channel)
-            data.update_notification_channel(activity)
-
-        Notification_handler.reset_alarm(activity, data)
-
+        data.update_alarms(activity)
         data_list[pos] = View_data(activity, data)
         notifyItemChanged(pos)
     }
     private fun remove_item(pos: Int)
     {
-        data_list[pos].delete_notification_channel(activity)
+        data_list[pos].unregister_alarms(activity)
         Notification_handler.cancel_alarm(activity, data_list[pos])
         data_list.removeAt(pos)
         notifyItemRemoved(pos)

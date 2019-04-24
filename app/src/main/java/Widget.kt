@@ -43,7 +43,7 @@ import org.mattvchandler.progressbars.list.View_data
 import org.mattvchandler.progressbars.settings.Settings
 
 // TODO preview image?
-// TODO: repeat & notifications not working?
+// TODO: repeat & notifications not working consistently
 
 class Widget: AppWidgetProvider()
 {
@@ -67,10 +67,6 @@ class Widget: AppWidgetProvider()
     {
         val am = context!!.getSystemService(Context.ALARM_SERVICE) as AlarmManager
         am.cancel(build_alarm_intent(context))
-
-        val db = DB(context).writableDatabase
-        db.delete(Progress_bars_table.TABLE_NAME, "${Progress_bars_table.WIDGET_ID_COL} IS NOT NULL", null)
-        db.close()
     }
 
     override fun onDeleted(context: Context?, appWidgetIds: IntArray?)
@@ -79,12 +75,22 @@ class Widget: AppWidgetProvider()
         {
             val db = DB(context!!).writableDatabase
             for(widget_id in appWidgetIds)
-                db.delete(Progress_bars_table.TABLE_NAME, "${Progress_bars_table.WIDGET_ID_COL} = ?", arrayOf(widget_id.toString()))
+            {
+                val arg_array = arrayOf(widget_id.toString())
+
+                val cursor = db.rawQuery(Progress_bars_table.SELECT_WIDGET, arg_array)
+                val data = Data(cursor)
+                cursor.close()
+
+                data.unregister_alarms(context)
+                db.delete(Progress_bars_table.TABLE_NAME, "${Progress_bars_table.WIDGET_ID_COL} = ?", arg_array)
+            }
 
             db.close()
         }
     }
 
+    // TODO: test this
     override fun onRestored(context: Context?, oldWidgetIds: IntArray?, newWidgetIds: IntArray?)
     {
         if(oldWidgetIds != null && newWidgetIds != null && oldWidgetIds.size == newWidgetIds.size)
@@ -106,7 +112,10 @@ class Widget: AppWidgetProvider()
                 db.delete(Progress_bars_table.TABLE_NAME, "${Progress_bars_table.WIDGET_ID_COL} IS NOT NULL", null)
 
                 for((data, new_id) in widget_data)
+                {
                     data.insert(db, null, new_id)
+                    data.register_alarms(context)
+                }
 
                 db.setTransactionSuccessful()
             }
@@ -120,7 +129,7 @@ class Widget: AppWidgetProvider()
 
     override fun onReceive(context: Context?, intent: Intent?)
     {
-        Log.v("Widget::onReceive", intent?.action)
+//        Log.v("Widget::onReceive", intent?.action)
         when(intent?.action)
         {
             ACTION_UPDATE_TIME -> if(context != null) update(context, null, null)
@@ -140,12 +149,15 @@ class Widget: AppWidgetProvider()
             if(cursor.count == 0)
             {
                 Log.d("Widget::create", "$widget_id")
+
                 data.insert(db, null, widget_id)
+                data.register_alarms(context)
             }
             else
             {
                 Log.d("Widget::update", "$widget_id")
                 data.update(db)
+                data.update_alarms(context)
             }
             cursor.close()
             db.close()

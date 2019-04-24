@@ -51,19 +51,15 @@ class Progress_bars: Dynamic_theme_activity()
     companion object
     {
         const val EXTRA_ID = "org.mattvchandler.progressbars.EXTRA_ID"
-        const val CHANGE_LIST_EVENT = "ProgressBars.CHANGE_LIST_EVENT"
         const val RESULT_EDIT_DATA = 0
 
         private const val SAVE_UNDO_REDO = "SAVE_UNDO_REDO"
         private const val SAVE_ADD_FROM_SHORTCUT = "SAVE_ADD_FROM_SHORTCUT"
+        private var instance: Progress_bars? = null
 
-        private var running_instance: Progress_bars? = null
-        val is_running: Boolean
-            get() = running_instance != null
-
-        fun apply_repeat(id: Int)
+        fun change_list(id: Int)
         {
-            running_instance?.adapter!!.apply_repeat(id)
+            instance?.adapter?.apply_repeat(id)
         }
     }
 
@@ -169,12 +165,12 @@ class Progress_bars: Dynamic_theme_activity()
     override fun onStart()
     {
         super.onStart()
-        running_instance = this
+        instance = this
     }
 
     override fun onStop()
     {
-        running_instance = null
+        instance = null
         super.onStop()
     }
 
