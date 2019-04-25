@@ -26,6 +26,7 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.os.Build
+import android.util.Log
 import android.util.TypedValue
 import androidx.core.app.NotificationCompat
 import org.mattvchandler.progressbars.Progress_bars
@@ -33,10 +34,7 @@ import org.mattvchandler.progressbars.R
 import org.mattvchandler.progressbars.db.DB
 import org.mattvchandler.progressbars.db.Data
 import org.mattvchandler.progressbars.db.Progress_bars_table
-import java.io.ByteArrayInputStream
-import java.io.ByteArrayOutputStream
-import java.io.ObjectInputStream
-import java.io.ObjectOutputStream
+import java.io.*
 import kotlin.math.min
 
 // all notification / alarm handling done here
@@ -66,7 +64,12 @@ class Notification_handler: BroadcastReceiver()
             val data_as_bytes = intent.getByteArrayExtra(EXTRA_DATA) ?: return
             val instream = ByteArrayInputStream(data_as_bytes)
             val istream = ObjectInputStream(instream)
-            val data = istream.readObject() as Data
+            val data = try { istream.readObject() as Data }
+            catch(e: InvalidClassException)
+            {
+                Log.e("Notification_handler", "Error deserializing EXTRA_DATA")
+                return
+            }
 
             // set up start or completion text
             var content = ""
@@ -92,7 +95,6 @@ class Notification_handler: BroadcastReceiver()
 
             if(do_notify)
             {
-                // TODO: simultaneous alarms causing issues
                 val nm = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
                 // get the primary color from the theme
@@ -175,8 +177,8 @@ class Notification_handler: BroadcastReceiver()
 
     companion object
     {
-        private const val BASE_STARTED_ACTION_NAME = "org.mattvchandler.progressbars.STARTED_ROWID_"
-        private const val BASE_COMPLETED_ACTION_NAME = "org.mattvchandler.progressbars.COMPLETED_ROWID_"
+        private const val BASE_STARTED_ACTION_NAME = "org.mattvchandler.progressbars.STARTED_ID_"
+        private const val BASE_COMPLETED_ACTION_NAME = "org.mattvchandler.progressbars.COMPLETED_ID_"
         private const val EXTRA_DATA = "EXTRA_DATA"
 
         private const val DEFAULT_CHANNEL_ID = "org.mattvchandler.progressbars.notification_channel"
@@ -231,7 +233,7 @@ class Notification_handler: BroadcastReceiver()
                 complete_intent.putExtra(EXTRA_DATA, data_as_bytes)
             }
 
-            return Pair(PendingIntent.getBroadcast(context, 0, start_intent,    PendingIntent.FLAG_CANCEL_CURRENT),
+            return Pair(PendingIntent.getBroadcast(context, 0, start_intent, PendingIntent.FLAG_CANCEL_CURRENT),
                         PendingIntent.getBroadcast(context, 0, complete_intent, PendingIntent.FLAG_CANCEL_CURRENT))
         }
 

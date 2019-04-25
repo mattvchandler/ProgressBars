@@ -43,7 +43,6 @@ import org.mattvchandler.progressbars.list.View_data
 import org.mattvchandler.progressbars.settings.Settings
 
 // TODO preview image?
-// TODO: repeat & notifications not working consistently
 
 class Widget: AppWidgetProvider()
 {

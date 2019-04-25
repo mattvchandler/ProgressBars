@@ -294,8 +294,8 @@ open class Data(): Serializable
 
     fun unregister_alarms(context: Context)
     {
-        delete_notification_channel(context)
         Notification_handler.cancel_alarm(context, this)
+        delete_notification_channel(context)
     }
 
     // if repeat is set, update start and end times as needed
