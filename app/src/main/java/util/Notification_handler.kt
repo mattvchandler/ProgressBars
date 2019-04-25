@@ -92,6 +92,7 @@ class Notification_handler: BroadcastReceiver()
 
             if(do_notify)
             {
+                // TODO: simultaneous alarms causing issues
                 val nm = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
                 // get the primary color from the theme
@@ -140,7 +141,6 @@ class Notification_handler: BroadcastReceiver()
                         .setDefaults(NotificationCompat.DEFAULT_ALL)
                         .setWhen(notification_when * 1000)
 
-                // TODO: repeats not firing consistently when this intent is activated (this happens in master too)
                 // TODO: not for a widget
                 // create an intent for clicking the notification to take us to the main activity
                 val i = Intent(context, Progress_bars::class.java)
@@ -157,19 +157,18 @@ class Notification_handler: BroadcastReceiver()
 
                 // send the notification. id will be used as the notification's ID
                 nm.notify(data.id, not_builder.build())
-
             }
 
             // update the displayed list of timers
             if(data.repeats && data.end_time <= System.currentTimeMillis() / 1000)
             {
-                if(!data.is_widget)
-                    Progress_bars.change_list(data.id)
+                // TODO: not for a widget
+                Progress_bars.change_list(data.id)
+                data.update_alarms(context)
 
-                    val db = DB(context).writableDatabase
-                    data.update(db)
-                    db.close()
-                }
+                val db = DB(context).writableDatabase
+                data.update(db)
+                db.close()
             }
         }
     }

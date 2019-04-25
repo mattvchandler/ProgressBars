@@ -266,9 +266,8 @@ open class Data(): Serializable
 
     fun update(db: SQLiteDatabase)
     {
-        check(rowid >= 0) { "Tried to update when rowid isn't set" }
-
-        apply_repeat()
+        if(rowid < 0)
+            return
 
         db.update(Progress_bars_table.TABLE_NAME, build_ContentValues(), BaseColumns._ID + " = ?", arrayOf(rowid.toString()))
     }
