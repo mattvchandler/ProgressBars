@@ -150,14 +150,14 @@ class Widget: AppWidgetProvider()
             {
                 Log.d("Widget::create", "$widget_id")
 
-                data.insert(db, null, widget_id)
                 data.register_alarms(context)
+                data.insert(db, null, widget_id)
             }
             else
             {
                 Log.d("Widget::update", "$widget_id")
-                data.update(db)
                 data.update_alarms(context)
+                data.update(db)
             }
             cursor.close()
             db.close()
