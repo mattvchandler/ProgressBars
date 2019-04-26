@@ -24,11 +24,11 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 <appwidget-provider xmlns:android="http://schemas.android.com/apk/res/android"
                     android:initialLayout="@layout/progress_bar_widget"
                     android:minWidth="180dp"
-                    android:minHeight="110dp"
+                    android:minHeight="90dp"
                     android:minResizeWidth="40dp"
                     android:minResizeHeight="40dp"
                     android:resizeMode="horizontal|vertical"
-                    android:updatePeriodMillis="1800000"
+                    android:updatePeriodMillis="0"
                     android:widgetCategory="home_screen"
                     android:configure="org.mattvchandler.progressbars.settings.Settings"
     >

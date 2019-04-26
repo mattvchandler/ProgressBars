@@ -59,11 +59,6 @@ class Widget: AppWidgetProvider()
         super.onAppWidgetOptionsChanged(context, appWidgetManager, appWidgetId, newOptions)
     }
 
-    override fun onEnabled(context: Context?)
-    {
-        super.onEnabled(context)
-    }
-
     override fun onDisabled(context: Context?)
     {
         val am = context!!.getSystemService(Context.ALARM_SERVICE) as AlarmManager
@@ -92,43 +87,6 @@ class Widget: AppWidgetProvider()
             }
 
             db.close()
-        }
-    }
-
-    // TODO: test this
-    override fun onRestored(context: Context?, oldWidgetIds: IntArray?, newWidgetIds: IntArray?)
-    {
-        if(oldWidgetIds != null && newWidgetIds != null && oldWidgetIds.size == newWidgetIds.size)
-        {
-            val db = DB(context!!).writableDatabase
-
-            data class Widget_migration(val data: Data, val new_id: Int)
-            val widget_data = Array(oldWidgetIds.size)
-            {
-                val cursor = db.rawQuery(Progress_bars_table.SELECT_WIDGET, arrayOf(oldWidgetIds[it].toString()))
-                val data = Data(cursor)
-                cursor.close()
-                Widget_migration(data, newWidgetIds[it])
-            }
-
-            db.beginTransaction()
-            try
-            {
-                db.delete(Progress_bars_table.TABLE_NAME, "${Progress_bars_table.WIDGET_ID_COL} IS NOT NULL", null)
-
-                for((data, new_id) in widget_data)
-                {
-                    data.insert(db, null, new_id)
-                    data.register_alarms(context)
-                }
-
-                db.setTransactionSuccessful()
-            }
-            finally
-            {
-                db.endTransaction()
-                db.close()
-            }
         }
     }
 
