@@ -143,19 +143,21 @@ class Notification_handler: BroadcastReceiver()
                         .setDefaults(NotificationCompat.DEFAULT_ALL)
                         .setWhen(notification_when * 1000)
 
-                // TODO: not for a widget
-                // create an intent for clicking the notification to take us to the main activity
-                val i = Intent(context, Progress_bars::class.java)
-                i.putExtra(Progress_bars.EXTRA_ID, data.id)
+                if(!data.is_widget)
+                {
+                    // create an intent for clicking the notification to take us to the main activity
+                    val i = Intent(context, Progress_bars::class.java)
+                    i.putExtra(Progress_bars.EXTRA_ID, data.id)
 
-                // create an artificial back-stack
-                val stack = TaskStackBuilder.create(context)
-                stack.addParentStack(Progress_bars::class.java)
-                stack.addNextIntent(i)
+                    // create an artificial back-stack
+                    val stack = TaskStackBuilder.create(context)
+                    stack.addParentStack(Progress_bars::class.java)
+                    stack.addNextIntent(i)
 
-                // package intent into a pending intent for the notification
-                val pi = stack.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT)
-                not_builder.setContentIntent(pi)
+                    // package intent into a pending intent for the notification
+                    val pi = stack.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT)
+                    not_builder.setContentIntent(pi)
+                }
 
                 // send the notification. id will be used as the notification's ID
                 nm.notify(data.id, not_builder.build())
@@ -164,10 +166,10 @@ class Notification_handler: BroadcastReceiver()
             // update the displayed list of timers
             if(data.repeats && data.end_time <= System.currentTimeMillis() / 1000)
             {
-                // TODO: not for a widget
-                Progress_bars.change_list(data.id)
-                data.update_alarms(context)
+                if(!data.is_widget)
+                    Progress_bars.change_list(data.id)
 
+                data.update_alarms(context)
                 val db = DB(context).writableDatabase
                 data.update(db)
                 db.close()

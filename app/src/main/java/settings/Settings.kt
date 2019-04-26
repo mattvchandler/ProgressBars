@@ -31,7 +31,6 @@ import android.database.ContentObserver
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
-import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -110,8 +109,6 @@ class Settings: Dynamic_theme_activity(), DatePickerDialog.OnDateSetListener, Ti
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         consume_insets(this, binding.mainList, binding.appbarLayout)
-
-        Log.v("Settings::onCreate", intent?.action ?: "null")
 
         // only run this on 1st creation
         if(savedInstanceState == null)

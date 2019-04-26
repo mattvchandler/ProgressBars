@@ -54,6 +54,8 @@ class Widget: AppWidgetProvider()
 
     override fun onAppWidgetOptionsChanged(context: Context?, appWidgetManager: AppWidgetManager?, appWidgetId: Int, newOptions: Bundle?)
     {
+        if(context != null)
+            update(context, appWidgetManager, intArrayOf(appWidgetId))
         super.onAppWidgetOptionsChanged(context, appWidgetManager, appWidgetId, newOptions)
     }
 
@@ -128,7 +130,7 @@ class Widget: AppWidgetProvider()
 
     override fun onReceive(context: Context?, intent: Intent?)
     {
-//        Log.v("Widget::onReceive", intent?.action)
+        Log.v("Widget::onReceive", intent?.action)
         when(intent?.action)
         {
             ACTION_UPDATE_TIME -> if(context != null) update(context, null, null)
@@ -220,6 +222,9 @@ class Widget: AppWidgetProvider()
 
         private fun build_view(context: Context, appWidgetManager: AppWidgetManager, widget_id: Int, data: View_data)
         {
+            data.update_alarms(context)
+            data.reinit(context)
+
             val views = RemoteViews(context.packageName, if(data.separate_time) R.layout.progress_bar_widget else R.layout.single_progress_bar_widget)
 
             views.setTextViewText(R.id.title, data.title)
