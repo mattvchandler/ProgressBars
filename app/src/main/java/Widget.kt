@@ -137,8 +137,8 @@ class Widget: AppWidgetProvider()
         Log.v("Widget::onReceive", intent?.action)
         when(intent?.action)
         {
+            Intent.ACTION_TIME_CHANGED, Intent.ACTION_TIMEZONE_CHANGED,
             ACTION_UPDATE_TIME -> if(context != null) update(context, null, null)
-
             else -> super.onReceive(context, intent)
         }
     }
@@ -207,8 +207,8 @@ class Widget: AppWidgetProvider()
                 }
             }
 
+            // TODO: use exact time to trigger line up changes to clock (0, 5, 10, ...)
             // schedule another update
-
             val time_interval = PreferenceManager.getDefaultSharedPreferences(context).getString(context.resources.getString(R.string.pref_widget_refresh_key), context.resources.getString(R.string.pref_widget_refresh_default))!!.toInt()
             val am = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
             am.set(AlarmManager.ELAPSED_REALTIME, SystemClock.elapsedRealtime() + time_interval, build_alarm_intent(context))

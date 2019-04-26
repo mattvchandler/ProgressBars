@@ -54,6 +54,5 @@ class Resetting_application: Application()
 
         // register notification handler
         Notification_handler.setup_notification_channel(this)
-        // TODO: send a broadcast to the widgets to wake them up, if needed
     }
 }
