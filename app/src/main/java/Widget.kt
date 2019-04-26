@@ -42,8 +42,6 @@ import org.mattvchandler.progressbars.db.Progress_bars_table
 import org.mattvchandler.progressbars.list.View_data
 import org.mattvchandler.progressbars.settings.Settings
 
-// TODO preview image?
-
 class Widget: AppWidgetProvider()
 {
     override fun onUpdate(context: Context?, appWidgetManager: AppWidgetManager?, appWidgetIds: IntArray?)
