@@ -80,11 +80,15 @@ class Widget: AppWidgetProvider()
                 val arg_array = arrayOf(widget_id.toString())
 
                 val cursor = db.rawQuery(Progress_bars_table.SELECT_WIDGET, arg_array)
-                val data = Data(cursor)
-                cursor.close()
+                if(cursor.count > 0)
+                {
+                    cursor.moveToFirst()
+                    val data = Data(cursor)
 
-                data.unregister_alarms(context)
-                db.delete(Progress_bars_table.TABLE_NAME, "${Progress_bars_table.WIDGET_ID_COL} = ?", arg_array)
+                    data.unregister_alarms(context)
+                    db.delete(Progress_bars_table.TABLE_NAME, "${Progress_bars_table.WIDGET_ID_COL} = ?", arg_array)
+                }
+                cursor.close()
             }
 
             db.close()
@@ -172,8 +176,6 @@ class Widget: AppWidgetProvider()
             val cursor = db.rawQuery(Progress_bars_table.SELECT_WIDGET, arrayOf(widget_id.toString()))
             if(cursor.count == 0)
             {
-                Log.e("Widget::updateAppWidget", "No data found for widget: $widget_id")
-
                 cursor.close()
                 db.close()
 
