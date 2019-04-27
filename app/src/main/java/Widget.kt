@@ -163,7 +163,6 @@ class Widget: AppWidgetProvider()
                 }
             }
 
-            // TODO: use exact time to trigger line up changes to clock (0, 5, 10, ...)
             // schedule another update
             val time_interval = PreferenceManager.getDefaultSharedPreferences(context).getString(context.resources.getString(R.string.pref_widget_refresh_key), context.resources.getString(R.string.pref_widget_refresh_default))!!.toInt()
             val am = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager

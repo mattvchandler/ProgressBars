@@ -113,15 +113,16 @@ class Settings: Dynamic_theme_activity(), DatePickerDialog.OnDateSetListener, Ti
         // only run this on 1st creation
         if(savedInstanceState == null)
         {
-            if(intent.hasExtra(EXTRA_EDIT_DATA))
-                data = intent.getSerializableExtra(EXTRA_EDIT_DATA) as Data
-            else if(intent.action == AppWidgetManager.ACTION_APPWIDGET_CONFIGURE)
+            data = when
             {
-                val widget_id = intent.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, AppWidgetManager.INVALID_APPWIDGET_ID)
-                data = Widget.get_data_from_id(this, widget_id) ?: Data(this)
+                intent.hasExtra(EXTRA_EDIT_DATA) -> intent.getSerializableExtra(EXTRA_EDIT_DATA) as Data
+                intent.action == AppWidgetManager.ACTION_APPWIDGET_CONFIGURE ->
+                {
+                    val widget_id = intent.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, AppWidgetManager.INVALID_APPWIDGET_ID)
+                    Widget.get_data_from_id(this, widget_id) ?: Data(this)
+                }
+                else -> Data(this)
             }
-            else
-                data = Data(this)
 
             // no rowid passed? make a new one
             if(data.rowid > 0)

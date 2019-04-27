@@ -396,7 +396,7 @@ open class Data(): Serializable
             update_notification_channel(context)
         }
     }
-    fun update_notification_channel(context: Context)
+    private fun update_notification_channel(context: Context)
     {
         if(Build.VERSION.SDK_INT >= 26)
         {
