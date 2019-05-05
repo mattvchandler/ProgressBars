@@ -44,6 +44,7 @@ import org.mattvchandler.progressbars.util.Preferences
 
 // TODO: persistent notification?
 // TODO: consider moving to LiveData / ViewModel. May reduce complexity
+// TODO: performance on main list scrolling
 
 // main activity. display each timer in a list
 class Progress_bars: Dynamic_theme_activity()

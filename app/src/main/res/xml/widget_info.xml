@@ -22,7 +22,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 -->
 
 <appwidget-provider xmlns:android="http://schemas.android.com/apk/res/android"
-                    android:initialLayout="@layout/progress_bar_widget"
+                    android:initialLayout="@layout/single_progress_bar_widget"
                     android:previewImage="@drawable/widget_preview"
                     android:minWidth="180dp"
                     android:minHeight="90dp"
