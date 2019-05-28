@@ -23,11 +23,13 @@ package org.mattvchandler.progressbars
 
 import android.app.AlarmManager
 import android.app.PendingIntent
+import android.app.WallpaperManager
 import android.appwidget.AppWidgetManager
 import android.appwidget.AppWidgetProvider
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
+import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
 import android.os.PowerManager
@@ -35,12 +37,14 @@ import android.os.SystemClock
 import android.util.Log
 import android.view.View
 import android.widget.RemoteViews
+import androidx.core.content.ContextCompat
 import androidx.preference.PreferenceManager
 import org.mattvchandler.progressbars.db.DB
 import org.mattvchandler.progressbars.db.Data
 import org.mattvchandler.progressbars.db.Progress_bars_table
 import org.mattvchandler.progressbars.list.View_data
 import org.mattvchandler.progressbars.settings.Settings
+import kotlin.math.sqrt
 
 class Widget: AppWidgetProvider()
 {
@@ -184,11 +188,43 @@ class Widget: AppWidgetProvider()
 
             val views = RemoteViews(context.packageName, if(data.separate_time) R.layout.progress_bar_widget else R.layout.single_progress_bar_widget)
 
+            val text_color = when(PreferenceManager.getDefaultSharedPreferences(context).getString(context.resources.getString(R.string.pref_widget_text_color_key),
+                                                                                                   context.resources.getString(R.string.pref_widget_text_color_default)))
+            {
+                "white" -> Color.WHITE
+                "black" -> Color.BLACK
+                "auto" ->
+                {
+                    if(Build.VERSION.SDK_INT >= 27)
+                    {
+                        val lum = WallpaperManager.getInstance(context)?.getWallpaperColors(WallpaperManager.FLAG_SYSTEM)?.primaryColor?.luminance() ?: 0.0f
+                        if(lum > sqrt(0.0525f) - 0.05f)
+                            Color.BLACK
+                        else
+                            Color.WHITE
+                    }
+                    else
+                        Color.WHITE
+                }
+                else -> Color.WHITE
+            }
+
+            val has_bg = PreferenceManager.getDefaultSharedPreferences(context).getBoolean(context.resources.getString(R.string.pref_widget_bg_key),
+                                                                                           context.resources.getBoolean(R.bool.pref_widget_bg_default))
+            views.setInt(R.id.background, "setBackgroundColor",
+                    if(has_bg)
+                        ContextCompat.getColor(context, R.color.widget_bg_color)
+                    else
+                        Color.TRANSPARENT)
+
+
             views.setTextViewText(R.id.title, data.title)
+            views.setTextColor(R.id.title, text_color)
 
             if(data.show_time_text)
             {
                 views.setTextViewText(R.id.time_text, data.time_text_disp.get())
+                views.setTextColor(R.id.time_text, text_color)
                 views.setViewVisibility(R.id.time_text, View.VISIBLE)
             }
             else
@@ -203,6 +239,10 @@ class Widget: AppWidgetProvider()
                     views.setTextViewText(R.id.start_time_date, data.start_date_disp.get())
                     views.setTextViewText(R.id.start_time_time, data.start_time_disp.get())
 
+                    views.setTextColor(R.id.start_time_label, text_color)
+                    views.setTextColor(R.id.start_time_date, text_color)
+                    views.setTextColor(R.id.start_time_time, text_color)
+
                     views.setViewVisibility(R.id.start_time_box, View.VISIBLE)
                 }
                 else
@@ -214,6 +254,10 @@ class Widget: AppWidgetProvider()
                     views.setTextViewText(R.id.end_time_date, data.end_date_disp.get())
                     views.setTextViewText(R.id.end_time_time, data.end_time_disp.get())
 
+                    views.setTextColor(R.id.end_time_label, text_color)
+                    views.setTextColor(R.id.end_time_date, text_color)
+                    views.setTextColor(R.id.end_time_time, text_color)
+
                     views.setViewVisibility(R.id.end_time_box, View.VISIBLE)
                 }
                 else
@@ -223,6 +267,7 @@ class Widget: AppWidgetProvider()
                 if(data.show_progress)
                 {
                     views.setTextViewText(R.id.percentage, data.percentage_disp.get())
+                    views.setTextColor(R.id.percentage, text_color)
                     views.setInt(R.id.progress_bar, "setProgress", data.progress_disp.get())
 
                     views.setViewVisibility(R.id.percentage_box, View.VISIBLE)
@@ -243,6 +288,9 @@ class Widget: AppWidgetProvider()
                 {
                     views.setTextViewText(R.id.date, data.end_date_disp.get())
                     views.setTextViewText(R.id.time, data.end_time_disp.get())
+
+                    views.setTextColor(R.id.date, text_color)
+                    views.setTextColor(R.id.time, text_color)
 
                     views.setViewVisibility(R.id.center_box, View.VISIBLE)
                 }

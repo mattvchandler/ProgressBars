@@ -52,6 +52,20 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
         />
 
     <ListPreference
+        android:key="@string/pref_widget_text_color_key"
+        android:title="@string/pref_widget_text_color_title"
+        android:entries="@array/pref_widget_text_color_display"
+        android:entryValues="@array/pref_widget_text_color_values"
+        android:defaultValue="@string/pref_widget_text_color_default"
+        />
+
+    <SwitchPreference
+        android:key="@string/pref_widget_bg_key"
+        android:title="@string/pref_widget_bg_title"
+        android:defaultValue="@bool/pref_widget_bg_default"
+        />
+
+    <ListPreference
         android:key="@string/pref_theme_key"
         android:title="@string/pref_theme_title"
         android:entries="@array/pref_theme_display"

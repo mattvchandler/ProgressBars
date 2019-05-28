@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <string-array name="pref_widget_text_color_display" tools:ignore="InconsistentArrays">
+        <item>Automatically set from wallpaper</item>
+        <item>White</item>
+        <item>Black</item>
+    </string-array>
+</resources>

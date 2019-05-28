@@ -25,5 +25,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
     <dimen name="margin_size">8dp</dimen>
     <dimen name="padding_size">16dp</dimen>
     <dimen name="short_padding_size">8dp</dimen>
+    <dimen name="widget_padding_size">2dp</dimen>
     <dimen name="selected_elevation">8dp</dimen>
 </resources>

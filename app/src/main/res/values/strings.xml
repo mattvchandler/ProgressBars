@@ -111,6 +111,14 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
         <item>Daily</item>
     </string-array>
 
+    <string name="pref_widget_text_color_title">Desktop widget text color</string>
+    <string-array name="pref_widget_text_color_display" tools:ignore="InconsistentArrays">
+        <item>White</item>
+        <item>Black</item>
+    </string-array>
+
+    <string name="pref_widget_bg_title">Desktop widget background</string>
+
     <string name="pref_theme_title">Day / Night Theme</string>
     <string-array name="pref_theme_display" tools:ignore="InconsistentArrays">
         <item>Follow System</item>
