@@ -23,6 +23,7 @@ package org.mattvchandler.progressbars.util
 
 import android.content.Context
 import android.os.Bundle
+import android.os.Handler
 import android.preference.PreferenceManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
@@ -51,7 +52,7 @@ abstract class Dynamic_theme_activity: AppCompatActivity()
 
         // has the theme changed? recreate this activity
         if(new_theme != theme)
-            recreate()
+            Handler().postDelayed({recreate()}, 0)
     }
 
     companion object
