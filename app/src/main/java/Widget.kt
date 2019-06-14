@@ -42,9 +42,12 @@ import androidx.preference.PreferenceManager
 import org.mattvchandler.progressbars.db.DB
 import org.mattvchandler.progressbars.db.Data
 import org.mattvchandler.progressbars.db.Progress_bars_table
+import org.mattvchandler.progressbars.db.get_nullable_int
 import org.mattvchandler.progressbars.list.View_data
 import org.mattvchandler.progressbars.settings.Settings
 import kotlin.math.sqrt
+
+// TODO: cleanup debug stmts
 
 class Widget: AppWidgetProvider()
 {
@@ -59,6 +62,34 @@ class Widget: AppWidgetProvider()
         if(context != null)
             update(context, appWidgetManager, intArrayOf(appWidgetId))
         super.onAppWidgetOptionsChanged(context, appWidgetManager, appWidgetId, newOptions)
+    }
+
+    override fun onEnabled(context: Context?)
+    {
+        // delete any orphaned widgets from the DB (as you might get restoring from a backup, etc)
+
+        val valid_widget_ids = AppWidgetManager.getInstance(context!!).getAppWidgetIds(ComponentName(context.packageName, Widget::class.java.name))
+
+        val db = DB(context).writableDatabase
+        val cursor = db.rawQuery(Progress_bars_table.SELECT_ALL_WIDGETS, null)
+        cursor.moveToFirst()
+        for(i in 0 until cursor.count)
+        {
+            val widget_id = cursor.get_nullable_int(Progress_bars_table.WIDGET_ID_COL)!!
+
+            if(widget_id !in valid_widget_ids)
+            {
+                Log.d("Widget::onEnabled", "Deleting orphaned widget ID $widget_id")
+                val data = Data(cursor)
+                data.unregister_alarms(context)
+                db.delete(Progress_bars_table.TABLE_NAME, "${Progress_bars_table.WIDGET_ID_COL} = ?", arrayOf(widget_id.toString()))
+            }
+
+            cursor.moveToNext()
+        }
+
+        cursor.close()
+        db.close()
     }
 
     override fun onDisabled(context: Context?)
