@@ -27,6 +27,7 @@ import android.app.WallpaperManager
 import android.appwidget.AppWidgetManager
 import android.appwidget.AppWidgetProvider
 import android.content.ComponentName
+import android.content.ContentValues
 import android.content.Context
 import android.content.Intent
 import android.graphics.Color
@@ -39,10 +40,7 @@ import android.view.View
 import android.widget.RemoteViews
 import androidx.core.content.ContextCompat
 import androidx.preference.PreferenceManager
-import org.mattvchandler.progressbars.db.DB
-import org.mattvchandler.progressbars.db.Data
-import org.mattvchandler.progressbars.db.Progress_bars_table
-import org.mattvchandler.progressbars.db.get_nullable_int
+import org.mattvchandler.progressbars.db.*
 import org.mattvchandler.progressbars.list.View_data
 import org.mattvchandler.progressbars.settings.Settings
 import kotlin.math.sqrt
@@ -64,34 +62,6 @@ class Widget: AppWidgetProvider()
         super.onAppWidgetOptionsChanged(context, appWidgetManager, appWidgetId, newOptions)
     }
 
-    override fun onEnabled(context: Context?)
-    {
-        // delete any orphaned widgets from the DB (as you might get restoring from a backup, etc)
-
-        val valid_widget_ids = AppWidgetManager.getInstance(context!!).getAppWidgetIds(ComponentName(context.packageName, Widget::class.java.name))
-
-        val db = DB(context).writableDatabase
-        val cursor = db.rawQuery(Progress_bars_table.SELECT_ALL_WIDGETS, null)
-        cursor.moveToFirst()
-        for(i in 0 until cursor.count)
-        {
-            val widget_id = cursor.get_nullable_int(Progress_bars_table.WIDGET_ID_COL)!!
-
-            if(widget_id !in valid_widget_ids)
-            {
-                Log.d("Widget::onEnabled", "Deleting orphaned widget ID $widget_id")
-                val data = Data(cursor)
-                data.unregister_alarms(context)
-                db.delete(Progress_bars_table.TABLE_NAME, "${Progress_bars_table.WIDGET_ID_COL} = ?", arrayOf(widget_id.toString()))
-            }
-
-            cursor.moveToNext()
-        }
-
-        cursor.close()
-        db.close()
-    }
-
     override fun onDisabled(context: Context?)
     {
         val am = context!!.getSystemService(Context.ALARM_SERVICE) as AlarmManager
@@ -105,6 +75,7 @@ class Widget: AppWidgetProvider()
             val db = DB(context!!).writableDatabase
             for(widget_id in appWidgetIds)
             {
+                Log.d("Widget::onDeleted", "deleting: $widget_id")
                 val arg_array = arrayOf(widget_id.toString())
 
                 val cursor = db.rawQuery(Progress_bars_table.SELECT_WIDGET, arg_array)
@@ -112,6 +83,7 @@ class Widget: AppWidgetProvider()
                 {
                     cursor.moveToFirst()
                     val data = Data(cursor)
+                    Log.d("Widget::onDeleted", "deleting: $widget_id from DB rowid: ${data.rowid}")
 
                     data.unregister_alarms(context)
                     db.delete(Progress_bars_table.TABLE_NAME, "${Progress_bars_table.WIDGET_ID_COL} = ?", arg_array)
@@ -163,18 +135,47 @@ class Widget: AppWidgetProvider()
 
         fun get_data_from_id(context: Context, widget_id: Int): View_data?
         {
-            val db = DB(context).readableDatabase
+            // TODO: return some indication that we've adopted an orphan (will need to move the DB update), and show a dialog saying that there is an orphan to adopt
+            var data: View_data? = null
+            val db = DB(context).writableDatabase
             val cursor = db.rawQuery(Progress_bars_table.SELECT_WIDGET, arrayOf(widget_id.toString()))
+
             if(cursor.count == 0)
             {
-                cursor.close()
-                db.close()
+                // check to see if there is an orphaned widget ID we can adopt
+                val valid_widget_ids = AppWidgetManager.getInstance(context).getAppWidgetIds(ComponentName(context.packageName, Widget::class.java.name))
 
-                return null
+                val orphan_cursor = db.rawQuery(Progress_bars_table.SELECT_ALL_WIDGETS, null)
+                orphan_cursor.moveToFirst()
+                for(i in 0 until orphan_cursor.count)
+                {
+                    val orphan_widget_id = orphan_cursor.get_nullable_int(Progress_bars_table.WIDGET_ID_COL)!!
+
+                    if(orphan_widget_id !in valid_widget_ids)
+                    {
+                        Log.d("Widget::get_data_from_i", "Adopting orphaned id: $orphan_widget_id to $widget_id")
+                        val adopted_widget_id = ContentValues()
+                        adopted_widget_id.put(Progress_bars_table.WIDGET_ID_COL, widget_id)
+                        db.update(Progress_bars_table.TABLE_NAME, adopted_widget_id, "${Progress_bars_table.ID_COL} = ?",
+                                arrayOf(orphan_cursor.get_nullable_long(Progress_bars_table.ID_COL).toString()))
+
+                        val adopted_cursor = db.rawQuery(Progress_bars_table.SELECT_WIDGET, arrayOf(widget_id.toString()))
+                        adopted_cursor.moveToFirst()
+                        data = View_data(context, Data(adopted_cursor))
+                        adopted_cursor.close()
+
+                        break
+                    }
+                    orphan_cursor.moveToNext()
+                }
+                orphan_cursor.close()
+                // didn't find an orphan to adopt, so we'll return null to make a new one
             }
-
-            cursor.moveToFirst()
-            val data = View_data(context, Data(cursor))
+            else
+            {
+                cursor.moveToFirst()
+                data = View_data(context, Data(cursor))
+            }
 
             cursor.close()
             db.close()
