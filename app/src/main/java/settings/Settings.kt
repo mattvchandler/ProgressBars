@@ -351,7 +351,7 @@ class Settings: Dynamic_theme_activity(), DatePickerDialog.OnDateSetListener, Ti
     private fun cancel()
     {
         // if this was a new timer, delete any notification channel that may have been created
-        if(Build.VERSION.SDK_INT > 26 && !intent.hasExtra(EXTRA_EDIT_DATA) && data.has_notification_channel)
+        if(Build.VERSION.SDK_INT >= 26 && !intent.hasExtra(EXTRA_EDIT_DATA) && data.has_notification_channel)
             data.delete_notification_channel(this)
     }
 
@@ -605,7 +605,7 @@ class Settings: Dynamic_theme_activity(), DatePickerDialog.OnDateSetListener, Ti
 
     fun on_notification_settings_butt(@Suppress("UNUSED_PARAMETER") view: View)
     {
-        if(Build.VERSION.SDK_INT > 26)
+        if(Build.VERSION.SDK_INT >= 26)
         {
             val intent = Intent()
             if(!store_widgets_to_data())
@@ -623,7 +623,7 @@ class Settings: Dynamic_theme_activity(), DatePickerDialog.OnDateSetListener, Ti
 
     fun on_notification_reset_butt(@Suppress("UNUSED_PARAMETER") view: View)
     {
-        if(Build.VERSION.SDK_INT > 26 && data.has_notification_channel)
+        if(Build.VERSION.SDK_INT >= 26 && data.has_notification_channel)
         {
             data.delete_notification_channel(this)
             binding.notificationReset.isEnabled = false

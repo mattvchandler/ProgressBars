@@ -8,9 +8,9 @@ android {
         applicationId "org.mattvchandler.progressbars"
         minSdkVersion 19
         targetSdkVersion 28
-        versionName "2.0.3"
+        versionName "2.0.4"
         // version code is <MIN_SDK>0<2-digit MAJOR><2-digit MINOR><2-digit PATCH>
-        versionCode 190020003
+        versionCode 190020004
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
     }

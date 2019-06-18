@@ -124,7 +124,7 @@ class Preferences: Dynamic_theme_activity()
                             intent.putExtra("app_package", context!!.packageName)
                             intent.putExtra("app_uid", context!!.applicationInfo.uid)
                         }
-                        Build.VERSION.SDK_INT > 26 ->
+                        Build.VERSION.SDK_INT >= 26 ->
                         {
                             intent.action = android.provider.Settings.ACTION_APP_NOTIFICATION_SETTINGS
                             intent.putExtra(android.provider.Settings.EXTRA_APP_PACKAGE, context!!.packageName)
