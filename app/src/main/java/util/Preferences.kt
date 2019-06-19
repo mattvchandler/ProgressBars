@@ -60,6 +60,7 @@ class Preferences: Dynamic_theme_activity()
             findPreference<ListPreference>(resources.getString(R.string.pref_date_format_key))?.summaryProvider = ListPreference.SimpleSummaryProvider.getInstance()
             findPreference<ListPreference>(resources.getString(R.string.pref_first_day_of_wk_key))?.summaryProvider = ListPreference.SimpleSummaryProvider.getInstance()
             findPreference<ListPreference>(resources.getString(R.string.pref_widget_refresh_key))?.summaryProvider = ListPreference.SimpleSummaryProvider.getInstance()
+            findPreference<ListPreference>(resources.getString(R.string.pref_widget_text_color_key))?.summaryProvider = ListPreference.SimpleSummaryProvider.getInstance()
             findPreference<ListPreference>(resources.getString(R.string.pref_theme_key))?.summaryProvider = ListPreference.SimpleSummaryProvider.getInstance()
         }
 
