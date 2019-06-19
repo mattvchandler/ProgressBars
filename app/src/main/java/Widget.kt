@@ -27,7 +27,6 @@ import android.app.WallpaperManager
 import android.appwidget.AppWidgetManager
 import android.appwidget.AppWidgetProvider
 import android.content.ComponentName
-import android.content.ContentValues
 import android.content.Context
 import android.content.Intent
 import android.graphics.Color
@@ -119,7 +118,7 @@ class Widget: AppWidgetProvider()
                 Log.d("Widget::create", "$widget_id")
 
                 data.register_alarms(context)
-                data.insert(db, null, widget_id)
+                data.insert(db)
             }
             else
             {
@@ -133,10 +132,10 @@ class Widget: AppWidgetProvider()
             update(context, AppWidgetManager.getInstance(context), intArrayOf(widget_id))
         }
 
-        fun get_data_from_id(context: Context, widget_id: Int): View_data?
+        fun get_data_from_id(context: Context, widget_id: Int): Data
         {
             // TODO: return some indication that we've adopted an orphan (will need to move the DB update), and show a dialog saying that there is an orphan to adopt
-            var data: View_data? = null
+            var data: Data? = null
             val db = DB(context).writableDatabase
             val cursor = db.rawQuery(Progress_bars_table.SELECT_WIDGET, arrayOf(widget_id.toString()))
 
@@ -154,14 +153,11 @@ class Widget: AppWidgetProvider()
                     if(orphan_widget_id !in valid_widget_ids)
                     {
                         Log.d("Widget::get_data_from_i", "Adopting orphaned id: $orphan_widget_id to $widget_id")
-                        val adopted_widget_id = ContentValues()
-                        adopted_widget_id.put(Progress_bars_table.WIDGET_ID_COL, widget_id)
-                        db.update(Progress_bars_table.TABLE_NAME, adopted_widget_id, "${Progress_bars_table.ID_COL} = ?",
-                                arrayOf(orphan_cursor.get_nullable_long(Progress_bars_table.ID_COL).toString()))
 
                         val adopted_cursor = db.rawQuery(Progress_bars_table.SELECT_WIDGET, arrayOf(widget_id.toString()))
                         adopted_cursor.moveToFirst()
-                        data = View_data(context, Data(adopted_cursor))
+                        data = Data(adopted_cursor)
+                        data.widget_id = widget_id
                         adopted_cursor.close()
 
                         break
@@ -169,16 +165,22 @@ class Widget: AppWidgetProvider()
                     orphan_cursor.moveToNext()
                 }
                 orphan_cursor.close()
-                // didn't find an orphan to adopt, so we'll return null to make a new one
+                // didn't find an orphan to adopt, so we'll leave data null to make a new one
             }
             else
             {
                 cursor.moveToFirst()
-                data = View_data(context, Data(cursor))
+                data = Data(cursor)
             }
 
             cursor.close()
             db.close()
+
+            if(data == null)
+            {
+                data = Data(context)
+                data.widget_id = widget_id
+            }
 
             return data
         }
@@ -193,9 +195,8 @@ class Widget: AppWidgetProvider()
 
                 for(appWidgetId in appWidgetIds?: appWidgetManager_default.getAppWidgetIds(ComponentName(context, Widget::class.java)))
                 {
-                    val data = get_data_from_id(context, appWidgetId)
-                    if(data != null)
-                        build_view(context, appWidgetManager_default, appWidgetId, data)
+                    val data = View_data(context, get_data_from_id(context, appWidgetId))
+                    build_view(context, appWidgetManager_default, appWidgetId, data)
                 }
             }
 

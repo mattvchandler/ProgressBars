@@ -234,7 +234,7 @@ class Progress_bars: Dynamic_theme_activity()
 
     override fun onActivityResult(request_code: Int, result_code: Int, intent: Intent?)
     {
-        // get data back from Countdown_text
+        // get data back from Settings
         if(result_code == RESULT_OK && request_code == RESULT_EDIT_DATA)
         {
             val data = intent!!.getSerializableExtra(Settings.EXTRA_EDIT_DATA)!! as Data

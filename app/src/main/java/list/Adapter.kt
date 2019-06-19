@@ -268,19 +268,19 @@ class Adapter(private val activity: Progress_bars): RecyclerView.Adapter<Adapter
     }
 
     var undo_redo_stacks
-    get() = Pair(undo_stack, redo_stack) as Serializable
-    set(stack_pair)
-    {
-        val (new_undo_stack, new_redo_stack) = stack_pair as Pair<*, *>
+        get() = Pair(undo_stack, redo_stack) as Serializable
+        set(stack_pair)
+        {
+            val (new_undo_stack, new_redo_stack) = stack_pair as Pair<*, *>
 
-        undo_stack.clear()
-        redo_stack.clear()
+            undo_stack.clear()
+            redo_stack.clear()
 
-        @Suppress("UNCHECKED_CAST")
-        undo_stack.addAll(new_undo_stack as Stack<Undo_event>)
-        @Suppress("UNCHECKED_CAST")
-        redo_stack.addAll(new_redo_stack as Stack<Undo_event>)
-    }
+            @Suppress("UNCHECKED_CAST")
+            undo_stack.addAll(new_undo_stack as Stack<Undo_event>)
+            @Suppress("UNCHECKED_CAST")
+            redo_stack.addAll(new_redo_stack as Stack<Undo_event>)
+        }
 
     fun save_to_db()
     {
@@ -291,7 +291,10 @@ class Adapter(private val activity: Progress_bars): RecyclerView.Adapter<Adapter
             db.delete(Progress_bars_table.TABLE_NAME, "${Progress_bars_table.ORDER_COL} IS NOT NULL", null)
 
             for(i in 0 until data_list.size)
-                data_list[i].insert(db, i.toLong(), null)
+            {
+                data_list[i].order_ind = i
+                data_list[i].insert(db)
+            }
 
             db.setTransactionSuccessful()
         }

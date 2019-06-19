@@ -45,7 +45,9 @@ class Resetting_application: Application()
             val cursor = db.rawQuery(Progress_bars_table.SELECT_ALL_ROWS_NO_WIDGET, null)
             if(cursor.count == 0)
             {
-                Data(this).insert(db,0, null)
+                val data = Data(this)
+                data.order_ind = 0
+                data.insert(db)
             }
 
             cursor.close()

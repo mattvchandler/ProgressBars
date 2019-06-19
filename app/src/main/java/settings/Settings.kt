@@ -119,13 +119,13 @@ class Settings: Dynamic_theme_activity(), DatePickerDialog.OnDateSetListener, Ti
                 intent.action == AppWidgetManager.ACTION_APPWIDGET_CONFIGURE ->
                 {
                     val widget_id = intent.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, AppWidgetManager.INVALID_APPWIDGET_ID)
-                    Widget.get_data_from_id(this, widget_id) ?: Data(this)
+                    Widget.get_data_from_id(this, widget_id)
                 }
                 else -> Data(this)
             }
 
             // no rowid passed? make a new one
-            if(data.rowid > 0)
+            if(data.rowid != null)
             {
                 setTitle(R.string.edit_title)
                 window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN)

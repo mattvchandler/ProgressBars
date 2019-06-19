@@ -38,8 +38,11 @@ import java.util.*
 // struct w/ copy of all DB columns. Serializable so we can store the whole thing
 open class Data(): Serializable
 {
-    var rowid = -1L // is -1 when not set, ie. the data doesn't exist in the DB
+    var rowid: Long? = null // is -1 when not set, ie. the data doesn't exist in the DB
     var id = -1
+
+    var order_ind: Int? = null
+    var widget_id: Int? = null
 
     var separate_time = true
     var start_time    = 0L
@@ -84,7 +87,8 @@ open class Data(): Serializable
     var has_notification_channel = false
     var notification_priority = "HIGH"
 
-    var is_widget = false
+    val is_widget
+        get() = widget_id != null
 
     // default ctor
     constructor(context: Context): this()
@@ -135,6 +139,8 @@ open class Data(): Serializable
     {
         rowid                    = b.rowid
         id                       = b.id
+        order_ind                = b.order_ind
+        widget_id                = b.widget_id
         separate_time            = b.separate_time
         start_time               = b.start_time
         end_time                 = b.end_time
@@ -169,13 +175,14 @@ open class Data(): Serializable
         notify_end               = b.notify_end
         has_notification_channel = b.has_notification_channel
         notification_priority    = b.notification_priority
-        is_widget                = b.is_widget
     }
 
     private fun set_from_cursor(cursor: Cursor)
     {
         rowid                    = cursor.get_nullable_long(BaseColumns._ID)!!
         id                       = cursor.get_nullable_int(Progress_bars_table.ID_COL)!!
+        order_ind                = cursor.get_nullable_int(Progress_bars_table.ORDER_COL)
+        widget_id                = cursor.get_nullable_int(Progress_bars_table.WIDGET_ID_COL)
         separate_time            = cursor.get_nullable_bool(Progress_bars_table.SEPARATE_TIME_COL)!!
         start_time               = cursor.get_nullable_long(Progress_bars_table.START_TIME_COL)!!
         end_time                 = cursor.get_nullable_long(Progress_bars_table.END_TIME_COL)!!
@@ -210,7 +217,6 @@ open class Data(): Serializable
         notify_end               = cursor.get_nullable_bool(Progress_bars_table.NOTIFY_END_COL)!!
         has_notification_channel = cursor.get_nullable_bool(Progress_bars_table.HAS_NOTIFICATION_CHANNEL_COL)!!
         notification_priority    = cursor.get_nullable_string(Progress_bars_table.NOTIFICATION_PRIORITY_COL)!!
-        is_widget                = cursor.get_nullable_int(Progress_bars_table.WIDGET_ID_COL) != null
     }
 
     private fun build_ContentValues(): ContentValues
@@ -253,24 +259,32 @@ open class Data(): Serializable
         values.put(Progress_bars_table.HAS_NOTIFICATION_CHANNEL_COL, has_notification_channel)
         values.put(Progress_bars_table.NOTIFICATION_PRIORITY_COL, notification_priority)
 
+        if(order_ind != null)
+            values.put(Progress_bars_table.ORDER_COL, order_ind.toString())
+        else
+            values.putNull(Progress_bars_table.ORDER_COL)
+
+        if(widget_id != null)
+            values.put(Progress_bars_table.WIDGET_ID_COL, widget_id.toString())
+        else
+            values.putNull(Progress_bars_table.WIDGET_ID_COL)
+
         return values
     }
 
-    fun insert(db: SQLiteDatabase, order_ind: Long?, widget_id: Int?)
+    fun insert(db: SQLiteDatabase)
     {
         val values = build_ContentValues()
 
-        if(rowid > 0)
+        if(rowid != null)
             values.put(BaseColumns._ID, rowid)
 
-        values.put(Progress_bars_table.ORDER_COL, order_ind)
-        values.put(Progress_bars_table.WIDGET_ID_COL, widget_id)
         rowid = db.insert(Progress_bars_table.TABLE_NAME, null, values)
     }
 
     fun update(db: SQLiteDatabase)
     {
-        if(rowid < 0)
+        if(rowid != null)
             return
 
         db.update(Progress_bars_table.TABLE_NAME, build_ContentValues(), BaseColumns._ID + " = ?", arrayOf(rowid.toString()))
