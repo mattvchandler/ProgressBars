@@ -29,7 +29,6 @@ import android.database.ContentObserver
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
-import android.preference.PreferenceManager
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -41,6 +40,7 @@ import android.widget.Toast
 import androidx.appcompat.widget.Toolbar
 import androidx.core.app.NavUtils
 import androidx.databinding.DataBindingUtil
+import androidx.preference.PreferenceManager
 import com.google.android.material.textfield.TextInputEditText
 import org.mattvchandler.progressbars.R
 import org.mattvchandler.progressbars.databinding.ActivitySettingsBinding

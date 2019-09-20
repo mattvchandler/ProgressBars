@@ -28,8 +28,8 @@ import android.content.Context
 import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
 import android.os.Build
-import android.preference.PreferenceManager
 import android.provider.BaseColumns
+import androidx.preference.PreferenceManager
 import org.mattvchandler.progressbars.R
 import org.mattvchandler.progressbars.util.Notification_handler
 import java.io.Serializable

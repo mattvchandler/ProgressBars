@@ -23,8 +23,8 @@ package org.mattvchandler.progressbars.db
 
 import android.content.Context
 import android.database.sqlite.SQLiteDatabase
-import android.preference.PreferenceManager
 import android.provider.BaseColumns
+import androidx.preference.PreferenceManager
 import org.mattvchandler.progressbars.R
 
 // DB Table schema

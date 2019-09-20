@@ -25,14 +25,14 @@ import android.app.DatePickerDialog
 import android.app.Dialog
 import android.os.Build
 import android.os.Bundle
-import android.preference.PreferenceManager
 import android.widget.Toast
 import androidx.fragment.app.DialogFragment
+import androidx.preference.PreferenceManager
 import org.mattvchandler.progressbars.R
 import org.mattvchandler.progressbars.settings.Settings.Companion.get_date_format
 import java.security.InvalidParameterException
 import java.text.ParsePosition
-import java.util.Calendar
+import java.util.*
 
 // date picker dialog
 class Datepicker_frag: DialogFragment()

@@ -24,10 +24,9 @@ package org.mattvchandler.progressbars.util
 import android.content.Context
 import android.os.Bundle
 import android.os.Handler
-import android.preference.PreferenceManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
-
+import androidx.preference.PreferenceManager
 import org.mattvchandler.progressbars.R
 
 // extend AppCompatActivity to call recreate when the "dark_theme" preference changes
@@ -68,7 +67,7 @@ abstract class Dynamic_theme_activity: AppCompatActivity()
                 context.resources.getString(R.string.theme_values_system) -> night_mode = AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
                 context.resources.getString(R.string.theme_values_day)    -> night_mode = AppCompatDelegate.MODE_NIGHT_NO
                 context.resources.getString(R.string.theme_values_night)  -> night_mode = AppCompatDelegate.MODE_NIGHT_YES
-                context.resources.getString(R.string.theme_values_auto)   -> night_mode = AppCompatDelegate.MODE_NIGHT_AUTO
+                context.resources.getString(R.string.theme_values_auto)   -> night_mode = AppCompatDelegate.MODE_NIGHT_AUTO // I know this is deprecated, but I don't care. There isn't a better alternative before Android Pie
                 context.resources.getString(R.string.theme_values_auto_batt)   -> night_mode = AppCompatDelegate.MODE_NIGHT_AUTO_BATTERY
             }
 
