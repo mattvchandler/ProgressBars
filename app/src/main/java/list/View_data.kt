@@ -30,9 +30,9 @@ import org.mattvchandler.progressbars.R
 import org.mattvchandler.progressbars.db.Data
 import org.mattvchandler.progressbars.settings.Settings.Companion.get_date_format
 import org.mattvchandler.progressbars.settings.Settings.Companion.get_time_format
-import java.lang.Math.*
 import java.text.DecimalFormat
 import java.util.*
+import kotlin.math.*
 
 // is a given year a leap year?
 private fun is_leap_year(year: Int): Boolean

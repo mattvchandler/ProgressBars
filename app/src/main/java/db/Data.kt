@@ -265,8 +265,7 @@ open class Data(): Serializable
 
     fun update(context: Context)
     {
-        if(rowid < 0)
-            throw IllegalStateException("Tried to update when rowid isn't set")
+        check(rowid >= 0) { "Tried to update when rowid isn't set" }
 
         apply_repeat()
 

@@ -65,8 +65,7 @@ class DB(private val context: Context): SQLiteOpenHelper(context, DB_NAME, null,
     // if DB schema changes, put logic to migrate data here
     override fun onUpgrade(db: SQLiteDatabase, old_version: Int, new_version: Int)
     {
-        if(new_version != DB_VERSION)
-            throw IllegalStateException("DB version mismatch")
+        check(new_version == DB_VERSION) { "DB version mismatch" }
 
         if(old_version < 4)
             db.execSQL("DROP TABLE IF EXISTS undo")
