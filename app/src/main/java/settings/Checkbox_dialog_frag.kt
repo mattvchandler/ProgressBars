@@ -46,8 +46,8 @@ class Checkbox_dialog_frag: DialogFragment()
 
         val builder = AlertDialog.Builder(activity!!)
         builder.setTitle(arguments!!.getInt(TITLE_ARG))
-                .setMultiChoiceItems(arguments!!.getInt(ENTRIES_ARG), selection ) { _, which, isChecked -> selection!![which] = isChecked }
-                .setPositiveButton(android.R.string.ok) { _, _ -> (activity as Settings).on_checkbox_dialog_ok(tag!!, selection!!) }
+                .setMultiChoiceItems(arguments!!.getStringArray(ENTRIES_ARG), selection ) { _, which, isChecked -> selection!![which] = isChecked }
+                .setPositiveButton(android.R.string.ok) { _, _ -> (activity as Settings).on_checkbox_dialog_ok(tag!!, selection!!.toTypedArray()) }
                 .setNegativeButton(android.R.string.cancel, null)
 
         return builder.create()

@@ -30,6 +30,14 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
         android:defaultValue="@string/pref_date_format_default"
         />
 
+    <ListPreference
+        android:key="@string/pref_first_day_of_wk_key"
+        android:title="@string/pref_first_day_of_wk_title"
+        android:entries="@array/pref_first_day_of_wk_display"
+        android:entryValues="@array/pref_first_day_of_wk_values"
+        android:defaultValue="@string/pref_first_day_of_wk_default"
+        />
+
     <PreferenceScreen
         android:key="system_notifications"
         android:title="@string/pref_notification_settings">

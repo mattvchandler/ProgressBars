@@ -23,6 +23,7 @@ package org.mattvchandler.progressbars.settings
 
 import android.app.DatePickerDialog
 import android.app.Dialog
+import android.os.Build
 import android.os.Bundle
 import android.preference.PreferenceManager
 import android.widget.Toast
@@ -45,8 +46,8 @@ class Datepicker_frag: DialogFragment()
 
         val cal = Calendar.getInstance()
 
-        val date_format = PreferenceManager.getDefaultSharedPreferences(activity)
-                .getString("date_format", resources.getString(R.string.pref_date_format_default))
+        val preferenceManager = PreferenceManager.getDefaultSharedPreferences(activity)
+        val date_format = preferenceManager.getString("date_format", resources.getString(R.string.pref_date_format_default))
 
         val date = arguments!!.getString(DATE) ?: throw InvalidParameterException("No date argument given")
 
@@ -71,7 +72,15 @@ class Datepicker_frag: DialogFragment()
         day = cal.get(Calendar.DAY_OF_MONTH)
 
 
-        return DatePickerDialog(activity!!, activity as Settings?, year, month, day)
+        val date_picker = DatePickerDialog(activity!!, activity as Settings?, year, month, day)
+
+        if(Build.VERSION.SDK_INT >= 21)
+        {
+            val first_day_of_wk = preferenceManager.getString(resources.getString(R.string.pref_first_day_of_wk_key), resources.getString(R.string.pref_first_day_of_wk_default))!!.toInt()
+            if(first_day_of_wk != 0)
+                date_picker.datePicker.firstDayOfWeek = first_day_of_wk
+        }
+        return date_picker
     }
 
     companion object

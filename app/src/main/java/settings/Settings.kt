@@ -51,6 +51,32 @@ import org.mattvchandler.progressbars.util.Preferences
 import java.text.ParsePosition
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.math.abs
+
+private fun <T>Array<T>.rotate(distance: Int)
+{
+    require(abs(distance) <= size) { "$distance out of range" }
+
+    if(distance == 0)
+        return
+
+    if(distance > 0)
+    {
+        val tmp = slice((size - distance) until size)
+        for(i in (size - distance -1) downTo 0)
+            this[i + distance] = this[i]
+        for(i in tmp.indices)
+            this[i] = tmp[i]
+    }
+    else
+    {
+        val tmp = slice(0 until -distance)
+        for(i in -distance until size)
+            this[i + distance] = this[i]
+        for(i in tmp.indices)
+            this[size + distance + i] = tmp[i]
+    }
+}
 
 // Settings for each timer
 class Settings: Dynamic_theme_activity(), DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener
@@ -63,6 +89,8 @@ class Settings: Dynamic_theme_activity(), DatePickerDialog.OnDateSetListener, Ti
     private var locale = Locale.getDefault()
     private var date_df = SimpleDateFormat.getDateInstance() as SimpleDateFormat
     private var time_df = SimpleDateFormat.getTimeInstance() as SimpleDateFormat
+
+    private var first_day_of_wk = 0
 
     private val on_24_hour_change = object: ContentObserver(Handler())
     {
@@ -97,6 +125,12 @@ class Settings: Dynamic_theme_activity(), DatePickerDialog.OnDateSetListener, Ti
 
             date_df = get_date_format(this)
             time_df = get_time_format()
+
+            first_day_of_wk = PreferenceManager.getDefaultSharedPreferences(this).getString(resources.getString(R.string.pref_first_day_of_wk_key), resources.getString(R.string.pref_first_day_of_wk_default))!!.toInt()
+
+            // get locale default
+            if(first_day_of_wk == 0)
+                first_day_of_wk = Calendar.getInstance().firstDayOfWeek
         }
         else
         {
@@ -107,6 +141,8 @@ class Settings: Dynamic_theme_activity(), DatePickerDialog.OnDateSetListener, Ti
             date_df = savedInstanceState.getSerializable(STATE_DATE_DF) as SimpleDateFormat
             time_df = savedInstanceState.getSerializable(STATE_TIME_DF) as SimpleDateFormat
             locale = savedInstanceState.getSerializable(STATE_LOCALE) as Locale
+
+            first_day_of_wk = savedInstanceState.getInt(STATE_FIRST_DAY_OF_WK)
 
             // populate date/time widget values
             if(intent.hasExtra(EXTRA_EDIT_DATA))
@@ -142,7 +178,7 @@ class Settings: Dynamic_theme_activity(), DatePickerDialog.OnDateSetListener, Ti
         binding.repeatFreq.visibility = if(data.repeats) View.VISIBLE else View.GONE
         binding.repeatCount.setText(data.repeat_count.toString())
         binding.repeatUnits.setSelection(data.repeat_unit)
-        binding.repeatDaysOfWeek.text = get_days_of_week_abbr(this, data.repeat_days_of_week)
+        binding.repeatDaysOfWeek.text = get_days_of_week_abbr(this, data.repeat_days_of_week, first_day_of_wk)
 
         val week_selected = data.repeat_unit == Progress_bars_table.Unit.WEEK.index
         binding.repeatOn.visibility = if(week_selected) View.VISIBLE else View.GONE
@@ -172,7 +208,6 @@ class Settings: Dynamic_theme_activity(), DatePickerDialog.OnDateSetListener, Ti
 
         date_df = get_date_format(this)
         time_df = get_time_format()
-
         locale = Locale.getDefault()
 
         if(old_date_df.toLocalizedPattern() != date_df.toLocalizedPattern() || locale != old_locale)
@@ -226,6 +261,16 @@ class Settings: Dynamic_theme_activity(), DatePickerDialog.OnDateSetListener, Ti
                 binding.endTimeSel.setText(time)
             }
         }
+
+        val old_first_day_of_wk = first_day_of_wk
+        first_day_of_wk = PreferenceManager.getDefaultSharedPreferences(this).getString(resources.getString(R.string.pref_first_day_of_wk_key), resources.getString(R.string.pref_first_day_of_wk_default))!!.toInt()
+
+        // get locale default
+        if(first_day_of_wk == 0)
+            first_day_of_wk = Calendar.getInstance().firstDayOfWeek
+
+        if(old_first_day_of_wk != first_day_of_wk)
+            binding.repeatDaysOfWeek.text = get_days_of_week_abbr(this, data.repeat_days_of_week, first_day_of_wk)
 
         // set listeners
         binding.startTimeSel.onFocusChangeListener = Time_listener(data)
@@ -294,6 +339,7 @@ class Settings: Dynamic_theme_activity(), DatePickerDialog.OnDateSetListener, Ti
         out.putSerializable(STATE_DATE_DF, date_df)
         out.putSerializable(STATE_TIME_DF, time_df)
         out.putSerializable(STATE_LOCALE, locale)
+        out.putInt(STATE_FIRST_DAY_OF_WK, first_day_of_wk)
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean
@@ -535,18 +581,30 @@ class Settings: Dynamic_theme_activity(), DatePickerDialog.OnDateSetListener, Ti
 
     fun on_days_of_week_butt(@Suppress("UNUSED_PARAMETER") view: View)
     {
-        val selected = BooleanArray(Progress_bars_table.Days_of_week.values().size)
-        for(day in Progress_bars_table.Days_of_week.values())
+        val day_vals = Progress_bars_table.Days_of_week.values()
+        val selected = Array(day_vals.size)
         {
-            selected[day.index] = data.repeat_days_of_week and day.mask != 0
+            data.repeat_days_of_week and day_vals[it].mask != 0
         }
 
         val frag = Checkbox_dialog_frag()
 
+        val days_of_week = resources.getStringArray(R.array.day_of_week)
+
+        val rotation = when(first_day_of_wk)
+        {
+            Calendar.MONDAY -> -1
+            Calendar.SATURDAY -> 1
+            else -> 0
+        }
+
+        days_of_week.rotate(rotation)
+        selected.rotate(rotation)
+
         val args = Bundle()
         args.putInt(Checkbox_dialog_frag.TITLE_ARG, R.string.days_of_week_title)
-        args.putInt(Checkbox_dialog_frag.ENTRIES_ARG, R.array.day_of_week)
-        args.putBooleanArray(Checkbox_dialog_frag.SELECTION_ARG, selected)
+        args.putStringArray(Checkbox_dialog_frag.ENTRIES_ARG, days_of_week)
+        args.putBooleanArray(Checkbox_dialog_frag.SELECTION_ARG, selected.toBooleanArray())
 
         frag.arguments = args
         frag.show(supportFragmentManager, DAYS_OF_WEEK_CHECKBOX_DIALOG)
@@ -566,7 +624,7 @@ class Settings: Dynamic_theme_activity(), DatePickerDialog.OnDateSetListener, Ti
 
         val args = Bundle()
         args.putInt(Checkbox_dialog_frag.TITLE_ARG, R.string.show_elements_header)
-        args.putInt(Checkbox_dialog_frag.ENTRIES_ARG,  R.array.show_elements)
+        args.putStringArray(Checkbox_dialog_frag.ENTRIES_ARG,  resources.getStringArray(R.array.show_elements))
         args.putBooleanArray(Checkbox_dialog_frag.SELECTION_ARG, selected)
 
         frag.arguments = args
@@ -588,7 +646,7 @@ class Settings: Dynamic_theme_activity(), DatePickerDialog.OnDateSetListener, Ti
 
         val args = Bundle()
         args.putInt(Checkbox_dialog_frag.TITLE_ARG, R.string.show_units_header)
-        args.putInt(Checkbox_dialog_frag.ENTRIES_ARG, R.array.time_units)
+        args.putStringArray(Checkbox_dialog_frag.ENTRIES_ARG, resources.getStringArray(R.array.time_units))
         args.putBooleanArray(Checkbox_dialog_frag.SELECTION_ARG, selected)
 
         frag.arguments = args
@@ -664,10 +722,19 @@ class Settings: Dynamic_theme_activity(), DatePickerDialog.OnDateSetListener, Ti
     }
 
     // called when OK pressed on checkbox dialogs
-    fun on_checkbox_dialog_ok(id: String, selected: BooleanArray)
+    fun on_checkbox_dialog_ok(id: String, selected: Array<Boolean>)
     {
         if(id == DAYS_OF_WEEK_CHECKBOX_DIALOG)
         {
+            val rotation = when(first_day_of_wk)
+            {
+                Calendar.MONDAY -> 1
+                Calendar.SATURDAY -> -1
+                else -> 0
+            }
+
+            selected.rotate(rotation)
+
             var days_of_week = 0
             for(day in selected.indices)
             {
@@ -682,7 +749,7 @@ class Settings: Dynamic_theme_activity(), DatePickerDialog.OnDateSetListener, Ti
             else
             {
                 data.repeat_days_of_week = days_of_week
-                binding.repeatDaysOfWeek.text = get_days_of_week_abbr(this@Settings, data.repeat_days_of_week)
+                binding.repeatDaysOfWeek.text = get_days_of_week_abbr(this@Settings, data.repeat_days_of_week, first_day_of_wk)
             }
         }
         else if(id == SHOW_ELEMENTS_CHECKBOX_DIALOG && data.separate_time)
@@ -741,6 +808,7 @@ class Settings: Dynamic_theme_activity(), DatePickerDialog.OnDateSetListener, Ti
         private const val STATE_DATE_DF = "date_df"
         private const val STATE_TIME_DF = "time_df"
         private const val STATE_LOCALE = "locale"
+        private const val STATE_FIRST_DAY_OF_WK = "first_day_of_wk"
 
         private const val DAYS_OF_WEEK_CHECKBOX_DIALOG = "DAYS_OF_WEEK"
         private const val SHOW_ELEMENTS_CHECKBOX_DIALOG = "SHOW_ELEMENTS"
@@ -763,11 +831,21 @@ class Settings: Dynamic_theme_activity(), DatePickerDialog.OnDateSetListener, Ti
         private const val RESULT_TIMEZONE_END = 1
         private const val RESULT_COUNTDOWN_TEXT = 2
 
-        private fun get_days_of_week_abbr(context: Context, days_of_week: Int): String
+        private fun get_days_of_week_abbr(context: Context, days_of_week: Int, first_day_of_week: Int): String
         {
             // set days of week for weekly repeat (ex: MWF)
             val days_of_week_str = StringBuilder()
-            for(day in Progress_bars_table.Days_of_week.values())
+            val days_of_week_vals = Progress_bars_table.Days_of_week.values()
+
+            val rotation = when(first_day_of_week)
+            {
+                Calendar.MONDAY -> -1
+                Calendar.SATURDAY -> 1
+                else -> 0
+            }
+            days_of_week_vals.rotate(rotation)
+
+            for(day in days_of_week_vals)
             {
                 if(days_of_week and day.mask != 0)
                     days_of_week_str.append(context.resources.getStringArray(R.array.day_of_week_abbr)[day.index])

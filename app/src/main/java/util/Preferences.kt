@@ -58,6 +58,7 @@ class Preferences: Dynamic_theme_activity()
             setPreferencesFromResource(R.xml.preferences, rootKey)
             PreferenceManager.setDefaultValues(activity, R.xml.preferences, false)
             findPreference<ListPreference>("date_format")?.summaryProvider = ListPreference.SimpleSummaryProvider.getInstance()
+            findPreference<ListPreference>(resources.getString(R.string.pref_first_day_of_wk_key))?.summaryProvider = ListPreference.SimpleSummaryProvider.getInstance()
             findPreference<ListPreference>("theme")?.summaryProvider = ListPreference.SimpleSummaryProvider.getInstance()
         }
 

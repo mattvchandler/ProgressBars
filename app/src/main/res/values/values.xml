@@ -22,6 +22,23 @@ SOFTWARE.
 -->
 
 <resources xmlns:tools="http://schemas.android.com/tools">
+    <string name="pref_first_day_of_wk_key" translatable="false">first_day_of_wk</string>
+
+    <!-- Corresponds to values behind Calendar.SUNDAY, etc. enums, with 0 being used as locale default -->
+    <string name="pref_first_day_of_wk_value_locale" translatable="false">0</string>
+    <string name="pref_first_day_of_wk_value_sat" translatable="false">7</string>
+    <string name="pref_first_day_of_wk_value_sun" translatable="false">1</string>
+    <string name="pref_first_day_of_wk_value_mon" translatable="false">2</string>
+
+    <string-array name="pref_first_day_of_wk_values" translatable="false">
+        <item>@string/pref_first_day_of_wk_value_locale</item>
+        <item>@string/pref_first_day_of_wk_value_sat</item>
+        <item>@string/pref_first_day_of_wk_value_sun</item>
+        <item>@string/pref_first_day_of_wk_value_mon</item>
+    </string-array>
+
+    <string name="pref_first_day_of_wk_default" translatable="false">@string/pref_first_day_of_wk_value_locale</string>
+
     <string name="theme_values_system" translatable="false">system</string>
     <string name="theme_values_day" translatable="false">day</string>
     <string name="theme_values_night" translatable="false">night</string>

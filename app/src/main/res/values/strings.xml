@@ -89,6 +89,14 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
         <item>YYYY-MM-DD</item>
     </string-array>
 
+    <string name="pref_first_day_of_wk_title">Start of the week</string>
+    <string-array name="pref_first_day_of_wk_display">
+        <item>Locale Default</item>
+        <item>Saturday</item>
+        <item>Sunday</item>
+        <item>Monday</item>
+    </string-array>
+
     <string name="pref_notification_settings">Notification settings</string>
 
     <string name="theme_title">Day / Night Theme</string>
