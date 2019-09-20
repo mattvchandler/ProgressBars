@@ -62,6 +62,8 @@ SOFTWARE.
 
     <string name="pref_date_format_default" translatable="false">locale</string>
 
+    <string name="pref_first_run_key" translatable="false">first_run</string>
+
     <string-array name="notification_priority_levels" translatable="false">
         <item>MIN</item>
         <item>LOW</item>

@@ -21,10 +21,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 package org.mattvchandler.progressbars
 
-import android.content.BroadcastReceiver
-import android.content.Context
 import android.content.Intent
-import android.content.IntentFilter
 import android.database.ContentObserver
 import android.os.Bundle
 import android.os.Handler
@@ -46,7 +43,6 @@ import org.mattvchandler.progressbars.util.Dynamic_theme_activity
 import org.mattvchandler.progressbars.util.Preferences
 
 // TODO: widget? persistent notification?
-// TODO: edge to edge display support (https://medium.com/androiddevelopers/gesture-navigation-going-edge-to-edge-812f62e4e83e, https://medium.com/androiddevelopers/gesture-navigation-handling-visual-overlaps-4aed565c134c, https://developer.android.com/guide/navigation/gesturenav)
 // TODO: consider moving to LiveData / ViewModel. May reduce complexity
 
 // main activity. display each timer in a list
