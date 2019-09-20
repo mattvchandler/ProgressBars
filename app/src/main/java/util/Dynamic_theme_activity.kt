@@ -64,11 +64,11 @@ abstract class Dynamic_theme_activity: AppCompatActivity()
 
             when(theme)
             {
-                context.resources.getString(R.string.theme_values_system) -> night_mode = AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
-                context.resources.getString(R.string.theme_values_day)    -> night_mode = AppCompatDelegate.MODE_NIGHT_NO
-                context.resources.getString(R.string.theme_values_night)  -> night_mode = AppCompatDelegate.MODE_NIGHT_YES
-                context.resources.getString(R.string.theme_values_auto)   -> night_mode = AppCompatDelegate.MODE_NIGHT_AUTO // I know this is deprecated, but I don't care. There isn't a better alternative before Android Pie
-                context.resources.getString(R.string.theme_values_auto_batt)   -> night_mode = AppCompatDelegate.MODE_NIGHT_AUTO_BATTERY
+                context.resources.getString(R.string.theme_values_system)    -> night_mode = AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
+                context.resources.getString(R.string.theme_values_day)       -> night_mode = AppCompatDelegate.MODE_NIGHT_NO
+                context.resources.getString(R.string.theme_values_night)     -> night_mode = AppCompatDelegate.MODE_NIGHT_YES
+                context.resources.getString(R.string.theme_values_auto)      -> night_mode = AppCompatDelegate.MODE_NIGHT_AUTO // I know this is deprecated, but I don't care. There isn't a better alternative before Android Pie
+                context.resources.getString(R.string.theme_values_auto_batt) -> night_mode = AppCompatDelegate.MODE_NIGHT_AUTO_BATTERY
             }
 
             return Pair(night_mode, theme)

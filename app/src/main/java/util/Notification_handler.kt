@@ -28,7 +28,6 @@ import android.content.Intent
 import android.os.Build
 import android.util.TypedValue
 import androidx.core.app.NotificationCompat
-import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import org.mattvchandler.progressbars.Progress_bars
 import org.mattvchandler.progressbars.R
 import org.mattvchandler.progressbars.db.DB
@@ -164,9 +163,7 @@ class Notification_handler: BroadcastReceiver()
             {
                 if(Progress_bars.is_running)
                 {
-                    val update_intent = Intent(Progress_bars.CHANGE_LIST_EVENT)
-                    update_intent.putExtra(Progress_bars.EXTRA_ID, data.id)
-                    LocalBroadcastManager.getInstance(context).sendBroadcast(update_intent)
+                    Progress_bars.apply_repeat(data.id)
                 }
                 else
                 {

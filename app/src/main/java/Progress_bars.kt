@@ -32,7 +32,6 @@ import android.view.Menu
 import android.view.MenuItem
 import androidx.appcompat.widget.Toolbar
 import androidx.databinding.DataBindingUtil
-import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.ItemTouchHelper
@@ -47,6 +46,8 @@ import org.mattvchandler.progressbars.util.Dynamic_theme_activity
 import org.mattvchandler.progressbars.util.Preferences
 
 // TODO: widget? persistent notification?
+// TODO: edge to edge display support (https://medium.com/androiddevelopers/gesture-navigation-going-edge-to-edge-812f62e4e83e, https://medium.com/androiddevelopers/gesture-navigation-handling-visual-overlaps-4aed565c134c, https://developer.android.com/guide/navigation/gesturenav)
+// TODO: consider moving to LiveData / ViewModel. May reduce complexity
 
 // main activity. display each timer in a list
 class Progress_bars: Dynamic_theme_activity()
@@ -59,7 +60,15 @@ class Progress_bars: Dynamic_theme_activity()
 
         private const val SAVE_UNDO_REDO = "SAVE_UNDO_REDO"
         private const val SAVE_ADD_FROM_SHORTCUT = "SAVE_ADD_FROM_SHORTCUT"
-        var is_running = false
+
+        private var running_instance: Progress_bars? = null
+        val is_running: Boolean
+            get() = running_instance != null
+
+        fun apply_repeat(id: Int)
+        {
+            running_instance?.adapter!!.apply_repeat(id)
+        }
     }
 
     private lateinit var binding: ActivityProgressBarsBinding
@@ -68,21 +77,6 @@ class Progress_bars: Dynamic_theme_activity()
     private lateinit var date_format: String
 
     private var add_from_shortcut = true
-
-    private val on_list_change = object: BroadcastReceiver()
-    {
-        override fun onReceive(context: Context, intent: Intent)
-        {
-            when(intent.action)
-            {
-                CHANGE_LIST_EVENT ->
-                {
-                    val id = intent.getIntExtra(EXTRA_ID, -1)
-                    adapter.apply_repeat(id)
-                }
-            }
-        }
-    }
 
     private val on_24_hour_change = object: ContentObserver(Handler())
     {
@@ -133,9 +127,6 @@ class Progress_bars: Dynamic_theme_activity()
         // start running each second
         update().run()
 
-        val broadcast_filter = IntentFilter()
-        broadcast_filter.addAction(CHANGE_LIST_EVENT)
-        LocalBroadcastManager.getInstance(this).registerReceiver(on_list_change, IntentFilter(CHANGE_LIST_EVENT))
         contentResolver.registerContentObserver(android.provider.Settings.System.getUriFor(android.provider.Settings.System.TIME_12_24), false, on_24_hour_change)
 
         if(add_from_shortcut && intent.action == Intent.ACTION_MAIN && !intent.hasCategory(Intent.CATEGORY_LAUNCHER)) // started from shortcut
@@ -153,7 +144,6 @@ class Progress_bars: Dynamic_theme_activity()
 
     override fun onDestroy()
     {
-        LocalBroadcastManager.getInstance(this).unregisterReceiver(on_list_change)
         contentResolver.unregisterContentObserver(on_24_hour_change)
 
         binding.mainList.adapter = null
@@ -181,12 +171,12 @@ class Progress_bars: Dynamic_theme_activity()
     override fun onStart()
     {
         super.onStart()
-        is_running = true
+        running_instance = this
     }
 
     override fun onStop()
     {
-        is_running = false
+        running_instance = null
         super.onStop()
     }
 
