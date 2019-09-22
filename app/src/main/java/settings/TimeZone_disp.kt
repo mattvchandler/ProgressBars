@@ -31,6 +31,8 @@ import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
 import androidx.appcompat.widget.Toolbar
+import androidx.core.view.ViewCompat
+import androidx.core.view.updatePadding
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -180,9 +182,12 @@ class TimeZone_activity: Dynamic_theme_activity()
 
         binding = DataBindingUtil.setContentView(this, R.layout.activity_timezone)
         setSupportActionBar(binding.toolbar as Toolbar)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-        if(supportActionBar != null)
-            supportActionBar!!.setDisplayHomeAsUpEnabled(true)
+        ViewCompat.setOnApplyWindowInsetsListener(binding.timezoneList) { v, insets ->
+            v.updatePadding(bottom = insets.systemWindowInsets.bottom)
+            insets
+        }
 
         val date = intent.getSerializableExtra(EXTRA_DATE) as Date
 

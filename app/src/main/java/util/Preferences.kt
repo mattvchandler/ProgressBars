@@ -22,25 +22,27 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 package org.mattvchandler.progressbars.util
 
 import android.Manifest
-import androidx.appcompat.app.AlertDialog
 import android.app.Dialog
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
-import androidx.databinding.DataBindingUtil
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import androidx.preference.ListPreference
-import androidx.preference.PreferenceManager
+import android.view.MenuItem
+import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.widget.Toolbar
 import androidx.core.app.ActivityCompat
-import androidx.fragment.app.DialogFragment
 import androidx.core.content.ContextCompat
+import androidx.core.view.ViewCompat
+import androidx.core.view.updatePadding
+import androidx.databinding.DataBindingUtil
+import androidx.fragment.app.DialogFragment
+import androidx.preference.ListPreference
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
-import androidx.appcompat.widget.Toolbar
-import android.view.MenuItem
+import androidx.preference.PreferenceManager
 import org.mattvchandler.progressbars.R
 import org.mattvchandler.progressbars.databinding.ActivityPreferencesBinding
 
@@ -154,6 +156,11 @@ class Preferences: Dynamic_theme_activity()
         val binding = DataBindingUtil.setContentView<ActivityPreferencesBinding>(this, R.layout.activity_preferences)
         setSupportActionBar(binding.toolbar as Toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
+
+        ViewCompat.setOnApplyWindowInsetsListener(binding.preferences) { v, insets ->
+            v.updatePadding(bottom = insets.systemWindowInsets.bottom)
+            insets
+        }
 
         // put settings content into frame layout
         supportFragmentManager.beginTransaction().replace(R.id.preferences, Progress_bar_prefs_frag()).commit()

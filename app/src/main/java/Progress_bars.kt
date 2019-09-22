@@ -28,6 +28,8 @@ import android.os.Handler
 import android.view.Menu
 import android.view.MenuItem
 import androidx.appcompat.widget.Toolbar
+import androidx.core.view.ViewCompat
+import androidx.core.view.updatePadding
 import androidx.databinding.DataBindingUtil
 import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.DividerItemDecoration
@@ -90,6 +92,11 @@ class Progress_bars: Dynamic_theme_activity()
         binding = DataBindingUtil.setContentView(this, R.layout.activity_progress_bars)
         setSupportActionBar(binding.toolbar as Toolbar)
         binding.mainList.addItemDecoration(DividerItemDecoration(binding.mainList.context, DividerItemDecoration.VERTICAL))
+
+        ViewCompat.setOnApplyWindowInsetsListener(binding.mainList) { v, insets ->
+            v.updatePadding(bottom = insets.systemWindowInsets.bottom)
+            insets
+        }
 
         // save date format to detect when it changes
         val prefs = PreferenceManager.getDefaultSharedPreferences(this)

@@ -26,6 +26,8 @@ import android.os.Bundle
 import android.view.MenuItem
 import androidx.appcompat.widget.Toolbar
 import androidx.core.app.NavUtils
+import androidx.core.view.ViewCompat
+import androidx.core.view.updatePadding
 import androidx.databinding.DataBindingUtil
 import org.mattvchandler.progressbars.R
 import org.mattvchandler.progressbars.databinding.ActivityCountdownTextBinding
@@ -45,8 +47,12 @@ class Countdown_text: Dynamic_theme_activity()
 
         binding = DataBindingUtil.setContentView(this, R.layout.activity_countdown_text)
         setSupportActionBar(binding.toolbar as Toolbar)
-        if(supportActionBar != null)
-            supportActionBar!!.setDisplayHomeAsUpEnabled(true)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+
+        ViewCompat.setOnApplyWindowInsetsListener(binding.mainList) { v, insets ->
+            v.updatePadding(bottom = insets.systemWindowInsets.bottom)
+            insets
+        }
 
         data = if(savedInstanceState == null)
             intent.getSerializableExtra(EXTRA_DATA) as Data

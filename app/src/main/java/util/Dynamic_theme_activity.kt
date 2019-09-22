@@ -22,8 +22,10 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 package org.mattvchandler.progressbars.util
 
 import android.content.Context
+import android.os.Build
 import android.os.Bundle
 import android.os.Handler
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.preference.PreferenceManager
@@ -52,6 +54,17 @@ abstract class Dynamic_theme_activity: AppCompatActivity()
         // has the theme changed? recreate this activity
         if(new_theme != theme)
             Handler().postDelayed({recreate()}, 0)
+
+        if(Build.VERSION.SDK_INT in 26..28)
+        {
+            window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_STABLE or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION or
+                    if(resources.getBoolean(R.bool.is_theme_light)) View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR else 0
+
+        }
+        else if(Build.VERSION.SDK_INT >= 21)
+        {
+            window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_STABLE or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+        }
     }
 
     companion object
