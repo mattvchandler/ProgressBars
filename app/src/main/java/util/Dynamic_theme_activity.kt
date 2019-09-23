@@ -27,11 +27,13 @@ import android.os.Bundle
 import android.os.Handler
 import android.util.TypedValue
 import android.view.View
+import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.view.ViewCompat
 import androidx.core.view.updatePadding
 import androidx.preference.PreferenceManager
+import com.google.android.material.appbar.AppBarLayout
 import org.mattvchandler.progressbars.R
 
 // extend AppCompatActivity to call recreate when the "dark_theme" preference changes
@@ -90,7 +92,7 @@ abstract class Dynamic_theme_activity: AppCompatActivity()
             return Pair(night_mode, theme)
         }
 
-        fun consume_insets(context: Context, view: View)
+        fun consume_insets(context: Context, view: View, appbar_layout: AppBarLayout)
         {
             if(Build.VERSION.SDK_INT >= 21)
             {
@@ -99,7 +101,40 @@ abstract class Dynamic_theme_activity: AppCompatActivity()
                     val tv = TypedValue()
                     if(context.theme.resolveAttribute(android.R.attr.actionBarSize, tv, true))
                         toolbar_height = TypedValue.complexToDimensionPixelSize(tv.data, context.resources.displayMetrics)
-                    v.updatePadding(top = insets.systemWindowInsetTop + toolbar_height, bottom = insets.systemWindowInsetBottom)
+
+                    v.setPadding(
+                        insets.systemWindowInsetLeft,
+                        insets.systemWindowInsetTop + toolbar_height,
+                        insets.systemWindowInsetRight,
+                        insets.systemWindowInsetBottom
+                    )
+                    insets
+                }
+
+                ViewCompat.setOnApplyWindowInsetsListener(appbar_layout) { v, insets ->
+                    val margins= v.layoutParams as ViewGroup.MarginLayoutParams
+                    margins.topMargin   = insets.systemWindowInsetTop
+
+                    if(insets.displayCutout != null && insets.systemWindowInsetLeft == insets.displayCutout!!.safeInsetLeft)
+                    {
+                        margins.leftMargin = 0
+                        (v as AppBarLayout).getChildAt(0).updatePadding(left = insets.systemWindowInsetLeft)
+                    }
+                    else
+                    {
+                        margins.leftMargin = insets.systemWindowInsetLeft
+                    }
+
+                    if(insets.displayCutout != null && insets.systemWindowInsetRight == insets.displayCutout!!.safeInsetRight)
+                    {
+                        margins.rightMargin = 0
+                        (v as AppBarLayout).getChildAt(0).updatePadding(right = insets.systemWindowInsetRight)
+                    }
+                    else
+                    {
+                        margins.rightMargin = insets.systemWindowInsetRight
+                    }
+
                     insets
                 }
             }

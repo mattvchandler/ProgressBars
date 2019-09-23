@@ -91,7 +91,7 @@ class Progress_bars: Dynamic_theme_activity()
         setSupportActionBar(binding.toolbar as Toolbar)
         binding.mainList.addItemDecoration(DividerItemDecoration(binding.mainList.context, DividerItemDecoration.VERTICAL))
 
-        consume_insets(this, binding.mainList)
+        consume_insets(this, binding.mainList, binding.appbarLayout)
 
         // save date format to detect when it changes
         val prefs = PreferenceManager.getDefaultSharedPreferences(this)

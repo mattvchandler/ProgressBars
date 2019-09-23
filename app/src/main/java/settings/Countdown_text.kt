@@ -47,7 +47,7 @@ class Countdown_text: Dynamic_theme_activity()
         setSupportActionBar(binding.toolbar as Toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-        consume_insets(this, binding.mainList)
+        consume_insets(this, binding.mainList, binding.appbarLayout)
 
         data = if(savedInstanceState == null)
             intent.getSerializableExtra(EXTRA_DATA) as Data

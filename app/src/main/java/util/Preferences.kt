@@ -155,7 +155,7 @@ class Preferences: Dynamic_theme_activity()
         setSupportActionBar(binding.toolbar as Toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-        consume_insets(this, binding.preferences)
+        consume_insets(this, binding.preferences, binding.appbarLayout)
 
         // put settings content into frame layout
         supportFragmentManager.beginTransaction().replace(R.id.preferences, Progress_bar_prefs_frag()).commit()

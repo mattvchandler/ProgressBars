@@ -182,7 +182,7 @@ class TimeZone_activity: Dynamic_theme_activity()
         setSupportActionBar(binding.toolbar as Toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-        consume_insets(this, binding.timezoneList)
+        consume_insets(this, binding.timezoneList, binding.appbarLayout)
 
         val date = intent.getSerializableExtra(EXTRA_DATE) as Date
 

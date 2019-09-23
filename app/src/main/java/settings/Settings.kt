@@ -109,7 +109,7 @@ class Settings: Dynamic_theme_activity(), DatePickerDialog.OnDateSetListener, Ti
         setSupportActionBar(binding.toolbar as Toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-        consume_insets(this, binding.mainList)
+        consume_insets(this, binding.mainList, binding.appbarLayout)
 
         // only run this on 1st creation
         if(savedInstanceState == null)
