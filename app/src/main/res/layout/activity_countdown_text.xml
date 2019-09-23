@@ -23,7 +23,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 <layout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="org.mattvchandler.progressbars.settings.Countdown_text"
     >
@@ -34,28 +33,16 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
         <variable name="data" type="Data"/>
     </data>
 
-    <androidx.coordinatorlayout.widget.CoordinatorLayout
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         >
-
-        <com.google.android.material.appbar.AppBarLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:fitsSystemWindows="true"
-            >
-            <include
-                layout="@layout/toolbar"
-                android:id="@+id/toolbar"
-                />
-        </com.google.android.material.appbar.AppBarLayout>
 
         <ScrollView
             android:id="@+id/main_list"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior"
-            android:fitsSystemWindows="true"
+            android:paddingTop="?attr/actionBarSize"
             android:clipToPadding="false"
             >
             <LinearLayout
@@ -201,5 +188,14 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
                 </com.google.android.material.textfield.TextInputLayout>
             </LinearLayout>
         </ScrollView>
-    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+        <com.google.android.material.appbar.AppBarLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fitsSystemWindows="true">
+            <include
+                layout="@layout/toolbar"
+                android:id="@+id/toolbar"
+                />
+        </com.google.android.material.appbar.AppBarLayout>
+    </FrameLayout>
 </layout>

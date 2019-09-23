@@ -25,9 +25,12 @@ import android.content.Context
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
+import android.util.TypedValue
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
+import androidx.core.view.ViewCompat
+import androidx.core.view.updatePadding
 import androidx.preference.PreferenceManager
 import org.mattvchandler.progressbars.R
 
@@ -85,6 +88,21 @@ abstract class Dynamic_theme_activity: AppCompatActivity()
             }
 
             return Pair(night_mode, theme)
+        }
+
+        fun consume_insets(context: Context, view: View)
+        {
+            if(Build.VERSION.SDK_INT >= 21)
+            {
+                ViewCompat.setOnApplyWindowInsetsListener(view) { v, insets ->
+                    var toolbar_height = 0
+                    val tv = TypedValue()
+                    if(context.theme.resolveAttribute(android.R.attr.actionBarSize, tv, true))
+                        toolbar_height = TypedValue.complexToDimensionPixelSize(tv.data, context.resources.displayMetrics)
+                    v.updatePadding(top = insets.systemWindowInsetTop + toolbar_height, bottom = insets.systemWindowInsetBottom)
+                    insets
+                }
+            }
         }
     }
 }

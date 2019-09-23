@@ -35,8 +35,6 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.Toolbar
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import androidx.core.view.ViewCompat
-import androidx.core.view.updatePadding
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.DialogFragment
 import androidx.preference.ListPreference
@@ -157,10 +155,7 @@ class Preferences: Dynamic_theme_activity()
         setSupportActionBar(binding.toolbar as Toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-        ViewCompat.setOnApplyWindowInsetsListener(binding.preferences) { v, insets ->
-            v.updatePadding(bottom = insets.systemWindowInsets.bottom)
-            insets
-        }
+        consume_insets(this, binding.preferences)
 
         // put settings content into frame layout
         supportFragmentManager.beginTransaction().replace(R.id.preferences, Progress_bar_prefs_frag()).commit()

@@ -22,6 +22,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 -->
 
 <resources>
-    <color name="colorPrimary">#1b5e20</color>
-    <color name="colorPrimaryDark">#003300</color>
+    <color name="colorPrimary">#FF1B5E20</color>
+    <color name="colorPrimaryDark">#FF003300</color>
 </resources>

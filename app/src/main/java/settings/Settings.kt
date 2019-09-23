@@ -39,8 +39,6 @@ import android.widget.TimePicker
 import android.widget.Toast
 import androidx.appcompat.widget.Toolbar
 import androidx.core.app.NavUtils
-import androidx.core.view.ViewCompat
-import androidx.core.view.updatePadding
 import androidx.databinding.DataBindingUtil
 import androidx.preference.PreferenceManager
 import com.google.android.material.textfield.TextInputEditText
@@ -111,10 +109,7 @@ class Settings: Dynamic_theme_activity(), DatePickerDialog.OnDateSetListener, Ti
         setSupportActionBar(binding.toolbar as Toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-        ViewCompat.setOnApplyWindowInsetsListener(binding.mainList) { v, insets ->
-            v.updatePadding(bottom = insets.systemWindowInsets.bottom)
-            insets
-        }
+        consume_insets(this, binding.mainList)
 
         // only run this on 1st creation
         if(savedInstanceState == null)
