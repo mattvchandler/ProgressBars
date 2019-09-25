@@ -284,7 +284,7 @@ open class Data(): Serializable
 
     fun update(db: SQLiteDatabase)
     {
-        if(rowid != null)
+        if(rowid == null)
             return
 
         db.update(Progress_bars_table.TABLE_NAME, build_ContentValues(), BaseColumns._ID + " = ?", arrayOf(rowid.toString()))

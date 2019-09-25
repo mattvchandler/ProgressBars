@@ -39,12 +39,19 @@ import android.view.View
 import android.widget.RemoteViews
 import androidx.core.content.ContextCompat
 import androidx.preference.PreferenceManager
-import org.mattvchandler.progressbars.db.*
+import org.mattvchandler.progressbars.db.DB
+import org.mattvchandler.progressbars.db.Data
+import org.mattvchandler.progressbars.db.Progress_bars_table
+import org.mattvchandler.progressbars.db.get_nullable_int
 import org.mattvchandler.progressbars.list.View_data
 import org.mattvchandler.progressbars.settings.Settings
 import kotlin.math.sqrt
 
 // TODO: cleanup debug stmts
+// TODO: not always being updated (possibly not being initialized on startup)
+// TODO: often can't click
+// TODO: doesn't work in  power save mode
+// TODO: not saving edits, possibly creating new timers whose alarms aren't canceled
 
 class Widget: AppWidgetProvider()
 {
@@ -96,7 +103,7 @@ class Widget: AppWidgetProvider()
 
     override fun onReceive(context: Context?, intent: Intent?)
     {
-        Log.v("Widget::onReceive", intent?.action)
+        Log.v("Widget::onReceive", "${intent?.action}")
         when(intent?.action)
         {
             Intent.ACTION_TIME_CHANGED, Intent.ACTION_TIMEZONE_CHANGED,
@@ -111,6 +118,7 @@ class Widget: AppWidgetProvider()
 
         fun create_or_update_data(context: Context, widget_id: Int, data: Data)
         {
+            Log.d("Widget::create_or_up…", "widget_id: ${widget_id}, data.id: ${data.id}, data.title: ${data.title}, data.rowid: ${data.rowid}")
             val db = DB(context).writableDatabase
             val cursor = db.rawQuery(Progress_bars_table.SELECT_WIDGET, arrayOf(widget_id.toString()))
             if(cursor.count == 0)

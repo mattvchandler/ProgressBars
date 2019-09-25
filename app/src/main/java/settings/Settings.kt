@@ -31,11 +31,15 @@ import android.database.ContentObserver
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.view.WindowManager
-import android.widget.*
+import android.widget.AdapterView
+import android.widget.DatePicker
+import android.widget.TimePicker
+import android.widget.Toast
 import androidx.appcompat.widget.Toolbar
 import androidx.databinding.DataBindingUtil
 import androidx.preference.PreferenceManager
@@ -110,6 +114,7 @@ class Settings: Dynamic_theme_activity(), DatePickerDialog.OnDateSetListener, Ti
 
         consume_insets(this, binding.mainList, binding.appbarLayout)
 
+        Log.v("Settings::onCreate", "${intent?.action}")
         // only run this on 1st creation
         if(savedInstanceState == null)
         {
@@ -119,10 +124,13 @@ class Settings: Dynamic_theme_activity(), DatePickerDialog.OnDateSetListener, Ti
                 intent.action == AppWidgetManager.ACTION_APPWIDGET_CONFIGURE ->
                 {
                     val widget_id = intent.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, AppWidgetManager.INVALID_APPWIDGET_ID)
+                    Log.d("Settings::onCreate", "widgetid: ${widget_id}")
+
                     Widget.get_data_from_id(this, widget_id)
                 }
                 else -> Data(this)
             }
+            Log.d("Settings::onCreate", "data id: ${data.id}")
 
             // no rowid passed? make a new one
             if(data.rowid != null)
