@@ -126,7 +126,7 @@ class Settings: Dynamic_theme_activity(), DatePickerDialog.OnDateSetListener, Ti
                     val widget_id = intent.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, AppWidgetManager.INVALID_APPWIDGET_ID)
                     Log.d("Settings::onCreate", "widgetid: ${widget_id}")
 
-                    Widget.get_data_from_id(this, widget_id)
+                    Widget.create_data_from_id(this, widget_id)
                 }
                 else -> Data(this)
             }

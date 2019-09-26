@@ -29,6 +29,7 @@ import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
 import android.os.Build
 import android.provider.BaseColumns
+import android.util.Log
 import androidx.preference.PreferenceManager
 import org.mattvchandler.progressbars.R
 import org.mattvchandler.progressbars.util.Notification_handler
@@ -302,6 +303,7 @@ open class Data(): Serializable
 
     fun update_alarms(context: Context)
     {
+        Log.d("Data::update_alarms", "id: $id, rowid: $rowid")
         apply_repeat()
 
         if(has_notification_channel)

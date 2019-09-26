@@ -71,6 +71,8 @@ class Notification_handler: BroadcastReceiver()
                 return
             }
 
+            Log.d("Notification_handler", "alarm for data.id: ${data.id}, data.rowid: ${data.rowid}")
+
             // set up start or completion text
             var content = ""
             var notification_when: Long = 0
