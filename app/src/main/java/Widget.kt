@@ -110,7 +110,7 @@ class Widget: AppWidgetProvider()
         {
             val db = DB(context).writableDatabase
             val cursor = db.rawQuery(Progress_bars_table.SELECT_WIDGET, arrayOf(widget_id.toString()))
-            if(cursor.count == 0)
+            if(cursor.count == 0 && data.rowid == null)
             {
                 data.register_alarms(context)
                 data.insert(db)
@@ -148,7 +148,7 @@ class Widget: AppWidgetProvider()
                     {
                         Log.d("Widget::create_data_fr…", "Adopting orphaned id: $orphan_widget_id to $widget_id")
 
-                        val adopted_cursor = db.rawQuery(Progress_bars_table.SELECT_WIDGET, arrayOf(widget_id.toString()))
+                        val adopted_cursor = db.rawQuery(Progress_bars_table.SELECT_WIDGET, arrayOf(orphan_widget_id.toString()))
                         adopted_cursor.moveToFirst()
                         data = Data(adopted_cursor)
                         data.widget_id = widget_id

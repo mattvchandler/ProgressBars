@@ -39,7 +39,7 @@ import java.util.*
 // struct w/ copy of all DB columns. Serializable so we can store the whole thing
 open class Data(): Serializable
 {
-    var rowid: Long? = null // is -1 when not set, ie. the data doesn't exist in the DB
+    var rowid: Long? = null // is null when not set, ie. the data doesn't exist in the DB
     var id = -1
 
     var order_ind: Int? = null
