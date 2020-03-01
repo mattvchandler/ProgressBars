@@ -47,12 +47,6 @@ import org.mattvchandler.progressbars.list.View_data
 import org.mattvchandler.progressbars.settings.Settings
 import kotlin.math.sqrt
 
-// TODO: cleanup debug stmts
-// TODO: not always being updated (possibly not being initialized on startup)
-// TODO: often can't click
-// TODO: doesn't work in  power save mode
-// TODO: repeats not always honored (especially on first repeat)
-
 class Widget: AppWidgetProvider()
 {
     override fun onUpdate(context: Context?, appWidgetManager: AppWidgetManager?, appWidgetIds: IntArray?)
@@ -81,7 +75,6 @@ class Widget: AppWidgetProvider()
             val db = DB(context!!).writableDatabase
             for(widget_id in appWidgetIds)
             {
-                Log.d("Widget::onDeleted", "deleting: $widget_id")
                 val arg_array = arrayOf(widget_id.toString())
 
                 val cursor = db.rawQuery(Progress_bars_table.SELECT_WIDGET, arg_array)
@@ -89,7 +82,6 @@ class Widget: AppWidgetProvider()
                 {
                     cursor.moveToFirst()
                     val data = Data(cursor)
-                    Log.d("Widget::onDeleted", "deleting: $widget_id from DB rowid: ${data.rowid}")
 
                     data.unregister_alarms(context)
                     db.delete(Progress_bars_table.TABLE_NAME, "${Progress_bars_table.WIDGET_ID_COL} = ?", arg_array)
@@ -103,7 +95,6 @@ class Widget: AppWidgetProvider()
 
     override fun onReceive(context: Context?, intent: Intent?)
     {
-        Log.v("Widget::onReceive", "${intent?.action}")
         when(intent?.action)
         {
             Intent.ACTION_TIME_CHANGED, Intent.ACTION_TIMEZONE_CHANGED, ACTION_UPDATE_TIME -> if(context != null) update(context, null, null)
@@ -117,19 +108,15 @@ class Widget: AppWidgetProvider()
 
         fun create_or_update_data(context: Context, widget_id: Int, data: Data)
         {
-            Log.d("Widget::create_or_up…", "widget_id: ${widget_id}, data.id: ${data.id}, data.title: ${data.title}, data.rowid: ${data.rowid}")
             val db = DB(context).writableDatabase
             val cursor = db.rawQuery(Progress_bars_table.SELECT_WIDGET, arrayOf(widget_id.toString()))
             if(cursor.count == 0)
             {
-                Log.d("Widget::create", "$widget_id")
-
                 data.register_alarms(context)
                 data.insert(db)
             }
             else
             {
-                Log.d("Widget::update", "$widget_id")
                 data.update_alarms(context)
                 data.update(db)
             }
@@ -178,7 +165,6 @@ class Widget: AppWidgetProvider()
             {
                 cursor.moveToFirst()
                 data = Data(cursor)
-                Log.d("Widget::create_data_fr…", "widget_id: $widget_id, data.id: ${data.id}, data.rowid: ${data.rowid}")
             }
 
             cursor.close()
@@ -188,7 +174,6 @@ class Widget: AppWidgetProvider()
             {
                 data = Data(context)
                 data.widget_id = widget_id
-                Log.d("Widget::create_data_fr…", "created new data, widget_id: $widget_id, data.id: ${data.id}, data.rowid: ${data.rowid}")
             }
 
             return data
@@ -205,7 +190,6 @@ class Widget: AppWidgetProvider()
             {
                 cursor.moveToFirst()
                 data = Data(cursor)
-                Log.d("Widget::get_data_from_…", "widget_id: $widget_id, data.id: ${data.id}, data.rowid: ${data.rowid}")
             }
 
             cursor.close()
@@ -216,7 +200,6 @@ class Widget: AppWidgetProvider()
 
         private fun update(context: Context, appWidgetManager: AppWidgetManager?, appWidgetIds: IntArray?)
         {
-            Log.d("Widget::update", "$appWidgetIds")
             val pm = context.getSystemService(Context.POWER_SERVICE) as PowerManager
             val screen_on = if(Build.VERSION.SDK_INT >= 20) pm.isInteractive else true
             if(screen_on)
@@ -225,7 +208,6 @@ class Widget: AppWidgetProvider()
 
                 for(appWidgetId in appWidgetIds?: appWidgetManager_default.getAppWidgetIds(ComponentName(context, Widget::class.java)))
                 {
-                    Log.d("Widget::update", "for loop: $appWidgetId")
                     val data = get_data_from_id(context, appWidgetId)
                     if(data != null)
                         build_view(context, appWidgetManager_default, appWidgetId, View_data(context, data))
