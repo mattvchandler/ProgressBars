@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-Copyright (C) 2019 Matthew Chandler
+Copyright (C) 2020 Matthew Chandler
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of
 this software and associated documentation files (the "Software"), to deal in
@@ -22,7 +22,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 <resources xmlns:tools="http://schemas.android.com/tools">
     <string name="app_name">Progress Bars</string>
     <string name="app_version" translatable="false">v%1$s</string>
-    <string name="app_copyright" translatable="false">© 2019 Matthew Chandler</string>
+    <string name="app_copyright" translatable="false">© 2020 Matthew Chandler</string>
     <string name="app_license">This program comes with absolutely no warranty.\nSee the <a href="https://opensource.org/licenses/mit-license.php">MIT License (MIT)</a> for details.</string>
     <string name="app_website"><a href="https://www.github.com/mattvchandler/ProgressBars">Progress Bars on Github</a></string>
     <string name="app_logo_desc">Progress Bars logo</string>

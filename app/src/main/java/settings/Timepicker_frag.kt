@@ -1,18 +1,5 @@
-package org.mattvchandler.progressbars.settings
-
-import android.app.Dialog
-import android.app.TimePickerDialog
-import android.os.Bundle
-import android.widget.Toast
-import androidx.fragment.app.DialogFragment
-import org.mattvchandler.progressbars.R
-import org.mattvchandler.progressbars.settings.Settings.Companion.get_time_format
-import java.security.InvalidParameterException
-import java.text.ParsePosition
-import java.util.*
-
 /*
-Copyright (C) 2019 Matthew Chandler
+Copyright (C) 2020 Matthew Chandler
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of
 this software and associated documentation files (the "Software"), to deal in
@@ -31,6 +18,19 @@ COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
 IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
+
+package org.mattvchandler.progressbars.settings
+
+import android.app.Dialog
+import android.app.TimePickerDialog
+import android.os.Bundle
+import android.widget.Toast
+import androidx.fragment.app.DialogFragment
+import org.mattvchandler.progressbars.R
+import org.mattvchandler.progressbars.settings.Settings.Companion.get_time_format
+import java.security.InvalidParameterException
+import java.text.ParsePosition
+import java.util.*
 
 // time-picker dialog
 class Timepicker_frag: DialogFragment()
