@@ -154,7 +154,7 @@ class Preferences: Dynamic_theme_activity()
         super.onCreate(savedInstanceState)
 
         val binding = DataBindingUtil.setContentView<ActivityPreferencesBinding>(this, R.layout.activity_preferences)
-        setSupportActionBar(binding.toolbar as Toolbar)
+        setSupportActionBar(binding.toolbar as Toolbar) // Note: not a useless cast. It wont build without it. Google needs to get their type-checking together for bindings
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         consume_insets(this, binding.preferences, binding.appbarLayout)

@@ -523,7 +523,7 @@ class Settings: Dynamic_theme_activity(), DatePickerDialog.OnDateSetListener, Ti
     }
 
     // Button pressed callbacks
-    fun on_separate_time_butt(@Suppress("UNUSED_PARAMETER") view: View)
+    fun on_separate_time_butt(ignoredView: View)
     {
         val separate_visibility = if(data.separate_time) View.VISIBLE else View.GONE
         binding.startTimeDivider.visibility = separate_visibility
@@ -543,7 +543,7 @@ class Settings: Dynamic_theme_activity(), DatePickerDialog.OnDateSetListener, Ti
         binding.endNotifySw.text = if(data.separate_time) resources.getString(R.string.end_notify)    else resources.getString(R.string.single_notify)
     }
 
-    fun on_start_cal_butt(@Suppress("UNUSED_PARAMETER") view: View)
+    fun on_start_cal_butt(ignoredView: View)
     {
         // create a calendar dialog, pass current date string
         date_time_dialog_target = R.id.start_date_sel
@@ -555,7 +555,7 @@ class Settings: Dynamic_theme_activity(), DatePickerDialog.OnDateSetListener, Ti
         frag.show(supportFragmentManager, "start_date_picker")
     }
 
-    fun on_start_clock_butt(@Suppress("UNUSED_PARAMETER") view: View)
+    fun on_start_clock_butt(ignoredView: View)
     {
         // create a clock dialog, pass current time string
         date_time_dialog_target = R.id.start_time_sel
@@ -567,7 +567,7 @@ class Settings: Dynamic_theme_activity(), DatePickerDialog.OnDateSetListener, Ti
         frag.show(supportFragmentManager, "start_time_picker")
     }
 
-    fun on_end_cal_butt(@Suppress("UNUSED_PARAMETER") view: View)
+    fun on_end_cal_butt(ignoredView: View)
     {
         // create a calendar dialog, pass current date string
         date_time_dialog_target = R.id.end_date_sel
@@ -579,7 +579,7 @@ class Settings: Dynamic_theme_activity(), DatePickerDialog.OnDateSetListener, Ti
         frag.show(supportFragmentManager, "end_date_picker")
     }
 
-    fun on_end_clock_butt(@Suppress("UNUSED_PARAMETER") view: View)
+    fun on_end_clock_butt(ignoredView: View)
     {
         // create a clock dialog, pass current time string
         date_time_dialog_target = R.id.end_time_sel
@@ -591,7 +591,7 @@ class Settings: Dynamic_theme_activity(), DatePickerDialog.OnDateSetListener, Ti
         frag.show(supportFragmentManager, "end_time_picker")
     }
 
-    fun on_start_tz_butt(@Suppress("UNUSED_PARAMETER") view:View)
+    fun on_start_tz_butt(ignoredView:View)
     {
         val start_time = parse_date_and_time(binding.startDateSel.text.toString(), binding.startTimeSel.text.toString(),  data.start_tz) ?: return
 
@@ -600,7 +600,7 @@ class Settings: Dynamic_theme_activity(), DatePickerDialog.OnDateSetListener, Ti
         startActivityForResult(intent, RESULT_TIMEZONE_START)
     }
 
-    fun on_end_tz_butt(@Suppress("UNUSED_PARAMETER") view:View)
+    fun on_end_tz_butt(ignoredView:View)
     {
         val end_time = parse_date_and_time(binding.endDateSel.text.toString(), binding.endTimeSel.text.toString(),  data.end_tz) ?: return
 
@@ -609,12 +609,12 @@ class Settings: Dynamic_theme_activity(), DatePickerDialog.OnDateSetListener, Ti
         startActivityForResult(intent, RESULT_TIMEZONE_END)
     }
 
-    fun on_repeat_butt(@Suppress("UNUSED_PARAMETER") view: View)
+    fun on_repeat_butt(ignoredView: View)
     {
         binding.repeatFreq.visibility = if(data.repeats) View.VISIBLE else View.GONE
     }
 
-    fun on_precision_butt(@Suppress("UNUSED_PARAMETER") view: View)
+    fun on_precision_butt(ignoredView: View)
     {
         val d = Precision_dialog_frag()
         val args = Bundle()
@@ -623,7 +623,7 @@ class Settings: Dynamic_theme_activity(), DatePickerDialog.OnDateSetListener, Ti
         d.show(supportFragmentManager, "precision")
     }
 
-    fun on_days_of_week_butt(@Suppress("UNUSED_PARAMETER") view: View)
+    fun on_days_of_week_butt(ignoredView: View)
     {
         val day_vals = Progress_bars_table.Days_of_week.values()
         val selected = Array(day_vals.size)
@@ -654,7 +654,7 @@ class Settings: Dynamic_theme_activity(), DatePickerDialog.OnDateSetListener, Ti
         frag.show(supportFragmentManager, DAYS_OF_WEEK_CHECKBOX_DIALOG)
     }
 
-    fun on_show_elements_butt(@Suppress("UNUSED_PARAMETER") view: View)
+    fun on_show_elements_butt(ignoredView: View)
     {
         if(!data.separate_time)
             return
@@ -675,7 +675,7 @@ class Settings: Dynamic_theme_activity(), DatePickerDialog.OnDateSetListener, Ti
         frag.show(supportFragmentManager, SHOW_ELEMENTS_CHECKBOX_DIALOG)
     }
 
-    fun on_show_units_butt(@Suppress("UNUSED_PARAMETER") view: View)
+    fun on_show_units_butt(ignoredView: View)
     {
         val selected = BooleanArray(7)
         selected[SHOW_SECONDS_CHECKBOX] = data.show_seconds
@@ -697,7 +697,7 @@ class Settings: Dynamic_theme_activity(), DatePickerDialog.OnDateSetListener, Ti
         frag.show(supportFragmentManager, SHOW_UNITS_CHECKBOX_DIALOG)
     }
 
-    fun on_countdown_text_butt(@Suppress("UNUSED_PARAMETER") view: View)
+    fun on_countdown_text_butt(ignoredView: View)
     {
         // Launch screen to enter countdown text
         val intent = Intent(this, Countdown_text::class.java)
@@ -705,7 +705,7 @@ class Settings: Dynamic_theme_activity(), DatePickerDialog.OnDateSetListener, Ti
         startActivityForResult(intent, RESULT_COUNTDOWN_TEXT)
     }
 
-    fun on_notification_settings_butt(@Suppress("UNUSED_PARAMETER") view: View)
+    fun on_notification_settings_butt(ignoredView: View)
     {
         if(Build.VERSION.SDK_INT >= 26)
         {
@@ -723,7 +723,7 @@ class Settings: Dynamic_theme_activity(), DatePickerDialog.OnDateSetListener, Ti
         }
     }
 
-    fun on_notification_reset_butt(@Suppress("UNUSED_PARAMETER") view: View)
+    fun on_notification_reset_butt(ignoredView: View)
     {
         if(Build.VERSION.SDK_INT >= 26 && data.has_notification_channel)
         {

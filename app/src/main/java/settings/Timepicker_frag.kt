@@ -44,7 +44,7 @@ class Timepicker_frag: DialogFragment()
 
         val cal = Calendar.getInstance()
 
-        val time = arguments!!.getString(TIME) ?: throw InvalidParameterException("No time argument given")
+        val time = requireArguments().getString(TIME) ?: throw InvalidParameterException("No time argument given")
 
         val df = get_time_format()
         val date_obj = df.parse(time, ParsePosition(0))
@@ -54,7 +54,7 @@ class Timepicker_frag: DialogFragment()
             Toast.makeText(activity, resources.getString(R.string.invalid_time, time, df.toLocalizedPattern()), Toast.LENGTH_LONG).show()
 
             // set to stored date
-            cal.timeInMillis = arguments!!.getLong(STORE_TIME, 0) * 1000
+            cal.timeInMillis = requireArguments().getLong(STORE_TIME, 0) * 1000
         }
         else
         {

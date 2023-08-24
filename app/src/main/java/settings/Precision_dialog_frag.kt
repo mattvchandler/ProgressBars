@@ -40,10 +40,10 @@ class Precision_dialog_frag: DialogFragment()
     {
         super.onCreateDialog(savedInstanceState)
 
-        val builder = AlertDialog.Builder(activity!!)
+        val builder = AlertDialog.Builder(requireActivity())
 
         // unpack and set the starting value
-        val precision: Int = savedInstanceState?.getInt(PRECISION_ARG) ?: arguments!!.getInt(PRECISION_ARG)
+        val precision: Int = savedInstanceState?.getInt(PRECISION_ARG) ?: requireArguments().getInt(PRECISION_ARG)
 
         // build a number picker with range 0-10
         np = NumberPicker(builder.context)

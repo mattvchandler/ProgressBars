@@ -59,7 +59,7 @@ class TimeZone_disp(val id: String, context: Context?, date: Date?): Serializabl
 
         subtitle = context?.resources?.getString(R.string.tz_list_subtitle, disp_name, short_name)
 
-        search_kwds = listOf(name, id, disp_name, short_name).map{ it.toLowerCase(Locale.getDefault()) }.distinct()
+        search_kwds = listOf(name, id, disp_name, short_name).map{ it.lowercase(Locale.getDefault()) }.distinct()
     }
 
     override fun toString() = name
@@ -130,7 +130,7 @@ private class TimeZone_adapter(private val activity: TimeZone_activity, private 
         if(search == "")
             replace_all(all_tzs)
         else
-            replace_all(all_tzs.filter{ tz -> tz.search_kwds.any{it.contains(search.toLowerCase(Locale.getDefault()))} })
+            replace_all(all_tzs.filter{ tz -> tz.search_kwds.any{it.contains(search.lowercase(Locale.getDefault()))} })
     }
 
     fun replace_all(tzs: List<TimeZone_disp>)

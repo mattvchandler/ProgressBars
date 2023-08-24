@@ -35,11 +35,11 @@ class About_dialog: DialogFragment()
 {
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog
     {
-        val builder = AlertDialog.Builder(activity!!)
+        val builder = AlertDialog.Builder(requireActivity())
         val binding = DataBindingUtil.inflate<AboutDialogBinding>(LayoutInflater.from(activity), R.layout.about_dialog, null, false)
 
         builder.setView(binding.root)
-        binding.version.text = activity!!.resources.getString(R.string.app_version, BuildConfig.VERSION_NAME)
+        binding.version.text = requireActivity().resources.getString(R.string.app_version, BuildConfig.VERSION_NAME)
 
         // allow clicking links in license and website text
         binding.license.movementMethod = LinkMovementMethod.getInstance()

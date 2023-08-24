@@ -37,16 +37,16 @@ class Checkbox_dialog_frag: DialogFragment()
         super.onCreateDialog(savedInstanceState)
 
         selection = if(savedInstanceState == null)
-            arguments!!.getBooleanArray(SELECTION_ARG)
+            requireArguments().getBooleanArray(SELECTION_ARG)
         else
             savedInstanceState.getBooleanArray(SELECTION_ARG)
 
         if(selection == null)
             throw InvalidParameterException("No selection specified")
 
-        val builder = AlertDialog.Builder(activity!!)
-        builder.setTitle(arguments!!.getInt(TITLE_ARG))
-                .setMultiChoiceItems(arguments!!.getStringArray(ENTRIES_ARG), selection ) { _, which, isChecked -> selection!![which] = isChecked }
+        val builder = AlertDialog.Builder(requireActivity())
+        builder.setTitle(requireArguments().getInt(TITLE_ARG))
+                .setMultiChoiceItems(requireArguments().getStringArray(ENTRIES_ARG), selection ) { _, which, isChecked -> selection!![which] = isChecked }
                 .setPositiveButton(android.R.string.ok) { _, _ -> (activity as Settings).on_checkbox_dialog_ok(tag!!, selection!!.toTypedArray()) }
                 .setNegativeButton(android.R.string.cancel, null)
 

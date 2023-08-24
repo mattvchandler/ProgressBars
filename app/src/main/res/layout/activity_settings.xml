@@ -66,7 +66,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
                     />
                 </com.google.android.material.textfield.TextInputLayout>
 
-                <Switch
+                <androidx.appcompat.widget.SwitchCompat
                     style="@style/SettingFrame"
                     android:id="@+id/separate_time_sw"
                     android:text="@string/separate_time"
@@ -268,7 +268,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
                 <View style="@style/Divider"/>
 
-                <Switch
+                <androidx.appcompat.widget.SwitchCompat
                     style="@style/SettingFrame"
                     android:id="@+id/terminate_sw"
                     android:text="@string/terminate"
@@ -276,7 +276,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
                     android:textAppearance="?attr/textAppearanceListItem"
                     />
 
-                <Switch
+                <androidx.appcompat.widget.SwitchCompat
                     style="@style/SettingFrame"
                     android:id="@+id/repeat_sw"
                     android:text="@string/repeat"
@@ -357,7 +357,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
                         android:layout_height="wrap_content"
                     />
                 </FrameLayout>
-                <Switch
+                <androidx.appcompat.widget.SwitchCompat
                     style="@style/SettingFrame"
                     android:id="@+id/single_show_element"
                     android:text="@string/single_show_element"
@@ -416,7 +416,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
                 <View style="@style/Divider"/>
 
-                <Switch
+                <androidx.appcompat.widget.SwitchCompat
                     style="@style/SettingFrame"
                     android:id="@+id/start_notify_sw"
                     android:text="@string/start_notify"
@@ -425,7 +425,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
                     android:visibility="@{data.separate_time ? View.VISIBLE : View.GONE}"
                     />
 
-                <Switch
+                <androidx.appcompat.widget.SwitchCompat
                     style="@style/SettingFrame"
                     android:id="@+id/end_notify_sw"
                     android:text="@string/end_notify"
