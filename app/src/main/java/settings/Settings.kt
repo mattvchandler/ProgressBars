@@ -418,6 +418,7 @@ class Settings: Dynamic_theme_activity(), DatePickerDialog.OnDateSetListener, Ti
         else -> super.onOptionsItemSelected(item)
     }
 
+    @Deprecated("Deprecated in Java")
     override fun onBackPressed()
     {
         cancel()
@@ -813,6 +814,7 @@ class Settings: Dynamic_theme_activity(), DatePickerDialog.OnDateSetListener, Ti
         }
     }
 
+    @Deprecated("Deprecated in Java")
     override fun onActivityResult(request_code: Int, result_code: Int, intent: Intent?)
     {
         if(result_code == RESULT_OK)

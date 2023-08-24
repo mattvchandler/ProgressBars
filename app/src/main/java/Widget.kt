@@ -225,7 +225,7 @@ class Widget: AppWidgetProvider()
             val intent = Intent(context, Widget::class.java)
             intent.action = ACTION_UPDATE_TIME
 
-            return PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT)
+            return PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT or PendingIntent.FLAG_IMMUTABLE)
         }
 
         private fun build_view(context: Context, appWidgetManager: AppWidgetManager, widget_id: Int, data: View_data)
@@ -351,7 +351,7 @@ class Widget: AppWidgetProvider()
             edit_intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
 
             edit_intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, widget_id)
-            views.setOnClickPendingIntent(R.id.background, PendingIntent.getActivity(context, 0, edit_intent, PendingIntent.FLAG_CANCEL_CURRENT))
+            views.setOnClickPendingIntent(R.id.background, PendingIntent.getActivity(context, 0, edit_intent, PendingIntent.FLAG_CANCEL_CURRENT or PendingIntent.FLAG_IMMUTABLE))
 
             appWidgetManager.updateAppWidget(widget_id, views)
         }

@@ -56,7 +56,7 @@ class Preferences: Dynamic_theme_activity()
         override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?)
         {
             setPreferencesFromResource(R.xml.preferences, rootKey)
-            PreferenceManager.setDefaultValues(activity, R.xml.preferences, false)
+            PreferenceManager.setDefaultValues(requireActivity(), R.xml.preferences, false)
             findPreference<ListPreference>(resources.getString(R.string.pref_date_format_key))?.summaryProvider = ListPreference.SimpleSummaryProvider.getInstance()
             findPreference<ListPreference>(resources.getString(R.string.pref_first_day_of_wk_key))?.summaryProvider = ListPreference.SimpleSummaryProvider.getInstance()
             findPreference<ListPreference>(resources.getString(R.string.pref_widget_refresh_key))?.summaryProvider = ListPreference.SimpleSummaryProvider.getInstance()
@@ -68,42 +68,42 @@ class Preferences: Dynamic_theme_activity()
         override fun onResume()
         {
             super.onResume()
-            preferenceScreen.sharedPreferences.registerOnSharedPreferenceChangeListener(this)
+            preferenceScreen.sharedPreferences?.registerOnSharedPreferenceChangeListener(this)
 
         }
 
         override fun onPause()
         {
             super.onPause()
-            preferenceScreen.sharedPreferences.unregisterOnSharedPreferenceChangeListener(this)
+            preferenceScreen.sharedPreferences?.unregisterOnSharedPreferenceChangeListener(this)
         }
 
-        override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences, key: String)
+        override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?)
         {
             if(key == resources.getString(R.string.pref_theme_key))
             {
                 // request location permission for local sunset / sunrise times
-                if(sharedPreferences.getString(resources.getString(R.string.pref_theme_key), "") == resources.getString(R.string.pref_theme_value_auto))
+                if(sharedPreferences?.getString(resources.getString(R.string.pref_theme_key), "") == resources.getString(R.string.pref_theme_value_auto))
                 {
                     if (ContextCompat.checkSelfPermission(activity as Context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED)
                     {
-                        if(ActivityCompat.shouldShowRequestPermissionRationale(activity!!, Manifest.permission.ACCESS_FINE_LOCATION))
+                        if(ActivityCompat.shouldShowRequestPermissionRationale(requireActivity(), Manifest.permission.ACCESS_FINE_LOCATION))
                         {
                             class Location_frag: DialogFragment()
                             {
                                 override fun onCreateDialog(savedInstanceState: Bundle?): Dialog =
-                                        AlertDialog.Builder(context!!)
+                                        AlertDialog.Builder(requireContext())
                                                 .setTitle(R.string.loc_perm_title)
                                                 .setMessage(R.string.loc_perm_msg)
-                                                .setPositiveButton(android.R.string.ok) { _, _ -> ActivityCompat.requestPermissions(activity!!, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), LOCATION_PERMISSION_RESPONSE)}
+                                                .setPositiveButton(android.R.string.ok) { _, _ -> ActivityCompat.requestPermissions(requireActivity(), arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), LOCATION_PERMISSION_RESPONSE)}
                                                 .setNegativeButton(android.R.string.cancel, null)
                                                 .create()
                             }
-                            Location_frag().show(activity!!.supportFragmentManager, "location_permission_dialog")
+                            Location_frag().show(requireActivity().supportFragmentManager, "location_permission_dialog")
                         }
                         else
                         {
-                            ActivityCompat.requestPermissions(activity!!, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), LOCATION_PERMISSION_RESPONSE)
+                            ActivityCompat.requestPermissions(requireActivity(), arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), LOCATION_PERMISSION_RESPONSE)
                         }
                     }
                 }
@@ -112,9 +112,9 @@ class Preferences: Dynamic_theme_activity()
             }
         }
 
-        override fun onPreferenceTreeClick(preference: Preference?): Boolean
+        override fun onPreferenceTreeClick(preference: Preference): Boolean
         {
-            when(preference?.key)
+            when(preference.key)
             {
                 resources.getString(R.string.pref_system_notifications_key) ->
                 {
@@ -124,19 +124,19 @@ class Preferences: Dynamic_theme_activity()
                         Build.VERSION.SDK_INT in 21..25 ->
                         {
                             intent.action = "android.settings.APP_NOTIFICATION_SETTINGS"
-                            intent.putExtra("app_package", context!!.packageName)
-                            intent.putExtra("app_uid", context!!.applicationInfo.uid)
+                            intent.putExtra("app_package", requireContext().packageName)
+                            intent.putExtra("app_uid", requireContext().applicationInfo.uid)
                         }
                         Build.VERSION.SDK_INT >= 26 ->
                         {
                             intent.action = android.provider.Settings.ACTION_APP_NOTIFICATION_SETTINGS
-                            intent.putExtra(android.provider.Settings.EXTRA_APP_PACKAGE, context!!.packageName)
+                            intent.putExtra(android.provider.Settings.EXTRA_APP_PACKAGE, requireContext().packageName)
                         }
                         else ->
                         {
                             intent.action = android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS
                             intent.addCategory(Intent.CATEGORY_DEFAULT)
-                            intent.data = Uri.parse("package:${context!!.packageName}")
+                            intent.data = Uri.parse("package:${requireContext().packageName}")
                         }
                     }
 

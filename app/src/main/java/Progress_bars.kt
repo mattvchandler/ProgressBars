@@ -232,6 +232,7 @@ class Progress_bars: Dynamic_theme_activity()
         else -> super.onOptionsItemSelected(item)
     }
 
+    @Deprecated("Deprecated in Java")
     override fun onActivityResult(request_code: Int, result_code: Int, intent: Intent?)
     {
         // get data back from Settings

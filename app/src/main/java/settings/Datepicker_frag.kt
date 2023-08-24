@@ -46,12 +46,12 @@ class Datepicker_frag: DialogFragment()
 
         val cal = Calendar.getInstance()
 
-        val preferenceManager = PreferenceManager.getDefaultSharedPreferences(activity)
+        val preferenceManager = PreferenceManager.getDefaultSharedPreferences(requireActivity())
         val date_format = preferenceManager.getString(resources.getString(R.string.pref_date_format_key), resources.getString(R.string.pref_date_format_default))
 
-        val date = arguments!!.getString(DATE) ?: throw InvalidParameterException("No date argument given")
+        val date = requireArguments().getString(DATE) ?: throw InvalidParameterException("No date argument given")
 
-        val df = get_date_format(activity!!)
+        val df = get_date_format(requireActivity())
 
         val date_obj = df.parse(date, ParsePosition(0))
         if(date_obj == null)
@@ -60,7 +60,7 @@ class Datepicker_frag: DialogFragment()
             Toast.makeText(activity, resources.getString(R.string.invalid_date, date, if(date_format != "locale") date_format else df.toLocalizedPattern()), Toast.LENGTH_LONG).show()
 
             // set to stored date
-            cal.timeInMillis = arguments!!.getLong(STORE_DATE, 0) * 1000
+            cal.timeInMillis = requireArguments().getLong(STORE_DATE, 0) * 1000
         }
         else
         {
@@ -72,7 +72,7 @@ class Datepicker_frag: DialogFragment()
         day = cal.get(Calendar.DAY_OF_MONTH)
 
 
-        val date_picker = DatePickerDialog(activity!!, activity as Settings?, year, month, day)
+        val date_picker = DatePickerDialog(requireActivity(), activity as Settings?, year, month, day)
 
         if(Build.VERSION.SDK_INT >= 21)
         {

@@ -88,6 +88,7 @@ class Countdown_text: Dynamic_theme_activity()
         setResult(RESULT_OK, intent)
     }
 
+    @Deprecated("Deprecated in Java")
     override fun onBackPressed()
     {
         go_back()

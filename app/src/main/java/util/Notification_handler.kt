@@ -102,7 +102,7 @@ class Notification_handler: BroadcastReceiver()
                 // get the primary color from the theme
                 context.setTheme(R.style.Theme_progress_bars)
                 val color_tv = TypedValue()
-                context.theme.resolveAttribute(R.attr.colorPrimary, color_tv, true)
+                context.theme.resolveAttribute(androidx.appcompat.R.attr.colorPrimary, color_tv, true)
 
                 val channel_id = if(data.has_notification_channel) data.channel_id else DEFAULT_CHANNEL_ID
 
@@ -157,7 +157,7 @@ class Notification_handler: BroadcastReceiver()
                     stack.addNextIntent(i)
 
                     // package intent into a pending intent for the notification
-                    val pi = stack.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT)
+                    val pi = stack.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
                     not_builder.setContentIntent(pi)
                 }
 
@@ -237,8 +237,25 @@ class Notification_handler: BroadcastReceiver()
                 complete_intent.putExtra(EXTRA_DATA, data_as_bytes)
             }
 
-            return Pair(PendingIntent.getBroadcast(context, 0, start_intent, PendingIntent.FLAG_CANCEL_CURRENT),
-                        PendingIntent.getBroadcast(context, 0, complete_intent, PendingIntent.FLAG_CANCEL_CURRENT))
+            return Pair(PendingIntent.getBroadcast(context, 0, start_intent, PendingIntent.FLAG_CANCEL_CURRENT or PendingIntent.FLAG_IMMUTABLE),
+                        PendingIntent.getBroadcast(context, 0, complete_intent, PendingIntent.FLAG_CANCEL_CURRENT or PendingIntent.FLAG_IMMUTABLE))
+        }
+
+        // helper to schedule alarms around the maze of android requirements
+        private fun set_alarm(am: AlarmManager, time: Long, pi: PendingIntent)
+        {
+            if(Build.VERSION.SDK_INT >= 23)
+            {
+                // For API < 31, we don't need permission to do an exact alarm,
+                // for 33+, we use the USE_EXACT_ALARM perm, which the user doesn't need to grant
+                // 31 and 32 are a problem, so we fallback to an inexact alarm here
+                if (Build.VERSION.SDK_INT < 31 || Build.VERSION.SDK_INT > 32 || am.canScheduleExactAlarms())
+                    am.setExactAndAllowWhileIdle( AlarmManager.RTC_WAKEUP, time * 1000, pi)
+                else
+                    am.setAndAllowWhileIdle( AlarmManager.RTC_WAKEUP, time * 1000, pi)
+            }
+            else
+                am.setExact(AlarmManager.RTC_WAKEUP, time * 1000, pi)
         }
 
         private fun reset_alarm_details(context: Context, data: Data, am: AlarmManager, now: Long)
@@ -254,22 +271,11 @@ class Notification_handler: BroadcastReceiver()
             // if start and end times are the same or using a single time, only set the completion alarm
             // (will overwrite any existing alarm with the same action and target)
             if(now < data.start_time && data.start_time != data.end_time && data.separate_time)
-            {
-                if(Build.VERSION.SDK_INT >= 23)
-                    am.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, data.start_time * 1000, start_pi)
-                else
-                    am.setExact(AlarmManager.RTC_WAKEUP, data.start_time * 1000, start_pi)
-            }
+                set_alarm(am, data.start_time, start_pi)
 
             // same as above for completion alarms
-            val end_time = data.end_time
-            if(now < end_time)
-            {
-                if(Build.VERSION.SDK_INT >= 23)
-                    am.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, end_time * 1000, complete_pi)
-                else
-                    am.setExact(AlarmManager.RTC_WAKEUP, end_time * 1000, complete_pi)
-            }
+            if(now < data.end_time)
+                set_alarm(am, data.end_time, complete_pi)
         }
 
         fun reset_all_alarms(context: Context)
