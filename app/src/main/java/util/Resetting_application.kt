@@ -22,8 +22,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 package org.mattvchandler.progressbars.util
 
 import android.app.Application
-import androidx.preference.PreferenceManager
-import org.mattvchandler.progressbars.R
 
 import org.mattvchandler.progressbars.db.DB
 import org.mattvchandler.progressbars.db.Data
@@ -35,24 +33,17 @@ class Resetting_application: Application()
     {
         super.onCreate()
 
-        val prefs = PreferenceManager.getDefaultSharedPreferences(this)
-
-        val first_run = prefs.getBoolean(resources.getString(R.string.pref_first_run_key), true)
-
-        if(first_run)
+        val db = DB(this).writableDatabase
+        val cursor = db.rawQuery(Progress_bars_table.SELECT_ALL_ROWS_NO_WIDGET, null)
+        if(cursor.count == 0)
         {
-            val db = DB(this).writableDatabase
-            val cursor = db.rawQuery(Progress_bars_table.SELECT_ALL_ROWS_NO_WIDGET, null)
-            if(cursor.count == 0)
-            {
-                val data = Data(this)
-                data.order_ind = 0
-                data.insert(db)
-            }
-
-            cursor.close()
-            db.close()
+            val data = Data(this)
+            data.order_ind = 0
+            data.insert(db)
         }
+
+        cursor.close()
+        db.close()
 
         // register notification handler
         Notification_handler.setup_notification_channel(this)

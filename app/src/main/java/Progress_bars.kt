@@ -21,8 +21,11 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 package org.mattvchandler.progressbars
 
+import android.app.AlarmManager
+import android.content.Context
 import android.content.Intent
 import android.database.ContentObserver
+import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.view.Menu
@@ -33,6 +36,7 @@ import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.material.snackbar.Snackbar
 import org.mattvchandler.progressbars.databinding.ActivityProgressBarsBinding
 import org.mattvchandler.progressbars.db.Data
 import org.mattvchandler.progressbars.list.Adapter
@@ -45,6 +49,8 @@ import org.mattvchandler.progressbars.util.Preferences
 // TODO: persistent notification?
 // TODO: consider moving to LiveData / ViewModel. May reduce complexity
 // TODO: performance on main list scrolling
+// TODO: newfangled themable app icon
+// TODO: material you support
 
 // main activity. display each timer in a list
 class Progress_bars: Dynamic_theme_activity()
@@ -128,6 +134,27 @@ class Progress_bars: Dynamic_theme_activity()
             startActivityForResult(Intent(this, Settings::class.java), RESULT_EDIT_DATA)
 
         add_from_shortcut = false
+
+        val prompt_exact_alarm = prefs.getBoolean(resources.getString(R.string.pref_prompt_exact_alarm), true)
+
+        if(prompt_exact_alarm)
+        {
+            if(Build.VERSION.SDK_INT == 31 || Build.VERSION.SDK_INT == 32)
+            {
+                val am = getSystemService(Context.ALARM_SERVICE) as AlarmManager
+                if(!am.canScheduleExactAlarms())
+                {
+                    val sb = Snackbar.make(binding.coordinatorLayout, R.string.prompt_exact_alarm, Snackbar.LENGTH_INDEFINITE)
+                    sb.setAction(android.R.string.ok)
+                        {
+                            Intent().apply { action = android.provider.Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM}
+                                .also{startActivity(it)}
+                        }
+                    sb.show()
+                }
+            }
+            prefs.edit().putBoolean(resources.getString(R.string.pref_prompt_exact_alarm), false).apply()
+        }
     }
 
     override fun onSaveInstanceState(out: Bundle)

@@ -111,7 +111,7 @@ SOFTWARE.
 
     <string name="pref_next_id_key" translatable="false">next_id</string>
 
-    <string name="pref_first_run_key" translatable="false">first_run</string>
+    <string name="pref_prompt_exact_alarm" translatable="false">prompt_exact_alarm</string>
 
     <string-array name="notification_priority_levels" translatable="false">
         <item>MIN</item>

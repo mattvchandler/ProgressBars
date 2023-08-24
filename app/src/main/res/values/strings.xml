@@ -247,4 +247,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
     <string name="default_single_post_text">"Time since event: "</string>
 
     <string name="loading">Loading…</string>
+
+    <string name="prompt_exact_alarm">Allow timers to be sent exactly when a timer ends?</string>
 </resources>
