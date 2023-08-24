@@ -24,9 +24,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 <androidx.appcompat.widget.Toolbar
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:background="@color/colorPrimary"
     tools:ignore="UnusedAttribute"
-    android:elevation="4dp"
     android:layout_width="match_parent"
     android:layout_height="?attr/actionBarSize"
     />
