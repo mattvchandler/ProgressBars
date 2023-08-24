@@ -12,3 +12,4 @@ app/release
 .idea/caches
 .idea/codeStyles
 .idea/assetWizardSettings.xml
+.idea/deploymentTargetDropDown.xml
